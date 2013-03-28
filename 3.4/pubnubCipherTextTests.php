@@ -19,7 +19,6 @@ $ssl_on        = false;
 
 $plain_text = "yay!";
 $cipher_text = "q/xJqqN6qbiZMXYmiQC1Fw==";
-$cipher_key = "enigma";
 
 ## Encryption Test
 if (decrypt($cipher_text, $cipher_key) == $plain_text) {
