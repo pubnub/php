@@ -6,12 +6,10 @@
 www.pubnub.com - PubNub Real-time Push Service in the Cloud. 
 http://www.pubnub.com/blog/php-push-api-walkthrough
 
-### PubNub is a Massively Scalable Real-time Service for Web and Mobile Games.
-### This is a cloud-based service for broadcasting Real-time messages
-### to thousands of web and mobile clients simultaneously.
+PubNub is a Massively Scalable Real-time Service for Web and Mobile Games. This is a cloud-based service for broadcasting Real-time messages to thousands of web and mobile clients simultaneously.
 
 
-## PHP Push API
+### PHP Push API
 ```php
 $pubnub = new Pubnub(
     "demo",  ## PUBLISH_KEY
@@ -22,7 +20,7 @@ $pubnub = new Pubnub(
 ```
 
 
-## Send Message (PUBLISH)
+### Send Message (PUBLISH)
 ```php
 $info = $pubnub->publish(array(
     'channel' => 'hello_world', ## REQUIRED Channel to Send
@@ -31,22 +29,13 @@ $info = $pubnub->publish(array(
 print_r($info);
 ```
 
-## Request Messages (HISTORY, deprecated, use detailedHistory() below)
-```php
-$messages = $pubnub->history(array(
-    'channel' => 'hello_world',  ## REQUIRED Channel to Send
-    'limit'   => 100             ## OPTIONAL Limit Number of Messages
-));
-print_r($messages);             ## Prints array of messages.
-```
-
-## Request Server Time (TIME)
+### Request Server Time (TIME)
 ```php
 $timestamp = $pubnub->time();
 var_dump($timestamp);            ## Prints integer timestamp.
 ```
 
-## Receive Message (SUBSCRIBE) PHP 5.2.0
+### Receive Message (SUBSCRIBE) PHP 5.2.0
 ```php
 $pubnub->subscribe(array(
     'channel'  => 'hello_world',        ## REQUIRED Channel to Listen
@@ -57,7 +46,7 @@ $pubnub->subscribe(array(
 ));
 ```
 
-## Receive Message (SUBSCRIBE) PHP 5.3.0
+### Receive Message (SUBSCRIBE) PHP 5.3.0
 ```php
 $pubnub->subscribe(array(
     'channel'  => 'hello_world',        ## REQUIRED Channel to Listen
@@ -69,7 +58,7 @@ $pubnub->subscribe(array(
 ```
 
 
-## Realtime Join/Leave Events (Presence)
+### Realtime Join/Leave Events (Presence)
 ```php
 $pubnub->presence(array(
     'channel'  => $channel,
@@ -81,14 +70,14 @@ $pubnub->presence(array(
 ));
 ```
 
-## On-demand Occupancy Status (here_now)
+### On-demand Occupancy Status (here_now)
 ```php
 $here_now = $pubnub->here_now(array(
     'channel' => $channel
 ));
 ```
 
-## Detailed History (detailedHistory())
+### Detailed History (detailedHistory())
 ```php
 $history = $pubnub->detailedHistory(array(
     'channel' => $channel,
