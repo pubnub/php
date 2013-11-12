@@ -607,7 +607,8 @@ class Pubnub
             
             curl_multi_close($mh);
         } else {
-            $url = reset(array_keys($urls));
+            $keys = array_keys($urls);
+            $url = reset($keys);
             $ch = $chs[$url];
             $urls[$url]['output'] = curl_exec($ch);
             $urls[$url]['curlError'] = curl_errno($ch);
