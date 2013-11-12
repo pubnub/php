@@ -29,6 +29,15 @@ $info = $pubnub->publish(array(
 print_r($info);
 ```
 
+### Send Message to Multiple Channels (PUBLISH)
+```php
+$info = $pubnub->publish(array(
+    'channel' => array('hello_world', 'hello_world2'), ## REQUIRED Channels to Send
+    'message' => 'Hey World!'   ## REQUIRED Message String/Array
+));
+print_r($info);
+```
+
 ### Request Server Time (TIME)
 ```php
 $timestamp = $pubnub->time();

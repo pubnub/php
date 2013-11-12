@@ -61,8 +61,15 @@ class PubnubTest extends PHPUnit_Framework_TestCase
 													 'channel' => $channel ? $channel : self::$channel,
 													 'message' => $message 
 													));
-		$this->assertEquals( $publish_success[0], $statusResponse);
-		$this->assertEquals( $publish_success[1], $msgResponse);
+        if (!is_array($channel)) {
+            $this->assertEquals($publish_success[0], $statusResponse);
+            $this->assertEquals($publish_success[1], $msgResponse);
+        } else {
+            foreach ($channel as $channelName) {
+                $this->assertEquals($publish_success[$channelName][0], $statusResponse);
+                $this->assertEquals($publish_success[$channelName][1], $msgResponse);
+            }
+        }
 	}
 
 	public function publishProvider()
@@ -94,7 +101,11 @@ class PubnubTest extends PHPUnit_Framework_TestCase
 					array(self::$configs['cipherSsl'],str_repeat('a', 2000), 0, 'Message Too Large'),
 					// Message to presence
 					array(self::$configs['default'],'Test Presence', 1, 'Sent', self::$channel.'-pnpres'),
-					);
+                    // Multiple Channels
+                    array(self::$configs['default'], 'Multiple Hello from PHP!', 1, 'Sent', array(self::$channel, self::$channel . '1',  self::$channel . '2')),
+                    // Duplicate Channels
+                    array(self::$configs['default'], 'Hello from PHP!', 0, 'Duplicate Channel', array(self::$channel, self::$channel)),   
+            );
 	}
 
 
@@ -110,7 +121,7 @@ class PubnubTest extends PHPUnit_Framework_TestCase
 											 'limit'   => $limit 
 											));
 		$this->assertNotEmpty( $history );
-		$this->assertGreaterThanOrEqual( count($history), $limit );
+		$this->assertLessThanOrEqual( $limit, count($history[0]) );
 	}
 
 	public function historyProvider()
@@ -154,10 +165,10 @@ class PubnubTest extends PHPUnit_Framework_TestCase
 		$history = $pubnub->detailedHistory( array(
 											 'channel' => self::$channel,
 											 'count'   => $count,
-											 'end'	   => '13466530169226760'
+											 'end'	   => time()
 											));
 		$this->assertNotEmpty( $history );
-		$this->assertGreaterThanOrEqual( count($history), $count );
+		$this->assertLessThanOrEqual( $count, count($history[0]) );
 	}
 
 
@@ -169,7 +180,7 @@ class PubnubTest extends PHPUnit_Framework_TestCase
 	{
 		$pubnub = $this->getObject($config);
 		$time = $pubnub->time();
-		$this->assertTrue( is_integer($time) && $time );
+		$this->assertRegExp( '/[0-9]+/', $time );
 	}
 
 

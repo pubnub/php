@@ -93,43 +93,70 @@ class Pubnub
         }
 
         ## Capture User Input
-        $channel = $args['channel'];
+        $channels = $args['channel'];
+        $multiple = true;
+        if (!is_array($channels)) {
+            $channels = array($channels);
+            $multiple = false;
+        } else {
+            if (count(array_unique($channels)) < count($channels)) {
+                $duplicateChannelsError = array();
+                foreach ($channels as $channel) {
+                    $duplicateChannelsError[$channel] = array(0, 'Duplicate Channel');
+                }
+                return $duplicateChannelsError;
+            }
+        }
         $message_org = $args['message'];
 
         $message = $this->sendMessage($message_org);
 
+        $workPackage = array();
+        foreach ($channels as $channel) {
+            ## Sign Message
+            $signature = "0";
+            if ($this->SECRET_KEY) {
+                ## Generate String to Sign
+                $string_to_sign = implode('/', array(
+                    $this->PUBLISH_KEY,
+                    $this->SUBSCRIBE_KEY,
+                    $this->SECRET_KEY,
+                    $channel,
+                    $message
+                ));
 
-        ## Sign Message
-        $signature = "0";
-        if ($this->SECRET_KEY) {
-            ## Generate String to Sign
-            $string_to_sign = implode('/', array(
-                $this->PUBLISH_KEY,
-                $this->SUBSCRIBE_KEY,
-                $this->SECRET_KEY,
-                $channel,
-                $message
-            ));
-
-            $signature = md5($string_to_sign);
+                $signature = md5($string_to_sign);
+            }
+            $workPackage[$channel] = array(
+                'signature' => $signature
+            );
         }
 
-        ## Send Message
-        $publishResponse = $this->_request(array(
+        ## Build Request Package
+        $requestPackage = array();
+        foreach ($workPackage as $channel => $channelData) {
+            $requestPackage[] = array(
             'publish',
             $this->PUBLISH_KEY,
             $this->SUBSCRIBE_KEY,
-            $signature,
+            $channelData['signature'],
             $channel,
             '0',
             $message
-        ));
+            );
+        }
+
+        if (!$multiple) {
+            $requestPackage = $requestPackage[0];
+        }
+        
+        ## Send Message
+        $publishResponse = $this->_request($requestPackage, false, $multiple);
 
         if ($publishResponse == null)
             return array(0, "Error during publish.");
         else
             return $publishResponse;
-
     }
 
     public function sendMessage($message_org)
@@ -474,63 +501,141 @@ class Pubnub
      * @param array $request of url directories.
      * @return array from JSON response.
      */
-    private function _request($request, $urlParams = false)
-    {
-        $request = array_map('Pubnub::_encode', $request);
-
-        array_unshift($request, $this->ORIGIN);
-
-        if (($request[1] === 'presence') || ($request[1] === 'subscribe')) {
-            array_push($request, '?uuid=' . $this->SESSION_UUID);
+    private function _request($requests, $urlParams = false, $multiple = false) {
+        if (!$multiple) {
+            $requests = array($requests);
         }
+        
+        ## Build URL Package
+        $urls = array();
+        foreach ($requests as $request) {
+            $request = array_map('Pubnub::_encode', $request);
 
-        $urlString = implode('/', $request);
+            array_unshift($request, $this->ORIGIN);
 
-        if ($urlParams) {
-            $urlString .= $urlParams;
-        }
-
-        $ch = curl_init();
-
-        $pubnubHeaders = array("V: 3.4", "Accept: */*");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $pubnubHeaders);
-        curl_setopt($ch, CURLOPT_USERAGENT, "PHP");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 310);
-
-        curl_setopt($ch, CURLOPT_URL, $urlString);
-
-        if ($this->SSL) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-
-
-            $pemPathAndFilename = $this->PEM_PATH . "/pubnub.com.pem";
-            if (file_exists($pemPathAndFilename))
-                curl_setopt($ch, CURLOPT_CAINFO, $pemPathAndFilename);
-            else {
-                trigger_error("Can't find PEM file. Please set pem_path in initializer.");
-                exit;
+            if (($request[1] === 'presence') || ($request[1] === 'subscribe')) {
+                array_push($request, '?uuid=' . $this->SESSION_UUID);
             }
 
+            $urlString = implode('/', $request);
+
+            if ($urlParams) {
+                $urlString .= $urlParams;
+            }
+            
+            $channelPos = 0;
+            switch ($request[1]) {
+                case 'publish':
+                    $channelPos = 5;
+                    break;
+                case 'subscribe':
+                    $channelPos = 3;
+                    break;
+                case 'history':
+                    $channelPos = 3;
+                    break;
+                case 'time':
+                    $channelPos = 1;
+                    break;
+                case 'v2':
+                    $channelPos = 6;
+                    break;
+            }
+            
+            $urls[$urlString] = array(
+                'channel' => $request[$channelPos]
+            );
+        }
+    
+        $chs = array();
+        $pubnubHeaders = array("V: 3.4", "Accept: */*");
+        foreach (array_keys($urls) as $urlString) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $pubnubHeaders);
+            curl_setopt($ch, CURLOPT_USERAGENT, "PHP");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 310);
+
+            curl_setopt($ch, CURLOPT_URL, $urlString);
+
+            if ($this->SSL) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+
+                $pemPathAndFilename = $this->PEM_PATH . "/pubnub.com.pem";
+                if (file_exists($pemPathAndFilename))
+                    curl_setopt($ch, CURLOPT_CAINFO, $pemPathAndFilename);
+                else {
+                    trigger_error("Can't find PEM file. Please set pem_path in initializer.");
+                    exit;
+                }
+            }
+            $chs[$urlString] = $ch;
         }
 
+        if ($multiple) {
+            $mh = curl_multi_init();
+            foreach ($chs as $ch) {
+                curl_multi_add_handle($mh, $ch);
+            }
+            
+            $active = null;
+            do {
+                $mrc = curl_multi_exec($mh, $active);
+            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
 
-        $output = curl_exec($ch);
-        $curlError = curl_errno($ch);
-        $curlResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            while ($active && $mrc == CURLM_OK) {
+                //check for results and execute until everything is done
 
-        curl_close($ch);
+                if (curl_multi_select($mh) == -1) {
+                    //if it returns -1, wait a bit, but go forward anyways!
+                    usleep(100);
+                }
+                
+                do {  
+                    $mrc = curl_multi_exec($mh, $active);  
+                } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+            }
 
-        $JSONdecodedResponse = json_decode($output, true);
+            foreach ($chs as $url => $ch) {
+                $urls[$url]['output'] = curl_multi_getcontent($ch);
+                $urls[$url]['curlError'] = curl_errno($ch);
+                $urls[$url]['responseCode'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_multi_remove_handle($mh, $ch);
+            }
+            
+            curl_multi_close($mh);
+        } else {
+            $keys = array_keys($urls);
+            $url = reset($keys);
+            $ch = $chs[$url];
+            $urls[$url]['output'] = curl_exec($ch);
+            $urls[$url]['curlError'] = curl_errno($ch);
+            $urls[$url]['responseCode'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+        }
 
-        if ($JSONdecodedResponse != null)
-            return $JSONdecodedResponse;
-        elseif ($curlError == 28)
-            return "_PUBNUB_TIMEOUT";
-        elseif ($curlResponseCode == 400 || $curlResponseCode == 404)
-            return "_PUBNUB_MESSAGE_TOO_LARGE";
+        $response = array();
+        foreach ($urls as $data) {
+            $JSONdecodedResponse = json_decode($data['output'], true, 512, JSON_BIGINT_AS_STRING);
 
+            if ($JSONdecodedResponse != null) {
+                $response[$data['channel']] = $JSONdecodedResponse;
+            } elseif ($data['curlError'] == 28) {
+                $response[$data['channel']] = "_PUBNUB_TIMEOUT";
+            } elseif ($data['curlError'] == 60) {
+                //SSL CERTIFICATE PROBLEM";
+            } elseif ($data['responseCode'] == 400 || $data['responseCode'] == 404) {
+                $response[$data['channel']] =  "_PUBNUB_MESSAGE_TOO_LARGE";
+            }
+        }
+        
+        if (!$multiple) {
+            return reset($response);
+        }
+        
+        return $response;
     }
 
     /**
