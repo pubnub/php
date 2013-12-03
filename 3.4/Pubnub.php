@@ -14,6 +14,7 @@ class Pubnub
     private $CIPHER_KEY = '';
     private $SSL = false;
     private $SESSION_UUID = '';
+    private $PROXY = false;
 
     // New style response contains channel after timetoken
     // Old style response does not
@@ -41,7 +42,8 @@ class Pubnub
         $cipher_key = false,
         $ssl = false,
         $origin = false,
-        $pem_path = false
+        $pem_path = false,
+        $proxy = false
     )
     {
 
@@ -50,6 +52,7 @@ class Pubnub
         $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
         $this->SECRET_KEY = $secret_key;
+        $this->PROXY = $proxy;
 
         if (!isBlank($cipher_key)) {
             $this->CIPHER_KEY = $cipher_key;
@@ -498,6 +501,10 @@ class Pubnub
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 310);
 
+        if($this->PROXY) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->PROXY);
+        }
+
         curl_setopt($ch, CURLOPT_URL, $urlString);
 
         if ($this->SSL) {
@@ -531,6 +538,10 @@ class Pubnub
         elseif ($curlResponseCode == 400 || $curlResponseCode == 404)
             return "_PUBNUB_MESSAGE_TOO_LARGE";
 
+    }
+
+    private function setProxy($proxy) {
+        $this->PROXY = $proxy;
     }
 
     /**
