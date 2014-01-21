@@ -12,6 +12,7 @@ class Pubnub {
     private $SECRET_KEY    = false;
     private $CIPHER_KEY    = '';
     private $SSL           = false;
+    private $MH            = null;
     private $SESSION_UUID  = '';
     private $PROXY         = false;
 
@@ -33,6 +34,7 @@ class Pubnub {
      * @param boolean $ssl required for 2048 bit encrypted messages.
      */
 
+
     function Pubnub(
         $publish_key = 'demo',
         $subscribe_key = 'demo',
@@ -43,21 +45,20 @@ class Pubnub {
         $pem_path = false,
         $proxy = false
     ) {
-        $this->SESSION_UUID = $this->uuid();
-        $this->PUBLISH_KEY = $publish_key;
+        $this->MH            = curl_multi_init();
+        $this->SESSION_UUID  = $this->uuid();
+        $this->PUBLISH_KEY   = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
-        $this->SECRET_KEY = $secret_key;
-        $this->PROXY = $proxy;
+        $this->SECRET_KEY    = $secret_key;
+        $this->PROXY         = $proxy;
+        $this->SSL           = $ssl;
 
-        if (!isBlank($cipher_key)) {
-            $this->CIPHER_KEY = $cipher_key;
-        }
+        //curl_multi_setopt( $this->MH, CURLMOPT_PIPELINING,  1 );
+        //curl_multi_setopt( $this->MH, CURLMOPT_MAXCONNECTS, 1 );
 
-        $this->SSL = $ssl;
-
-        if ($pem_path != false) $this->PEM_PATH = $pem_path;
-
-        if ($origin) $this->ORIGIN = $origin;
+        if (!isBlank($cipher_key)) $this->CIPHER_KEY = $cipher_key;
+        if ($pem_path != false)    $this->PEM_PATH   = $pem_path;
+        if ($origin)               $this->ORIGIN     = $origin;
 
         if ($ssl) $this->ORIGIN = 'https://' . $this->ORIGIN;
         else      $this->ORIGIN = 'http://' . $this->ORIGIN;
@@ -114,11 +115,7 @@ class Pubnub {
             $message
         ));
 
-        if ($publishResponse == null)
-            return array(0, "Error during publish.");
-        else
-            return $publishResponse;
-
+        return array( 1, "Done." );
     }
 
     public function sendMessage($message_org)
@@ -484,21 +481,18 @@ class Pubnub {
         $pubnubHeaders = array("V: 3.4", "Accept: */*"); // GZIP Support
         curl_setopt($ch, CURLOPT_HTTPHEADER, $pubnubHeaders);
         curl_setopt($ch, CURLOPT_USERAGENT, "PHP");
-        //curl_setopt($ch, CURLOPT_PIPELINING, 1);    // optimal TCP packet usage.
-        //curl_setopt($ch, CURLOPT_MAXCONNECTS, 100); // concurrent sockets pipes.
+        curl_setopt($ch, CURLOPT_MAXCONNECTS, 100); // concurrent sockets pipes.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 310);
 
-        if($this->PROXY) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->PROXY);
-        }
+        if($this->PROXY) curl_setopt($ch, CURLOPT_PROXY, $this->PROXY);
 
         curl_setopt($ch, CURLOPT_URL, $urlString);
 
+        ## SSL Verify
         if ($this->SSL) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-
 
             $pemPathAndFilename = $this->PEM_PATH . "/pubnub.com.pem";
             if (file_exists($pemPathAndFilename))
@@ -507,12 +501,13 @@ class Pubnub {
                 trigger_error("Can't find PEM file. Please set pem_path in initializer.");
                 exit;
             }
-
         }
 
-
-        $output = curl_exec($ch);
-        $curlError = curl_errno($ch);
+        curl_multi_add_handle( $this->MH, $ch );
+        curl_multi_exec( $this->MH, $ch );
+        /*
+        //$output           = curl_exec($ch);
+        $curlError        = curl_errno($ch);
         $curlResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
@@ -525,6 +520,7 @@ class Pubnub {
             return "_PUBNUB_TIMEOUT";
         elseif ($curlResponseCode == 400 || $curlResponseCode == 404)
             return "_PUBNUB_MESSAGE_TOO_LARGE";
+        */
 
     }
 
