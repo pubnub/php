@@ -495,9 +495,11 @@ class Pubnub
 
         $ch = curl_init();
 
-        $pubnubHeaders = array("V: 3.4", "Accept: */*");
+        $pubnubHeaders = array("V: 3.4", "Accept: */*"); // GZIP Support
         curl_setopt($ch, CURLOPT_HTTPHEADER, $pubnubHeaders);
         curl_setopt($ch, CURLOPT_USERAGENT, "PHP");
+        curl_setopt($ch, CURLMOPT_PIPELINING, 1);    // optimal TCP packet usage.
+        curl_setopt($ch, CURLMOPT_MAXCONNECTS, 100); // concurrent sockets pipes.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 310);
 
