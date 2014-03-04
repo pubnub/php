@@ -153,6 +153,50 @@ class Pubnub {
     }
 
     /**
+     * Grant
+     *
+     * Blocking function.  This will set subscribe/publish permissions for an
+     * arbitrary authentication key.
+     */
+    public function grant($query)
+    {
+        /** Issue an authenticated request.**/
+        if (!array_key_exists('timestamp', $query)) {
+            $query['timestamp'] = time();
+        }
+
+        ## Global Grant?
+        if ((array_key_exists('auth', $query)) && !$query['auth']) {
+            unset($query['auth']);
+        }
+
+        ## Construct String to Sign
+        ksort($query);
+        $params = http_build_query($query);
+
+        $string_to_sign = sprintf(
+            "%s\n%s\ngrant\n%s",
+            $this->SUBSCRIBE_KEY,
+            $this->PUBLISH_KEY,
+            $params
+        );
+
+        $query['signature'] = sign($string_to_sign, $this->SECRET_KEY);
+        $params = http_build_query($query);
+
+        return $this->_request(
+            array(
+                'v1',
+                'auth',
+                'grant',
+                'sub-key',
+                $this->SUBSCRIBE_KEY,
+            ),
+            '?' . $params
+        );
+    }
+
+    /**
      * Subscribe
      *
      * This is BLOCKING.

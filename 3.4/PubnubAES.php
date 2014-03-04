@@ -91,4 +91,14 @@ function isBlank($word)
         return false;
 }
 
+function sign($message, $secret_key)
+{
+    return strtr( base64_encode(hash_hmac(
+        'sha256',
+        utf8_encode($message),
+        utf8_encode($secret_key),
+        true
+    )), '+/', '-_' );
+}
+
 ?>
