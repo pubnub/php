@@ -158,17 +158,25 @@ class Pubnub {
      * Blocking function.  This will set subscribe/publish permissions for an
      * arbitrary authentication key.
      */
-    public function grant($query)
+    public function grant($options)
     {
         /** Issue an authenticated request.**/
-        if (!array_key_exists('timestamp', $query)) {
-            $query['timestamp'] = time();
+        if (!array_key_exists('timestamp', $options)) {
+            $options['timestamp'] = time();
         }
 
-        ## Global Grant?
-        if ((array_key_exists('auth', $query)) && !$query['auth']) {
-            unset($query['auth']);
-        }
+        $query = array();
+        $query['timestamp'] = $options['timestamp'];
+        if (array_key_exists('auth_key', $options) && $options['auth_key'])
+            $query['auth'] = $options['auth_key'];
+        if (array_key_exists('channel', $options) && $options['channel'])
+            $query['channel'] = $options['channel'];
+        if (array_key_exists('ttl', $options) && $options['ttl'])
+            $query['ttl'] = $options['ttl'];
+        if (array_key_exists('read', $options) && $options['read'])
+            $query['r'] = $options['r'];
+        if (array_key_exists('write', $options) && $options['write'])
+            $query['w'] = $options['w'];
 
         ## Construct String to Sign
         ksort($query);
