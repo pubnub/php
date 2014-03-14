@@ -153,6 +153,58 @@ class Pubnub {
     }
 
     /**
+     * Grant
+     *
+     * Blocking function.  This will set subscribe/publish permissions for an
+     * arbitrary authentication key.
+     */
+    public function grant($options)
+    {
+        /** Issue an authenticated request.**/
+        if (!array_key_exists('timestamp', $options)) {
+            $options['timestamp'] = time();
+        }
+
+        $query = array();
+        $query['timestamp'] = $options['timestamp'];
+        if (array_key_exists('auth_key', $options) && $options['auth_key'])
+            $query['auth'] = $options['auth_key'];
+        if (array_key_exists('channel', $options) && $options['channel'])
+            $query['channel'] = $options['channel'];
+        if (array_key_exists('ttl', $options) && $options['ttl'])
+            $query['ttl'] = $options['ttl'];
+        if (array_key_exists('read', $options) && $options['read'])
+            $query['r'] = $options['read'];
+        if (array_key_exists('write', $options) && $options['write'])
+            $query['w'] = $options['write'];
+
+        ## Construct String to Sign
+        ksort($query);
+        $params = http_build_query($query);
+
+        $string_to_sign = sprintf(
+            "%s\n%s\ngrant\n%s",
+            $this->SUBSCRIBE_KEY,
+            $this->PUBLISH_KEY,
+            $params
+        );
+
+        $query['signature'] = sign($string_to_sign, $this->SECRET_KEY);
+        $params = http_build_query($query);
+
+        return $this->_request(
+            array(
+                'v1',
+                'auth',
+                'grant',
+                'sub-key',
+                $this->SUBSCRIBE_KEY,
+            ),
+            '?' . $params
+        );
+    }
+
+    /**
      * Subscribe
      *
      * This is BLOCKING.
