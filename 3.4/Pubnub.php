@@ -174,9 +174,9 @@ class Pubnub {
         if (array_key_exists('ttl', $options) && $options['ttl'])
             $query['ttl'] = $options['ttl'];
         if (array_key_exists('read', $options) && $options['read'])
-            $query['r'] = $options['r'];
+            $query['r'] = $options['read'];
         if (array_key_exists('write', $options) && $options['write'])
-            $query['w'] = $options['w'];
+            $query['w'] = $options['write'];
 
         ## Construct String to Sign
         ksort($query);
