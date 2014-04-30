@@ -350,7 +350,7 @@ class Pubnub {
         $channel = $args['channel'];
         $urlParams = "";
 
-        if ($args['count'] || $args['start'] || $args['end'] || $args['reverse']) {
+        if ($args['count'] || $args['start'] || $args['end'] || $args['reverse'] || $args['include_tt']) {
 
             $urlParamSep = "?";
             if (isset($args['count'])) {
@@ -368,7 +368,8 @@ class Pubnub {
             if (isset($args['reverse'])) {
                 $urlParams .= $urlParamSep . "reverse=" . $args['reverse'];
             }
-
+            if (isset($args['include_tt'])) {
+                $urlParams .= $urlParamSep . "include_token=true";            }
         }
 
         $response = $this->_request(array(
@@ -379,7 +380,6 @@ class Pubnub {
             "channel",
             $channel
         ), $urlParams);
-        ;
 
         $receivedMessages = $this->decodeAndDecrypt($response, "detailedHistory");
 
