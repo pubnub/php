@@ -14,6 +14,8 @@ class Pubnub {
     private $SSL           = false;
     private $SESSION_UUID  = '';
     private $PROXY         = false;
+    private $COMPRESS      = false;
+    private $COMPRESS_LVL  = -1;
 
     // New style response contains channel after timetoken
     // Old style response does not
@@ -29,8 +31,13 @@ class Pubnub {
      * @param string $publish_key required key to send messages.
      * @param string $subscribe_key required key to receive messages.
      * @param string $secret_key optional key to sign messages.
-     * @param string $origin optional setting for cloud origin.
+     * @param string $cipher_key
      * @param boolean $ssl required for 2048 bit encrypted messages.
+     * @param string $origin optional setting for cloud origin.
+     * @param string $pem_path
+     * @param string $proxy
+     * @param boolean $compress whether gzip compress messages before publishing.
+     * @param int $compress_lvl level of gzip compression to use - 0 for no compression, 9 highest, -1 = use default.
      */
 
     function Pubnub(
@@ -41,13 +48,17 @@ class Pubnub {
         $ssl = false,
         $origin = false,
         $pem_path = false,
-        $proxy = false
+        $proxy = false,
+        $compress = false,
+        $compress_lvl = -1
     ) {
         $this->SESSION_UUID = $this->uuid();
         $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
         $this->SECRET_KEY = $secret_key;
         $this->PROXY = $proxy;
+        $this->COMPRESS = $compress;
+        $this->COMPRESS_LVL = $compress_lvl;
 
         if (!isBlank($cipher_key)) {
             $this->CIPHER_KEY = $cipher_key;
@@ -87,6 +98,15 @@ class Pubnub {
 
         $message = $this->sendMessage($message_org);
 
+        ## Compress if requested
+        if ($args['compress']) {
+            $this->COMPRESS     = $args['compress'];
+            $this->COMPRESS_LVL = $args['compress_lvl'] ?: $this->COMPRESS_LVL;
+        }
+
+        if ($this->COMPRESS) {
+            $message = gzencode($message, $this->COMPRESS_LVL);
+        }
 
         ## Sign Message
         $signature = "0";
@@ -465,13 +485,31 @@ class Pubnub {
      */
     private function _request($request, $urlParams = false)
     {
-        $request = array_map('Pubnub::_encode', $request);
+        if ($this->COMPRESS) {
+            $msg = array_pop($request);
+        }
 
-        array_unshift($request, $this->ORIGIN);
+        $request = array_map(['self', '_encode'], $request);
+
+        $ch = curl_init();
+
+        $pubnubHeaders = [
+            'V: 3.4',
+            'Accept: */*',
+            ];
 
         if (($request[1] === 'presence') || ($request[1] === 'subscribe')) {
             array_push($request, '?uuid=' . $this->SESSION_UUID);
         }
+
+        if ($this->COMPRESS) {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
+
+            $pubnubHeaders[] = 'Content-Encoding: gzip';
+        }
+
+        array_unshift($request, $this->ORIGIN);
 
         $urlString = implode('/', $request);
 
@@ -479,9 +517,6 @@ class Pubnub {
             $urlString .= $urlParams;
         }
 
-        $ch = curl_init();
-
-        $pubnubHeaders = array("V: 3.4", "Accept: */*"); // GZIP Support
         curl_setopt($ch, CURLOPT_HTTPHEADER, $pubnubHeaders);
         curl_setopt($ch, CURLOPT_USERAGENT, "PHP");
         //curl_setopt($ch, CURLOPT_PIPELINING, 1);    // optimal TCP packet usage.
@@ -509,7 +544,6 @@ class Pubnub {
             }
 
         }
-
 
         $output = curl_exec($ch);
         $curlError = curl_errno($ch);
