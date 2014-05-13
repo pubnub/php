@@ -592,5 +592,3 @@ class Pubnub {
             return rawurlencode($char);
     }
 }
-
-?>
