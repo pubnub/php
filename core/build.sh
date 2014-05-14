@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo "\nCleaning up..."
+rm -rf ../legacy
+rm -rf ../composer
+echo "=========================================="
 echo "\nBuilding legacy lib..."
 echo "=========================================="
 php ./builder.php PHP52
