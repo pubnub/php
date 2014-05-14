@@ -99,6 +99,7 @@ class IfDefParser
             $outputFile = fopen($outputName, "w") or die('Cannot open file:  ' . $outputName); //implicitly creates file;
 
             $contents = file_get_contents($this->listOfFiles[$n]);
+            $contents = preg_replace('/\n^#path.+$/im', '', $contents);
             $filesCount++;
 
             $chunks = preg_split("/#ifdef/", $contents);

@@ -1,6 +1,4 @@
 <?php
-#path PHP53  composer/lib/
-#path PHP52 none
 /*
  * Simple autoload for stanalone lib
  */

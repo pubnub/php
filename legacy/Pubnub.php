@@ -1,6 +1,4 @@
 <?php
-#path PHP53 composer/lib/Pubnub/
-#path PHP52 legacy/
  
 require_once('PubnubAES.php');
 
