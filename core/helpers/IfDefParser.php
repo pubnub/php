@@ -94,8 +94,6 @@ class IfDefParser
                     continue;
             }
 
-            //echo "Current file: ".$this->listOfFiles[$n]."</br>";
-            //echo "Will output in ".$outputName."</br>";
             echo $outputName . ENDL;
 
             $outputFile = fopen($outputName, "w") or die('Cannot open file:  ' . $outputName); //implicitly creates file;
