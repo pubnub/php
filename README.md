@@ -1,15 +1,61 @@
 ###YOU MUST HAVE A PUBNUB ACCOUNT TO USE THE API.
 ###http://www.pubnub.com/account
 
-## PubNub 3.4 Real-time Cloud Push API - PHP
+## PubNub 3.5 Real-time Cloud Push API - PHP
 
 www.pubnub.com - PubNub Real-time Push Service in the Cloud. 
 http://www.pubnub.com/blog/php-push-api-walkthrough/
 
 PubNub is a Massively Scalable Real-time Service for Web and Mobile Games. This is a cloud-based service for broadcasting Real-time messages to thousands of web and mobile clients simultaneously.
 
+### How to include
 
-### PHP Push API
+#### PHP <= 5.2
+  1. You need only **legacy** folder. To get it clone repo:
+
+    ``` sh
+    $ git clone https://github.com/pubnub/php.git ./pubnub-php
+    ```
+  2. Copy 2 files to your project vendor libraries folder.
+  3. Require Pubnub.php file:
+
+    ``` php
+    require_once('legacy/Pubnub.php');
+    ```
+
+#### PHP >= 5.3 without composer
+  1. You need only **composer** folder. To get it clone repo:
+
+    ``` sh
+    $ git clone https://github.com/pubnub/php.git ./pubnub-php
+    ```
+
+  2. Copy **composer/lib** folder to your project and include **autoloader.php** file.
+  3. Require autoloader.php:
+  
+    ```php
+    require_once('lib/autoloader.php');
+    ```
+    
+#### PHP >= 5.3 with composer
+  1. Add **pubnub** repository to your composer.json file. Then require **pubnub/pubnub** package at **dev-master** branch:
+  
+    ``` json
+    {
+        "repositories" : {
+            "pubnub" : {
+                "type":"git",
+                "url":"https://github.com/pubnub/php"
+            }
+        },
+        "require": {
+            "pubnub/pubnub": "dev-master"
+        }
+    }
+    ```
+  2. Run ```composer install``` from command line
+
+### PHP API
 ```php
 $pubnub = new Pubnub(
     "demo",  ## PUBLISH_KEY
@@ -19,8 +65,7 @@ $pubnub = new Pubnub(
 );
 ```
 
-
-### Send Message (PUBLISH)
+#### Send Message (PUBLISH)
 ```php
 $info = $pubnub->publish(array(
     'channel' => 'hello_world', ## REQUIRED Channel to Send
@@ -29,24 +74,13 @@ $info = $pubnub->publish(array(
 print_r($info);
 ```
 
-### Request Server Time (TIME)
+#### Request Server Time (TIME)
 ```php
 $timestamp = $pubnub->time();
 var_dump($timestamp);            ## Prints integer timestamp.
 ```
 
-### Receive Message (SUBSCRIBE) PHP 5.2.0
-```php
-$pubnub->subscribe(array(
-    'channel'  => 'hello_world',        ## REQUIRED Channel to Listen
-    'callback' => create_function(      ## REQUIRED PHP 5.2.0 Method
-        '$message',
-        'var_dump($message); return true;'
-    )
-));
-```
-
-### Receive Message (SUBSCRIBE) PHP 5.3.0
+#### Receive Message (SUBSCRIBE)
 ```php
 $pubnub->subscribe(array(
     'channel'  => 'hello_world',        ## REQUIRED Channel to Listen
@@ -57,8 +91,7 @@ $pubnub->subscribe(array(
 ));
 ```
 
-
-### Realtime Join/Leave Events (Presence)
+#### Realtime Join/Leave Events (Presence)
 ```php
 $pubnub->presence(array(
     'channel'  => $channel,
@@ -70,14 +103,14 @@ $pubnub->presence(array(
 ));
 ```
 
-### On-demand Occupancy Status (here_now)
+#### On-demand Occupancy Status (here_now)
 ```php
 $here_now = $pubnub->here_now(array(
     'channel' => $channel
 ));
 ```
 
-### Detailed History (detailedHistory())
+#### Detailed History (detailedHistory())
 ```php
 $history = $pubnub->detailedHistory(array(
     'channel' => $channel,
@@ -85,3 +118,42 @@ $history = $pubnub->detailedHistory(array(
     'end'   => "13466530169226760"
 ));
 ```
+
+## Differences with legacy/composer clients usage
+* in composer cliend you should use namespace **Pubnub** to access Pubnub class:
+
+  ``` php
+  <?php
+  use Pubnub\Pubnub;
+  
+  $pubnub = new Pubnub();
+  ?>
+  ```
+
+* in **composer** client the most convenient way for defining collbacks is to use **anonymous functions**:
+
+  ``` php
+  $pubnub->subscribe(array(
+      'channel'  => 'hello_world',
+      'callback' => function($message) {
+          var_dump($message);
+          return true;
+      }
+  ));
+  ```
+
+  but **anonymous functions** are implemented starting only PHP 5.3 version, so for legacy client you should use **create_function()** function:
+
+  ```php
+  $pubnub->subscribe(array(
+      'channel'  => 'hello_world',
+      'callback' => create_function(
+          '$message',
+          'var_dump($message); return true;'
+      )
+  ));
+  ```
+## How to build
+  For building information see README.md file in **core** folder.
+  
+  
