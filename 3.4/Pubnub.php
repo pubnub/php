@@ -36,8 +36,6 @@ class Pubnub {
      * @param string $origin optional setting for cloud origin.
      * @param string $pem_path
      * @param string $proxy
-     * @param boolean $compress whether gzip compress messages before publishing.
-     * @param int $compress_lvl level of gzip compression to use - 0 for no compression, 9 highest, -1 = use default.
      */
 
     function Pubnub(
