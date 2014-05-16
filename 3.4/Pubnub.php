@@ -48,17 +48,13 @@ class Pubnub {
         $ssl = false,
         $origin = false,
         $pem_path = false,
-        $proxy = false,
-        $compress = false,
-        $compress_lvl = -1
+        $proxy = false
     ) {
         $this->SESSION_UUID = $this->uuid();
         $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
         $this->SECRET_KEY = $secret_key;
         $this->PROXY = $proxy;
-        $this->COMPRESS = $compress;
-        $this->COMPRESS_LVL = $compress_lvl;
 
         if (!isBlank($cipher_key)) {
             $this->CIPHER_KEY = $cipher_key;
@@ -99,7 +95,7 @@ class Pubnub {
         $message = $this->sendMessage($message_org);
 
         ## Compress if requested
-        if ($args['compress']) {
+        if (isset($args['compress'])) {
             $this->COMPRESS     = $args['compress'];
             $this->COMPRESS_LVL = $args['compress_lvl'] ?: $this->COMPRESS_LVL;
         }
@@ -564,6 +560,19 @@ class Pubnub {
 
     private function setProxy($proxy) {
         $this->PROXY = $proxy;
+    }
+
+    public function useCompression($compress = false, $compress_lvl = -1)  {
+        $this->setCompress($compress);
+        $this->setCompressLvl($compress_lvl);
+    }
+
+    private function setCompress($compress = false) {
+        $this->COMPRESS = $compress;
+    }
+
+    private function setCompressLvl($compress_lvl = -1) {
+        $this->COMPRESS_LVL = $compress_lvl;
     }
 
     /**
