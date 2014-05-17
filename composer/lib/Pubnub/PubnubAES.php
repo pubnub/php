@@ -3,9 +3,7 @@
 namespace Pubnub;
 
 
- 
 class PubnubAES {
-
     function decrypt($cipher_text, $cipher_key) {
         $iv = "0123456789012345";
 
@@ -24,10 +22,8 @@ class PubnubAES {
         mcrypt_generic_deinit($td);
         mcrypt_module_close($td);
         
- 
         $unpadded = $this->unpadPKCS7($decrypted, 16);
 
-        #printf("\ndecoded: %s", $unpadded);
         return $unpadded;
     }
     
@@ -36,9 +32,8 @@ class PubnubAES {
 
         $sha_cipher_key = hash("sha256", $cipher_key);
         $padded_cipher_key = substr($sha_cipher_key, 0, 32);
- 
-        $padded_plain_text = $this->pkcs5Pad($plain_text, 16);
 
+        $padded_plain_text = $this->pkcs5Pad($plain_text, 16);
 
         # This is the way to do AES-256 using mcrypt PHP - its not AES-128 or anything other than that!
         $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
@@ -51,14 +46,12 @@ class PubnubAES {
         return $encode;
     }
 
- 
     function pkcs5Pad($text, $blocksize) {
-
         $pad = $blocksize - (strlen($text) % $blocksize);
         return $text . str_repeat(chr($pad), $pad);
     }
     
-        function unpadPKCS7($data, $blockSize) {
+    function unpadPKCS7($data, $blockSize) {
         $length = strlen($data);
         if ($length > 0) {
             $first = substr($data, -1);
@@ -80,6 +73,4 @@ class PubnubAES {
         else
             return false;
     }
- 
 }
-

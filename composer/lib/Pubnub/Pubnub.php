@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace Pubnub;
 
 
@@ -17,17 +17,11 @@ class Pubnub
     private $SSL = false;
     private $SESSION_UUID = '';
     private $PROXY = false;
-
-    // New style response contains channel after timetoken
-    // Old style response does not
-
- 
-    /** @var \Pubnub\PubnubAES  */
-    public $AES;
-
-
     private $NEW_STYLE_RESPONSE = true;
     private $PEM_PATH = __DIR__;
+
+    /** @var \Pubnub\PubnubAES  */
+    public $AES;
 
     /**
      * Pubnub
@@ -42,7 +36,7 @@ class Pubnub
      * @param bool|string $origin optional setting for cloud origin.
      * @param bool $pem_path
      */
- 
+
     public function __construct(
         $publish_key = 'demo',
         $subscribe_key = 'demo',
@@ -50,38 +44,32 @@ class Pubnub
         $cipher_key = false,
         $ssl = false,
         $origin = false,
-        $pem_path = false
+        $pem_path = false,
+        $proxy = false
     ) {
-        $this->AES = new PubnubAES();
 
+        $this->AES = new PubnubAES();
         $this->SESSION_UUID = $this->uuid();
         $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
         $this->SECRET_KEY = $secret_key;
+        $this->SSL = $ssl;
+        $this->PROXY = $proxy;
 
- 
         if (!$this->AES->isBlank($cipher_key)) {
-
             $this->CIPHER_KEY = $cipher_key;
         }
-
-        $this->SSL = $ssl;
 
         if ($pem_path != false) $this->PEM_PATH = $pem_path;
 
         if ($origin) $this->ORIGIN = $origin;
 
- 
         if ($this->ORIGIN == "PHP.pubnub.com") {
             trigger_error("Before running in production, please contact support@pubnub.com for your custom origin.\nPlease set the origin from PHP.pubnub.com to IUNDERSTAND.pubnub.com to remove this warning.\n", E_USER_NOTICE);
         }
 
-
-        if ($ssl)
-            $this->ORIGIN = 'https://' . $this->ORIGIN;
-        else
-            $this->ORIGIN = 'http://' . $this->ORIGIN;
-
+        if ($ssl) $this->ORIGIN = 'https://' . $this->ORIGIN;
+        else      $this->ORIGIN = 'http://' . $this->ORIGIN;
     }
 
     /**
@@ -141,12 +129,11 @@ class Pubnub
 
     public function sendMessage($message_org) {
         if ($this->CIPHER_KEY != false) {
- 
             $message = json_encode($this->AES->encrypt(json_encode($message_org), $this->CIPHER_KEY));
-
         } else {
             $message = json_encode($message_org);
         }
+
         return $message;
     }
 
@@ -159,7 +146,6 @@ class Pubnub
         ## Capture User Input
         $channel = $args['channel'];
 
- 
         $response = $this->_request(array(
             'v2',
             'presence',
@@ -178,7 +164,6 @@ class Pubnub
         }
 
         return $response;
-
     }
 
     /**
@@ -300,14 +285,10 @@ class Pubnub
 
         if ($mode == "presence") {
             return $messages;
- 
         } elseif ($mode == "default" && is_array($messages)) {
-
             $messageArray = $messages;
             $receivedMessages = $this->decodeDecryptLoop($messageArray);
- 
         } elseif ($mode == "detailedHistory" && is_array($messages)) {
-
             $decodedMessages = $this->decodeDecryptLoop($messages);
             $receivedMessages = array($decodedMessages[0], $messages[1], $messages[2]);
         }
@@ -320,9 +301,7 @@ class Pubnub
         foreach ($messageArray as $message) {
 
             if ($this->CIPHER_KEY) {
- 
                 $decryptedMessage = $this->AES->decrypt($message, $this->CIPHER_KEY);
-
                 $message = self::decode($decryptedMessage);
             }
 
@@ -335,7 +314,6 @@ class Pubnub
     public function handleError($error, $args) {
         $errorMsg = 'Error on line ' . $error->getLine() . ' in ' . $error->getFile() . $error->getMessage();
         trigger_error($errorMsg, E_COMPILE_WARNING);
-
 
         sleep(1);
     }
@@ -368,18 +346,28 @@ class Pubnub
         ## Fail if bad input.
         if (!$args['channel']) {
             echo('Missing Channel');
+
             return false;
         }
 
+        $args['include_token'] = isset($args['include_token']) ? $args['include_token'] : $args['include_tt'];
         $channel = $args['channel'];
         $urlParams = "";
- 
-        $urlParamsKeys = array('count', 'start', 'end', 'reverse');
+
+        $urlParamsKeys = array('count', 'start', 'end');
+        $urlBoolParamsKey = array('reverse', 'include_token');
         $urlParamsArray = array();
+
         foreach ($urlParamsKeys as $key) {
             if (!isset($args[$key])) continue;
             $urlParamsArray[] = sprintf('%s=%s', $key, $args[$key]);
         }
+
+        foreach ($urlBoolParamsKey as $key) {
+            if (!isset($args[$key])) continue;
+            $urlParamsArray[] = sprintf('%s=%s', $key, (int)$args[$key] ? 'true' : 'false');
+        }
+
         if (count($urlParamsArray)) {
             $urlParams = '?' . implode('&', $urlParamsArray);
         }
@@ -391,8 +379,7 @@ class Pubnub
             $this->SUBSCRIBE_KEY,
             "channel",
             $channel,
-        ), $urlParams);
-
+        ), array($urlParams));
 
         $receivedMessages = $this->decodeAndDecrypt($response, "detailedHistory");
 
@@ -406,7 +393,6 @@ class Pubnub
         );
 
         return $result;
-
     }
 
     /**
@@ -436,16 +422,13 @@ class Pubnub
             '0',
             $limit
         ));
- 
+
         //TODO: <timeout> and <message too large> check
         if (!is_array($response)) {
             $response = array(
                 0 => array(),
             );
         }
-
-        $messages = $response[0];
-
 
         $receivedMessages = $this->decodeAndDecrypt($response);
 
@@ -466,14 +449,13 @@ class Pubnub
             'time',
             '0'
         ));
- 
+
         $result = (isset($response[0])) ? $response[0] : 0;
         if (is_string($result)) {
             $result = intval(substr($result, 0, 10));
         }
 
         return $result;
-
     }
 
     /**
@@ -491,14 +473,16 @@ class Pubnub
         return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
- 
     /**
      * Preprocessing request URL
      *
      * @param array $request of url directories and options $optArray for curl handle.
-     * @return curl handle.
+     * @param bool $urlParams
+     * @param $optArray
+     * @return Resource handle.
      */
     private function _preprocRequest($request, $urlParams = false, $optArray) {
+ 
         $request = array_map('Pubnub\Pubnub::_encode', $request);
 
         array_unshift($request, $this->ORIGIN);
@@ -515,7 +499,7 @@ class Pubnub
 
         $ch = curl_init();
 
-        curl_setopt_array($ch, $optArray); //set common options
+        curl_setopt_array($ch, $optArray);
         curl_setopt($ch, CURLOPT_URL, $urlString);
 
         return $ch;
@@ -529,8 +513,6 @@ class Pubnub
      * @return array from JSON response.
      */
     private function _request($request, $urlParams = array(false)) {
-        list($usec, $sec) = explode(" ", microtime());
-        $start = ((float)$usec + (float)$sec);
 
         $optArray = array(CURLOPT_USERAGENT => "PHP",
             CURLOPT_RETURNTRANSFER => 1,
@@ -568,8 +550,6 @@ class Pubnub
             $JSONdecodedResponse = self::decode($output);
 
             curl_close($ch);
-            list($usec, $sec) = explode(" ", microtime());
-            $end = ((float)$usec + (float)$sec);
 
             if ($JSONdecodedResponse != null)
                 return $JSONdecodedResponse;
@@ -598,7 +578,7 @@ class Pubnub
 
             do {
                 $execReturnValue = curl_multi_exec($mh, $stillRunning);
-                curl_multi_select($mh); //have to check performance with/without
+                curl_multi_select($mh);
             } while ($stillRunning > 0);
 
             foreach ($chArray as $i => $c) {
@@ -614,15 +594,12 @@ class Pubnub
             }
 
             curl_multi_close($mh);
-            list($usec, $sec) = explode(" ", microtime());
-            $end = ((float)$usec + (float)$sec);
 
             if ($execReturnValue != CURLM_OK) {
                 return curl_multi_strerror($execReturnValue);
             } else return $result;
         }
     }
-
 
     /**
      * Encode
