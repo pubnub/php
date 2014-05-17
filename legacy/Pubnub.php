@@ -304,7 +304,7 @@ class Pubnub
 
                 $decryptedMessage = decrypt($message, $this->CIPHER_KEY);
 
-                $message = json_decode($decryptedMessage, true);
+                $message = self::decode($decryptedMessage);
             }
 
             array_push($receivedMessages, $message);
@@ -514,7 +514,7 @@ class Pubnub
 
         curl_close($ch);
 
-        $JSONdecodedResponse = json_decode($output, true, 512, JSON_BIGINT_AS_STRING);
+        $JSONdecodedResponse = self::decode($output, true, 512, JSON_BIGINT_AS_STRING);
 
         if ($JSONdecodedResponse != null) {
             return $JSONdecodedResponse;
@@ -551,5 +551,11 @@ class Pubnub
             return $char;
         else
             return rawurlencode($char);
+    }
+
+    private static function decode($val, $assoc = true, $depth = 512, $options = 0) {
+ 
+        return json_decode($val, $assoc);
+
     }
 }
