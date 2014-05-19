@@ -32,7 +32,7 @@ class Pubnub
      *
      * Init the Pubnub Client API
      *
-     * @param string $publish_key required key to send messages.
+     * @param string $first_argument required key to send messages.
      * @param string $subscribe_key required key to receive messages.
      * @param bool|string $secret_key optional key to sign messages.
      * @param bool $cipher_key
@@ -42,7 +42,7 @@ class Pubnub
      */
 
     public function __construct(
-        $publish_key = 'demo',
+        $first_argument = 'demo',
         $subscribe_key = 'demo',
         $secret_key = false,
         $cipher_key = false,
@@ -51,14 +51,25 @@ class Pubnub
         $pem_path = false,
         $proxy = false
     ) {
+        if (is_array($first_argument)) {
+            $publish_key = isset($first_argument['publish_key']) ? $first_argument['publish_key'] : 'demo';
+            $subscribe_key = isset($first_argument['subscribe_key']) ? $first_argument['subscribe_key'] : 'demo';
+            $secret_key = isset($first_argument['secret_key']) ? $first_argument['secret_key'] : false;
+            $cipher_key = isset($first_argument['cipher_key']) ? $first_argument['cipher_key'] : false;
+            $ssl = isset($first_argument['ssl']) ? $first_argument['ssl'] : false;
+            $origin = isset($first_argument['origin']) ? $first_argument['origin'] : false;
+            $pem_path = isset($first_argument['pem_path']) ? $first_argument['pem_path'] : false;
+        } else {
+            $publish_key = $first_argument;
+        }
 
-        $this->AES = new PubnubAES();
         $this->SESSION_UUID = $this->uuid();
         $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
         $this->SECRET_KEY = $secret_key;
         $this->SSL = $ssl;
         $this->PROXY = $proxy;
+        $this->AES = new PubnubAES();
 
         if (!$this->AES->isBlank($cipher_key)) {
             $this->CIPHER_KEY = $cipher_key;
