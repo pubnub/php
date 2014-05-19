@@ -213,6 +213,10 @@ class Pubnub
             return false;
         }
 
+        if (is_array($channel)) {
+            $channel = join(',', $channel);
+        }
+
         if ($presence == true) {
             $mode = "presence";
         } else
