@@ -59,11 +59,13 @@ class Pubnub
             $ssl = isset($first_argument['ssl']) ? $first_argument['ssl'] : false;
             $origin = isset($first_argument['origin']) ? $first_argument['origin'] : false;
             $pem_path = isset($first_argument['pem_path']) ? $first_argument['pem_path'] : false;
+            $uuid = isset($first_argument['uuid']) ? $first_argument['uuid'] : false;
         } else {
             $publish_key = $first_argument;
+            $uuid = false;
         }
 
-        $this->SESSION_UUID = $this->uuid();
+        $this->SESSION_UUID = $uuid ? $uuid : $this->uuid();
         $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
         $this->SECRET_KEY = $secret_key;
