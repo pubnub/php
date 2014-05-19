@@ -61,7 +61,7 @@ class Pubnub
             $uuid = false;
         }
 
-        $this->SESSION_UUID = $uuid ? $uuid : $this->uuid();
+        $this->SESSION_UUID = $uuid ? $uuid : self::uuid();
         $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
         $this->SECRET_KEY = $secret_key;
@@ -486,9 +486,9 @@ class Pubnub
      *
      * UUID generator
      *
-     * @return UUID
+     * @return string UUID
      */
-    public function uuid() {
+    public static function uuid() {
         if (function_exists('com_create_guid') === true) {
             return trim(com_create_guid(), '{}');
         }
