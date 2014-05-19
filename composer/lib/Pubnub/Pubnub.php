@@ -367,7 +367,12 @@ class Pubnub
             return false;
         }
 
-        $args['include_token'] = isset($args['include_token']) ? $args['include_token'] : $args['include_tt'];
+        if (isset($args['include_tt']) && !isset($args['include_token'])) {
+            $args['include_token'] = $args['include_tt'];
+        } elseif (isset($args['include_token'])) {
+            $args['include_token'] = isset($args['include_token']) ? $args['include_token'] : false;
+        }
+
         $channel = $args['channel'];
         $urlParams = "";
 
