@@ -1,3 +1,9 @@
 **/*.php.temp
 **/*.pem
 **/*.txt
+
+# composer vendor dir
+/vendor
+
+# composer lock file
+/composer.lock
