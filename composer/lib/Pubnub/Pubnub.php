@@ -351,14 +351,14 @@ class Pubnub
     }
 
     /**
-     * Detailed History
+     * History
      *
      * Load history from a channel.
      *
      * @param array $args with 'channel' and 'limit'.
      * @return mixed false on fail, array on success.
      */
-    public function detailedHistory($args) {
+    public function history($args) {
         ## Capture User Input
         ## Fail if bad input.
         if (!$args['channel']) {
@@ -415,47 +415,6 @@ class Pubnub
         );
 
         return $result;
-    }
-
-    /**
-     * History
-     *
-     * Load history from a channel.
-     *
-     * @param array $args with 'channel' and 'limit'.
-     * @return mixed false on fail, array on success.
-     */
-    public function history($args) {
-        ## Capture User Input
-        $limit = +$args['limit'] ? +$args['limit'] : 10;
-        $channel = $args['channel'];
-
-        ## Fail if bad input.
-        if (!$channel) {
-            echo('Missing Channel');
-            return false;
-        }
-
-        ## Get History
-        $response = $this->_request(array(
-            'history',
-            $this->SUBSCRIBE_KEY,
-            $channel,
-            '0',
-            $limit
-        ));
-
-        //TODO: <timeout> and <message too large> check
-        if (!is_array($response)) {
-            $response = array(
-                0 => array(),
-            );
-        }
-
-        $receivedMessages = $this->decodeAndDecrypt($response);
-
-        return $receivedMessages;
-
     }
 
     /**
