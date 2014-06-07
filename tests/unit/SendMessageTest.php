@@ -20,6 +20,9 @@ class SendMessageTest extends TestCase
         ));
     }
 
+    /**
+     * @group sendmessage
+     */
     public function testSendMessageEnc()
     {
         $messageToSendEnc = $this->pubnub_enc->sendMessage(static::$message);
@@ -27,6 +30,9 @@ class SendMessageTest extends TestCase
         $this->assertEquals(static::$message, json_decode($this->pubnub_enc->AES->decrypt($messageToSendEnc, 'enigma')));
     }
 
+    /**
+     * @group sendmessage
+     */
     public function testSendMessageRaw()
     {
         $messageToSend = $this->pubnub->sendMessage(static::$message);

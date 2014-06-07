@@ -4,6 +4,8 @@ use Pubnub\Pubnub;
 use Pubnub\PubnubAES;
 
 class AESTest extends TestCase {
+
+    /** @var  PubnubAES */
     protected $aes;
 
     protected static $test_plain_string_1 = "Pubnub Messaging API 1";
@@ -21,6 +23,9 @@ class AESTest extends TestCase {
         $this->aes = new PubnubAES();
     }
 
+    /**
+     * @group aes
+     */
     public function testAESEncryption()
     {
         $this->assertEquals(static::$test_cipher_string_1, $this->aes->encrypt(static::$test_plain_string_1, 'enigma'));
@@ -28,6 +33,9 @@ class AESTest extends TestCase {
         $this->assertEquals(static::$test_cipher_unicode_1, $this->aes->encrypt(static::$test_plain_unicode_1, 'enigma'));
     }
 
+    /**
+     * @group aes
+     */
     public function testAESDecryption()
     {
         $this->assertEquals(static::$test_plain_string_1, $this->aes->decrypt(static::$test_cipher_string_1,'enigma'));
@@ -35,6 +43,9 @@ class AESTest extends TestCase {
         $this->assertEquals(static::$test_plain_unicode_1, $this->aes->decrypt(static::$test_cipher_unicode_1, 'enigma'));
     }
 
+    /**
+     * @group aes
+     */
     public function testAESunpadPKCS7()
     {
         $this->assertEquals("", $this->aes->unpadPKCS7("",1));

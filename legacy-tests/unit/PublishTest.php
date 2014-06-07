@@ -5,9 +5,12 @@ require_once 'TestCase.php';
 
 class PublishTest extends TestCase
 {
-
+    /** @var  Pubnub */
     protected $pubnub_enc;
+
+    /** @var  Pubnub */
     protected $pubnub_sec;
+
     protected static $message = 'Hello from publish() test!';
     protected static $channel = 'pubnub_php_test';
 
@@ -30,48 +33,53 @@ class PublishTest extends TestCase
         ));
     }
 
+    /**
+     * @group publish
+     */
+
     public function testPublish()
     {
-        $response = $this->pubnub->publish(array(
-            'channel' => self::$channel,
-            'message' => self::$message
-        ));
+        $response = $this->pubnub->publish(self::$channel, self::$message);
 
         $this->assertEquals(1, $response[0]);
         $this->assertEquals('Sent', $response[1]);
         $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
     }
 
+    /**
+     * @group publish
+     */
     public function testEncryptedPublish()
     {
-        $response = $this->pubnub_enc->publish(array(
-            'channel' => self::$channel,
-            'message' => self::$message
-        ));
+        $response = $this->pubnub_enc->publish(self::$channel, self::$message);
 
         $this->assertEquals(1, $response[0]);
         $this->assertEquals('Sent', $response[1]);
         $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
     }
 
+    /**
+     * @group publish
+     */
     public function testPublishSecretKey()
     {
-        $response = $this->pubnub_sec->publish(array(
-            'channel' => self::$channel,
-            'message' => self::$message
-        ));
+        $response = $this->pubnub_sec->publish(self::$channel, self::$message);
 
         $this->assertEquals(1, $response[0]);
         $this->assertEquals('Sent', $response[1]);
         $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
     }
 
+    /**
+     * @group publish
+     */
     public function testInvalidChannelPublish()
     {
-        $response = $this->pubnub->publish(array(
-            'message' => self::$message
-        ));
-
-        $this->assertEquals(false, $response);
+        try {
+            $this->pubnub->publish('', '');
+            $this->fail("exception was not thrown");
+        } catch (Exception $e) {
+            $this->assertEquals('Missing Channel or Message in publish()', $e->getMessage());
+        }
     }
 }

@@ -12,7 +12,7 @@ class Pubnub
     private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY = 'demo';
     private $SUBSCRIBE_KEY = 'demo';
-    private $SECRET_KEY = false;
+    private $SECRET_KEY = '';
     private $CIPHER_KEY = '';
     private $SSL = false;
     private $SESSION_UUID = '';
@@ -20,11 +20,11 @@ class Pubnub
     private $NEW_STYLE_RESPONSE = true;
     private $PEM_PATH = __DIR__;
 
-    /** @var \Pubnub\PubnubAES  */
     public $AES;
+    private $PAM = null;
 
     /**
-     * Pubnub
+     * __construct
      *
      * Init the Pubnub Client API
      *
@@ -35,8 +35,8 @@ class Pubnub
      * @param boolean $ssl required for 2048 bit encrypted messages.
      * @param bool|string $origin optional setting for cloud origin.
      * @param bool $pem_path
+     * @param bool $proxy
      */
-
     public function __construct(
         $first_argument = 'demo',
         $subscribe_key = 'demo',
@@ -85,27 +85,25 @@ class Pubnub
         else      $this->ORIGIN = 'http://' . $this->ORIGIN;
     }
 
+
     /**
      * Publish
      *
-     * Send a message to a channel.
+     * Sends a message to a channel.
      *
-     * @param array $args with channel and message.
+     * @param string $channel
+     * @param string $messageOrg
+     * @throws PubnubException
      * @return array success information.
      */
-    public function publish($args) {
+    public function publish($channel, $messageOrg)
+    {
         ## Fail if bad input.
-        if (!(isset($args['channel']) && isset($args['message']))) {
-            echo('Missing Channel or Message');
-            return false;
+        if (empty($channel) || empty($messageOrg)) {
+            throw new PubnubException('Missing Channel or Message in publish()');
         }
 
-        ## Capture User Input
-        $channel = $args['channel'];
-        $message_org = $args['message'];
-
-        $message = $this->sendMessage($message_org);
-
+        $message = $this->sendMessage($messageOrg);
 
         ## Sign Message
         $signature = "0";
@@ -118,12 +116,11 @@ class Pubnub
                 $channel,
                 $message
             ));
-
             $signature = md5($string_to_sign);
         }
 
         ## Send Message
-        $publishResponse = $this->_request(array(
+        $publishResponse = $this->request(array(
             'publish',
             $this->PUBLISH_KEY,
             $this->SUBSCRIBE_KEY,
@@ -133,33 +130,48 @@ class Pubnub
             $message
         ));
 
-        if ($publishResponse == null)
-            return array(0, "Error during publish.");
-        else
+        if ($publishResponse == null) {
+            throw new PubnubException("Error during publish - response is null.");
+        } else {
             return $publishResponse;
-
+        }
     }
 
-    public function sendMessage($message_org) {
+    /**
+     * sendMessage
+     *
+     * Encoding message.
+     *
+     * @param string|array $messageOrg with message
+     * @return string encoded message.
+     */
+    public function sendMessage($messageOrg)
+    {
         if ($this->CIPHER_KEY != false) {
-            $message = json_encode($this->AES->encrypt(json_encode($message_org), $this->CIPHER_KEY));
+            $message = json_encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
         } else {
-            $message = json_encode($message_org);
-        }
+            $message = json_encode($messageOrg);
 
+        }
         return $message;
     }
 
-    public function here_now($args) {
-        if (!($args['channel'])) {
-            echo('Missing Channel');
-            return false;
+    /**
+     * hereNow
+     *
+     * Gets a list of uuids subscribed to the channel.
+     *
+     * @param $channel
+     * @throws PubnubException
+     * @return array of uuids and occupancies.
+     */
+    public function hereNow($channel)
+    {
+        if (empty($channel)) {
+            throw new PubnubException('Missing Channel in hereNow()');
         }
 
-        ## Capture User Input
-        $channel = $args['channel'];
-
-        $response = $this->_request(array(
+        $response = $this->request(array(
             'v2',
             'presence',
             'sub_key',
@@ -175,7 +187,6 @@ class Pubnub
                 'occupancy' => 0,
             );
         }
-
         return $response;
     }
 
@@ -185,26 +196,20 @@ class Pubnub
      * This is BLOCKING.
      * Listen for a message on a channel.
      *
-     * @param array $args with channel and message.
+     * @param string $channel for channel name
+     * @param string $callback  for callback definition.
+     * @param int $timeToken for current time token value.
      * @param bool $presence
-     * @return mixed false on fail, array on success.
+     * @throws PubnubException
      */
-    public function subscribe($args, $presence = false) {
-        ## Capture User Input
-        $channel = $args['channel'];
-        $callback = $args['callback'];
-        $timetoken = isset($args['timetoken']) ? $args['timetoken'] : '0';
-
-        ## Fail if missing channel
-        if (!$channel) {
-            echo("Missing Channel.\n");
-            return false;
+    public function subscribe($channel, $callback, $timeToken = 0, $presence = false)
+    {
+        if (empty($channel)) {
+            throw new PubnubException("Missing Channel in subscribe()");
         }
 
-        ## Fail if missing callback
-        if (!$callback) {
-            echo("Missing Callback.\n");
-            return false;
+        if (empty($callback)) {
+            throw new PubnubException("Missing Callback in subscribe()");
         }
 
         if (is_array($channel)) {
@@ -213,91 +218,81 @@ class Pubnub
 
         if ($presence == true) {
             $mode = "presence";
-        } else
+        } else {
             $mode = "default";
-
+        }
 
         while (1) {
-
             try {
                 ## Wait for Message
-                $response = $this->_request(array(
+                $response = $this->request(array(
                     'subscribe',
                     $this->SUBSCRIBE_KEY,
                     $channel,
                     '0',
-                    $timetoken
+                    $timeToken
                 ));
+
+                $messages = $response[0];
+                $timeToken = $response[1];
 
                 if ($response == "_PUBNUB_TIMEOUT") {
                     continue;
                 } elseif ($response == "_PUBNUB_MESSAGE_TOO_LARGE") {
-                    $timetoken = $this->throwAndResetTimetoken($callback, "Message Too Large");
+                    $timeToken = $this->throwAndResetTimeToken($callback, "Message Too Large");
                     continue;
-                } elseif ($response == null || $timetoken == null) {
-                    $timetoken = $this->throwAndResetTimetoken($callback, "Bad server response.");
+                } elseif ($response == null || $timeToken == null) {
+                    $timeToken = $this->throwAndResetTimeToken($callback, "Bad server response.");
                     continue;
                 }
-
-                $messages = $response[0];
-                $timetoken = $response[1];
 
                 // determine the channel
 
                 if ((count($response) == 3)) {
                     $derivedChannel = explode(",", $response[2]);
                 } else {
-                    $channel_array = array();
+                    $channelArray = array();
                     for ($a = 0; $a < sizeof($messages); $a++) {
-                        array_push($channel_array, $channel);
+                        array_push($channelArray, $channel);
                     }
-                    $derivedChannel = $channel_array;
+                    $derivedChannel = $channelArray;
                 }
-
 
                 if (!count($messages)) {
                     continue;
                 }
-
                 $receivedMessages = $this->decodeAndDecrypt($messages, $mode);
-
-
-                $returnArray = $this->NEW_STYLE_RESPONSE ? array($receivedMessages, $derivedChannel, $timetoken) : array($receivedMessages, $timetoken);
+                $returnArray = $this->NEW_STYLE_RESPONSE ? array($receivedMessages, $derivedChannel, $timeToken) : array($receivedMessages, $timeToken);
 
                 # Call once for each message for each channel
-
                 $exit_now = false;
                 for ($i = 0; $i < sizeof($receivedMessages); $i++) {
-
-                    $cbReturn = $callback(array("message" => $returnArray[0][$i], "channel" => $returnArray[1][$i], "timetoken" => $returnArray[2]));
-
+                    $cbReturn = $callback(array("message" => $returnArray[0][$i], "channel" => $returnArray[1][$i], "timeToken" => $returnArray[2]));
                     if ($cbReturn == false) {
                         $exit_now = true;
                     }
-
                 }
-
                 if ($exit_now) {
                     return;
                 }
-
-
             } catch (Exception $error) {
-                $this->handleError($error, $args);
-                $timetoken = $this->throwAndResetTimetoken($callback, "Unknown error.");
+                $this->handleError($error);
+                $timeToken = $this->throwAndResetTimeToken($callback, "Unknown error.");
                 continue;
-
             }
         }
     }
 
-    public function throwAndResetTimetoken($callback, $errorMessage) {
-        $callback(array(0, $errorMessage));
-        $timetoken = "0";
-        return $timetoken;
-    }
 
-    public function decodeAndDecrypt($messages, $mode = "default") {
+    /**
+     * decodeAndDecrypt
+     *
+     * @param string $messages
+     * @param string $mode
+     * @return array
+     */
+    public function decodeAndDecrypt($messages, $mode = "default")
+    {
         $receivedMessages = array();
 
         if ($mode == "presence") {
@@ -313,7 +308,12 @@ class Pubnub
         return $receivedMessages;
     }
 
-    public function decodeDecryptLoop($messageArray) {
+    /**
+     * @param $messageArray
+     * @return array
+     */
+    public function decodeDecryptLoop($messageArray)
+    {
         $receivedMessages = array();
         foreach ($messageArray as $message) {
 
@@ -324,15 +324,8 @@ class Pubnub
 
             array_push($receivedMessages, $message);
         }
+
         return $receivedMessages;
-    }
-
-
-    public function handleError($error, $args) {
-        $errorMsg = 'Error on line ' . $error->getLine() . ' in ' . $error->getFile() . $error->getMessage();
-        trigger_error($errorMsg, E_COMPILE_WARNING);
-
-        sleep(1);
     }
 
     /**
@@ -340,32 +333,70 @@ class Pubnub
      *
      * This is BLOCKING.
      * Listen for a message on a channel.
-     *
-     * @param array $args with channel and message.
-     * @return mixed false on fail, array on success.
+     * @param string $channel
+     * @param callback $callback
+     * @param int $timeToken
      */
-    public function presence($args) {
+    public function presence($channel, $callback, $timeToken = 0)
+    {
         ## Capture User Input
-        $args['channel'] = ($args['channel'] . "-pnpres");
-        $this->subscribe($args, true);
+        $channel = $channel . "-pnpres";
+        $this->subscribe($channel, $callback, $timeToken = 0, true);
+    }
+
+
+    /**
+     * Time
+     *
+     * Timestamp from PubNub Cloud.
+     *
+     * @return int timestamp.
+     */
+    public function time()
+    {
+        ## Get History
+        $response = $this->request(array(
+            'time',
+            '0'
+        ));
+
+        $result = (isset($response[0])) ? $response[0] : 0;
+        if (is_string($result)) {
+            $result = intval(substr($result, 0, 10));
+        }
+
+        return $result;
     }
 
     /**
-     * History
-     *
-     * Load history from a channel.
-     *
-     * @param array $args with 'channel' and 'limit'.
-     * @return mixed false on fail, array on success.
+     * @param string $channel
+     * @param int $count
+     * @param bool $include_token
+     * @param int $start
+     * @param int $end
+     * @param bool $reverse
+     * @param bool $include_tt
+     * @return array
+     * @throws PubnubException
      */
-    public function history($args) {
+    public function history($channel, $count = 100, $include_token = null, $start = null,
+        $end = null, $reverse = false, $include_tt = null)
+    {
         ## Capture User Input
         ## Fail if bad input.
-        if (!$args['channel']) {
-            echo('Missing Channel');
-
-            return false;
+        if (empty($channel)) {
+            throw new PubnubException('Missing Channel in history()');
         }
+
+        // input parameters pushed to array for iteration
+        $args = array(
+            'count' => $count,
+            'start' => $start,
+            'end' => $end,
+            'include_tt' => $include_tt,
+            'include_token' => $include_token,
+            'reverse' => $reverse
+        );
 
         if (isset($args['include_tt']) && !isset($args['include_token'])) {
             $args['include_token'] = $args['include_tt'];
@@ -373,9 +404,7 @@ class Pubnub
             $args['include_token'] = isset($args['include_token']) ? $args['include_token'] : false;
         }
 
-        $channel = $args['channel'];
         $urlParams = "";
-
         $urlParamsKeys = array('count', 'start', 'end');
         $urlBoolParamsKey = array('reverse', 'include_token');
         $urlParamsArray = array();
@@ -394,7 +423,7 @@ class Pubnub
             $urlParams = '?' . implode('&', $urlParamsArray);
         }
 
-        $response = $this->_request(array(
+        $response = $this->request(array(
             'v2',
             'history',
             "sub-key",
@@ -406,7 +435,9 @@ class Pubnub
         $receivedMessages = $this->decodeAndDecrypt($response, "detailedHistory");
 
         //TODO: <timeout> and <message too large> check
-        if (!is_array($receivedMessages)) $receivedMessages = array();
+        if (!is_array($receivedMessages)) {
+            $receivedMessages = array();
+        }
 
         $result = array(
             'messages' => isset($receivedMessages[0]) ? $receivedMessages[0] : array(),
@@ -418,35 +449,14 @@ class Pubnub
     }
 
     /**
-     * Time
-     *
-     * Timestamp from PubNub Cloud.
-     *
-     * @return int timestamp.
-     */
-    public function time() {
-        ## Get History
-        $response = $this->_request(array(
-            'time',
-            '0'
-        ));
-
-        $result = (isset($response[0])) ? $response[0] : 0;
-        if (is_string($result)) {
-            $result = intval(substr($result, 0, 10));
-        }
-
-        return $result;
-    }
-
-    /**
      * UUID
      *
      * UUID generator
      *
      * @return string UUID
      */
-    public static function uuid() {
+    public static function uuid()
+    {
         if (function_exists('com_create_guid') === true) {
             return trim(com_create_guid(), '{}');
         }
@@ -462,9 +472,10 @@ class Pubnub
      * @param $optArray
      * @return Resource handle.
      */
-    private function _preprocRequest($request, $urlParams = false, $optArray) {
+    private function preprocRequest($request, $urlParams = false, $optArray)
+    {
  
-        $request = array_map('Pubnub\Pubnub::_encode', $request);
+        $request = array_map('Pubnub\Pubnub::encode', $request);
 
         array_unshift($request, $this->ORIGIN);
 
@@ -486,14 +497,14 @@ class Pubnub
         return $ch;
     }
 
-    /**
-     * Request URL
-     *
+     /**
      * @param array $request of url directories.
      * @param array $urlParams
-     * @return array from JSON response.
+     * @return array|mixed|NULL|string from JSON response.
+     * @throws PubnubException
      */
-    private function _request($request, $urlParams = array(false)) {
+    private function request(array $request, $urlParams = array(false))
+    {
 
         $optArray = array(CURLOPT_USERAGENT => "PHP",
             CURLOPT_RETURNTRANSFER => 1,
@@ -522,22 +533,22 @@ class Pubnub
         }
 
         if (!is_array($request[0])) {
-            $ch = $this->_preprocRequest($request, $urlParams[0], $optArray);
+            $ch = $this->preprocRequest($request, $urlParams[0], $optArray);
 
             $output = curl_exec($ch);
             $curlError = curl_errno($ch);
             $curlResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-            $JSONdecodedResponse = self::decode($output);
+            $JSONDecodedResponse = self::decode($output);
 
             curl_close($ch);
 
-            if ($JSONdecodedResponse != null)
-                return $JSONdecodedResponse;
+            if ($JSONDecodedResponse != null)
+                return $JSONDecodedResponse;
             elseif ($curlError == 28)
-                return "_PUBNUB_TIMEOUT";
+                throw new PubnubException ("_PUBNUB_TIMEOUT");
             elseif ($curlResponseCode == 400 || $curlResponseCode == 404)
-                return "_PUBNUB_MESSAGE_TOO_LARGE";
+                throw new PubnubException ("_PUBNUB_MESSAGE_TOO_LARGE");
 
         } else {
             $mh = curl_multi_init();
@@ -550,7 +561,7 @@ class Pubnub
             $chIndex = 0;
 
             foreach ($request as $i => $r) {
-                array_push($chArray, $this->_preprocRequest($r, $urlParams[$i], $optArray));
+                array_push($chArray, $this->preprocRequest($r, $urlParams[$i], $optArray));
                 curl_multi_add_handle($mh, $chArray[$chIndex]);
                 $chIndex++;
             }
@@ -567,7 +578,7 @@ class Pubnub
                 if ($curlError == "") {
                     $result[$i] = curl_multi_getcontent($c);
                 } else {
-                    print "Curl error on handle $i: $curlError\n";
+                    throw new PubnubException ("Curl error on handle $i: $curlError\n");
                 }
 
                 curl_multi_remove_handle($mh, $c);
@@ -583,14 +594,43 @@ class Pubnub
     }
 
     /**
+     * handleError
+     *
+     * for internal error handling
+     *
+     * @param $error
+     */
+    public function handleError($error)
+    {
+        $errorMsg = 'Error on line ' . $error->getLine() . ' in ' . $error->getFile() . $error->getMessage();
+        trigger_error($errorMsg, E_COMPILE_WARNING);
+        sleep(1);
+    }
+
+    /**
+     * @param $callback
+     * @param $errorMessage
+     * @return string
+     */
+    private function throwAndResetTimeToken($callback, $errorMessage)
+    {
+        $callback(array(0, $errorMessage));
+        $timeToken = "0";
+
+        return $timeToken;
+    }
+
+    /**
      * Encode
      *
      * @param string $part of url directories.
      * @return string encoded string.
      */
-    private static function _encode($part) {
+    private static function encode($part)
+    {
 
-        $pieces = array_map('\Pubnub\Pubnub::_encode_char', str_split($part));
+        $pieces = array_map('\Pubnub\Pubnub::encodeChar', str_split($part));
+
 
         return implode('', $pieces);
     }
@@ -601,14 +641,23 @@ class Pubnub
      * @param string $char val.
      * @return string encoded char.
      */
-    private static function _encode_char($char) {
+    private static function encodeChar($char)
+    {
         if (strpos(' ~`!@#$%^&*()+=[]\\{}|;\':",./<>?', $char) === false)
             return $char;
         else
             return rawurlencode($char);
     }
 
-    private static function decode($val, $assoc = true, $depth = 512, $options = 0) {
+    /**
+     * @param string $val
+     * @param bool $assoc
+     * @param int $depth
+     * @param int $options
+     * @return mixed
+     */
+    private static function decode($val, $assoc = true, $depth = 512, $options = 0)
+    {
 
         return json_decode($val, $assoc, $depth, $options);
 

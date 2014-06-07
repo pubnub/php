@@ -20,6 +20,9 @@ class DecodeDecryptLoopTest extends TestCase
         ));
     }
 
+    /**
+     * @group decodeanddecrypt
+     */
     public function testDecodeDecryptLoop()
     {
         $test_cipher_string_1 = 'f42pIQcWZ9zbTbH8cyLwByD/GsviOE0vcREIEVPARR0=';

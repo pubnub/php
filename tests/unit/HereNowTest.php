@@ -1,30 +1,30 @@
 <?php
 
 use Pubnub\Pubnub;
-
+use Pubnub\PubnubException;
 
 class HereNowTest extends TestCase
 {
     protected static $message = 'Hello from here_now() test';
     protected static $channel = 'pubnub_php_test';
 
+    /**
+     * @group herenow
+     */
     public function testHereNow()
     {
-        $response = $this->pubnub->here_now(array(
-            'channel' => static::$channel,
-        ));
-
+        $response = $this->pubnub->hereNow(static::$channel);
         $this->assertEquals('200', $response['status']);
         $this->assertEquals('Presence', $response['service']);
     }
 
+    /**
+     * @group herenow
+     */
     public function testHereNowEmptyChannel()
     {
-        $response = $this->pubnub->here_now(array(
-            'channel' => '',
-        ));
-
-        $this->assertEquals(false, $response);
+        $this->setExpectedException('\Pubnub\PubnubException');
+        $this->pubnub->hereNow('');
     }
 }
  

@@ -4,7 +4,9 @@ require_once 'TestCase.php';
 
 class SendMessageTest extends TestCase
 {
+    /** @var  Pubnub */
     protected $pubnub_enc;
+
     protected static $message = 'Hello from publishString() test';
     protected static $channel = 'pubnub_php_test';
 
@@ -20,6 +22,9 @@ class SendMessageTest extends TestCase
         ));
     }
 
+    /**
+     * @group sendmessage
+     */
     public function testSendMessageEnc()
     {
         $messageToSendEnc = $this->pubnub_enc->sendMessage(self::$message);
@@ -27,6 +32,9 @@ class SendMessageTest extends TestCase
         $this->assertEquals(self::$message, json_decode($this->pubnub_enc->AES->decrypt($messageToSendEnc, 'enigma')));
     }
 
+    /**
+     * @group sendmessage
+     */
     public function testSendMessageRaw()
     {
         $messageToSend = $this->pubnub->sendMessage(self::$message);

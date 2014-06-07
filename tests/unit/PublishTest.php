@@ -1,6 +1,7 @@
 <?php
 
 use Pubnub\Pubnub;
+use \Pubnub\PubnubException;
 
 
 class PublishTest extends TestCase
@@ -30,48 +31,49 @@ class PublishTest extends TestCase
         ));
     }
 
+    /**
+     * @group publish
+     */
+
     public function testPublish()
     {
-        $response = $this->pubnub->publish(array(
-            'channel' => static::$channel,
-            'message' => static::$message
-        ));
+        $response = $this->pubnub->publish(static::$channel, static::$message);
 
         $this->assertEquals(1, $response[0]);
         $this->assertEquals('Sent', $response[1]);
         $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
     }
 
+    /**
+     * @group publish
+     */
     public function testEncryptedPublish()
     {
-        $response = $this->pubnub_enc->publish(array(
-            'channel' => static::$channel,
-            'message' => static::$message
-        ));
+        $response = $this->pubnub_enc->publish(static::$channel, static::$message);
 
         $this->assertEquals(1, $response[0]);
         $this->assertEquals('Sent', $response[1]);
         $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
     }
 
+    /**
+     * @group publish
+     */
     public function testPublishSecretKey()
     {
-        $response = $this->pubnub_sec->publish(array(
-            'channel' => static::$channel,
-            'message' => static::$message
-        ));
+        $response = $this->pubnub_sec->publish(static::$channel, static::$message);
 
         $this->assertEquals(1, $response[0]);
         $this->assertEquals('Sent', $response[1]);
         $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
     }
 
+    /**
+     * @group publish
+     */
     public function testInvalidChannelPublish()
     {
-        $response = $this->pubnub->publish(array(
-            'message' => static::$message
-        ));
-
-        $this->assertEquals(false, $response);
+        $this->setExpectedException('\Pubnub\PubnubException');
+        $this->pubnub->publish('', '');
     }
 }

@@ -20,6 +20,9 @@ class DecodeAndDecryptTest extends TestCase
         ));
     }
 
+    /**
+     * @group decodeanddecrypt
+     */
     public function testDADDefault()
     {
         $test_cipher_string_1 = 'f42pIQcWZ9zbTbH8cyLwByD/GsviOE0vcREIEVPARR0=';
@@ -37,6 +40,9 @@ class DecodeAndDecryptTest extends TestCase
         $this->assertEquals($test_plain_string_2, $response[1]);
     }
 
+    /**
+     * @group decodeanddecrypt
+     */
     public function testDADPresence()
     {
         $test_cipher_string_1 = 'f42pIQcWZ9zbTbH8cyLwByD/GsviOE0vcREIEVPARR0=';

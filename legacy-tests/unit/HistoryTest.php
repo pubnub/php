@@ -6,7 +6,7 @@ class HistoryTest extends TestCase
 {
     protected $channel = 'pubnub_php_test_history';
     protected $bootstrap;
-    protected $start;
+    protected $start = 5;
     protected static $message = 'Hello from history() test!';
     protected static $message_2 = 'Hello from history() test! 2';
 
@@ -15,70 +15,56 @@ class HistoryTest extends TestCase
         parent::setUp();
 
         $this->start = $this->pubnub->time();
-        $bootstrap = time();
-
-        for ($i = 0; $i < 10; $i++) {
-            $this->pubnub->publish(array(
-                'channel' => $this->channel,
-                'message' => "${bootstrap}#${i}"
-            ));
-        }
     }
 
+    /**
+     * @group history
+     */
     public function testHistoryMessages()
     {
-        $this->pubnub->publish(array(
-            'channel' => $this->channel,
-            'message' => self::$message
-        ));
-
-        $this->pubnub->publish(array(
-            'channel' => $this->channel,
-            'message' => self::$message_2
-        ));
+        $m1 = time();
+        $m2 = time();
+        $this->pubnub->publish($this->channel, self::$message.$m1);
+        $this->pubnub->publish($this->channel, self::$message_2.$m2);
 
         sleep(3);
 
-        $response = $this->pubnub->history(array(
-            'channel' => $this->channel,
-            'count' => 2
-        ));
+        $response = $this->pubnub->history($this->channel,2);
 
-        $this->assertTrue(count($response['messages']) == 2);
-        $this->assertEquals(self::$message, $response['messages'][0]);
-        $this->assertEquals(self::$message_2, $response['messages'][1]);
+        $this->assertEquals(self::$message.$m1, $response['messages'][count($response['messages']) - 2]);
+        $this->assertEquals(self::$message_2.$m2, $response['messages'][count($response['messages']) - 1]);
     }
 
+    /**
+     * @group history
+     */
     public function testHistoryIncludeToken()
     {
-        $response = $this->pubnub->history(array(
-            'channel' => $this->channel,
-            'count' => 2,
-            'include_token' => true
-        ));
+        $response = $this->pubnub->history($this->channel, 2, true);
 
         $this->assertArrayHasKey('message', $response['messages'][0]);
         $this->assertArrayHasKey('timetoken', $response['messages'][0]);
     }
 
+    /**
+     * @group history
+     */
     public function testHistoryReverse()
     {
-        $response = $this->pubnub->history(array(
-            'channel' => $this->channel,
-            'count' => 12,
-            'start' => $this->start,
-            'reverse' => true
-        ));
-
-        $this->assertRegExp('/#0$/', $response['messages'][0]);
+        $response = $this->pubnub->history($this->channel, 10, 1, null, null, true);
+        $this->assertRegExp('/[0-9]+$/', (string)$response['messages'][0]['message']);
     }
 
+    /**
+     * @group history
+     */
     public function testHistoryInvalidChannel()
     {
-        $response = $this->pubnub->history(array(
-            'channel' => ""
-        ));
-
-        $this->assertEquals(false, $response);
+        try {
+            $this->pubnub->history('');
+            $this->fail("exception was not thrown");
+        } catch (Exception $e) {
+            $this->assertEquals('Missing Channel in history()', $e->getMessage());
+        }
     }
 }
