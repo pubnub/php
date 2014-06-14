@@ -9,6 +9,8 @@ namespace Pubnub;
  */
 class Pubnub
 {
+    const PNSDK = 'Pubnub-PHP%2F3.6.0';
+
     private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY = 'demo';
     private $SUBSCRIBE_KEY = 'demo';
@@ -465,6 +467,49 @@ class Pubnub
     }
 
     /**
+     * @param $channel
+     * @param $read
+     * @param $write
+     * @param null $auth_key
+     * @param null $ttl
+     * @return mixed
+     */
+    public function grant($channel, $read, $write, $auth_key = null, $ttl = null) {
+
+        $request_params = $this->pam()->grant($channel, $read, $write, $auth_key, $ttl);
+        $grantResponse = $this->request($request_params['url'], array($request_params['search']));
+
+        return $grantResponse;
+    }
+
+    /**
+     * @param $channel
+     * @param null $auth_key
+     * @return mixed
+     */
+    public function audit($channel, $auth_key = null) {
+
+        $request_params = $this->pam()->audit($channel, $auth_key);
+        $grantResponse = $this->request($request_params['url'], array($request_params['search']));
+
+        return $grantResponse;
+    }
+
+    /**
+     * @param $channel
+     * @param null $auth_key
+     * @return mixed
+     */
+    public function revoke($channel, $auth_key = null) {
+
+        $request_params = $this->pam()->revoke($channel, $auth_key);
+        $grantResponse = $this->request($request_params['url'], array($request_params['search']));
+
+        return $grantResponse;
+    }
+
+
+    /**
      * Preprocessing request URL
      *
      * @param array $request of url directories and options $optArray for curl handle.
@@ -662,4 +707,14 @@ class Pubnub
         return json_decode($val, $assoc, $depth, $options);
 
     }
+
+private function pam()
+     {
+         if ($this->PAM === null) {
+             $this->PAM = new PubnubPAM($this->PUBLISH_KEY, $this->SUBSCRIBE_KEY, $this->SECRET_KEY, self::PNSDK);
+         }
+
+         return $this->PAM;
+     }
+
 }
