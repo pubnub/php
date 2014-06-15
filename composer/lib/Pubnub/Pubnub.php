@@ -375,12 +375,11 @@ class Pubnub
      * @param int $start
      * @param int $end
      * @param bool $reverse
-     * @param bool $include_tt
      * @return array
      * @throws PubnubException
      */
     public function history($channel, $count = 100, $include_token = null, $start = null,
-        $end = null, $reverse = false, $include_tt = null)
+        $end = null, $reverse = false)
     {
         ## Capture User Input
         ## Fail if bad input.
@@ -393,16 +392,9 @@ class Pubnub
             'count' => $count,
             'start' => $start,
             'end' => $end,
-            'include_tt' => $include_tt,
             'include_token' => $include_token,
             'reverse' => $reverse
         );
-
-        if (isset($args['include_tt']) && !isset($args['include_token'])) {
-            $args['include_token'] = $args['include_tt'];
-        } elseif (isset($args['include_token'])) {
-            $args['include_token'] = isset($args['include_token']) ? $args['include_token'] : false;
-        }
 
         $urlParams = "";
         $urlParamsKeys = array('count', 'start', 'end');
