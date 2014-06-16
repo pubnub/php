@@ -47,6 +47,7 @@ class Pubnub
         $ssl = false,
         $origin = false,
         $pem_path = false,
+        $uuid = false,
         $proxy = false
     ) {
         if (is_array($first_argument)) {
@@ -58,9 +59,9 @@ class Pubnub
             $origin = isset($first_argument['origin']) ? $first_argument['origin'] : false;
             $pem_path = isset($first_argument['pem_path']) ? $first_argument['pem_path'] : false;
             $uuid = isset($first_argument['uuid']) ? $first_argument['uuid'] : false;
+            $proxy = isset($first_argument['proxy']) ? $first_argument['proxy'] : false;
         } else {
             $publish_key = $first_argument;
-            $uuid = false;
         }
 
         $this->SESSION_UUID = $uuid ? $uuid : self::uuid();
@@ -103,6 +104,10 @@ class Pubnub
         ## Fail if bad input.
         if (empty($channel) || empty($messageOrg)) {
             throw new PubnubException('Missing Channel or Message in publish()');
+        }
+
+        if (empty($this->PUBLISH_KEY)) {
+            throw new PubnubException('Missing Publish Key in publish()');
         }
 
         $message = $this->sendMessage($messageOrg);
@@ -212,6 +217,10 @@ class Pubnub
 
         if (empty($callback)) {
             throw new PubnubException("Missing Callback in subscribe()");
+        }
+
+        if (empty($this->SUBSCRIBE_KEY)) {
+            throw new PubnubException("Missing Subscribe Key in subscribe()");
         }
 
         if (is_array($channel)) {
@@ -377,12 +386,11 @@ class Pubnub
      * @param int $start
      * @param int $end
      * @param bool $reverse
-     * @param bool $include_tt
      * @return array
      * @throws PubnubException
      */
     public function history($channel, $count = 100, $include_token = null, $start = null,
-        $end = null, $reverse = false, $include_tt = null)
+        $end = null, $reverse = false)
     {
         ## Capture User Input
         ## Fail if bad input.
@@ -395,16 +403,9 @@ class Pubnub
             'count' => $count,
             'start' => $start,
             'end' => $end,
-            'include_tt' => $include_tt,
             'include_token' => $include_token,
             'reverse' => $reverse
         );
-
-        if (isset($args['include_tt']) && !isset($args['include_token'])) {
-            $args['include_token'] = $args['include_tt'];
-        } elseif (isset($args['include_token'])) {
-            $args['include_token'] = isset($args['include_token']) ? $args['include_token'] : false;
-        }
 
         $urlParams = "";
         $urlParamsKeys = array('count', 'start', 'end');
