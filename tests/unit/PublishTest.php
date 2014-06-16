@@ -70,6 +70,18 @@ class PublishTest extends TestCase
 
     /**
      * @group publish
+     *
+     * @expectedException \Pubnub\PubnubException
+     * @expectedExceptionMessage Missing Publish Key in publish()
+     */
+    public function testPublishMissingPublishKey()
+    {
+        $pubnub = new Pubnub(false, 'demo');
+        $pubnub->publish('demo', 'hey');
+    }
+
+    /**
+     * @group publish
      */
     public function testInvalidChannelPublish()
     {
