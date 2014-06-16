@@ -104,6 +104,10 @@ class Pubnub
             throw new PubnubException('Missing Channel or Message in publish()');
         }
 
+        if (empty($this->PUBLISH_KEY)) {
+            throw new PubnubException('Missing Publish Key in publish()');
+        }
+
         $message = $this->sendMessage($messageOrg);
 
         ## Sign Message
@@ -211,6 +215,10 @@ class Pubnub
 
         if (empty($callback)) {
             throw new PubnubException("Missing Callback in subscribe()");
+        }
+
+        if (empty($this->SUBSCRIBE_KEY)) {
+            throw new PubnubException("Missing Subscribe Key in subscribe()");
         }
 
         if (is_array($channel)) {
