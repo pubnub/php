@@ -49,7 +49,7 @@ PubNub is a Massively Scalable Real-time Service for Web and Mobile Games. This 
             }
         },
         "require": {
-            "pubnub/pubnub": "dev-master"
+            "pubnub/pubnub": "v3.5.1"
         }
     }
     ```
