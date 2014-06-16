@@ -45,6 +45,7 @@ class Pubnub
         $ssl = false,
         $origin = false,
         $pem_path = false,
+        $uuid = false,
         $proxy = false
     ) {
         if (is_array($first_argument)) {
@@ -56,9 +57,9 @@ class Pubnub
             $origin = isset($first_argument['origin']) ? $first_argument['origin'] : false;
             $pem_path = isset($first_argument['pem_path']) ? $first_argument['pem_path'] : false;
             $uuid = isset($first_argument['uuid']) ? $first_argument['uuid'] : false;
+            $proxy = isset($first_argument['proxy']) ? $first_argument['proxy'] : false;
         } else {
             $publish_key = $first_argument;
-            $uuid = false;
         }
 
         $this->SESSION_UUID = $uuid ? $uuid : self::uuid();
