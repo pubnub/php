@@ -1,12 +1,8 @@
 <?php
-
-define('PUBNUB_LIB_BASE_DIR', __DIR__);
-
 function pubnubAutoloader($className)
 {
     $className = ltrim($className, '\\');
     $fileName  = '';
-    $namespace = '';
 
     if ($lastNsPos = strrpos($className, '\\')) {
         $namespace = strtolower(substr($className, 0, $lastNsPos));

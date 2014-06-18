@@ -2,6 +2,10 @@
  
 namespace Pubnub;
 
+use Exception;
+use Pubnub\Clients\DefaultClient;
+use Pubnub\Clients\PipelinedClient;
+
 
 /**
  * PubNub 3.5 Real-time Push Cloud API
@@ -11,7 +15,6 @@ class Pubnub
 {
     const PNSDK = 'Pubnub-PHP%2F3.6.0';
 
-    private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY = 'demo';
     private $SUBSCRIBE_KEY = 'demo';
     private $SECRET_KEY = '';
@@ -20,7 +23,10 @@ class Pubnub
     private $SESSION_UUID = '';
     private $PROXY = false;
     private $NEW_STYLE_RESPONSE = true;
-    private $PEM_PATH = __DIR__;
+
+    private $pipelinedFlag = false;
+    private $defaultClient;
+    private $pipelinedClient;
 
     public $AES;
     private $PAM = null;
@@ -37,6 +43,7 @@ class Pubnub
      * @param boolean $ssl required for 2048 bit encrypted messages.
      * @param bool|string $origin optional setting for cloud origin.
      * @param bool $pem_path
+     * @param bool $uuid
      * @param bool $proxy
      */
     public function __construct(
@@ -72,21 +79,14 @@ class Pubnub
         $this->PROXY = $proxy;
         $this->AES = new PubnubAES();
 
+        $this->defaultClient = new DefaultClient($origin, $ssl, $proxy, $pem_path);
+        $this->pipelinedClient = new PipelinedClient($origin, $ssl, $proxy, $pem_path);
+
         if (!$this->AES->isBlank($cipher_key)) {
             $this->CIPHER_KEY = $cipher_key;
         }
-
-        if ($pem_path != false) $this->PEM_PATH = $pem_path;
-
-        if ($origin) $this->ORIGIN = $origin;
-
-        if ($this->ORIGIN == "PHP.pubnub.com") {
-            trigger_error("Before running in production, please contact support@pubnub.com for your custom origin.\nPlease set the origin from PHP.pubnub.com to IUNDERSTAND.pubnub.com to remove this warning.\n", E_USER_NOTICE);
-        }
-
-        if ($ssl) $this->ORIGIN = 'https://' . $this->ORIGIN;
-        else      $this->ORIGIN = 'http://' . $this->ORIGIN;
     }
+
 
 
     /**
@@ -101,7 +101,6 @@ class Pubnub
      */
     public function publish($channel, $messageOrg)
     {
-        ## Fail if bad input.
         if (empty($channel) || empty($messageOrg)) {
             throw new PubnubException('Missing Channel or Message in publish()');
         }
@@ -110,12 +109,15 @@ class Pubnub
             throw new PubnubException('Missing Publish Key in publish()');
         }
 
-        $message = $this->sendMessage($messageOrg);
+        if ($this->CIPHER_KEY != false) {
+            $message = JSON::encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
+        } else {
+            $message = JSON::encode($messageOrg);
+        }
 
-        ## Sign Message
         $signature = "0";
+
         if ($this->SECRET_KEY) {
-            ## Generate String to Sign
             $string_to_sign = implode('/', array(
                 $this->PUBLISH_KEY,
                 $this->SUBSCRIBE_KEY,
@@ -123,11 +125,11 @@ class Pubnub
                 $channel,
                 $message
             ));
+
             $signature = md5($string_to_sign);
         }
 
-        ## Send Message
-        $publishResponse = $this->request(array(
+        return $this->request(array(
             'publish',
             $this->PUBLISH_KEY,
             $this->SUBSCRIBE_KEY,
@@ -136,31 +138,6 @@ class Pubnub
             '0',
             $message
         ));
-
-        if ($publishResponse == null) {
-            throw new PubnubException("Error during publish - response is null.");
-        } else {
-            return $publishResponse;
-        }
-    }
-
-    /**
-     * sendMessage
-     *
-     * Encoding message.
-     *
-     * @param string|array $messageOrg with message
-     * @return string encoded message.
-     */
-    public function sendMessage($messageOrg)
-    {
-        if ($this->CIPHER_KEY != false) {
-            $message = json_encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
-        } else {
-            $message = json_encode($messageOrg);
-
-        }
-        return $message;
     }
 
     /**
@@ -194,6 +171,7 @@ class Pubnub
                 'occupancy' => 0,
             );
         }
+
         return $response;
     }
 
@@ -263,26 +241,34 @@ class Pubnub
                     $derivedChannel = explode(",", $response[2]);
                 } else {
                     $channelArray = array();
+
                     for ($a = 0; $a < sizeof($messages); $a++) {
                         array_push($channelArray, $channel);
                     }
+
                     $derivedChannel = $channelArray;
                 }
 
                 if (!count($messages)) {
                     continue;
                 }
+
                 $receivedMessages = $this->decodeAndDecrypt($messages, $mode);
-                $returnArray = $this->NEW_STYLE_RESPONSE ? array($receivedMessages, $derivedChannel, $timeToken) : array($receivedMessages, $timeToken);
+
+                $returnArray = $this->NEW_STYLE_RESPONSE
+                    ? array($receivedMessages, $derivedChannel, $timeToken)
+                    : array($receivedMessages, $timeToken);
 
                 # Call once for each message for each channel
                 $exit_now = false;
+
                 for ($i = 0; $i < sizeof($receivedMessages); $i++) {
                     $cbReturn = $callback(array("message" => $returnArray[0][$i], "channel" => $returnArray[1][$i], "timeToken" => $returnArray[2]));
                     if ($cbReturn == false) {
                         $exit_now = true;
                     }
                 }
+
                 if ($exit_now) {
                     return;
                 }
@@ -330,7 +316,7 @@ class Pubnub
 
             if ($this->CIPHER_KEY) {
                 $decryptedMessage = $this->AES->decrypt($message, $this->CIPHER_KEY);
-                $message = self::decode($decryptedMessage);
+                $message = JSON::decode($decryptedMessage);
             }
 
             array_push($receivedMessages, $message);
@@ -352,9 +338,8 @@ class Pubnub
     {
         ## Capture User Input
         $channel = $channel . "-pnpres";
-        $this->subscribe($channel, $callback, $timeToken = 0, true);
+        $this->subscribe($channel, $callback, $timeToken, true);
     }
-
 
     /**
      * Time
@@ -365,7 +350,6 @@ class Pubnub
      */
     public function time()
     {
-        ## Get History
         $response = $this->request(array(
             'time',
             '0'
@@ -392,13 +376,14 @@ class Pubnub
     public function history($channel, $count = 100, $include_token = null, $start = null,
         $end = null, $reverse = false)
     {
-        ## Capture User Input
-        ## Fail if bad input.
         if (empty($channel)) {
             throw new PubnubException('Missing Channel in history()');
         }
 
-        // input parameters pushed to array for iteration
+        $urlIntParamsKeys = array('count', 'start', 'end');
+        $urlBoolParamsKey = array('reverse', 'include_token');
+        $query = array();
+
         $args = array(
             'count' => $count,
             'start' => $start,
@@ -407,23 +392,14 @@ class Pubnub
             'reverse' => $reverse
         );
 
-        $urlParams = "";
-        $urlParamsKeys = array('count', 'start', 'end');
-        $urlBoolParamsKey = array('reverse', 'include_token');
-        $urlParamsArray = array();
-
-        foreach ($urlParamsKeys as $key) {
-            if (!isset($args[$key])) continue;
-            $urlParamsArray[] = sprintf('%s=%s', $key, $args[$key]);
+        foreach ($urlIntParamsKeys as $key) {
+            if (empty($args[$key])) continue;
+            $query[$key] = (int)$args[$key];
         }
 
         foreach ($urlBoolParamsKey as $key) {
-            if (!isset($args[$key])) continue;
-            $urlParamsArray[] = sprintf('%s=%s', $key, (int)$args[$key] ? 'true' : 'false');
-        }
-
-        if (count($urlParamsArray)) {
-            $urlParams = '?' . implode('&', $urlParamsArray);
+            if (empty($args[$key])) continue;
+            $query[$key] = (int)$args[$key] ? 'true' : 'false';
         }
 
         $response = $this->request(array(
@@ -433,7 +409,7 @@ class Pubnub
             $this->SUBSCRIBE_KEY,
             "channel",
             $channel,
-        ), array($urlParams));
+        ), $query);
 
         $receivedMessages = $this->decodeAndDecrypt($response, "detailedHistory");
 
@@ -462,9 +438,12 @@ class Pubnub
     {
         if (function_exists('com_create_guid') === true) {
             return trim(com_create_guid(), '{}');
+        } else {
+            return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535),
+                mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535),
+                mt_rand(0, 65535));
         }
 
-        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
     /**
@@ -477,10 +456,9 @@ class Pubnub
      */
     public function grant($channel, $read, $write, $auth_key = null, $ttl = null) {
 
-        $request_params = $this->pam()->grant($channel, $read, $write, $auth_key, $ttl);
-        $grantResponse = $this->request($request_params['url'], array($request_params['search']));
+        $request_params = $this->pam()->grant($channel, $read, $write, $auth_key, $ttl, $this->SESSION_UUID);
 
-        return $grantResponse;
+        return $this->request($request_params['url'], $request_params['search'], false);
     }
 
     /**
@@ -490,10 +468,9 @@ class Pubnub
      */
     public function audit($channel, $auth_key = null) {
 
-        $request_params = $this->pam()->audit($channel, $auth_key);
-        $grantResponse = $this->request($request_params['url'], array($request_params['search']));
+        $request_params = $this->pam()->audit($channel, $auth_key, $this->SESSION_UUID);
 
-        return $grantResponse;
+        return $this->request($request_params['url'], $request_params['search'], false);
     }
 
     /**
@@ -503,140 +480,84 @@ class Pubnub
      */
     public function revoke($channel, $auth_key = null) {
 
-        $request_params = $this->pam()->revoke($channel, $auth_key);
-        $grantResponse = $this->request($request_params['url'], array($request_params['search']));
+        $request_params = $this->pam()->revoke($channel, $auth_key, $this->SESSION_UUID);
 
-        return $grantResponse;
+        return $this->request($request_params['url'], $request_params['search'], false);
     }
-
+ 
+    /**
+     * Pipelines multiple requests into a single connection
+     *
+     * @param Callback $callback
+     */
+    public function pipeline($callback)
+    {
+        $this->pipelinedFlag = true;
+        $callback($this);
+        $this->pipelinedClient->execute();
+        $this->pipelinedFlag = false;
+    }
 
     /**
-     * Preprocessing request URL
+     * Performs request depending on pipelined/non-pipelined mode
      *
-     * @param array $request of url directories and options $optArray for curl handle.
-     * @param bool $urlParams
-     * @param $optArray
-     * @return Resource handle.
+     * In pipelined mode null is returned for every query
+     * In non-pipelined mode response array is returned
+     *
+     * @param array $path
+     * @param array $query
+     * @param bool $useDefaultQueryArray
+     * @throws PubnubException
+     * @return mixed|null
      */
-    private function preprocRequest($request, $urlParams = false, $optArray)
+    private function request(array $path, array $query = array(), $useDefaultQueryArray = true)
     {
- 
-        $request = array_map('Pubnub\Pubnub::encode', $request);
-
-        array_unshift($request, $this->ORIGIN);
-
-        if (($request[1] === 'presence') || ($request[1] === 'subscribe')) {
-            array_push($request, '?uuid=' . $this->SESSION_UUID);
+        if ($useDefaultQueryArray) {
+            $query = array_merge($query, $this->defaultQueryArray());
         }
 
-        $urlString = implode('/', $request);
+        if ($this->pipelinedFlag === true) {
+            $this->pipelinedClient->add($path, $query);
 
-        if ($urlParams) {
-            $urlString .= $urlParams;
+            return null;
+        } else {
+            $result = $this->defaultClient->add($path, $query);
+
+            if ($result === null) {
+                throw new PubnubException('Error while performing request. Method name:' . $path[0]);
+            }
+
+            return $result;
         }
-
-        $ch = curl_init();
-
-        curl_setopt_array($ch, $optArray);
-        curl_setopt($ch, CURLOPT_URL, $urlString);
-
-        return $ch;
     }
 
-     /**
-     * @param array $request of url directories.
-     * @param array $urlParams
-     * @return array|mixed|NULL|string from JSON response.
-     * @throws PubnubException
+    /**
+     * Prepare default query
+     *
+     * @return array
      */
-    private function request(array $request, $urlParams = array(false))
+    private function defaultQueryArray()
     {
+        $query = array();
 
-        $optArray = array(CURLOPT_USERAGENT => "PHP",
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => 310
-        );
+        $query['uuid'] = $this->SESSION_UUID;
+        $query['pnsdk'] = self::PNSDK;
 
-        if ($this->PROXY) {
-            $optArray [CURLOPT_PROXY] = $this->PROXY;
+        return $query;
+    }
+
+    /**
+     * Return PubnubPAM instance
+     *
+     * @return PubnubPAM
+     */
+    private function pam()
+    {
+        if ($this->PAM === null) {
+            $this->PAM = new PubnubPAM($this->PUBLISH_KEY, $this->SUBSCRIBE_KEY, $this->SECRET_KEY, self::PNSDK);
         }
 
-        if ($this->SSL) {
-            $optArray [CURLOPT_SSL_VERIFYPEER] = true;
-            $optArray [CURLOPT_SSL_VERIFYHOST] = 2;
-
-            $pemPathAndFilename = $this->PEM_PATH . "/pubnub.com.pem";
-
-            if (file_exists($pemPathAndFilename))
-                $optArray [CURLOPT_CAINFO] = $pemPathAndFilename;
-            else {
-                trigger_error("Can't find PEM file. Please set pem_path in initializer.");
-                exit;
-            }
-
-            $pubnubHeaders = array("V: 3.4", "Accept: */*"); // GZIP Support
-            $optArray [CURLOPT_HTTPHEADER] = $pubnubHeaders;
-        }
-
-        if (!is_array($request[0])) {
-            $ch = $this->preprocRequest($request, $urlParams[0], $optArray);
-
-            $output = curl_exec($ch);
-            $curlError = curl_errno($ch);
-            $curlResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            $JSONDecodedResponse = self::decode($output);
-
-            curl_close($ch);
-
-            if ($JSONDecodedResponse != null)
-                return $JSONDecodedResponse;
-            elseif ($curlError == 28)
-                throw new PubnubException ("_PUBNUB_TIMEOUT");
-            elseif ($curlResponseCode == 400 || $curlResponseCode == 404)
-                throw new PubnubException ("_PUBNUB_MESSAGE_TOO_LARGE");
-
-        } else {
-            $mh = curl_multi_init();
-            $chArray = array();
-            $result = array();
-
-            curl_multi_setopt($mh, CURLMOPT_PIPELINING, 1); // optimal TCP packet usage.
-            curl_multi_setopt($mh, CURLMOPT_MAXCONNECTS, 100); // concurrent sockets pipes.
-
-            $chIndex = 0;
-
-            foreach ($request as $i => $r) {
-                array_push($chArray, $this->preprocRequest($r, $urlParams[$i], $optArray));
-                curl_multi_add_handle($mh, $chArray[$chIndex]);
-                $chIndex++;
-            }
-
-            $stillRunning = 0;
-
-            do {
-                $execReturnValue = curl_multi_exec($mh, $stillRunning);
-                curl_multi_select($mh);
-            } while ($stillRunning > 0);
-
-            foreach ($chArray as $i => $c) {
-                $curlError = curl_error($c);
-                if ($curlError == "") {
-                    $result[$i] = curl_multi_getcontent($c);
-                } else {
-                    throw new PubnubException ("Curl error on handle $i: $curlError\n");
-                }
-
-                curl_multi_remove_handle($mh, $c);
-                curl_close($c);
-            }
-
-            curl_multi_close($mh);
-
-            if ($execReturnValue != CURLM_OK) {
-                return curl_multi_strerror($execReturnValue);
-            } else return $result;
-        }
+        return $this->PAM;
     }
 
     /**
@@ -644,9 +565,9 @@ class Pubnub
      *
      * for internal error handling
      *
-     * @param $error
+     * @param \Exception $error
      */
-    public function handleError($error)
+    private function handleError($error)
     {
         $errorMsg = 'Error on line ' . $error->getLine() . ' in ' . $error->getFile() . $error->getMessage();
         trigger_error($errorMsg, E_COMPILE_WARNING);
@@ -665,57 +586,4 @@ class Pubnub
 
         return $timeToken;
     }
-
-    /**
-     * Encode
-     *
-     * @param string $part of url directories.
-     * @return string encoded string.
-     */
-    private static function encode($part)
-    {
-
-        $pieces = array_map('\Pubnub\Pubnub::encodeChar', str_split($part));
-
-
-        return implode('', $pieces);
-    }
-
-    /**
-     * Encode Char
-     *
-     * @param string $char val.
-     * @return string encoded char.
-     */
-    private static function encodeChar($char)
-    {
-        if (strpos(' ~`!@#$%^&*()+=[]\\{}|;\':",./<>?', $char) === false)
-            return $char;
-        else
-            return rawurlencode($char);
-    }
-
-    /**
-     * @param string $val
-     * @param bool $assoc
-     * @param int $depth
-     * @param int $options
-     * @return mixed
-     */
-    private static function decode($val, $assoc = true, $depth = 512, $options = 0)
-    {
-
-        return json_decode($val, $assoc, $depth, $options);
-
-    }
-
-private function pam()
-     {
-         if ($this->PAM === null) {
-             $this->PAM = new PubnubPAM($this->PUBLISH_KEY, $this->SUBSCRIBE_KEY, $this->SECRET_KEY, self::PNSDK);
-         }
-
-         return $this->PAM;
-     }
-
 }

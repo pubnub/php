@@ -127,7 +127,7 @@ class PubnubPAM
                 'sub-key',
                 $this->subscribe_key
             ),
-            "search" => "?" . $this->paramsToString($params)
+            "search" => $params
         );
     }
 

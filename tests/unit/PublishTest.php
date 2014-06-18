@@ -4,7 +4,7 @@ use Pubnub\Pubnub;
 use \Pubnub\PubnubException;
 
 
-class PublishTest extends TestCase
+class PublishTest extends \TestCase
 {
 
     protected $pubnub_enc;
@@ -66,6 +66,28 @@ class PublishTest extends TestCase
         $this->assertEquals(1, $response[0]);
         $this->assertEquals('Sent', $response[1]);
         $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
+    }
+
+    /**
+     * @group publish
+     */
+    public function testPipelinedPublish()
+    {
+        $timetoken = time();
+
+        $this->pubnub->pipeline(function ($pubnub) use ($timetoken) {
+            $pubnub->publish(self::$channel, "Pipelined message $timetoken #1");
+            $pubnub->publish(self::$channel, "Pipelined message $timetoken #2");
+            $pubnub->publish(self::$channel, "Pipelined message $timetoken #3");
+        });
+
+        sleep(1);
+
+        $history = $this->pubnub->history(self::$channel, 3);
+
+        $this->assertContains("Pipelined message $timetoken #1", $history['messages']);
+        $this->assertContains("Pipelined message $timetoken #2", $history['messages']);
+        $this->assertContains("Pipelined message $timetoken #3", $history['messages']);
     }
 
     /**
