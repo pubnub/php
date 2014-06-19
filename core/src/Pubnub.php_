@@ -379,6 +379,33 @@ class Pubnub
     }
 
     /**
+    * Returns channel list for defined UUID
+     * @param string $uuid
+     * @return mixed|null
+     * @throws PubnubException
+     */
+    public function whereNow($uuid = "")
+    {
+        if (empty($this->SUBSCRIBE_KEY)) {
+            throw new PubnubException('Missing subscribe key in whereNow()');
+        }
+
+        $query = array();
+        $uuid = empty($uuid) ? $this->SESSION_UUID : $uuid;
+
+        $response = $this->request(array(
+            'v2',
+            'presence',
+            'sub_key',
+            $this->SUBSCRIBE_KEY,
+            'uuid',
+            $uuid
+        ), $query);
+
+        return $response;
+    }
+
+    /**
      * @param string $channel
      * @param int $count
      * @param bool $include_token
