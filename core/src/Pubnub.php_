@@ -160,28 +160,42 @@ class Pubnub
     }
 
     /**
-     * hereNow
-     *
      * Gets a list of uuids subscribed to the channel.
      *
-     * @param $channel
+     * @param string $channel
+     * @param bool $disable_uuids
+     * @param bool $state
      * @throws PubnubException
      * @return array of uuids and occupancies.
      */
-    public function hereNow($channel)
+    public function hereNow($channel = null, $disable_uuids = false, $state = false)
     {
-        if (empty($channel)) {
+        if (isset($channel) && empty($channel)) {
             throw new PubnubException('Missing Channel in hereNow()');
         }
 
-        $response = $this->request(array(
+        $requestArray = array(
             'v2',
             'presence',
             'sub_key',
-            $this->SUBSCRIBE_KEY,
-            'channel',
-            $channel
-        ));
+            $this->SUBSCRIBE_KEY
+        );
+
+        $query = array();
+
+        if ($channel !== null) {
+            array_push($requestArray, 'channel', $channel);
+        }
+
+        if ($disable_uuids) {
+            $query['disable_uuids'] = 1;
+        }
+
+        if ($state) {
+            $query['state'] = 1;
+        }
+
+        $response = $this->request($requestArray, $query);
 
         //TODO: <timeout> and <message too large> check
         if (!is_array($response)) {

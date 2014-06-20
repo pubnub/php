@@ -20,6 +20,18 @@ class HereNowTest extends TestCase
     /**
      * @group herenow
      */
+    public function testHereNowWithoutUUIDs()
+    {
+        $response = $this->pubnub->hereNow(self::$channel, true);
+
+        $this->assertEquals('200', $response['status']);
+        $this->assertEquals('Presence', $response['service']);
+        $this->assertFalse(isset($response['uuids']));
+    }
+
+    /**
+     * @group herenow
+     */
     public function testHereNowEmptyChannel()
     {
         try {
