@@ -15,5 +15,16 @@ class UUIDTest extends TestCase
     {
         $this->assertEquals(36, strlen($this->pubnub->uuid()));
     }
+
+    /**
+     * @group uuid
+     */
+    public function testSetAndGetUUID()
+    {
+        $uuid = 'uglyUUID';
+        $this->pubnub->setUUID($uuid);
+
+        $this->assertEquals($uuid, $this->pubnub->getUUID());
+    }
 }
  

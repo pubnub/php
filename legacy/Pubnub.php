@@ -187,6 +187,68 @@ class Pubnub
     }
 
     /**
+     * Set metadata for user with given uuid
+     * 
+     * @param string $channel
+     * @param array|null $state
+     * @param string|null $uuid
+     * @return mixed|null
+     * @throws PubnubException
+     */
+    public function setState($channel, $state, $uuid = null)
+    {
+        if (empty($channel)) {
+            throw new PubnubException('Missing Channel in setState()');
+        }
+
+        $uuid = $uuid ? $uuid : $this->SESSION_UUID;
+        $state = JSON::encode($state);
+
+        return $this->request(array(
+            'v2',
+            'presence',
+            'sub_key',
+            $this->SUBSCRIBE_KEY,
+            'channel',
+            $channel,
+            'uuid',
+            $uuid,
+            'data'
+        ), array(
+            'state' => $state
+        ));
+    }
+
+    /**
+     * Returns metadata for user with given uuid
+     *
+     * @param string $channel
+     * @param string $uuid
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function getState($channel, $uuid)
+    {
+        if (empty($channel)) {
+            throw new PubnubException('Missing Channel in getState()');
+        }
+
+        if (empty($uuid)) {
+            throw new PubnubException('Missing UUID in getState()');
+        }
+
+        return $this->request(array(
+            'v2',
+            'presence',
+            'sub_key',
+            $this->SUBSCRIBE_KEY,
+            'channel',
+            $channel,
+            'uuid',
+            $uuid
+        ));
+    }
+    /**
      * Subscribe
      *
      * This is BLOCKING.
@@ -372,6 +434,31 @@ class Pubnub
         }
 
         return $result;
+    }
+
+    /**
+     * Updates current UUID
+     *
+     * @param string $uuid
+     * @throws PubnubException
+     */
+    public function setUUID($uuid)
+    {
+        if (empty($uuid)) {
+            throw new PubnubException('Empty UUID in setUUID()');
+        }
+
+        $this->SESSION_UUID = $uuid;
+    }
+
+    /**
+     * Returns current UUID
+     *
+     * @return string
+     */
+    public function getUUID()
+    {
+        return $this->SESSION_UUID;
     }
 
     /**
