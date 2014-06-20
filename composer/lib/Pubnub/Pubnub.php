@@ -19,6 +19,7 @@ class Pubnub
     private $SUBSCRIBE_KEY = 'demo';
     private $SECRET_KEY = '';
     private $CIPHER_KEY = '';
+    private $AUTH_KEY = '';
     private $SSL = false;
     private $SESSION_UUID = '';
     private $PROXY = false;
@@ -55,7 +56,8 @@ class Pubnub
         $origin = false,
         $pem_path = false,
         $uuid = false,
-        $proxy = false
+        $proxy = false,
+        $auth_key = false
     ) {
         if (is_array($first_argument)) {
             $publish_key = isset($first_argument['publish_key']) ? $first_argument['publish_key'] : 'demo';
@@ -67,6 +69,7 @@ class Pubnub
             $pem_path = isset($first_argument['pem_path']) ? $first_argument['pem_path'] : false;
             $uuid = isset($first_argument['uuid']) ? $first_argument['uuid'] : false;
             $proxy = isset($first_argument['proxy']) ? $first_argument['proxy'] : false;
+            $auth_key = isset($first_argument['auth_key']) ? $first_argument['auth_key'] : false;
         } else {
             $publish_key = $first_argument;
         }
@@ -78,6 +81,7 @@ class Pubnub
         $this->SSL = $ssl;
         $this->PROXY = $proxy;
         $this->AES = new PubnubAES();
+        $this->AUTH_KEY = $auth_key;
 
         $this->defaultClient = new DefaultClient($origin, $ssl, $proxy, $pem_path);
         $this->pipelinedClient = new PipelinedClient($origin, $ssl, $proxy, $pem_path);
@@ -364,7 +368,7 @@ class Pubnub
     }
 
     /**
-     * Returns channel list for defined UUID
+    * Returns channel list for defined UUID
      * @param string $uuid
      * @return mixed|null
      * @throws PubnubException
@@ -375,9 +379,6 @@ class Pubnub
             throw new PubnubException('Missing subscribe key in whereNow()');
         }
 
-        $query = array();
-        $uuid = empty($uuid) ? $this->SESSION_UUID : $uuid;
-
         $response = $this->request(array(
             'v2',
             'presence',
@@ -385,7 +386,9 @@ class Pubnub
             $this->SUBSCRIBE_KEY,
             'uuid',
             $uuid
-        ), $query);
+        ), array(
+            'uuid' => empty($uuid) ? $this->SESSION_UUID : $uuid
+        ));
 
         return $response;
     }
@@ -525,6 +528,11 @@ class Pubnub
         $this->pipelinedFlag = false;
     }
 
+    public function setAuthKey($auth_key)
+    {
+        $this->AUTH_KEY = $auth_key;
+    }
+
     /**
      * Performs request depending on pipelined/non-pipelined mode
      *
@@ -569,6 +577,10 @@ class Pubnub
 
         $query['uuid'] = $this->SESSION_UUID;
         $query['pnsdk'] = self::PNSDK;
+
+        if (!empty($this->AUTH_KEY)) {
+            $query['auth'] = $this->AUTH_KEY;
+        }
 
         return $query;
     }

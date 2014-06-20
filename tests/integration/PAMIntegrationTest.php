@@ -117,6 +117,38 @@ class PAMIntegrationTest extends TestCase
     }
 
     /**
+     * @group pam1
+     */
+    public function testNewInstancesWithAuthKey()
+    {
+        $this->pubnub_secret->grant($this->channel_private, 1, 1, 'admin_key', 10);
+        $this->pubnub_secret->grant($this->channel_private, 1, 0, 'user_key', 10);
+        $this->pubnub_secret->grant($this->channel_private, 0, 0, null, 10);
+
+        $nonAuthorizedClient = new Pubnub(array(
+            'subscribe_key' => self::$subscribe,
+            'publish_key' => self::$publish
+        ));
+
+        $authorizedClient = new Pubnub(array(
+            'subscribe_key' => self::$subscribe,
+            'publish_key' => self::$publish,
+            'auth_key' => 'admin_key'
+        ));
+
+        $authorizedResponse = $authorizedClient->publish($this->channel_private, 'hi');
+        $nonAuthorizedResponse = $nonAuthorizedClient->publish($this->channel_private, 'hi');
+
+        $this->assertEquals(1, $authorizedResponse[0]);
+        $this->assertEquals(403, $nonAuthorizedResponse['status']);
+
+        $nonAuthorizedClient->setAuthKey('admin_key');
+        $nonAuthorizedResponse = $nonAuthorizedClient->publish($this->channel_private, 'hi');
+
+        $this->assertEquals(1, $nonAuthorizedResponse[0]);
+    }
+
+    /**
      * @group pam
      */
     public function testRevoke()
