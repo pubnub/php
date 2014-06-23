@@ -38,18 +38,12 @@ PubNub is a Massively Scalable Real-time Service for Web and Mobile Games. This 
     ```
     
 #### PHP >= 5.3 with composer
-  1. Add **pubnub** repository to your composer.json file. Then require **pubnub/pubnub** package at **dev-master** branch:
+  1. Add **pubnub** package to your composer.json file:
   
     ``` json
     {
-        "repositories" : {
-            "pubnub" : {
-                "type":"git",
-                "url":"https://github.com/pubnub/php"
-            }
-        },
         "require": {
-            "pubnub/pubnub": "v3.5.1"
+            "pubnub/pubnub": "v3.5.2"
         }
     }
     ```
