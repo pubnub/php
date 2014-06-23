@@ -3,7 +3,6 @@
     "type": "library",
     "description": "The Only Global Network For Real-Time Data -- PubNub!",
     "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
-    "version": "3.5",
     "homepage": "http://www.pubnub.com/",
     "license": "MIT",
     "authors": [
