@@ -453,6 +453,18 @@ class Pubnub
     }
 
     /**
+     * DEPRECATED! Use history() instead
+     */
+    function detailedHistory()
+    {
+        trigger_error('detailedHistory() methods is deprecated. Use history() instead.', E_USER_DEPRECATED);
+
+        $args = func_get_args();
+
+        return call_user_func_array(array($this, 'history'), $args);
+    }
+
+    /**
      * UUID
      *
      * UUID generator
