@@ -10,8 +10,8 @@ namespace Pubnub;
 class Pubnub
 {
     private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
-    private $PUBLISH_KEY = 'demo';
-    private $SUBSCRIBE_KEY = 'demo';
+    private $PUBLISH_KEY;
+    private $SUBSCRIBE_KEY;
     private $SECRET_KEY = '';
     private $CIPHER_KEY = '';
     private $SSL = false;
@@ -35,11 +35,13 @@ class Pubnub
      * @param boolean $ssl required for 2048 bit encrypted messages.
      * @param bool|string $origin optional setting for cloud origin.
      * @param bool $pem_path
+     * @param bool $uuid
      * @param bool $proxy
+     * @throws PubnubException
      */
     public function __construct(
-        $first_argument = 'demo',
-        $subscribe_key = 'demo',
+        $first_argument = '',
+        $subscribe_key = '',
         $secret_key = false,
         $cipher_key = false,
         $ssl = false,
@@ -48,9 +50,10 @@ class Pubnub
         $uuid = false,
         $proxy = false
     ) {
+
         if (is_array($first_argument)) {
-            $publish_key = isset($first_argument['publish_key']) ? $first_argument['publish_key'] : 'demo';
-            $subscribe_key = isset($first_argument['subscribe_key']) ? $first_argument['subscribe_key'] : 'demo';
+            $publish_key = isset($first_argument['publish_key']) ? $first_argument['publish_key'] : '';
+            $subscribe_key = isset($first_argument['subscribe_key']) ? $first_argument['subscribe_key'] : '';
             $secret_key = isset($first_argument['secret_key']) ? $first_argument['secret_key'] : false;
             $cipher_key = isset($first_argument['cipher_key']) ? $first_argument['cipher_key'] : false;
             $ssl = isset($first_argument['ssl']) ? $first_argument['ssl'] : false;
@@ -60,6 +63,14 @@ class Pubnub
             $proxy = isset($first_argument['proxy']) ? $first_argument['proxy'] : false;
         } else {
             $publish_key = $first_argument;
+        }
+
+        if (empty($publish_key)) {
+            throw new PubnubException('Missing required $publish_key param');
+        }
+
+        if (empty($subscribe_key)) {
+            throw new PubnubException('Missing required $subscribe_key param');
         }
 
         $this->SESSION_UUID = $uuid ? $uuid : self::uuid();
@@ -102,10 +113,6 @@ class Pubnub
         ## Fail if bad input.
         if (empty($channel) || empty($messageOrg)) {
             throw new PubnubException('Missing Channel or Message in publish()');
-        }
-
-        if (empty($this->PUBLISH_KEY)) {
-            throw new PubnubException('Missing Publish Key in publish()');
         }
 
         $message = $this->sendMessage($messageOrg);
@@ -215,10 +222,6 @@ class Pubnub
 
         if (empty($callback)) {
             throw new PubnubException("Missing Callback in subscribe()");
-        }
-
-        if (empty($this->SUBSCRIBE_KEY)) {
-            throw new PubnubException("Missing Subscribe Key in subscribe()");
         }
 
         if (is_array($channel)) {
