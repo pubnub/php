@@ -43,13 +43,15 @@ PubNub is a Massively Scalable Real-time Service for Web and Mobile Games. This 
     ``` json
     {
         "require": {
-            "pubnub/pubnub": "v3.5.2"
+            "pubnub/pubnub": "3.5.*"
         }
     }
     ```
   2. Run ```composer install``` from command line
 
 ### PHP API
+You can instantiate PubNub client using postional list of arguments:
+
 ```php
 $pubnub = new Pubnub(
     "demo",  ## PUBLISH_KEY
@@ -58,13 +60,20 @@ $pubnub = new Pubnub(
     false    ## SSL_ON?
 );
 ```
+or you can use named array:
 
+```php
+$pubnub = new Pubnub(array(
+    'subscribe_key' => 'demo',
+    'publish_key' => 'demo',
+    'uuid' => 'my_uu_id',
+    'ssl' => true
+));
+```
 #### Send Message (PUBLISH)
 ```php
-$info = $pubnub->publish(array(
-    'channel' => 'hello_world', ## REQUIRED Channel to Send
-    'message' => 'Hey World!'   ## REQUIRED Message String/Array
-));
+$info = $pubnub->publish('my_channel', 'Hey World!'));
+
 print_r($info);
 ```
 
@@ -76,43 +85,84 @@ var_dump($timestamp);            ## Prints integer timestamp.
 
 #### Receive Message (SUBSCRIBE)
 ```php
-$pubnub->subscribe(array(
-    'channel'  => 'hello_world',        ## REQUIRED Channel to Listen
-    'callback' => function($message) {  ## REQUIRED Callback With Response
-        var_dump($message);  ## Print Message
-        return true;         ## Keep listening (return false to stop)
-    }
-));
+$pubnub->subscribe('my_channel', function($message) {
+    var_dump($message);  ## Print Message
+    return true;         ## Keep listening (return false to stop)
+});
 ```
 
 #### Realtime Join/Leave Events (Presence)
 ```php
-$pubnub->presence(array(
-    'channel'  => $channel,
-    'callback' => function($message) {
-        print_r($message);
-		echo "\r\n";
-        return true;
-    }
-));
+// will subscribe to *my_channel-pnpres* channel
+$pubnub->presence('my_channel', function($message) {
+    print_r($message);
+    echo "\r\n";
+    return false;
+});
 ```
 
 #### On-demand Occupancy Status (here_now)
 ```php
-$here_now = $pubnub->here_now(array(
-    'channel' => $channel
-));
+$here_now = $pubnub->hereNow('my_channel');
+
+print_r($here_now);
 ```
 
-#### Detailed History (detailedHistory())
+#### History (detailedHistory())
 ```php
-$history = $pubnub->detailedHistory(array(
-    'channel' => $channel,
-    'count'   => 10,
-    'end'   => "13466530169226760"
-));
-```
+$history = $pubnub->history('demo', 3, false, false, 13466530169226760);
 
+print_r($history);
+```
+will output:
+```php
+Array
+(
+    [messages] => Array
+        (
+            [0] => message #1
+            [1] => message #2
+            [2] => message #3
+        )
+
+    [date_from] => 14037149868340218
+    [date_to] => 14037149868888352
+)
+```
+#### History (detailedHistory()) with time tokens
+```php
+$history = $pubnub->history('demo', 3, true);
+
+print_r($history);
+```
+will output:
+```php
+Array
+(
+    [messages] => Array
+        (
+            [0] => Array
+                (
+                    [message] => message #1
+                    [timetoken] => 14037149868340218
+                )
+
+            [1] => Array
+                (
+                    [message] => message #2
+                    [timetoken] => 14037149868613433
+                )
+
+            [2] => Array
+                (
+                    [message] => message #3
+                    [timetoken] => 14037149868888352
+                )
+        )
+    [date_from] => 14037149868340218
+    [date_to] => 14037149868888352
+)
+```
 ## Differences with legacy/composer clients usage
 * in composer cliend you should use namespace **Pubnub** to access Pubnub class:
 
@@ -127,25 +177,16 @@ $history = $pubnub->detailedHistory(array(
 * in **composer** client the most convenient way for defining collbacks is to use **anonymous functions**:
 
   ``` php
-  $pubnub->subscribe(array(
-      'channel'  => 'hello_world',
-      'callback' => function($message) {
-          var_dump($message);
-          return true;
-      }
-  ));
+  $pubnub->subscribe('my_channel', function($message) {
+    var_dump($message);
+    return true;
+  });
   ```
 
   but **anonymous functions** are implemented starting only PHP 5.3 version, so for legacy client you should use **create_function()** function:
 
   ```php
-  $pubnub->subscribe(array(
-      'channel'  => 'hello_world',
-      'callback' => create_function(
-          '$message',
-          'var_dump($message); return true;'
-      )
-  ));
+  $pubnub->subscribe('my_channel', create_function('$message', 'var_dump($message); return true;'));
   ```
 ## How to build
   For building information see README.md file in **core** folder.
