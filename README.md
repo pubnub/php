@@ -104,15 +104,61 @@ $here_now = $pubnub->here_now(array(
 ));
 ```
 
-#### Detailed History (detailedHistory())
+#### History (detailedHistory())
 ```php
-$history = $pubnub->detailedHistory(array(
-    'channel' => $channel,
-    'count'   => 10,
-    'end'   => "13466530169226760"
-));
-```
+$history = $pubnub->history('demo', 3, false, false, 13466530169226760);
 
+print_r($history);
+```
+will output:
+```php
+Array
+(
+    [messages] => Array
+        (
+            [0] => message #1
+            [1] => message #2
+            [2] => message #3
+        )
+
+    [date_from] => 14037149868340218
+    [date_to] => 14037149868888352
+)
+```
+#### History (detailedHistory()) with time tokens
+```php
+$history = $pubnub->history('demo', 3, true);
+
+print_r($history);
+```
+will output:
+```php
+Array
+(
+    [messages] => Array
+        (
+            [0] => Array
+                (
+                    [message] => message #1
+                    [timetoken] => 14037149868340218
+                )
+
+            [1] => Array
+                (
+                    [message] => message #2
+                    [timetoken] => 14037149868613433
+                )
+
+            [2] => Array
+                (
+                    [message] => message #3
+                    [timetoken] => 14037149868888352
+                )
+        )
+    [date_from] => 14037149868340218
+    [date_to] => 14037149868888352
+)
+```
 ## Differences with legacy/composer clients usage
 * in composer cliend you should use namespace **Pubnub** to access Pubnub class:
 
