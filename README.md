@@ -4,11 +4,6 @@
 ##### Clients for PHP and Composer
 
 
-www.pubnub.com - PubNub Real-time Push Service in the Cloud. 
-http://www.pubnub.com/blog/php-push-api-walkthrough/
-
-PubNub is a Massively Scalable Real-time Service for Web and Mobile Games. This is a cloud-based service for broadcasting Real-time messages to thousands of web and mobile clients simultaneously.
-
 ### How to include
 
 #### PHP <= 5.2
