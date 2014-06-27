@@ -1,7 +1,8 @@
-###YOU MUST HAVE A PUBNUB ACCOUNT TO USE THE API.
-###http://www.pubnub.com/account
+## Contact support@pubnub.com for all questions
 
-## PubNub 3.5 Real-time Cloud Push API - PHP
+#### [PubNub](http://www.pubnub.com) Real-time Data Network
+##### Clients for PHP and Composer
+
 
 www.pubnub.com - PubNub Real-time Push Service in the Cloud. 
 http://www.pubnub.com/blog/php-push-api-walkthrough/
@@ -191,4 +192,4 @@ Array
 ## How to build
   For building information see README.md file in **core** folder.
   
-  
+## Contact support@pubnub.com for all questions
