@@ -1,3 +1,5 @@
+## Contact support@pubnub.com for all questions
+
 ## How to build
 
 Run ```./build.sh``` script in **core** folder. It will generate new sources for **legacy** and **composer** folders.
@@ -75,3 +77,4 @@ Run ```./build.sh``` script in **core** folder. It will generate new sources for
   ...
   ?>
   ```
+  ## Contact support@pubnub.com for all questions
