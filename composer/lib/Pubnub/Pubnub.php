@@ -15,8 +15,9 @@ class Pubnub
 {
     const PNSDK = 'Pubnub-PHP%2F3.6.0';
 
-    private $PUBLISH_KEY = 'demo';
-    private $SUBSCRIBE_KEY = 'demo';
+    private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
+    private $PUBLISH_KEY;
+    private $SUBSCRIBE_KEY;
     private $SECRET_KEY = '';
     private $CIPHER_KEY = '';
     private $AUTH_KEY = '';
@@ -46,10 +47,11 @@ class Pubnub
      * @param bool $pem_path
      * @param bool $uuid
      * @param bool $proxy
+     * @throws PubnubException
      */
     public function __construct(
-        $first_argument = 'demo',
-        $subscribe_key = 'demo',
+        $first_argument = '',
+        $subscribe_key = '',
         $secret_key = false,
         $cipher_key = false,
         $ssl = false,
@@ -59,9 +61,10 @@ class Pubnub
         $proxy = false,
         $auth_key = false
     ) {
+
         if (is_array($first_argument)) {
-            $publish_key = isset($first_argument['publish_key']) ? $first_argument['publish_key'] : 'demo';
-            $subscribe_key = isset($first_argument['subscribe_key']) ? $first_argument['subscribe_key'] : 'demo';
+            $publish_key = isset($first_argument['publish_key']) ? $first_argument['publish_key'] : '';
+            $subscribe_key = isset($first_argument['subscribe_key']) ? $first_argument['subscribe_key'] : '';
             $secret_key = isset($first_argument['secret_key']) ? $first_argument['secret_key'] : false;
             $cipher_key = isset($first_argument['cipher_key']) ? $first_argument['cipher_key'] : false;
             $ssl = isset($first_argument['ssl']) ? $first_argument['ssl'] : false;
@@ -72,6 +75,14 @@ class Pubnub
             $auth_key = isset($first_argument['auth_key']) ? $first_argument['auth_key'] : false;
         } else {
             $publish_key = $first_argument;
+        }
+
+        if (empty($publish_key)) {
+            throw new PubnubException('Missing required $publish_key param');
+        }
+
+        if (empty($subscribe_key)) {
+            throw new PubnubException('Missing required $subscribe_key param');
         }
 
         $this->SESSION_UUID = $uuid ? $uuid : self::uuid();
@@ -275,10 +286,6 @@ class Pubnub
 
         if (empty($callback)) {
             throw new PubnubException("Missing Callback in subscribe()");
-        }
-
-        if (empty($this->SUBSCRIBE_KEY)) {
-            throw new PubnubException("Missing Subscribe Key in subscribe()");
         }
 
         if (is_array($channel)) {
@@ -556,6 +563,18 @@ class Pubnub
         );
 
         return $result;
+    }
+
+    /**
+     * DEPRECATED! Use history() instead
+     */
+    function detailedHistory()
+    {
+        trigger_error('detailedHistory() methods is deprecated. Use history() instead.', E_USER_DEPRECATED);
+
+        $args = func_get_args();
+
+        return call_user_func_array(array($this, 'history'), $args);
     }
 
     /**
