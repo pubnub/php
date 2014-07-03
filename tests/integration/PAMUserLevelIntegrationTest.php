@@ -3,10 +3,11 @@
 use Pubnub\Pubnub;
 use Pubnub\PubnubPAM;
 
-class PAMIntegrationTest extends TestCase
+class PAMUserIntegrationTest extends TestCase
 {
     /** @var  PubnubPAM */
     protected $pam;
+    /** @var  Pubnub */
     protected $pubnub_secret;
     protected $channel_public = 'pubnub_php_test_grant_public';
     protected $channel_private = 'pubnub_php_test_grant_private';
@@ -27,73 +28,23 @@ class PAMIntegrationTest extends TestCase
             'publish_key' => self::$publish,
             'secret_key' => self::$secret
         ));
+
+        $this->pubnub_secret->revoke();
+
+        sleep(5);
     }
 
     /**
      * @group pam
+     * @group pam-user
      */
     public function testGrantNoReadNoWrite()
     {
-        $response = $this->pubnub_secret->grant($this->channel_public, 0, 0, null, 10);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['w']);
-        $this->assertEquals('channel', $response['payload']['level']);
-    }
+        $this->pubnub_secret->grant(0, 0, $this->channel_private, self::$access_key);
 
-    /**
-     * @group pam
-     */
-    public function testGrantReadNoWrite()
-    {
-        $response = $this->pubnub_secret->grant($this->channel_public, 1, 0, null, 10);
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['w']);
-        $this->assertEquals('channel', $response['payload']['level']);
-    }
-
-    /**
-     * @group pam
-     */
-    public function testGrantNoReadWrite()
-    {
-        $response = $this->pubnub_secret->grant($this->channel_public, 0, 1, null, 10);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['w']);
-        $this->assertEquals('channel', $response['payload']['level']);
-    }
-
-    /**
-     * @group pam
-     */
-    public function testGrantReadWrite()
-    {
-        $response = $this->pubnub_secret->grant($this->channel_public, 1, 1, null, 10);
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['w']);
-        $this->assertEquals('channel', $response['payload']['level']);
-    }
-
-    /**
-     * @group pam
-     */
-    public function testGrantReadWritePrivate()
-    {
-        $response = $this->pubnub_secret->grant($this->channel_private, 1, 1, self::$access_key, 10);
-        $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['r']);
-        $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['w']);
-        $this->assertEquals('user', $response['payload']['level']);
-        $this->assertEquals($this->channel_private, $response['payload']['channel']);
-    }
-
-    /**
-     * @group pam
-     */
-    public function testAuditAuthKey()
-    {
-        // granting read-only access to user
-        $this->pubnub_secret->grant($this->channel_private, 1, 0, self::$access_key, 10);
         $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
-        $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['r']);
+
+        $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['r']);
         $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['w']);
         $this->assertEquals('user', $response['payload']['level']);
         $this->assertEquals($this->channel_private, $response['payload']['channel']);
@@ -101,15 +52,62 @@ class PAMIntegrationTest extends TestCase
 
     /**
      * @group pam
+     * @group pam-user
+     */
+    public function testGrantReadNoWrite()
+    {
+        $this->pubnub_secret->grant(1, 0, $this->channel_private, self::$access_key);
+
+        $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
+
+        $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['r']);
+        $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['w']);
+        $this->assertEquals('user', $response['payload']['level']);
+    }
+
+    /**
+     * @group pam
+     * @group pam-user
+     */
+    public function testGrantNoReadWrite()
+    {
+        $this->pubnub_secret->grant(0, 1, $this->channel_private, self::$access_key);
+
+        $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
+
+        $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['r']);
+        $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['w']);
+        $this->assertEquals('user', $response['payload']['level']);
+    }
+
+    /**
+     * @group pam
+     * @group pam-user
+     */
+    public function testGrantReadWrite()
+    {
+        $this->pubnub_secret->grant(1, 1, $this->channel_private, self::$access_key);
+
+        $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
+
+        $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['r']);
+        $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['w']);
+        $this->assertEquals('user', $response['payload']['level']);
+    }
+
+    /**
+     * @group pam
+     * @group pam-user
      */
     public function testAuditNoAuth()
     {
         // granting rw access to admin, r to user, non-avail to users w\o auth key
-        $this->pubnub_secret->grant($this->channel_private, 1, 1, 'admin_key', 10);
-        $this->pubnub_secret->grant($this->channel_private, 1, 0, 'user_key', 10);
-        $this->pubnub_secret->grant($this->channel_private, 0, 0, null, 10);
+        $this->pubnub_secret->grant(1, 1, $this->channel_private, 'admin_key', 10);
+        $this->pubnub_secret->grant(1, 0, $this->channel_private, 'user_key', 10);
+        $this->pubnub_secret->grant(0, 0, $this->channel_private);
 
         $response = $this->pubnub_secret->audit($this->channel_private);
+
         $this->assertEquals('1', $response['payload']['channels'][$this->channel_private]['auths']['admin_key']['w']);
         $this->assertEquals('0', $response['payload']['channels'][$this->channel_private]['auths']['user_key']['w']);
         $this->assertEquals('0', $response['payload']['channels'][$this->channel_private]['w']);
@@ -117,13 +115,14 @@ class PAMIntegrationTest extends TestCase
     }
 
     /**
-     * @group pam1
+     * @group pam
+     * @group pam-user
      */
     public function testNewInstancesWithAuthKey()
     {
-        $this->pubnub_secret->grant($this->channel_private, 1, 1, 'admin_key', 10);
-        $this->pubnub_secret->grant($this->channel_private, 1, 0, 'user_key', 10);
-        $this->pubnub_secret->grant($this->channel_private, 0, 0, null, 10);
+        $this->pubnub_secret->grant(1, 1, $this->channel_private, 'admin_key', 10);
+        $this->pubnub_secret->grant(1, 0, $this->channel_private, 'user_key', 10);
+        $this->pubnub_secret->grant(0, 0, $this->channel_private, null, 10);
 
         $nonAuthorizedClient = new Pubnub(array(
             'subscribe_key' => self::$subscribe,
@@ -150,13 +149,16 @@ class PAMIntegrationTest extends TestCase
 
     /**
      * @group pam
+     * @group pam-user
      */
     public function testRevoke()
     {
-        $this->pubnub_secret->grant($this->channel_private, 1, 1, 'admin_key', 10);
-        $response = $this->pubnub_secret->revoke($this->channel_private, 'admin_key');
+        $this->pubnub_secret->grant(1, 1, $this->channel_private, 'admin_key');
+        $this->pubnub_secret->revoke($this->channel_private, 'admin_key');
+
+        $response = $this->pubnub_secret->audit($this->channel_private, 'admin_key');
+
         $this->assertEquals('0', $response['payload']['auths']['admin_key']['w']);
         $this->assertEquals('0', $response['payload']['auths']['admin_key']['r']);
     }
 }
- 

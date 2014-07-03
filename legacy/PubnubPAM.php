@@ -35,7 +35,7 @@ class PubnubPAM
      *
      * @return array
      */
-    public function grant($channel, $read, $write, $auth_key, $ttl)
+    public function grant($read, $write, $channel, $auth_key, $ttl)
     {
         return $this->getRequestParams(array(
             'method' => 'grant',
@@ -70,7 +70,7 @@ class PubnubPAM
      */
     public function revoke($channel, $auth_key)
     {
-        return $this->grant($channel, 0, 0, $auth_key, null);
+        return $this->grant(0, 0, $channel, $auth_key, null);
     }
 
     /**
@@ -88,9 +88,6 @@ class PubnubPAM
 
         if (isset($query['channel'])) {
             $params['channel'] = $query['channel'];
-        } else {
-            echo('Missing Channel');
-            return false;
         }
 
         $params['pnsdk'] = $this->pnsdk;

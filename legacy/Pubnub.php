@@ -604,26 +604,26 @@ class Pubnub
     }
 
     /**
-     * @param $channel
-     * @param $read
-     * @param $write
-     * @param null $auth_key
-     * @param null $ttl
+     * @param bool $read
+     * @param bool $write
+     * @param string|null $channel
+     * @param string|null $auth_key
+     * @param int|null $ttl
      * @return mixed
      */
-    public function grant($channel, $read, $write, $auth_key = null, $ttl = null) {
+    public function grant($read, $write, $channel = null, $auth_key = null, $ttl = null) {
 
-        $request_params = $this->pam()->grant($channel, $read, $write, $auth_key, $ttl, $this->SESSION_UUID);
+        $request_params = $this->pam()->grant($read, $write, $channel, $auth_key, $ttl, $this->SESSION_UUID);
 
         return $this->request($request_params['url'], $request_params['search'], false);
     }
 
     /**
-     * @param $channel
-     * @param null $auth_key
+     * @param string|null $channel
+     * @param string|null $auth_key
      * @return mixed
      */
-    public function audit($channel, $auth_key = null) {
+    public function audit($channel = null, $auth_key = null) {
 
         $request_params = $this->pam()->audit($channel, $auth_key, $this->SESSION_UUID);
 
@@ -631,11 +631,11 @@ class Pubnub
     }
 
     /**
-     * @param $channel
-     * @param null $auth_key
+     * @param string|null $channel
+     * @param string|null $auth_key
      * @return mixed
      */
-    public function revoke($channel, $auth_key = null) {
+    public function revoke($channel = null, $auth_key = null) {
 
         $request_params = $this->pam()->revoke($channel, $auth_key, $this->SESSION_UUID);
 
