@@ -3,7 +3,7 @@
 use Pubnub\Pubnub;
 use Pubnub\PubnubPAM;
 
-class PAMSubKeyIntegrationTest extends TestCase
+class PAMSubKeyLevelIntegrationTest extends TestCase
 {
     /** @var  PubnubPAM */
     protected $pam;

@@ -4,7 +4,7 @@ require_once('../../legacy/Pubnub.php');
 require_once('../../legacy/PubnubPAM.php');
 require_once('TestCase.php');
 
-class PAMSubKeyIntegrationTest extends TestCase
+class PAMSubKeyLevelIntegrationTest extends TestCase
 {
     /** @var  PubnubPAM */
     protected $pam;
