@@ -9,8 +9,7 @@ class PAMSubKeyLevelIntegrationTest extends TestCase
     protected $pam;
     /** @var  Pubnub */
     protected $pubnub_secret;
-    protected $channel_public = 'pubnub_php_test_grant_public';
-    protected $channel_private = 'pubnub_php_test_grant_private';
+    protected $channel;
 
     protected static $publish = 'pub-c-81d9633a-c5a0-4d6c-9600-fda148b61648';
     protected static $subscribe = 'sub-c-35ffee42-e763-11e3-afd8-02ee2ddab7fe';
@@ -22,6 +21,8 @@ class PAMSubKeyLevelIntegrationTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        $this->channel = 'pubnub_php_test_pam_' . phpversion() . time();
 
         $this->pubnub_secret = new Pubnub(array(
             'subscribe_key' => self::$subscribe,

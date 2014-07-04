@@ -9,8 +9,7 @@ class PAMChannelLevelIntegrationTest extends TestCase
     protected $pam;
     /** @var  Pubnub */
     protected $pubnub_secret;
-    protected $channel_public = 'pubnub_php_test_grant_public';
-    protected $channel_private = 'pubnub_php_test_grant_private';
+    protected $channel;
 
     protected static $publish = 'pub-c-81d9633a-c5a0-4d6c-9600-fda148b61648';
     protected static $subscribe = 'sub-c-35ffee42-e763-11e3-afd8-02ee2ddab7fe';
@@ -22,6 +21,8 @@ class PAMChannelLevelIntegrationTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        $this->channel = 'pubnub_php_test_pam_' . phpversion() . time();
 
         $this->pubnub_secret = new Pubnub(array(
             'subscribe_key' => self::$subscribe,
@@ -40,12 +41,12 @@ class PAMChannelLevelIntegrationTest extends TestCase
      */
     public function testGrantNoReadNoWrite()
     {
-        $this->pubnub_secret->grant(0, 0, $this->channel_public);
+        $this->pubnub_secret->grant(0, 0, $this->channel);
 
-        $response = $this->pubnub_secret->audit($this->channel_public);
+        $response = $this->pubnub_secret->audit($this->channel);
 
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['w']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['r']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['w']);
         $this->assertEquals('channel', $response['payload']['level']);
     }
 
@@ -55,12 +56,12 @@ class PAMChannelLevelIntegrationTest extends TestCase
      */
     public function testGrantReadNoWrite()
     {
-        $this->pubnub_secret->grant(1, 0, $this->channel_public);
+        $this->pubnub_secret->grant(1, 0, $this->channel);
 
-        $response = $this->pubnub_secret->audit($this->channel_public);
+        $response = $this->pubnub_secret->audit($this->channel);
 
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['w']);
+        $this->assertEquals('1', $response['payload']['channels'][$this->channel]['r']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['w']);
         $this->assertEquals('channel', $response['payload']['level']);
     }
 
@@ -70,12 +71,12 @@ class PAMChannelLevelIntegrationTest extends TestCase
      */
     public function testGrantNoReadWrite()
     {
-        $this->pubnub_secret->grant(0, 1, $this->channel_public);
+        $this->pubnub_secret->grant(0, 1, $this->channel);
 
-        $response = $this->pubnub_secret->audit($this->channel_public);
+        $response = $this->pubnub_secret->audit($this->channel);
 
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['w']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['r']);
+        $this->assertEquals('1', $response['payload']['channels'][$this->channel]['w']);
         $this->assertEquals('channel', $response['payload']['level']);
     }
 
@@ -85,12 +86,12 @@ class PAMChannelLevelIntegrationTest extends TestCase
      */
     public function testGrantReadWrite()
     {
-        $this->pubnub_secret->grant(1, 1, $this->channel_public);
+        $this->pubnub_secret->grant(1, 1, $this->channel);
 
-        $response = $this->pubnub_secret->audit($this->channel_public);
+        $response = $this->pubnub_secret->audit($this->channel);
 
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['r']);
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_public]['w']);
+        $this->assertEquals('1', $response['payload']['channels'][$this->channel]['r']);
+        $this->assertEquals('1', $response['payload']['channels'][$this->channel]['w']);
         $this->assertEquals('channel', $response['payload']['level']);
     }
 
@@ -100,12 +101,12 @@ class PAMChannelLevelIntegrationTest extends TestCase
      */
     public function testRevoke()
     {
-        $this->pubnub_secret->grant(1, 1, $this->channel_private, 10);
+        $this->pubnub_secret->grant(1, 1, $this->channel, 10);
 
-        $response = $this->pubnub_secret->revoke($this->channel_private);
+        $response = $this->pubnub_secret->revoke($this->channel);
 
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_private]['w']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_private]['r']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['w']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['r']);
     }
 }
  

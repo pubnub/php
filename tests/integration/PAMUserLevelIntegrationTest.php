@@ -9,8 +9,7 @@ class PAMUserIntegrationTest extends TestCase
     protected $pam;
     /** @var  Pubnub */
     protected $pubnub_secret;
-    protected $channel_public = 'pubnub_php_test_grant_public';
-    protected $channel_private = 'pubnub_php_test_grant_private';
+    protected $channel;
 
     protected static $publish = 'pub-c-81d9633a-c5a0-4d6c-9600-fda148b61648';
     protected static $subscribe = 'sub-c-35ffee42-e763-11e3-afd8-02ee2ddab7fe';
@@ -22,6 +21,8 @@ class PAMUserIntegrationTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        $this->channel = 'pubnub_php_test_pam_' . phpversion() . time();
 
         $this->pubnub_secret = new Pubnub(array(
             'subscribe_key' => self::$subscribe,
@@ -40,14 +41,14 @@ class PAMUserIntegrationTest extends TestCase
      */
     public function testGrantNoReadNoWrite()
     {
-        $this->pubnub_secret->grant(0, 0, $this->channel_private, self::$access_key);
+        $this->pubnub_secret->grant(0, 0, $this->channel, self::$access_key);
 
-        $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
+        $response = $this->pubnub_secret->audit($this->channel, self::$access_key);
 
         $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['r']);
         $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['w']);
         $this->assertEquals('user', $response['payload']['level']);
-        $this->assertEquals($this->channel_private, $response['payload']['channel']);
+        $this->assertEquals($this->channel, $response['payload']['channel']);
     }
 
     /**
@@ -56,9 +57,9 @@ class PAMUserIntegrationTest extends TestCase
      */
     public function testGrantReadNoWrite()
     {
-        $this->pubnub_secret->grant(1, 0, $this->channel_private, self::$access_key);
+        $this->pubnub_secret->grant(1, 0, $this->channel, self::$access_key);
 
-        $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
+        $response = $this->pubnub_secret->audit($this->channel, self::$access_key);
 
         $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['r']);
         $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['w']);
@@ -71,9 +72,9 @@ class PAMUserIntegrationTest extends TestCase
      */
     public function testGrantNoReadWrite()
     {
-        $this->pubnub_secret->grant(0, 1, $this->channel_private, self::$access_key);
+        $this->pubnub_secret->grant(0, 1, $this->channel, self::$access_key);
 
-        $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
+        $response = $this->pubnub_secret->audit($this->channel, self::$access_key);
 
         $this->assertEquals('0', $response['payload']['auths'][self::$access_key]['r']);
         $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['w']);
@@ -86,9 +87,9 @@ class PAMUserIntegrationTest extends TestCase
      */
     public function testGrantReadWrite()
     {
-        $this->pubnub_secret->grant(1, 1, $this->channel_private, self::$access_key);
+        $this->pubnub_secret->grant(1, 1, $this->channel, self::$access_key);
 
-        $response = $this->pubnub_secret->audit($this->channel_private, self::$access_key);
+        $response = $this->pubnub_secret->audit($this->channel, self::$access_key);
 
         $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['r']);
         $this->assertEquals('1', $response['payload']['auths'][self::$access_key]['w']);
@@ -102,16 +103,16 @@ class PAMUserIntegrationTest extends TestCase
     public function testAuditNoAuth()
     {
         // granting rw access to admin, r to user, non-avail to users w\o auth key
-        $this->pubnub_secret->grant(1, 1, $this->channel_private, 'admin_key', 10);
-        $this->pubnub_secret->grant(1, 0, $this->channel_private, 'user_key', 10);
-        $this->pubnub_secret->grant(0, 0, $this->channel_private);
+        $this->pubnub_secret->grant(1, 1, $this->channel, 'admin_key', 10);
+        $this->pubnub_secret->grant(1, 0, $this->channel, 'user_key', 10);
+        $this->pubnub_secret->grant(0, 0, $this->channel);
 
-        $response = $this->pubnub_secret->audit($this->channel_private);
+        $response = $this->pubnub_secret->audit($this->channel);
 
-        $this->assertEquals('1', $response['payload']['channels'][$this->channel_private]['auths']['admin_key']['w']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_private]['auths']['user_key']['w']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_private]['w']);
-        $this->assertEquals('0', $response['payload']['channels'][$this->channel_private]['r']);
+        $this->assertEquals('1', $response['payload']['channels'][$this->channel]['auths']['admin_key']['w']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['auths']['user_key']['w']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['w']);
+        $this->assertEquals('0', $response['payload']['channels'][$this->channel]['r']);
     }
 
     /**
@@ -120,9 +121,9 @@ class PAMUserIntegrationTest extends TestCase
      */
     public function testNewInstancesWithAuthKey()
     {
-        $this->pubnub_secret->grant(1, 1, $this->channel_private, 'admin_key', 10);
-        $this->pubnub_secret->grant(1, 0, $this->channel_private, 'user_key', 10);
-        $this->pubnub_secret->grant(0, 0, $this->channel_private, null, 10);
+        $this->pubnub_secret->grant(1, 1, $this->channel, 'admin_key', 10);
+        $this->pubnub_secret->grant(1, 0, $this->channel, 'user_key', 10);
+        $this->pubnub_secret->grant(0, 0, $this->channel, null, 10);
 
         $nonAuthorizedClient = new Pubnub(array(
             'subscribe_key' => self::$subscribe,
@@ -135,14 +136,14 @@ class PAMUserIntegrationTest extends TestCase
             'auth_key' => 'admin_key'
         ));
 
-        $authorizedResponse = $authorizedClient->publish($this->channel_private, 'hi');
-        $nonAuthorizedResponse = $nonAuthorizedClient->publish($this->channel_private, 'hi');
+        $authorizedResponse = $authorizedClient->publish($this->channel, 'hi');
+        $nonAuthorizedResponse = $nonAuthorizedClient->publish($this->channel, 'hi');
 
         $this->assertEquals(1, $authorizedResponse[0]);
         $this->assertEquals(403, $nonAuthorizedResponse['status']);
 
         $nonAuthorizedClient->setAuthKey('admin_key');
-        $nonAuthorizedResponse = $nonAuthorizedClient->publish($this->channel_private, 'hi');
+        $nonAuthorizedResponse = $nonAuthorizedClient->publish($this->channel, 'hi');
 
         $this->assertEquals(1, $nonAuthorizedResponse[0]);
     }
@@ -153,10 +154,10 @@ class PAMUserIntegrationTest extends TestCase
      */
     public function testRevoke()
     {
-        $this->pubnub_secret->grant(1, 1, $this->channel_private, 'admin_key');
-        $this->pubnub_secret->revoke($this->channel_private, 'admin_key');
+        $this->pubnub_secret->grant(1, 1, $this->channel, 'admin_key');
+        $this->pubnub_secret->revoke($this->channel, 'admin_key');
 
-        $response = $this->pubnub_secret->audit($this->channel_private, 'admin_key');
+        $response = $this->pubnub_secret->audit($this->channel, 'admin_key');
 
         $this->assertEquals('0', $response['payload']['auths']['admin_key']['w']);
         $this->assertEquals('0', $response['payload']['auths']['admin_key']['r']);
