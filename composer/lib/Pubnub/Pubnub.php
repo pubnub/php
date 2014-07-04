@@ -672,10 +672,10 @@ class Pubnub
      * @param int $options
      * @return mixed
      */
-    private static function decode($val, $assoc = true, $depth = 512, $options = 0)
+    private static function decode($val, $assoc = true, $depth = 512)
     {
 
-        return json_decode($val, $assoc, $depth, $options);
+        return json_decode($val, $assoc, $depth);
 
     }
 }
