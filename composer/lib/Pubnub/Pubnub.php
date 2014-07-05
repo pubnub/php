@@ -266,6 +266,7 @@ class Pubnub
             $uuid
         ));
     }
+
     /**
      * Subscribe
      *
@@ -357,8 +358,15 @@ class Pubnub
                 }
 
                 if ($exit_now) {
+                    $channels = explode(',', $channel);
+
+                    foreach ($channels as $ch) {
+                        $this->leave($ch);
+                    }
+
                     return;
                 }
+
             } catch (Exception $error) {
                 $this->handleError($error);
                 $timeToken = $this->throwAndResetTimeToken($callback, "Unknown error.");
@@ -651,6 +659,19 @@ class Pubnub
     public function setAuthKey($auth_key)
     {
         $this->AUTH_KEY = $auth_key;
+    }
+
+    private function leave($channel)
+    {
+        $this->request(array(
+            'v2',
+            'presence',
+            'sub_key',
+            $this->SUBSCRIBE_KEY,
+            'channel',
+            $channel,
+            'leave'
+        ));
     }
 
     /**
