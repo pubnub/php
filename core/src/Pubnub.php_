@@ -657,7 +657,7 @@ class Pubnub
 
         return $this->request($request_params['url'], $request_params['search'], false);
     }
-#ifdef PHP53
+
     /**
      * Pipelines multiple requests into a single connection
      *
@@ -670,7 +670,7 @@ class Pubnub
         $this->pipelinedClient->execute();
         $this->pipelinedFlag = false;
     }
-#elsif
+
     public function pipelineStart()
     {
         $this->pipelinedFlag = true;
@@ -681,7 +681,7 @@ class Pubnub
         $this->pipelinedClient->execute();
         $this->pipelinedFlag = false;
     }
-#endif
+
     public function setAuthKey($auth_key)
     {
         $this->AUTH_KEY = $auth_key;

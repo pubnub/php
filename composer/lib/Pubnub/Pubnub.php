@@ -642,7 +642,7 @@ class Pubnub
 
         return $this->request($request_params['url'], $request_params['search'], false);
     }
- 
+
     /**
      * Pipelines multiple requests into a single connection
      *
@@ -652,6 +652,17 @@ class Pubnub
     {
         $this->pipelinedFlag = true;
         $callback($this);
+        $this->pipelinedClient->execute();
+        $this->pipelinedFlag = false;
+    }
+
+    public function pipelineStart()
+    {
+        $this->pipelinedFlag = true;
+    }
+
+    public function pipelineEnd()
+    {
         $this->pipelinedClient->execute();
         $this->pipelinedFlag = false;
     }

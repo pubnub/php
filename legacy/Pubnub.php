@@ -650,6 +650,19 @@ class Pubnub
         return $this->request($request_params['url'], $request_params['search'], false);
     }
 
+    /**
+     * Pipelines multiple requests into a single connection
+     *
+     * @param Callback $callback
+     */
+    public function pipeline($callback)
+    {
+        $this->pipelinedFlag = true;
+        $callback($this);
+        $this->pipelinedClient->execute();
+        $this->pipelinedFlag = false;
+    }
+
     public function pipelineStart()
     {
         $this->pipelinedFlag = true;
