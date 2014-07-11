@@ -1,8 +1,11 @@
 ## Contact support@pubnub.com for all questions
 
 #### [PubNub](http://www.pubnub.com) Real-time Data Network
-##### Clients for PHP and Composer
 
+##### Clients for PHP and Composer
+### Code Status
+
+* [![Build Status](https://travis-ci.org/pubnub/php.svg?branch=master)](https://travis-ci.org/pubnub/php)
 
 ### How to include
 
