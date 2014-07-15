@@ -42,7 +42,7 @@
     ``` json
     {
         "require": {
-            "pubnub/pubnub": "3.5.*"
+            "pubnub/php": "3.5.*"
         }
     }
     ```
