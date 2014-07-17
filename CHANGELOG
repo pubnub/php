@@ -1,0 +1,22 @@
+07-04-14 3.5.4
+. Fixed json_decode arguments in PHP v5.3
+
+06-25-14 3.5.3
+. Removed default publish_key and subscribe_key
+. Added alias detailedHistory() => history()
+. Fixed README.md examples
+
+06-23-14 3.5.2
+. Removed version definition from composer.json file
+
+06-16-14 3.5.1
+. Removed redundant include_tt argument from history
+. Added uuid and fixed proxy arguments in constructor
+. Added missing Publish Key exception to publish methodQ
+. Added missing Subscribe Key to subscribe method
+
+06-14-14 3.5.0
+. Added template system. Both composer and legacy clients now are generated from .php_ templates in core folder
+. Renamed detailedHistory => history
+. Added Unit tests
+. Added support of hash config in constructor
