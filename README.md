@@ -163,6 +163,32 @@ Array
     [date_to] => 14037149868888352
 )
 ```
+
+#### Current channels for given subscriber (whereNow)
+```php
+$result = $pubnub->whereNow('user_uuid');
+
+print_r($result);
+```
+will output:
+```php
+Array
+(
+    [status] => 200
+    [message] => OK
+    [payload] => Array
+        (
+            [channels] => Array
+                (
+                    [0] => demo_channel
+                )
+
+        )
+
+    [service] => Presence
+)
+```
+
 ## Differences with legacy/composer clients usage
 * in composer cliend you should use namespace **Pubnub** to access Pubnub class:
 
