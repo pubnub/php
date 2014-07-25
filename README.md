@@ -71,7 +71,7 @@ $pubnub = new Pubnub(array(
 ```
 #### Send Message (PUBLISH)
 ```php
-$info = $pubnub->publish('my_channel', 'Hey World!'));
+$info = $pubnub->publish('my_channel', 'Hey World!');
 
 print_r($info);
 ```
