@@ -49,6 +49,8 @@
 You can instantiate PubNub client using postional list of arguments:
 
 ```php
+use Pubnub\Pubnub;
+
 $pubnub = new Pubnub(
     "demo",  ## PUBLISH_KEY
     "demo",  ## SUBSCRIBE_KEY
@@ -59,6 +61,8 @@ $pubnub = new Pubnub(
 or you can use named array:
 
 ```php
+use Pubnub\Pubnub;
+
 $pubnub = new Pubnub(array(
     'subscribe_key' => 'demo',
     'publish_key' => 'demo',
