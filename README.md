@@ -103,9 +103,18 @@ $pubnub->presence('my_channel', function($message) {
 
 #### On-demand Occupancy Status (here_now)
 ```php
+// all users of specific channel with uuids
 $here_now = $pubnub->hereNow('my_channel');
 
-print_r($here_now);
+// all users of specific channel without uuids
+$here_now = $pubnub->hereNow('my_channel', true);
+
+// all users of specific channel with state info
+$here_now = $pubnub->hereNow('my_channel', false, true);
+
+// all users of all channels for given subscribe key
+$here_now = $pubnub->hereNow();
+
 ```
 
 #### History (detailedHistory())
