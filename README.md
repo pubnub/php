@@ -189,6 +189,32 @@ Array
 )
 ```
 
+#### User state information  (setState/getState)
+```php
+$pubnub->setState('demo', array('name' => 'Mike', 'status' => 'busy', 'age' => 30));
+$result = $pubnub->getState('demo', $pubnub->getUUID());
+
+print_r($result);
+```
+will output:
+```php
+Array
+(
+    [status] => 200
+    [uuid] => DE2BE11A-9ABE-4ACE-B742-8B0508112619
+    [service] => Presence
+    [message] => OK
+    [payload] => Array
+        (
+            [status] => busy
+            [age] => 30
+            [name] => Mike
+        )
+
+    [channel] => demo
+)
+```
+
 ## Differences with legacy/composer clients usage
 * in composer cliend you should use namespace **Pubnub** to access Pubnub class:
 
