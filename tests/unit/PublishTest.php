@@ -23,12 +23,7 @@ class PublishTest extends \TestCase
             'cipher_key' => 'enigma'
         ));
 
-        $this->pubnub_sec = new Pubnub(array(
-            'subscribe_key' => 'demo',
-            'publish_key' => 'demo',
-            'origin' => 'pubsub.pubnub.com',
-            'secret_key' => 'sec-c-YjFmNzYzMGMtYmI3NC00NzJkLTlkYzYtY2MwMzI4YTJhNDVh'
-        ));
+        sleep(1);
     }
 
     /**
@@ -59,18 +54,6 @@ class PublishTest extends \TestCase
     /**
      * @group publish
      */
-    public function testPublishSecretKey()
-    {
-        $response = $this->pubnub_sec->publish(static::$channel, static::$message);
-
-        $this->assertEquals(1, $response[0]);
-        $this->assertEquals('Sent', $response[1]);
-        $this->assertGreaterThan(1400688897 * 10000000, $response[2]);
-    }
-
-    /**
-     * @group publish
-     */
     public function testPipelinedPublish()
     {
         $timetoken = time();
@@ -79,24 +62,21 @@ class PublishTest extends \TestCase
             $this->pubnub->pipeline(function ($pubnub) use ($timetoken) {
                 $pubnub->publish(self::$channel, "Pipelined message $timetoken #1");
                 $pubnub->publish(self::$channel, "Pipelined message $timetoken #2");
-                $pubnub->publish(self::$channel, "Pipelined message $timetoken #3");
             });
         } else {
             $this->pubnub->pipelineStart();
             $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #1");
             $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #2");
-            $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #3");
             $this->pubnub->pipelineEnd();
         }
 
 
         sleep(1);
 
-        $history = $this->pubnub->history(self::$channel, 3);
+        $history = $this->pubnub->history(self::$channel, 2);
 
         $this->assertContains("Pipelined message $timetoken #1", $history['messages']);
         $this->assertContains("Pipelined message $timetoken #2", $history['messages']);
-        $this->assertContains("Pipelined message $timetoken #3", $history['messages']);
     }
 
     /**
