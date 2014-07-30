@@ -4,7 +4,6 @@ use Pubnub\Pubnub;
 
 abstract class TestCase extends PHPUnit_Framework_TestCase {
 
-    /** @var Pubnub pubnub */
     protected $pubnub;
 
     public function setUp()

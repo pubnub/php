@@ -106,9 +106,18 @@ $pubnub->presence('my_channel', function($message) {
 
 #### On-demand Occupancy Status (here_now)
 ```php
+// all users of specific channel with uuids
 $here_now = $pubnub->hereNow('my_channel');
 
-print_r($here_now);
+// all users of specific channel without uuids
+$here_now = $pubnub->hereNow('my_channel', true);
+
+// all users of specific channel with state info
+$here_now = $pubnub->hereNow('my_channel', false, true);
+
+// all users of all channels for given subscribe key
+$here_now = $pubnub->hereNow();
+
 ```
 
 #### History (detailedHistory())
@@ -166,6 +175,58 @@ Array
     [date_to] => 14037149868888352
 )
 ```
+
+#### Current channels for given subscriber (whereNow)
+```php
+$result = $pubnub->whereNow('user_uuid');
+
+print_r($result);
+```
+will output:
+```php
+Array
+(
+    [status] => 200
+    [message] => OK
+    [payload] => Array
+        (
+            [channels] => Array
+                (
+                    [0] => demo_channel
+                )
+
+        )
+
+    [service] => Presence
+)
+```
+
+#### User state information  (setState/getState)
+```php
+$pubnub->setState('demo', array('name' => 'Mike', 'status' => 'busy', 'age' => 30));
+$result = $pubnub->getState('demo', $pubnub->getUUID());
+
+print_r($result);
+```
+will output:
+```php
+Array
+(
+    [status] => 200
+    [uuid] => DE2BE11A-9ABE-4ACE-B742-8B0508112619
+    [service] => Presence
+    [message] => OK
+    [payload] => Array
+        (
+            [status] => busy
+            [age] => 30
+            [name] => Mike
+        )
+
+    [channel] => demo
+)
+```
+
 ## Differences with legacy/composer clients usage
 * in composer cliend you should use namespace **Pubnub** to access Pubnub class:
 

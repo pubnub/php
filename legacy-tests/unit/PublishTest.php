@@ -73,6 +73,28 @@ class PublishTest extends TestCase
     /**
      * @group publish
      */
+    public function testPipelinedPublish()
+    {
+        $timetoken = time();
+
+        $this->pubnub->pipelineStart();
+        $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #1");
+        $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #2");
+        $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #3");
+        $this->pubnub->pipelineEnd();
+
+        sleep(1);
+
+        $history = $this->pubnub->history(self::$channel, 3);
+
+        $this->assertContains("Pipelined message $timetoken #1", $history['messages']);
+        $this->assertContains("Pipelined message $timetoken #2", $history['messages']);
+        $this->assertContains("Pipelined message $timetoken #3", $history['messages']);
+    }
+
+    /**
+     * @group publish
+     */
     public function testInvalidChannelPublish()
     {
         try {

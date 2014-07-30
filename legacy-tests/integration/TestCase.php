@@ -1,10 +1,10 @@
 <?php
 
-use Pubnub\Pubnub;
+require_once '../../legacy/Pubnub.php';
 
-abstract class TestCase extends PHPUnit_Framework_TestCase {
-
-    /** @var Pubnub pubnub */
+abstract class TestCase extends PHPUnit_Framework_TestCase
+{
+    /** @var  Pubnub */
     protected $pubnub;
 
     public function setUp()
