@@ -1,3 +1,13 @@
+07-30-14 3.6.0
+. Add Pubnub Access Management (PAM) functions
+. Add Presence V3 Set/Get state functions
+. Add Presence V3 WhereNow function
+. Add Presence V3 extended HereNow function
+. Add explicit Leave request on channel unsubscribe
+. Add getUUID/setUUID functions
+. Update composer autoloader
+. Travis-CI integration
+
 07-04-14 3.5.4
 . Fixed json_decode arguments in PHP v5.3
 
