@@ -227,6 +227,15 @@ Array
 )
 ```
 
+#### PHP HTTP Pipelining usage
+```php
+$pubnub->pipeline(function ($p) {
+      $p->publish('my_channel', "Pipelined message #1");
+      $p->publish('my_channel', "Pipelined message #2");
+      $p->publish('my_channel', "Pipelined message #3");
+});
+```
+
 ## Differences with legacy/composer clients usage
 * in composer cliend you should use namespace **Pubnub** to access Pubnub class:
 
