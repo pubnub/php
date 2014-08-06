@@ -7,3 +7,7 @@
 
 # composer lock file
 /composer.lock
+
+# IDEA files
+/*.iml
+/.idea
