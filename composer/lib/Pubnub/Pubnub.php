@@ -14,7 +14,7 @@ use Pubnub\Clients\PipelinedClient;
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP%2F3.6.0';
+    const PNSDK = 'Pubnub-PHP%2F3.6.1';
 
     private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY;
