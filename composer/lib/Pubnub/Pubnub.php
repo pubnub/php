@@ -8,12 +8,13 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.5 Real-time Push Cloud API
+ * PubNub 3.6 Real-time Push Cloud API
+ *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP%2F3.6.0';
+    const PNSDK = 'Pubnub-PHP%2F3.6.1';
 
     private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY;
@@ -34,19 +35,21 @@ class Pubnub
     private $PAM = null;
 
     /**
-     * __construct
+     * Pubnub Client API constructor
      *
-     * Init the Pubnub Client API
+     * You can create client instance using named or positional arguments
      *
-     * @param string $first_argument required key to send messages.
+     * @param string|array $first_argument publish_key to send messages or associative config array.
      * @param string $subscribe_key required key to receive messages.
      * @param bool|string $secret_key optional key to sign messages.
      * @param bool $cipher_key
-     * @param boolean $ssl required for 2048 bit encrypted messages.
+     * @param bool $ssl required for 2048 bit encrypted messages.
      * @param bool|string $origin optional setting for cloud origin.
      * @param bool $pem_path
      * @param bool $uuid
      * @param bool $proxy
+     * @param bool $auth_key
+     *
      * @throws PubnubException
      */
     public function __construct(
@@ -111,7 +114,9 @@ class Pubnub
      *
      * @param string $channel
      * @param string $messageOrg
+     *
      * @throws PubnubException
+     *
      * @return array success information.
      */
     public function publish($channel, $messageOrg)
@@ -161,7 +166,9 @@ class Pubnub
      * @param string $channel
      * @param bool $disable_uuids
      * @param bool $state
+     *
      * @throws PubnubException
+     *
      * @return array of uuids and occupancies.
      */
     public function hereNow($channel = null, $disable_uuids = false, $state = false)
@@ -210,8 +217,10 @@ class Pubnub
      * @param string $channel
      * @param array|null $state
      * @param string|null $uuid
-     * @return mixed|null
+     *
      * @throws PubnubException
+     *
+     * @return mixed|null
      */
     public function setState($channel, $state, $uuid = null)
     {
@@ -242,8 +251,10 @@ class Pubnub
      *
      * @param string $channel
      * @param string $uuid
-     * @return array|null
+     *
      * @throws PubnubException
+     *
+     * @return array|null
      */
     public function getState($channel, $uuid)
     {
@@ -277,6 +288,7 @@ class Pubnub
      * @param string $callback  for callback definition.
      * @param int $timeToken for current time token value.
      * @param bool $presence
+     *
      * @throws PubnubException
      */
     public function subscribe($channel, $callback, $timeToken = 0, $presence = false)
@@ -381,6 +393,8 @@ class Pubnub
      *
      * @param string $messages
      * @param string $mode
+     * @internal
+     *
      * @return array
      */
     public function decodeAndDecrypt($messages, $mode = "default")
@@ -402,6 +416,8 @@ class Pubnub
 
     /**
      * @param $messageArray
+     * @internal
+     *
      * @return array
      */
     public function decodeDecryptLoop($messageArray)
@@ -424,7 +440,8 @@ class Pubnub
      * Presence
      *
      * This is BLOCKING.
-     * Listen for a message on a channel.
+     * Listen for a message on a presence channel.
+     *
      * @param string $channel
      * @param callback $callback
      * @param int $timeToken
@@ -461,8 +478,9 @@ class Pubnub
     /**
      * Updates current UUID
      *
-     * @param string $uuid
      * @throws PubnubException
+     *
+     * @param string $uuid
      */
     public function setUUID($uuid)
     {
@@ -476,7 +494,7 @@ class Pubnub
     /**
      * Returns current UUID
      *
-     * @return string
+     * @return string UUID
      */
     public function getUUID()
     {
@@ -485,9 +503,12 @@ class Pubnub
 
     /**
     * Returns channel list for defined UUID
+     *
      * @param string $uuid
-     * @return mixed|null
+     *
      * @throws PubnubException
+     *
+     * @return array
      */
     public function whereNow($uuid = "")
     {
@@ -510,14 +531,18 @@ class Pubnub
     }
 
     /**
+     * Retrieve the messages on a channel
+     *
      * @param string $channel
-     * @param int $count
-     * @param bool $include_token
-     * @param int $start
-     * @param int $end
+     * @param int $count message limit
+     * @param bool $include_token for each message
+     * @param int $start time token
+     * @param int $end time token
      * @param bool $reverse
-     * @return array
+     *
      * @throws PubnubException
+     *
+     * @return array
      */
     public function history($channel, $count = 100, $include_token = null, $start = null,
         $end = null, $reverse = false)
@@ -574,7 +599,8 @@ class Pubnub
     }
 
     /**
-     * DEPRECATED! Use history() instead
+     * @deprecated 3.7.0
+     * @see Pubnub->history() Use history() instead
      */
     function detailedHistory()
     {
@@ -605,12 +631,15 @@ class Pubnub
     }
 
     /**
+     * Establish subscribe and/or write permissions
+     *
      * @param bool $read
      * @param bool $write
      * @param string|null $channel
      * @param string|null $auth_key
      * @param int|null $ttl
-     * @return mixed
+     *
+     * @return array
      */
     public function grant($read, $write, $channel = null, $auth_key = null, $ttl = null) {
 
@@ -620,9 +649,12 @@ class Pubnub
     }
 
     /**
+     * Reveal existing permissions
+     *
      * @param string|null $channel
      * @param string|null $auth_key
-     * @return mixed
+     *
+     * @return array
      */
     public function audit($channel = null, $auth_key = null) {
 
@@ -632,9 +664,12 @@ class Pubnub
     }
 
     /**
+     * Revoke all permissions
+     *
      * @param string|null $channel
      * @param string|null $auth_key
-     * @return mixed
+     *
+     * @return array
      */
     public function revoke($channel = null, $auth_key = null) {
 
@@ -644,7 +679,8 @@ class Pubnub
     }
 
     /**
-     * Pipelines multiple requests into a single connection
+     * Pipelines multiple requests into a single connection.
+     * For PHP <= 5.3 use pipelineStart() and pipelineEnd() functions instead.
      *
      * @param Callback $callback
      */
@@ -656,17 +692,28 @@ class Pubnub
         $this->pipelinedFlag = false;
     }
 
+    /**
+     * Start collecting messages to send them in pipelined mode.
+     */
     public function pipelineStart()
     {
         $this->pipelinedFlag = true;
     }
 
+    /**
+     * End collecting messages and send them in pipelined mode.
+     */
     public function pipelineEnd()
     {
         $this->pipelinedClient->execute();
         $this->pipelinedFlag = false;
     }
 
+    /**
+     * Set auth_key after instantiation
+     *
+     * @param $auth_key
+     */
     public function setAuthKey($auth_key)
     {
         $this->AUTH_KEY = $auth_key;
@@ -694,8 +741,10 @@ class Pubnub
      * @param array $path
      * @param array $query
      * @param bool $useDefaultQueryArray
+     *
      * @throws PubnubException
-     * @return mixed|null
+     *
+     * @return array|null
      */
     private function request(array $path, array $query = array(), $useDefaultQueryArray = true)
     {

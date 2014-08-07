@@ -1,3 +1,6 @@
+08-07-14 3.6.1
+. Update comments and gerate PHPDocs
+
 07-30-14 3.6.0
 . Add Pubnub Access Management (PAM) functions
 . Add Presence V3 Set/Get state functions
