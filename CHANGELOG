@@ -1,3 +1,6 @@
+09-28-14 3.6.2
+. add $saveInHistory argument to publish() method
+
 08-07-14 3.6.1
 . Update comments and gerate PHPDocs
 

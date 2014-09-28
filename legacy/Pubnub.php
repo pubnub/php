@@ -121,12 +121,13 @@ class Pubnub
      *
      * @param string $channel
      * @param string $messageOrg
+     * @param boolean $storeInHistory
      *
      * @throws PubnubException
      *
      * @return array success information.
      */
-    public function publish($channel, $messageOrg)
+    public function publish($channel, $messageOrg, $storeInHistory = true)
     {
         if (empty($channel) || empty($messageOrg)) {
             throw new PubnubException('Missing Channel or Message in publish()');
@@ -140,6 +141,12 @@ class Pubnub
             $message = JSON::encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
         } else {
             $message = JSON::encode($messageOrg);
+        }
+
+        $query = array();
+
+        if ($storeInHistory == false) {
+            $query["store"] = "0";
         }
 
         $signature = "0";
@@ -164,7 +171,7 @@ class Pubnub
             $channel,
             '0',
             $message
-        ));
+        ), $query);
     }
 
     /**
