@@ -42,6 +42,25 @@ class PublishTest extends \TestCase
     /**
      * @group publish
      */
+
+    public function testPublishAndDoNotStoreInHistory()
+    {
+        $message1 = static::$message . rand(0, 100000);
+        $message2 = static::$message . rand(0, 100000);
+        $this->pubnub->publish(static::$channel, $message1);
+        $this->pubnub->publish(static::$channel, $message2, false);
+
+        sleep(1);
+
+        $response = $this->pubnub->history(static::$channel, 5);
+
+        $this->assertContains($message1, $response['messages']);
+        $this->assertNotContains($message2, $response['messages']);
+    }
+
+    /**
+     * @group publish
+     */
     public function testEncryptedPublish()
     {
         $response = $this->pubnub_enc->publish(static::$channel, static::$message);
