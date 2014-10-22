@@ -224,6 +224,10 @@ Array
 )
 ```
 
+#### PAM Grant/Audit/Revoke
+Checkout channel/subkey/user-level grant/audit/revoke examples [here](https://github.com/pubnub/php/tree/master/tests/integration)
+
+
 #### PHP HTTP Pipelining usage
 ```php
 $pubnub->pipeline(function ($p) {
