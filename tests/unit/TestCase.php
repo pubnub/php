@@ -17,5 +17,28 @@ abstract class TestCase extends PHPUnit_Framework_TestCase {
             'origin' => 'pubsub.pubnub.com'
         ));
     }
+
+    /**
+     * Remove generated namespaces and groups
+     */
+    public static function cleanup()
+    {
+        $pn = new Pubnub(array(
+            'publish_key' => 'demo',
+            'subscribe_key' => 'demo'
+        ));
+
+        $result = $pn->channelGroupListGroups();
+        $groups = $result["payload"]["groups"];
+
+        foreach ($groups as $groupName) {
+            if (strpos($groupName, 'ptest') !== false) {
+                $result = $pn->channelGroupRemoveGroup($groupName);
+                if ($result['message'] === "OK") {
+                    print_r("Successfully removed group " . $groupName . "\n");
+                }
+            }
+        }
+    }
 }
  

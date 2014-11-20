@@ -619,6 +619,139 @@ class Pubnub
     }
 
     /**
+     * Get list of group's channels
+     *
+     * @param string $group name
+     * @return array
+     */
+    public function channelGroupListChannels($group)
+    {
+        $channelGroup = new ChannelGroup($group);
+
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
+
+        if (!empty($channelGroup->namespace)) {
+            array_push($path, "namespace", $channelGroup->namespace);
+        }
+
+        array_push($path, "channel-group", $channelGroup->group);
+
+        return $this->request($path);
+    }
+
+    /**
+     * Add channels to group
+     *
+     * @param string $group name
+     * @param array $channels to add
+     * @return array
+     * @throws PubnubException
+     */
+    public function channelGroupAddChannel($group, $channels = array())
+    {
+        return $this->channelGroupUpdate($group, $channels, 'add');
+    }
+
+    /**
+     * Remove channels from group
+     *
+     * @param string $group name
+     * @param array $channels to remove
+     * @return array
+     * @throws PubnubException
+     */
+    public function channelGroupRemoveChannel($group, $channels = array())
+    {
+        return $this->channelGroupUpdate($group, $channels, 'remove');
+    }
+
+    private function channelGroupUpdate($group, array $channels, $action)
+    {
+        $channelGroup = new ChannelGroup($group);
+
+        if (empty($channelGroup->group)) {
+            throw new PubnubException('Missing Group name in channelGroupUpdate()');
+        }
+
+        if (count($channels) <= 0) {
+            throw new PubnubException('Empty channels array in channelGroupUpdate()');
+        }
+
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
+
+        if (!empty($channelGroup->namespace)) {
+            array_push($path, "namespace", $channelGroup->namespace);
+        }
+
+        array_push($path, "channel-group", $channelGroup->group);
+
+        return $this->request($path, array(
+            $action => join(',', $channels)
+        ));
+    }
+
+
+    /**
+     * Get the list of groups
+     *
+     * @param string|null $namespace name
+     * @return array
+     */
+    public function channelGroupListGroups($namespace = null)
+    {
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
+
+        if (!empty($namespace)) {
+            array_push($path, "namespace", $namespace);
+        }
+
+        array_push($path, "channel-group");
+
+        return $this->request($path);
+    }
+
+    /**
+     * Removes group from namespace
+     *
+     * @param string $group name in format namespace:group
+     * @return array
+     */
+    public function channelGroupRemoveGroup($group)
+    {
+        $channelGroup = new ChannelGroup($group);
+
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
+
+        if (!empty($channelGroup->namespace)) {
+            array_push($path, "namespace", $channelGroup->namespace);
+        }
+
+        array_push($path, "channel-group", $channelGroup->group, "remove");
+
+        return $this->request($path);
+    }
+
+    /**
      * UUID
      *
      * UUID generator
