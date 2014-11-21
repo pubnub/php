@@ -752,6 +752,43 @@ class Pubnub
     }
 
     /**
+     * Get the list of namespaces
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function channelGroupListNamespaces()
+    {
+        return $this->request(array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY,
+            "namespace"
+        ));
+    }
+
+    /**
+     * Remove namespace
+     *
+     * @param string $namespace name
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function channelGroupRemoveNamespace($namespace)
+    {
+        return $this->request(array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY,
+            "namespace",
+            $namespace,
+            "remove"
+        ));
+    }
+
+    /**
      * UUID
      *
      * UUID generator

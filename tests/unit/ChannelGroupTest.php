@@ -14,13 +14,9 @@ class ChannelGroupTest extends TestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->channelGroup = "ptest-" . rand();
         $this->channelNamespace = "ptest-namespace";
-        $this->pubnub = new Pubnub(array(
-            'publish_key' => 'demo',
-            'subscribe_key' => 'demo',
-            'origin' => 'pubsub.pubnub.com'
-        ));
     }
 
     /**

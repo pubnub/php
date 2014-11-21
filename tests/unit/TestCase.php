@@ -39,6 +39,18 @@ abstract class TestCase extends PHPUnit_Framework_TestCase {
                 }
             }
         }
+
+        $result = $pn->channelGroupListNamespaces();
+        $namespaces = $result["payload"]["namespaces"];
+
+        foreach ($namespaces as $namespace) {
+            if (strpos($namespace, 'ptest') !== false) {
+                $result = $pn->channelGroupRemoveNamespace($namespace);
+                if ($result['message'] === "OK") {
+                    print_r("Successfully removed namespace " . $namespace . "\n");
+                }
+            }
+        }
     }
 }
  
