@@ -37,7 +37,7 @@ abstract class Client
         }
 
         if (!empty($origin)) {
-            $this->$origin = $origin;
+            $this->origin = $origin;
         }
 
         // TODO: review origin
