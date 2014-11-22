@@ -1,3 +1,7 @@
+11-22-14 3.6.3
+. Return result in pipelined mode
+. Fix origin assignment in Client
+
 09-28-14 3.6.2
 . add $saveInHistory argument to publish() method
 
