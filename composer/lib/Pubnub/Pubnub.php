@@ -695,8 +695,10 @@ class Pubnub
     {
         $this->pipelinedFlag = true;
         $callback($this);
-        $this->pipelinedClient->execute();
+        $result = $this->pipelinedClient->execute();
         $this->pipelinedFlag = false;
+
+        return $result;
     }
 
     /**
@@ -712,8 +714,10 @@ class Pubnub
      */
     public function pipelineEnd()
     {
-        $this->pipelinedClient->execute();
+        $result = $this->pipelinedClient->execute();
         $this->pipelinedFlag = false;
+
+        return $result;
     }
 
     /**
