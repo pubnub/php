@@ -863,6 +863,53 @@ class Pubnub
     }
 
     /**
+     * @param $read
+     * @param $manage
+     * @param string|null $channelGroup
+     * @param string|null $auth_key
+     * @param int|null $ttl
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function pamGrantChannelGroup($read, $manage, $channelGroup = null, $auth_key = null, $ttl = null)
+    {
+        $request_params = $this->pam()->pamGrantChannelGroup($read, $manage, $channelGroup, $auth_key, $ttl, $this->SESSION_UUID);
+
+        return $this->request($request_params['url'], $request_params['search'], false);
+    }
+
+    /**
+     * @param string|null $channelGroup
+     * @param string|null $auth_key
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function pamAuditChannelGroup($channelGroup = null, $auth_key = null)
+    {
+
+        $request_params = $this->pam()->pamAuditChannelGroup($channelGroup, $auth_key, $this->SESSION_UUID);
+
+        return $this->request($request_params['url'], $request_params['search'], false);
+    }
+
+    /**
+     * @param null $channelGroup
+     * @param null $auth_key
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function pamRevokeChannelGroup($channelGroup = null, $auth_key = null)
+    {
+
+        $request_params = $this->pam()->pamRevokeChannelGroup($channelGroup, $auth_key, $this->SESSION_UUID);
+
+        return $this->request($request_params['url'], $request_params['search'], false);
+    }
+
+    /**
      * Pipelines multiple requests into a single connection.
      * For PHP <= 5.3 use pipelineStart() and pipelineEnd() functions instead.
      *
