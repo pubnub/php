@@ -180,12 +180,13 @@ class Pubnub
      * @param string $channel
      * @param bool $disable_uuids
      * @param bool $state
+     * @param string $channelGroup comma delimited list
      *
      * @throws PubnubException
      *
      * @return array of uuids and occupancies.
      */
-    public function hereNow($channel = null, $disable_uuids = false, $state = false)
+    public function hereNow($channel = null, $disable_uuids = false, $state = false, $channelGroup = null)
     {
         if (isset($channel) && empty($channel)) {
             throw new PubnubException('Missing Channel in hereNow()');
@@ -202,6 +203,12 @@ class Pubnub
 
         if ($channel !== null) {
             array_push($requestArray, 'channel', $channel);
+        } else if ($channel === null && $channelGroup !== null) {
+            array_push($requestArray, 'channel', ",");
+        }
+
+        if ($channelGroup !== null) {
+            $query['channel-group'] = $channelGroup;
         }
 
         if ($disable_uuids) {
@@ -223,6 +230,22 @@ class Pubnub
         }
 
         return $response;
+    }
+
+    /**
+     * Gets a list of uuids subscribed to the channel groups.
+     *
+     * @param string $channelGroup comma delimited list
+     * @param bool $disable_uuids
+     * @param bool $state
+     *
+     * @throws PubnubException
+     *
+     * @return array of uuids and occupancies.
+     */
+    public function channelGroupHereNow($channelGroup, $disable_uuids = false, $state = false)
+    {
+        return $this->hereNow(null, $disable_uuids, $state, $channelGroup);
     }
 
     /**
