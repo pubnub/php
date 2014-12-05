@@ -277,6 +277,41 @@ class Pubnub
     }
 
     /**
+     * Set metadata for all channels in the group
+     *
+     * @param string $group
+     * @param array|null $state
+     * @param string|null $uuid
+     *
+     * @throws PubnubException
+     *
+     * @return mixed|null
+     */
+    public function setChannelGroupState($group, $state, $uuid = null) {
+        if (empty($group)) {
+            throw new PubnubException('Missing Group in setChannelGroupState()');
+        }
+
+        $uuid = $uuid ? $uuid : $this->SESSION_UUID;
+        $state = JSON::encode($state);
+
+        return $this->request(array(
+            'v2',
+            'presence',
+            'sub_key',
+            $this->SUBSCRIBE_KEY,
+            'channel',
+            '.',
+            'uuid',
+            $uuid,
+            'data'
+        ), array(
+            'state' => $state,
+            'channel-group' => $group
+        ));
+    }
+
+    /**
      * Returns metadata for user with given uuid
      *
      * @param string $channel
