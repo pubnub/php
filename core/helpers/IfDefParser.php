@@ -5,7 +5,8 @@ define('PATH_SLASH', '/');
 class IfDefParser
 {
     private $listOfFiles;
-    private $versionString;
+    private $appVersionString;
+    private $phpVersionString;
     private $destinationDir;
     private $workDir;
 
@@ -16,13 +17,13 @@ class IfDefParser
         if (strcmp($version, "") == 0) {
             if (version_compare(PHP_VERSION, '5.2', '>')) {
                 define('PHP53', '1');
-                $this->versionString = "PHP53";
+                $this->phpVersionString = "PHP53";
             } else {
                 define('PHP52', '1');
-                $this->versionString = "PHP52";
+                $this->phpVersionString = "PHP52";
             }
         } else {
-            $this->versionString = $version;
+            $this->phpVersionString = $version;
             define($version, '1');
         }
 
@@ -37,6 +38,9 @@ class IfDefParser
 
         $this->listOfFiles = scandir($this->workDir);
         chdir($this->workDir);
+
+        $this->appVersionString = file_get_contents("../../VERSION");
+        $this->appVersionString = trim(preg_replace('/\s\s+/', ' ', $this->appVersionString));
     }
 
     private function _makeFilePath($buf, $outputName)
@@ -81,14 +85,14 @@ class IfDefParser
             $buf = fgets($currentFile);
             $buf = fgets($currentFile);
 
-            if (strpos($buf, $this->versionString) && strpos($buf, "none") == FALSE) {
+            if (strpos($buf, $this->phpVersionString) && strpos($buf, "none") == FALSE) {
                 $outputName = $this->_makeFilePath($buf, $outputName);
             } elseif (strpos($buf, "none") !== FALSE) {
                 continue;
-            } elseif (strpos($buf, $this->versionString) == FALSE) {
+            } elseif (strpos($buf, $this->phpVersionString) == FALSE) {
                 $buf = fgets($currentFile);
 
-                if (strpos($buf, $this->versionString) && strpos($buf, "none") == FALSE)
+                if (strpos($buf, $this->phpVersionString) && strpos($buf, "none") == FALSE)
                     $outputName = $this->_makeFilePath($buf, $outputName);
                 else
                     continue;
@@ -115,6 +119,7 @@ class IfDefParser
                 $ifdVersion[0] = trim($ifdVersion[1]);
                 $chunks2 = preg_split("/#elsif/", $chunks[$i]);
                 if (defined($ifdVersion[0])) {
+
                     $str = str_replace($ifdVersion[0], '', $chunks2[0]);
                     $str = str_replace("#endif", '', $str);
                     fwrite($outputFile, $str);
@@ -130,6 +135,7 @@ class IfDefParser
                     } else {
                         $chunks3 = preg_split("/#endif/", $chunks2[$j]);
                         for ($k = 1; $k < count($chunks3); $k++) {
+                            $chunks3[$k] = str_replace("###version###", $this->appVersionString, $chunks3[$k]);
                             fwrite($outputFile, $chunks3[$k]);
                         }
                     }

@@ -10,7 +10,7 @@ class PAMTest extends TestCase {
     protected static $publish = 'pub-c-81d9633a-c5a0-4d6c-9600-fda148b61648';
     protected static $subscribe = 'sub-c-35ffee42-e763-11e3-afd8-02ee2ddab7fe';
     protected static $secret = 'sec-c-NDNlODA0ZmItNzZhMC00OTViLWI5NWMtM2M4MzA4ZWM2ZjIz';
-    protected static $pnsdk = 'Pubnub-PHP/3.6.0';
+    protected static $pnsdk = 'Pubnub-PHP/0.0.0.test';
 
     public function setUp()
     {
