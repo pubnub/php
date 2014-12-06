@@ -139,15 +139,15 @@ class PubnubPAM
         $params = array();
 
         if (isset($query['auth_key']) && $query['auth_key']) {
-            $params['auth'] = $query['auth_key'];
+            $params['auth'] = PubnubUtil::url_encode($query['auth_key']);
         }
 
         if (isset($query['channel'])) {
-            $params['channel'] = $query['channel'];
+            $params['channel'] = PubnubUtil::url_encode($query['channel']);
         }
 
         if (isset($query['channel-group'])) {
-            $params['channel-group'] = urlencode($query['channel-group']);
+            $params['channel-group'] = PubnubUtil::url_encode($query['channel-group']);
         }
 
         if (isset($query['manage'])) {

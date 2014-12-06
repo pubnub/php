@@ -92,10 +92,8 @@ abstract class Client
         $options = $this->bootstrapOptions();
 
         foreach ($this->requests as $requestArray) {
-            $path = $requestArray[0];
+            $request = $requestArray[0];
             $query = $requestArray[1];
- 
-            $request = array_map('self::encode', $path);
 
             $ch = curl_init();
 

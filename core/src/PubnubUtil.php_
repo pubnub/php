@@ -4,17 +4,28 @@
 #ifdef PHP53
 namespace Pubnub;
 #endif
-class JSON
+class PubnubUtil
 {
     /**
-     * Decode value
+     * Encode string value
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function url_encode($value)
+    {
+        return rawurlencode($value);
+    }
+
+    /**
+     * Decode JSON value
      *
      * @param string $val
      * @param bool $assoc
      * @param int $depth
      * @return mixed
      */
-    public static function decode($val, $assoc = true, $depth = 512)
+    public static function json_decode($val, $assoc = true, $depth = 512)
     {
 #ifdef PHP52
         return json_decode($val, $assoc);
@@ -25,12 +36,12 @@ class JSON
     }
 
     /**
-     * Encode value
+     * Encode JSON value
      *
      * @param $val
      * @return string
      */
-    public static function encode($val)
+    public static function json_encode($val)
     {
         return json_encode($val);
     }

@@ -138,9 +138,9 @@ class Pubnub
         }
 
         if ($this->CIPHER_KEY != false) {
-            $message = JSON::encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
+            $message = PubnubUtil::json_encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
         } else {
-            $message = JSON::encode($messageOrg);
+            $message = PubnubUtil::json_encode($messageOrg);
         }
 
         $query = array();
@@ -167,10 +167,10 @@ class Pubnub
             'publish',
             $this->PUBLISH_KEY,
             $this->SUBSCRIBE_KEY,
-            $signature,
-            $channel,
+            PubnubUtil::url_encode($signature),
+            PubnubUtil::url_encode($channel),
             '0',
-            $message
+            PubnubUtil::url_encode($message)
         ), $query);
     }
 
@@ -202,13 +202,13 @@ class Pubnub
         $query = array();
 
         if ($channel !== null) {
-            array_push($requestArray, 'channel', $channel);
+            array_push($requestArray, 'channel', PubnubUtil::url_encode($channel));
         } else if ($channel === null && $channelGroup !== null) {
             array_push($requestArray, 'channel', ",");
         }
 
         if ($channelGroup !== null) {
-            $query['channel-group'] = $channelGroup;
+            $query['channel-group'] = PubnubUtil::url_encode($channelGroup);
         }
 
         if ($disable_uuids) {
@@ -266,7 +266,7 @@ class Pubnub
         }
 
         $uuid = $uuid ? $uuid : $this->SESSION_UUID;
-        $state = JSON::encode($state);
+        $state = PubnubUtil::json_encode($state);
 
         return $this->request(array(
             'v2',
@@ -274,9 +274,9 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            $channel,
+            PubnubUtil::url_encode($channel),
             'uuid',
-            $uuid,
+            PubnubUtil::url_encode($uuid),
             'data'
         ), array(
             'state' => $state
@@ -300,7 +300,7 @@ class Pubnub
         }
 
         $uuid = $uuid ? $uuid : $this->SESSION_UUID;
-        $state = JSON::encode($state);
+        $state = PubnubUtil::json_encode($state);
 
         return $this->request(array(
             'v2',
@@ -310,11 +310,11 @@ class Pubnub
             'channel',
             '.',
             'uuid',
-            $uuid,
+            PubnubUtil::url_encode($uuid),
             'data'
         ), array(
             'state' => $state,
-            'channel-group' => $group
+            'channel-group' => PubnubUtil::url_encode($group)
         ));
     }
 
@@ -344,9 +344,9 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            $channel,
+            PubnubUtil::url_encode($channel),
             'uuid',
-            $uuid
+            PubnubUtil::url_encode($uuid)
         ));
     }
 
@@ -499,7 +499,7 @@ class Pubnub
 
             if ($this->CIPHER_KEY) {
                 $decryptedMessage = $this->AES->decrypt($message, $this->CIPHER_KEY);
-                $message = JSON::decode($decryptedMessage);
+                $message = PubnubUtil::json_decode($decryptedMessage);
             }
 
             array_push($receivedMessages, $message);
@@ -594,9 +594,9 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'uuid',
-            $uuid
+            PubnubUtil::url_encode($uuid)
         ), array(
-            'uuid' => empty($uuid) ? $this->SESSION_UUID : $uuid
+            'uuid' => PubnubUtil::url_encode(empty($uuid) ? $this->SESSION_UUID : $uuid)
         ));
 
         return $response;
@@ -651,7 +651,7 @@ class Pubnub
             "sub-key",
             $this->SUBSCRIBE_KEY,
             "channel",
-            $channel,
+            PubnubUtil::url_encode($channel),
         ), $query);
 
         $receivedMessages = $this->decodeAndDecrypt($response, "detailedHistory");
@@ -1016,7 +1016,7 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            $channel,
+            PubnubUtil::url_encode($channel),
             'leave'
         ));
     }
@@ -1065,11 +1065,11 @@ class Pubnub
     {
         $query = array();
 
-        $query['uuid'] = $this->SESSION_UUID;
-        $query['pnsdk'] = self::PNSDK;
+        $query['uuid'] = PubnubUtil::url_encode($this->SESSION_UUID);
+        $query['pnsdk'] = PubnubUtil::url_encode(self::PNSDK);
 
         if (!empty($this->AUTH_KEY)) {
-            $query['auth'] = $this->AUTH_KEY;
+            $query['auth'] = PubnubUtil::url_encode($this->AUTH_KEY);
         }
 
         return $query;
