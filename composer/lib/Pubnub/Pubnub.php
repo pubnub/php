@@ -362,18 +362,46 @@ class Pubnub
             throw new PubnubException("Missing Channel in subscribe()");
         }
 
+        $this->_subscribe($channel, null, $callback, $timeToken, $presence);
+    }
+
+    public function channelGroupSubscribe($group, $callback, $timetoken = 0)
+    {
+        if (empty($group)) {
+            throw new PubnubException("Missing Group in channelGroupSubscribe()");
+        }
+
+        $this->_subscribe(null, $group, $callback, $timetoken);
+    }
+
+    protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false)
+    {
+        if ($channel === null && $channelGroup !== null) {
+            $channel = ',';
+        }
+
+        if (is_array($channelGroup)) {
+            $channelGroup = join(',', $channelGroup);
+        }
+
         if (empty($callback)) {
             throw new PubnubException("Missing Callback in subscribe()");
         }
 
         if (is_array($channel)) {
-            $channel = join(',', $channel);
+            $channel = PubnubUtil::url_encode(join(',', $channel));
         }
 
         if ($presence == true) {
             $mode = "presence";
         } else {
             $mode = "default";
+        }
+
+        $query = array();
+
+        if ($channelGroup !== null) {
+            $query['channel-group'] = PubnubUtil::url_encode($channel);
         }
 
         while (1) {
@@ -385,7 +413,7 @@ class Pubnub
                     $channel,
                     '0',
                     $timeToken
-                ));
+                ), $query);
 
                 $messages = $response[0];
                 $timeToken = $response[1];
@@ -400,9 +428,11 @@ class Pubnub
                     continue;
                 }
 
-                // determine the channel
-
-                if ((count($response) == 3)) {
+                if ((count($response) == 4)) {
+                    // Response has multiple channels or/and groups
+                    $derivedChannel = explode(",", $response[3]);
+                } else if ((count($response) == 3)) {
+                    // Response has multiple channels
                     $derivedChannel = explode(",", $response[2]);
                 } else {
                     $channelArray = array();
@@ -428,7 +458,12 @@ class Pubnub
                 $exit_now = false;
 
                 for ($i = 0; $i < sizeof($receivedMessages); $i++) {
-                    $cbReturn = $callback(array("message" => $returnArray[0][$i], "channel" => $returnArray[1][$i], "timeToken" => $returnArray[2]));
+                    $cbReturn = $callback(array(
+                        "message" => $returnArray[0][$i],
+                        "channel" => $returnArray[1][$i],
+                        "timeToken" => $returnArray[2]
+                    ));
+
                     if ($cbReturn == false) {
                         $exit_now = true;
                     }
