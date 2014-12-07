@@ -126,12 +126,16 @@ class IfDefParser
                 } elseif (count($chunks2) == 1 && strstr($chunks2[0], "#endif") !== FALSE) {
                     $chunks3 = preg_split("/#endif/", $chunks2[0]);
                     fwrite($outputFile, $chunks3[1]);
+
                 }
 
                 for ($j = 1; $j < count($chunks2); $j++) {
                     if (defined($ifdVersion[0]) !== TRUE) {
                         $chunks2[$j] = str_replace("#endif", '', $chunks2[$j]);
-                        fwrite($outputFile, $chunks2[$j]);
+                        for ($k = 1; $k < count($chunks2); $k++) {
+                            $chunks2[$k] = str_replace("###version###", $this->appVersionString, $chunks2[$k]);
+                            fwrite($outputFile, $chunks2[$j]);
+                        }
                     } else {
                         $chunks3 = preg_split("/#endif/", $chunks2[$j]);
                         for ($k = 1; $k < count($chunks3); $k++) {

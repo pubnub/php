@@ -9,13 +9,13 @@ require_once('JSON.php');
 
 
 /**
- * PubNub ###version### Real-time Push Cloud API
+ * PubNub 3.6.2 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/###version###';
+    const PNSDK = 'Pubnub-PHP/3.6.2';
 
     private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY;
