@@ -116,32 +116,4 @@ abstract class Client
 
         return "?" . join('&', $result);
     }
-
-    /**
-     * Encode
-     *
-     * @param string $part of url directories.
-     * @return string encoded string.
-     */
-    protected static function encode($part)
-    {
-
-        $pieces = array_map('Client::encodeChar', str_split($part));
-
-        return implode('', $pieces);
-    }
-
-    /**
-     * Encode Char
-     *
-     * @param string $char val.
-     * @return string encoded char.
-     */
-    protected static function encodeChar($char)
-    {
-        if (strpos(' ~`!@#$%^&*()+=[]\\{}|;\':",./<>?', $char) === false)
-            return $char;
-        else
-            return rawurlencode($char);
-    }
 }
