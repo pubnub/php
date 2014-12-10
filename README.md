@@ -9,19 +9,6 @@
 
 ### How to include
 
-#### PHP <= 5.2
-  1. You need only **legacy** folder. To get it clone repo:
-
-    ``` sh
-    $ git clone https://github.com/pubnub/php.git ./pubnub-php
-    ```
-  2. Copy 2 files to your project vendor libraries folder.
-  3. Require Pubnub.php file:
-
-    ``` php
-    require_once('legacy/Pubnub.php');
-    ```
-
 #### PHP >= 5.3 without composer
   1. You need only **composer** folder. To get it clone repo:
 
@@ -236,32 +223,4 @@ $pubnub->pipeline(function ($p) {
 });
 ```
 
-## Differences with legacy/composer clients usage
-* in composer cliend you should use namespace **Pubnub** to access Pubnub class:
-
-  ``` php
-  <?php
-  use Pubnub\Pubnub;
-  
-  $pubnub = new Pubnub();
-  ?>
-  ```
-
-* in **composer** client the most convenient way for defining collbacks is to use **anonymous functions**:
-
-  ``` php
-  $pubnub->subscribe('my_channel', function($message) {
-    var_dump($message);
-    return true;
-  });
-  ```
-
-  but **anonymous functions** are implemented starting only PHP 5.3 version, so for legacy client you should use **create_function()** function:
-
-  ```php
-  $pubnub->subscribe('my_channel', create_function('$message', 'var_dump($message); return true;'));
-  ```
-## How to build
-  For building information see README.md file in **core** folder.
-  
 ## Contact support@pubnub.com for all questions

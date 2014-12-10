@@ -2,7 +2,7 @@
  
 namespace Pubnub\Clients;
 
-use Pubnub\JSON;
+use Pubnub\PubnubUtil;
 use Pubnub\PubnubException;
 
 
@@ -30,7 +30,7 @@ class DefaultClient extends Client
         $output = curl_exec($ch);
         $curlError = curl_errno($ch);
         $curlResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $JSONDecodedResponse = JSON::decode($output);
+        $JSONDecodedResponse = PubnubUtil::json_decode($output);
 
         curl_close($ch);
         $this->requests = array();

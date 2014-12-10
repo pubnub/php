@@ -1,3 +1,8 @@
+12-10-14 3.7.0
+. Add Channel Groups support
+. Remove PHP <= 5.2 support
+. Apply url_encode only on explicitly specified url elements, not on whole string.
+
 11-22-14 3.6.3
 . Return result in pipelined mode
 . Fix origin assignment in Client
