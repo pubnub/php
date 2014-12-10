@@ -376,20 +376,26 @@ class Pubnub
 
     protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false)
     {
-        if ($channel === null && $channelGroup !== null) {
-            $channel = ',';
+        if (empty($callback)) {
+            throw new PubnubException("Missing Callback in subscribe()");
         }
+
+        $query = array();
 
         if (is_array($channelGroup)) {
             $channelGroup = join(',', $channelGroup);
         }
 
-        if (empty($callback)) {
-            throw new PubnubException("Missing Callback in subscribe()");
+        if (is_array($channel)) {
+            $channel = join(',', $channel);
         }
 
-        if (is_array($channel)) {
-            $channel = PubnubUtil::url_encode(join(',', $channel));
+        if ($channel === null && $channelGroup !== null) {
+            $channel = ',';
+        }
+
+        if ($channelGroup !== null) {
+            $query['channel-group'] = PubnubUtil::url_encode($channelGroup);
         }
 
         if ($presence == true) {
@@ -398,19 +404,13 @@ class Pubnub
             $mode = "default";
         }
 
-        $query = array();
-
-        if ($channelGroup !== null) {
-            $query['channel-group'] = PubnubUtil::url_encode($channel);
-        }
-
         while (1) {
             try {
                 ## Wait for Message
                 $response = $this->request(array(
                     'subscribe',
                     $this->SUBSCRIBE_KEY,
-                    $channel,
+                    PubnubUtil::url_encode($channel),
                     '0',
                     $timeToken
                 ), $query);
