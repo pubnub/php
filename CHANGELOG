@@ -1,3 +1,8 @@
+12-10-14 3.7.0
+. Add Channel Groups support
+. Remove PHP <= 5.2 support
+. Apply url_encode only on explicitly specified url elements, not on whole string.
+
 09-28-14 3.6.2
 . add $saveInHistory argument to publish() method
 
