@@ -1,9 +1,0 @@
-<?php
-#path PHP53 composer/lib/Pubnub/
-#path PHP52 legacy/
-#ifdef PHP53
-namespace Pubnub;
-use \Exception;
-#endif
-
-class PubnubException extends Exception {}
