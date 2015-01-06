@@ -223,4 +223,42 @@ $pubnub->pipeline(function ($p) {
 });
 ```
 
+#### Channel Groups management
+To use namespaces just add namespace name with ":" prior to group name string.
+For example in `news:music`, `news` is namespace and `music` is group
+and `news_music` is top-level channel group.
+
+```php
+// Add channels to group:
+$pubnub->channelGroupAddChannel("music_news", ["jazz_news", "rock_news", "punk_news"]);
+$pubnub->channelGroupAddChannel("news:music", ["jazz_news", "rock_news", "punk_news"]);
+
+// Get group channels list
+$pubnub->channelGroupListChannels("music_news");
+$pubnub->channelGroupListChannels("news:music");
+
+// Remove channel from group
+$pubnub->channelGroupRemoveChannel("music_news", ["rock_news"]);
+$pubnub->channelGroupRemoveChannel("news:music", ["rock_news"]);
+
+// Subscribe to channel
+$pubnub->channelGroupSubscribe("music_news", function ($result) {
+    print_r($result);
+});
+$pubnub->channelGroupSubscribe("news:music", function ($result) {
+    print_r($result);
+});
+
+// Gets a list of uuids subscribed to the channel groups.
+$pubnub->channelGroupHereNow("news:music");
+
+// Remove channel group
+$pubnub->channelGroupRemoveGroup("music_news");
+$pubnub->channelGroupRemoveGroup("news:music");
+
+// Remove namespace
+$pubnub->channelGroupRemoveNamespace("news");
+
+```
+
 ## Contact support@pubnub.com for all questions
