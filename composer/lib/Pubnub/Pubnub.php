@@ -8,15 +8,14 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.6 Real-time Push Cloud API
+ * PubNub 3.7.0 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP%2F3.6.1';
+    const PNSDK = 'Pubnub-PHP/3.7.0';
 
-    private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
     private $SECRET_KEY = '';
@@ -131,9 +130,9 @@ class Pubnub
         }
 
         if ($this->CIPHER_KEY != false) {
-            $message = JSON::encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
+            $message = PubnubUtil::json_encode($this->AES->encrypt(json_encode($messageOrg), $this->CIPHER_KEY));
         } else {
-            $message = JSON::encode($messageOrg);
+            $message = PubnubUtil::json_encode($messageOrg);
         }
 
         $query = array();
@@ -160,10 +159,10 @@ class Pubnub
             'publish',
             $this->PUBLISH_KEY,
             $this->SUBSCRIBE_KEY,
-            $signature,
-            $channel,
+            PubnubUtil::url_encode($signature),
+            PubnubUtil::url_encode($channel),
             '0',
-            $message
+            PubnubUtil::url_encode($message)
         ), $query);
     }
 
@@ -173,12 +172,13 @@ class Pubnub
      * @param string $channel
      * @param bool $disable_uuids
      * @param bool $state
+     * @param string $channelGroup comma delimited list
      *
      * @throws PubnubException
      *
      * @return array of uuids and occupancies.
      */
-    public function hereNow($channel = null, $disable_uuids = false, $state = false)
+    public function hereNow($channel = null, $disable_uuids = false, $state = false, $channelGroup = null)
     {
         if (isset($channel) && empty($channel)) {
             throw new PubnubException('Missing Channel in hereNow()');
@@ -194,7 +194,13 @@ class Pubnub
         $query = array();
 
         if ($channel !== null) {
-            array_push($requestArray, 'channel', $channel);
+            array_push($requestArray, 'channel', PubnubUtil::url_encode($channel));
+        } else if ($channel === null && $channelGroup !== null) {
+            array_push($requestArray, 'channel', ",");
+        }
+
+        if ($channelGroup !== null) {
+            $query['channel-group'] = PubnubUtil::url_encode($channelGroup);
         }
 
         if ($disable_uuids) {
@@ -219,6 +225,22 @@ class Pubnub
     }
 
     /**
+     * Gets a list of uuids subscribed to the channel groups.
+     *
+     * @param string $channelGroup comma delimited list
+     * @param bool $disable_uuids
+     * @param bool $state
+     *
+     * @throws PubnubException
+     *
+     * @return array of uuids and occupancies.
+     */
+    public function channelGroupHereNow($channelGroup, $disable_uuids = false, $state = false)
+    {
+        return $this->hereNow(null, $disable_uuids, $state, $channelGroup);
+    }
+
+    /**
      * Set metadata for user with given uuid
      *
      * @param string $channel
@@ -236,7 +258,7 @@ class Pubnub
         }
 
         $uuid = $uuid ? $uuid : $this->SESSION_UUID;
-        $state = JSON::encode($state);
+        $state = PubnubUtil::json_encode($state);
 
         return $this->request(array(
             'v2',
@@ -244,12 +266,47 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            $channel,
+            PubnubUtil::url_encode($channel),
             'uuid',
-            $uuid,
+            PubnubUtil::url_encode($uuid),
             'data'
         ), array(
             'state' => $state
+        ));
+    }
+
+    /**
+     * Set metadata for all channels in the group
+     *
+     * @param string $group
+     * @param array|null $state
+     * @param string|null $uuid
+     *
+     * @throws PubnubException
+     *
+     * @return mixed|null
+     */
+    public function setChannelGroupState($group, $state, $uuid = null) {
+        if (empty($group)) {
+            throw new PubnubException('Missing Group in setChannelGroupState()');
+        }
+
+        $uuid = $uuid ? $uuid : $this->SESSION_UUID;
+        $state = PubnubUtil::json_encode($state);
+
+        return $this->request(array(
+            'v2',
+            'presence',
+            'sub_key',
+            $this->SUBSCRIBE_KEY,
+            'channel',
+            '.',
+            'uuid',
+            PubnubUtil::url_encode($uuid),
+            'data'
+        ), array(
+            'state' => $state,
+            'channel-group' => PubnubUtil::url_encode($group)
         ));
     }
 
@@ -279,9 +336,9 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            $channel,
+            PubnubUtil::url_encode($channel),
             'uuid',
-            $uuid
+            PubnubUtil::url_encode($uuid)
         ));
     }
 
@@ -304,12 +361,40 @@ class Pubnub
             throw new PubnubException("Missing Channel in subscribe()");
         }
 
+        $this->_subscribe($channel, null, $callback, $timeToken, $presence);
+    }
+
+    public function channelGroupSubscribe($group, $callback, $timetoken = 0)
+    {
+        if (empty($group)) {
+            throw new PubnubException("Missing Group in channelGroupSubscribe()");
+        }
+
+        $this->_subscribe(null, $group, $callback, $timetoken);
+    }
+
+    protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false)
+    {
         if (empty($callback)) {
             throw new PubnubException("Missing Callback in subscribe()");
         }
 
+        $query = array();
+
+        if (is_array($channelGroup)) {
+            $channelGroup = join(',', $channelGroup);
+        }
+
         if (is_array($channel)) {
             $channel = join(',', $channel);
+        }
+
+        if ($channel === null && $channelGroup !== null) {
+            $channel = ',';
+        }
+
+        if ($channelGroup !== null) {
+            $query['channel-group'] = PubnubUtil::url_encode($channelGroup);
         }
 
         if ($presence == true) {
@@ -324,10 +409,10 @@ class Pubnub
                 $response = $this->request(array(
                     'subscribe',
                     $this->SUBSCRIBE_KEY,
-                    $channel,
+                    PubnubUtil::url_encode($channel),
                     '0',
                     $timeToken
-                ));
+                ), $query);
 
                 $messages = $response[0];
                 $timeToken = $response[1];
@@ -342,9 +427,11 @@ class Pubnub
                     continue;
                 }
 
-                // determine the channel
-
-                if ((count($response) == 3)) {
+                if ((count($response) == 4)) {
+                    // Response has multiple channels or/and groups
+                    $derivedChannel = explode(",", $response[3]);
+                } else if ((count($response) == 3)) {
+                    // Response has multiple channels
                     $derivedChannel = explode(",", $response[2]);
                 } else {
                     $channelArray = array();
@@ -370,7 +457,12 @@ class Pubnub
                 $exit_now = false;
 
                 for ($i = 0; $i < sizeof($receivedMessages); $i++) {
-                    $cbReturn = $callback(array("message" => $returnArray[0][$i], "channel" => $returnArray[1][$i], "timeToken" => $returnArray[2]));
+                    $cbReturn = $callback(array(
+                        "message" => $returnArray[0][$i],
+                        "channel" => $returnArray[1][$i],
+                        "timeToken" => $returnArray[2]
+                    ));
+
                     if ($cbReturn == false) {
                         $exit_now = true;
                     }
@@ -386,7 +478,7 @@ class Pubnub
                     return;
                 }
 
-            } catch (Exception $error) {
+            } catch (\Exception $error) {
                 $this->handleError($error);
                 $timeToken = $this->throwAndResetTimeToken($callback, "Unknown error.");
                 continue;
@@ -434,7 +526,7 @@ class Pubnub
 
             if ($this->CIPHER_KEY) {
                 $decryptedMessage = $this->AES->decrypt($message, $this->CIPHER_KEY);
-                $message = JSON::decode($decryptedMessage);
+                $message = PubnubUtil::json_decode($decryptedMessage);
             }
 
             array_push($receivedMessages, $message);
@@ -529,9 +621,9 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'uuid',
-            $uuid
+            PubnubUtil::url_encode($uuid)
         ), array(
-            'uuid' => empty($uuid) ? $this->SESSION_UUID : $uuid
+            'uuid' => PubnubUtil::url_encode(empty($uuid) ? $this->SESSION_UUID : $uuid)
         ));
 
         return $response;
@@ -586,7 +678,7 @@ class Pubnub
             "sub-key",
             $this->SUBSCRIBE_KEY,
             "channel",
-            $channel,
+            PubnubUtil::url_encode($channel),
         ), $query);
 
         $receivedMessages = $this->decodeAndDecrypt($response, "detailedHistory");
@@ -606,16 +698,173 @@ class Pubnub
     }
 
     /**
-     * @deprecated 3.7.0
-     * @see Pubnub->history() Use history() instead
+     * Get list of group's channels
+     *
+     * @param string $group name
+     * @return array
      */
-    function detailedHistory()
+    public function channelGroupListChannels($group)
     {
-        trigger_error('detailedHistory() methods is deprecated. Use history() instead.', E_USER_DEPRECATED);
+        $channelGroup = new ChannelGroup($group);
 
-        $args = func_get_args();
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
 
-        return call_user_func_array(array($this, 'history'), $args);
+        if (!empty($channelGroup->namespace)) {
+            array_push($path, "namespace", $channelGroup->namespace);
+        }
+
+        array_push($path, "channel-group", $channelGroup->group);
+
+        return $this->request($path);
+    }
+
+    /**
+     * Add channels to group
+     *
+     * @param string $group name
+     * @param array $channels to add
+     * @return array
+     * @throws PubnubException
+     */
+    public function channelGroupAddChannel($group, $channels = array())
+    {
+        return $this->channelGroupUpdate($group, $channels, 'add');
+    }
+
+    /**
+     * Remove channels from group
+     *
+     * @param string $group name
+     * @param array $channels to remove
+     * @return array
+     * @throws PubnubException
+     */
+    public function channelGroupRemoveChannel($group, $channels = array())
+    {
+        return $this->channelGroupUpdate($group, $channels, 'remove');
+    }
+
+    private function channelGroupUpdate($group, array $channels, $action)
+    {
+        $channelGroup = new ChannelGroup($group);
+
+        if (empty($channelGroup->group)) {
+            throw new PubnubException('Missing Group name in channelGroupUpdate()');
+        }
+
+        if (count($channels) <= 0) {
+            throw new PubnubException('Empty channels array in channelGroupUpdate()');
+        }
+
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
+
+        if (!empty($channelGroup->namespace)) {
+            array_push($path, "namespace", $channelGroup->namespace);
+        }
+
+        array_push($path, "channel-group", $channelGroup->group);
+
+        return $this->request($path, array(
+            $action => join(',', $channels)
+        ));
+    }
+
+
+    /**
+     * Get the list of groups
+     *
+     * @param string|null $namespace name
+     * @return array
+     */
+    public function channelGroupListGroups($namespace = null)
+    {
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
+
+        if (!empty($namespace)) {
+            array_push($path, "namespace", $namespace);
+        }
+
+        array_push($path, "channel-group");
+
+        return $this->request($path);
+    }
+
+    /**
+     * Removes group from namespace
+     *
+     * @param string $group name in format namespace:group
+     * @return array
+     */
+    public function channelGroupRemoveGroup($group)
+    {
+        $channelGroup = new ChannelGroup($group);
+
+        $path = array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY
+        );
+
+        if (!empty($channelGroup->namespace)) {
+            array_push($path, "namespace", $channelGroup->namespace);
+        }
+
+        array_push($path, "channel-group", $channelGroup->group, "remove");
+
+        return $this->request($path);
+    }
+
+    /**
+     * Get the list of namespaces
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function channelGroupListNamespaces()
+    {
+        return $this->request(array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY,
+            "namespace"
+        ));
+    }
+
+    /**
+     * Remove namespace
+     *
+     * @param string $namespace name
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function channelGroupRemoveNamespace($namespace)
+    {
+        return $this->request(array(
+            "v1",
+            "channel-registration",
+            "sub-key",
+            $this->SUBSCRIBE_KEY,
+            "namespace",
+            $namespace,
+            "remove"
+        ));
     }
 
     /**
@@ -686,10 +935,58 @@ class Pubnub
     }
 
     /**
+     * @param $read
+     * @param $manage
+     * @param string|null $channelGroup
+     * @param string|null $auth_key
+     * @param int|null $ttl
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function pamGrantChannelGroup($read, $manage, $channelGroup = null, $auth_key = null, $ttl = null)
+    {
+        $request_params = $this->pam()->pamGrantChannelGroup($read, $manage, $channelGroup, $auth_key, $ttl, $this->SESSION_UUID);
+
+        return $this->request($request_params['url'], $request_params['search'], false);
+    }
+
+    /**
+     * @param string|null $channelGroup
+     * @param string|null $auth_key
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function pamAuditChannelGroup($channelGroup = null, $auth_key = null)
+    {
+
+        $request_params = $this->pam()->pamAuditChannelGroup($channelGroup, $auth_key, $this->SESSION_UUID);
+
+        return $this->request($request_params['url'], $request_params['search'], false);
+    }
+
+    /**
+     * @param null $channelGroup
+     * @param null $auth_key
+     *
+     * @return array|null
+     * @throws PubnubException
+     */
+    public function pamRevokeChannelGroup($channelGroup = null, $auth_key = null)
+    {
+
+        $request_params = $this->pam()->pamRevokeChannelGroup($channelGroup, $auth_key, $this->SESSION_UUID);
+
+        return $this->request($request_params['url'], $request_params['search'], false);
+    }
+
+    /**
      * Pipelines multiple requests into a single connection.
      * For PHP <= 5.3 use pipelineStart() and pipelineEnd() functions instead.
      *
      * @param Callback $callback
+     * @return array
      */
     public function pipeline($callback)
     {
@@ -738,7 +1035,7 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            $channel,
+            PubnubUtil::url_encode($channel),
             'leave'
         ));
     }
@@ -768,13 +1065,7 @@ class Pubnub
 
             return null;
         } else {
-            $result = $this->defaultClient->add($path, $query);
-
-            if ($result === null) {
-                throw new PubnubException('Error while performing request. Method name:' . $path[0]);
-            }
-
-            return $result;
+            return $this->defaultClient->add($path, $query);
         }
     }
 
@@ -787,11 +1078,11 @@ class Pubnub
     {
         $query = array();
 
-        $query['uuid'] = $this->SESSION_UUID;
-        $query['pnsdk'] = self::PNSDK;
+        $query['uuid'] = PubnubUtil::url_encode($this->SESSION_UUID);
+        $query['pnsdk'] = PubnubUtil::url_encode(self::PNSDK);
 
         if (!empty($this->AUTH_KEY)) {
-            $query['auth'] = $this->AUTH_KEY;
+            $query['auth'] = PubnubUtil::url_encode($this->AUTH_KEY);
         }
 
         return $query;

@@ -50,6 +50,27 @@ class PubnubPAM
     }
 
     /**
+     * @param boolean $read
+     * @param boolean $manage
+     * @param String $channelGroup
+     * @param String $auth_key
+     * @param Integer $ttl
+     *
+     * @return array
+     */
+    public function pamGrantChannelGroup($read, $manage, $channelGroup, $auth_key, $ttl) {
+
+        return $this->getRequestParams(array(
+            'method' => 'grant',
+            'channel-group' => $channelGroup,
+            'read' => $read,
+            'manage' => $manage,
+            'auth_key' => $auth_key,
+            'ttl' => $ttl
+        ));
+    }
+
+    /**
      * @param String $channel
      * @param String $auth_key
      *
@@ -60,6 +81,21 @@ class PubnubPAM
         return $this->getRequestParams(array(
             'method' => 'audit',
             'channel' => $channel,
+            'auth_key' => $auth_key
+        ));
+    }
+
+    /**
+     * @param String $channelGroup
+     * @param String $auth_key
+     *
+     * @return array
+     */
+    public function pamAuditChannelGroup( $channelGroup, $auth_key) {
+
+        return $this->getRequestParams(array(
+            'method' => 'audit',
+            'channel-group' => $channelGroup,
             'auth_key' => $auth_key
         ));
     }
@@ -76,6 +112,24 @@ class PubnubPAM
     }
 
     /**
+     * @param String $channelGroup
+     * @param String $auth_key
+     *
+     * @return array
+     */
+    public function pamRevokeChannelGroup($channelGroup, $auth_key) {
+
+        return $this->getRequestParams(array(
+            'method' => 'grant',
+            'channel-group' => $channelGroup,
+            'read' => "0",
+            'manage' => "0",
+            'auth_key' => $auth_key
+
+        ));
+    }
+
+    /**
      * @param array $query
      *
      * @return array
@@ -85,14 +139,22 @@ class PubnubPAM
         $params = array();
 
         if (isset($query['auth_key']) && $query['auth_key']) {
-            $params['auth'] = $query['auth_key'];
+            $params['auth'] = PubnubUtil::url_encode($query['auth_key']);
         }
 
         if (isset($query['channel'])) {
-            $params['channel'] = $query['channel'];
+            $params['channel'] = PubnubUtil::url_encode($query['channel']);
         }
 
-        $params['pnsdk'] = $this->pnsdk;
+        if (isset($query['channel-group'])) {
+            $params['channel-group'] = PubnubUtil::url_encode($query['channel-group']);
+        }
+
+        if (isset($query['manage'])) {
+            $params['m'] = $query['manage'] ? 1 : 0;
+        }
+
+        $params['pnsdk'] = urlencode($this->pnsdk);
 
         if (isset($query['read'])) {
             $params['r'] = $query['read'] ? 1 : 0;

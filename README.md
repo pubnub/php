@@ -6,19 +6,6 @@
 
 ### How to include
 
-#### PHP <= 5.2
-  1. You need only **legacy** folder. To get it clone repo:
-
-    ``` sh
-    $ git clone https://github.com/pubnub/php.git ./pubnub-php
-    ```
-  2. Copy 2 files to your project vendor libraries folder.
-  3. Require Pubnub.php file:
-
-    ``` php
-    require_once('legacy/Pubnub.php');
-    ```
-
 #### PHP >= 5.3 without composer
   1. You need only **composer** folder. To get it clone repo:
 
@@ -237,32 +224,42 @@ $pubnub->pipeline(function ($p) {
 });
 ```
 
-## Differences with legacy/composer clients usage
-* in composer cliend you should use namespace **Pubnub** to access Pubnub class:
+#### Channel Groups management
+To use namespaces just add namespace name with ":" prior to group name string.
+For example in `news:music`, `news` is namespace and `music` is group
+and `news_music` is top-level channel group.
 
-  ``` php
-  <?php
-  use Pubnub\Pubnub;
-  
-  $pubnub = new Pubnub();
-  ?>
-  ```
+```php
+// Add channels to group:
+$pubnub->channelGroupAddChannel("music_news", ["jazz_news", "rock_news", "punk_news"]);
+$pubnub->channelGroupAddChannel("news:music", ["jazz_news", "rock_news", "punk_news"]);
 
-* in **composer** client the most convenient way for defining collbacks is to use **anonymous functions**:
+// Get group channels list
+$pubnub->channelGroupListChannels("music_news");
+$pubnub->channelGroupListChannels("news:music");
 
-  ``` php
-  $pubnub->subscribe('my_channel', function($message) {
-    var_dump($message);
-    return true;
-  });
-  ```
+// Remove channel from group
+$pubnub->channelGroupRemoveChannel("music_news", ["rock_news"]);
+$pubnub->channelGroupRemoveChannel("news:music", ["rock_news"]);
 
-  but **anonymous functions** are implemented starting only PHP 5.3 version, so for legacy client you should use **create_function()** function:
+// Subscribe to channel
+$pubnub->channelGroupSubscribe("music_news", function ($result) {
+    print_r($result);
+});
+$pubnub->channelGroupSubscribe("news:music", function ($result) {
+    print_r($result);
+});
 
-  ```php
-  $pubnub->subscribe('my_channel', create_function('$message', 'var_dump($message); return true;'));
-  ```
-## How to build
-  For building information see README.md file in **core** folder.
-  
+// Gets a list of uuids subscribed to the channel groups.
+$pubnub->channelGroupHereNow("news:music");
+
+// Remove channel group
+$pubnub->channelGroupRemoveGroup("music_news");
+$pubnub->channelGroupRemoveGroup("news:music");
+
+// Remove namespace
+$pubnub->channelGroupRemoveNamespace("news");
+
+```
+
 ## Contact support@pubnub.com for all questions

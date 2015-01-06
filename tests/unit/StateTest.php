@@ -35,4 +35,24 @@ class StateTest extends TestCase
         $this->assertEquals($state['name'], $result['payload']['name']);
         $this->assertEquals($state['status'], $result['payload']['status']);
     }
+
+    /**
+     * @group state
+     */
+    public function testSetChannelGroupState()
+    {
+        $uuid = 'some_other_uuid';
+        $group = 'ptest-' . rand();
+        $channels = array('ptest1', 'ptest2');
+        $state = array('name' => 'Nick', 'status' => 'busy');
+
+        $this->pubnub->channelGroupAddChannel($group, $channels);
+
+        $this->pubnub->setChannelGroupState($group, $state, $uuid);
+
+        $result = $this->pubnub->getState($channels[1], $uuid);
+
+        $this->assertEquals($state['name'], $result['payload']['name']);
+        $this->assertEquals($state['status'], $result['payload']['status']);
+    }
 }
