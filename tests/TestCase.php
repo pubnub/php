@@ -32,10 +32,11 @@ abstract class TestCase extends PHPUnit_Framework_TestCase {
         $groups = $result["payload"]["groups"];
 
         foreach ($groups as $groupName) {
+            // WARNING: Check $groups for temporary generated groups if some tests fails.
             if (strpos($groupName, 'ptest') !== false) {
                 $result = $pn->channelGroupRemoveGroup($groupName);
                 if ($result['message'] === "OK") {
-                    print_r("Successfully removed group " . $groupName . "\n");
+//                    print_r("Successfully removed group " . $groupName . "\n");
                 }
             }
         }
@@ -47,7 +48,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase {
             if (strpos($namespace, 'ptest') !== false) {
                 $result = $pn->channelGroupRemoveNamespace($namespace);
                 if ($result['message'] === "OK") {
-                    print_r("Successfully removed namespace " . $namespace . "\n");
+//                    print_r("Successfully removed namespace " . $namespace . "\n");
                 }
             }
         }

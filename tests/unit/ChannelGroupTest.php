@@ -1,7 +1,5 @@
 <?php
 
-use Pubnub\Pubnub;
-
 class ChannelGroupTest extends TestCase
 {
     private $channelGroup;

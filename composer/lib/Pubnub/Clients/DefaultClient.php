@@ -34,6 +34,7 @@ class DefaultClient extends Client
 
         curl_close($ch);
 
+        $this->requests = array();
         if ($JSONDecodedResponse != null)
             return $JSONDecodedResponse;
         elseif ($curlError == 28)
