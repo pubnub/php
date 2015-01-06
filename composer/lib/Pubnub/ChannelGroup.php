@@ -2,8 +2,6 @@
  
 namespace Pubnub;
 
-use Pubnub\PubnubException;
-
 class ChannelGroup
 {
     public $group;

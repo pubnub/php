@@ -16,7 +16,6 @@ class Pubnub
 {
     const PNSDK = 'Pubnub-PHP/3.7.0';
 
-    private $ORIGIN = 'pubsub.pubnub.com'; // Change this to your custom origin, or IUNDERSTAND.pubnub.com
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
     private $SECRET_KEY = '';
@@ -479,7 +478,7 @@ class Pubnub
                     return;
                 }
 
-            } catch (Exception $error) {
+            } catch (\Exception $error) {
                 $this->handleError($error);
                 $timeToken = $this->throwAndResetTimeToken($callback, "Unknown error.");
                 continue;
@@ -1000,6 +999,7 @@ class Pubnub
      * For PHP <= 5.3 use pipelineStart() and pipelineEnd() functions instead.
      *
      * @param Callback $callback
+     * @return array
      */
     public function pipeline($callback)
     {
