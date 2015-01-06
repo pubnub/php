@@ -1078,13 +1078,7 @@ class Pubnub
 
             return null;
         } else {
-            $result = $this->defaultClient->add($path, $query);
-
-            if ($result === null) {
-                throw new PubnubException('Error while performing request. Method name:' . $path[0]);
-            }
-
-            return $result;
+            return $this->defaultClient->add($path, $query);
         }
     }
 

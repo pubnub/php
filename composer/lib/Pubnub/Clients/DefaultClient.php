@@ -33,13 +33,12 @@ class DefaultClient extends Client
         $JSONDecodedResponse = PubnubUtil::json_decode($output);
 
         curl_close($ch);
-        $this->requests = array();
 
         if ($JSONDecodedResponse != null)
             return $JSONDecodedResponse;
         elseif ($curlError == 28)
-            throw new PubnubException("_PUBNUB_TIMEOUT");
-        elseif ($curlResponseCode == 400 || $curlResponseCode == 404)
-            throw new PubnubException("_PUBNUB_MESSAGE_TOO_LARGE");
+            throw new PubnubException("Pubnub timeout");
+        else
+            throw new PubnubException("Empty response from Pubnub. HTTP code: " . $curlResponseCode);
     }
 }
