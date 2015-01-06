@@ -698,19 +698,6 @@ class Pubnub
     }
 
     /**
-     * @deprecated 3.7.0
-     * @see Pubnub->history() Use history() instead
-     */
-    function detailedHistory()
-    {
-        trigger_error('detailedHistory() methods is deprecated. Use history() instead.', E_USER_DEPRECATED);
-
-        $args = func_get_args();
-
-        return call_user_func_array(array($this, 'history'), $args);
-    }
-
-    /**
      * Get list of group's channels
      *
      * @param string $group name
