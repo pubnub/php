@@ -391,6 +391,8 @@ class Pubnub
 
         if ($channel === null && $channelGroup !== null) {
             $channel = ',';
+        } else {
+            $channel = PubnubUtil::url_encode($channel);
         }
 
         if ($channelGroup !== null) {
@@ -409,13 +411,14 @@ class Pubnub
                 $response = $this->request(array(
                     'subscribe',
                     $this->SUBSCRIBE_KEY,
-                    PubnubUtil::url_encode($channel),
+                    $channel,
                     '0',
                     $timeToken
                 ), $query);
 
                 $messages = $response[0];
                 $timeToken = $response[1];
+                $derivedGroup = null;
 
                 if ($response == "_PUBNUB_TIMEOUT") {
                     continue;
@@ -430,6 +433,7 @@ class Pubnub
                 if ((count($response) == 4)) {
                     // Response has multiple channels or/and groups
                     $derivedChannel = explode(",", $response[3]);
+                    $derivedGroup = explode(",", $response[2]);
                 } else if ((count($response) == 3)) {
                     // Response has multiple channels
                     $derivedChannel = explode(",", $response[2]);
@@ -449,25 +453,30 @@ class Pubnub
 
                 $receivedMessages = $this->decodeAndDecrypt($messages, $mode);
 
-                $returnArray = $this->NEW_STYLE_RESPONSE
-                    ? array($receivedMessages, $derivedChannel, $timeToken)
-                    : array($receivedMessages, $timeToken);
+                $returnArray = array($receivedMessages, $derivedChannel, $timeToken);
 
                 # Call once for each message for each channel
                 $exit_now = false;
 
                 for ($i = 0; $i < sizeof($receivedMessages); $i++) {
-                    $cbReturn = $callback(array(
+                    $resultArray = array(
                         "message" => $returnArray[0][$i],
                         "channel" => $returnArray[1][$i],
                         "timeToken" => $returnArray[2]
-                    ));
+                    );
+
+                    if (isset($derivedGroup)) {
+                      $resultArray["group"] = $derivedGroup[$i];
+                    }
+
+                    $cbReturn = $callback($resultArray);
 
                     if ($cbReturn == false) {
                         $exit_now = true;
                     }
                 }
 
+                # Explicitly invoke leave event
                 if ($exit_now) {
                     $channels = explode(',', $channel);
 
