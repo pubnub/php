@@ -8,13 +8,13 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.7.1 Real-time Push Cloud API
+ * PubNub 3.7.2 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/3.7.1';
+    const PNSDK = 'Pubnub-PHP/3.7.2';
 
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
@@ -1036,6 +1036,16 @@ class Pubnub
         $this->AUTH_KEY = $auth_key;
     }
 
+    /**
+     * Set timeout for non-subscribe requests using  CURLOPT_TIMEOUT
+     *
+     * @param int $timeout in seconds
+     */
+    public function setTimeout($timeout) {
+        $this->defaultClient->setTimeout($timeout);
+        $this->pipelinedClient->setTimeout($timeout);
+    }
+
     private function leave($channel)
     {
         $this->request(array(
@@ -1069,12 +1079,17 @@ class Pubnub
             $query = array_merge($query, $this->defaultQueryArray());
         }
 
-        if ($this->pipelinedFlag === true) {
-            $this->pipelinedClient->add($path, $query);
+        try {
+            if ($this->pipelinedFlag === true) {
+                $this->pipelinedClient->add($path, $query);
 
+                return null;
+            } else {
+                return $this->defaultClient->add($path, $query);
+            }
+        } catch (PubnubException $e) {
+            $this->handleError($e);
             return null;
-        } else {
-            return $this->defaultClient->add($path, $query);
         }
     }
 
@@ -1120,8 +1135,8 @@ class Pubnub
      */
     private function handleError($error)
     {
-        $errorMsg = 'Error on line ' . $error->getLine() . ' in ' . $error->getFile() . $error->getMessage();
-        trigger_error($errorMsg, E_COMPILE_WARNING);
+        $errorMsg = 'Error on line ' . $error->getLine() . ' in ' . $error->getFile() . ": " . $error->getMessage();
+        trigger_error($errorMsg, E_USER_WARNING);
         sleep(1);
     }
 

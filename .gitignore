@@ -1,6 +1,7 @@
 **/*.php.temp
 **/*.pem
 **/*.txt
+**/*.iml
 
 # composer vendor dir
 /vendor
@@ -9,5 +10,4 @@
 /composer.lock
 
 # IDEA files
-/*.iml
 /.idea

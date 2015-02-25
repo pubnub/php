@@ -24,6 +24,9 @@ abstract class Client
     /** @var array of requests */
     protected $requests = array();
 
+    /** @var int timeout in seconds */
+    protected $curlTimeout = 310;
+
     public function __construct($origin, $ssl, $proxy, $pem)
     {
         $this->ssl = (bool) $ssl;
@@ -54,12 +57,17 @@ abstract class Client
         $this->requests[] = array($path, $query);
     }
 
+    public function setTimeout($timeout)
+    {
+        $this->curlTimeout = $timeout;
+    }
+
     protected function bootstrapOptions()
     {
         $options = array(
             CURLOPT_USERAGENT => "PHP",
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => 310,
+            CURLOPT_TIMEOUT => $this->curlTimeout,
         );
 
         if ($this->proxy) {

@@ -30,6 +30,7 @@ class DefaultClient extends Client
         $output = curl_exec($ch);
         $curlError = curl_errno($ch);
         $curlResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlResponseURL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
         $JSONDecodedResponse = PubnubUtil::json_decode($output);
 
         curl_close($ch);
@@ -38,8 +39,10 @@ class DefaultClient extends Client
         if ($JSONDecodedResponse != null)
             return $JSONDecodedResponse;
         elseif ($curlError == 28)
-            throw new PubnubException("Pubnub timeout");
+            throw new PubnubException("Pubnub request timeout. Maximum timeout: " . $this->curlTimeout . " seconds" .
+                ". Requested URL: " . $curlResponseURL );
         else
-            throw new PubnubException("Empty response from Pubnub. HTTP code: " . $curlResponseCode);
+            throw new PubnubException("Empty response from Pubnub. HTTP code: " . $curlResponseCode .
+                ". Requested URL: " . $curlResponseURL );
     }
 }
