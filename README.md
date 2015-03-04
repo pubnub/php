@@ -262,4 +262,13 @@ $pubnub->channelGroupRemoveNamespace("news");
 
 ```
 
+#### Subscribe and non-subscribe cURL timeout setters
+```php
+// Default non-subscribe timeout is 30 seconds
+$pubnub->setTimeout(5);
+
+// Default subscribe timeout is 310 seconds
+$pubnub->setSubscribeTimeout(100);
+
+```
 ## Contact support@pubnub.com for all questions
