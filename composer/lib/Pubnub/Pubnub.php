@@ -8,13 +8,13 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.7.2 Real-time Push Cloud API
+ * PubNub 3.7.3 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/3.7.2';
+    const PNSDK = 'Pubnub-PHP/3.7.3';
 
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
@@ -1044,6 +1044,16 @@ class Pubnub
     public function setTimeout($timeout) {
         $this->defaultClient->setTimeout($timeout);
         $this->pipelinedClient->setTimeout($timeout);
+    }
+
+    /**
+     * Set timeout for subscribe requests using  CURLOPT_TIMEOUT
+     *
+     * @param int $timeout in seconds
+     */
+    public function setSubscribeTimeout($timeout) {
+        $this->defaultClient->setSubscribeTimeout($timeout);
+        $this->pipelinedClient->setSubscribeTimeout($timeout);
     }
 
     private function leave($channel)
