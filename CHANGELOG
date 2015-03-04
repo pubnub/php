@@ -1,3 +1,7 @@
+03-04-15 3.7.3
+. Add cURL timeout setter for subscribe requests
+. Change default cURL timeout for non-subscribe requests to 30 seconds
+
 02-25-15 3.7.2
 . Add cURL timeout setter
 . Add request url and http code details to cURL request errors
