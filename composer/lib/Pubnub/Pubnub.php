@@ -1046,6 +1046,16 @@ class Pubnub
         $this->pipelinedClient->setTimeout($timeout);
     }
 
+    /**
+     * Set timeout for subscribe requests using  CURLOPT_TIMEOUT
+     *
+     * @param int $timeout in seconds
+     */
+    public function setSubscribeTimeout($timeout) {
+        $this->defaultClient->setSubscribeTimeout($timeout);
+        $this->pipelinedClient->setSubscribeTimeout($timeout);
+    }
+
     private function leave($channel)
     {
         $this->request(array(

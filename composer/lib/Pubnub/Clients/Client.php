@@ -24,8 +24,11 @@ abstract class Client
     /** @var array of requests */
     protected $requests = array();
 
-    /** @var int timeout in seconds */
-    protected $curlTimeout = 310;
+    /** @var int timeout for non-subscribe requests in seconds */
+    protected $curlTimeout = 30;
+
+    /** @var int timeout for subscribe requests in seconds */
+    protected $curlSubscribeTimeout = 310;
 
     public function __construct($origin, $ssl, $proxy, $pem)
     {
@@ -62,12 +65,16 @@ abstract class Client
         $this->curlTimeout = $timeout;
     }
 
+    public function setSubscribeTimeout($timeout)
+    {
+        $this->curlSubscribeTimeout = $timeout;
+    }
+
     protected function bootstrapOptions()
     {
         $options = array(
             CURLOPT_USERAGENT => "PHP",
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => $this->curlTimeout,
+            CURLOPT_RETURNTRANSFER => 1
         );
 
         if ($this->proxy) {
@@ -102,6 +109,7 @@ abstract class Client
         foreach ($this->requests as $requestArray) {
             $request = $requestArray[0];
             $query = $requestArray[1];
+            $timeout = static::requestIsSubscribe($request) ? $this->curlSubscribeTimeout : $this->curlTimeout;
 
             $ch = curl_init();
 
@@ -110,12 +118,17 @@ abstract class Client
             $url = implode('/', $request) . $this->glue($query);
 
             curl_setopt_array($ch, $options);
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
             curl_setopt($ch, CURLOPT_URL, $url);
 
             $chs[] = $ch;
         }
 
         return $chs;
+    }
+
+    private static function requestIsSubscribe(array $request) {
+        return $request[0] == "subscribe";
     }
 
     protected static function glue(array $query)
