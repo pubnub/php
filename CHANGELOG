@@ -1,3 +1,6 @@
+03-13-15 3.7.4
+. Remove timeout warning from subscribe request
+
 03-04-15 3.7.3
 . Add cURL timeout setter for subscribe requests
 . Change default cURL timeout for non-subscribe requests to 30 seconds
