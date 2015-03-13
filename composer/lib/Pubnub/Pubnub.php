@@ -414,18 +414,13 @@ class Pubnub
                     $channel,
                     '0',
                     $timeToken
-                ), $query);
+                ), $query, true, true);
 
                 $messages = $response[0];
                 $timeToken = $response[1];
                 $derivedGroup = null;
 
-                if ($response == "_PUBNUB_TIMEOUT") {
-                    continue;
-                } elseif ($response == "_PUBNUB_MESSAGE_TOO_LARGE") {
-                    $timeToken = $this->throwAndResetTimeToken($callback, "Message Too Large");
-                    continue;
-                } elseif ($response == null || $timeToken == null) {
+                if ($response == null || $timeToken == null) {
                     $timeToken = $this->throwAndResetTimeToken($callback, "Bad server response.");
                     continue;
                 }
@@ -487,6 +482,8 @@ class Pubnub
                     return;
                 }
 
+            } catch (PubnubException $error) {
+                continue;
             } catch (\Exception $error) {
                 $this->handleError($error);
                 $timeToken = $this->throwAndResetTimeToken($callback, "Unknown error.");
@@ -1078,12 +1075,11 @@ class Pubnub
      * @param array $path
      * @param array $query
      * @param bool $useDefaultQueryArray
-     *
-     * @throws PubnubException
-     *
+     * @param bool $throw
      * @return array|null
+     * @throws PubnubException
      */
-    private function request(array $path, array $query = array(), $useDefaultQueryArray = true)
+    private function request(array $path, array $query = array(), $useDefaultQueryArray = true, $throw = false)
     {
         if ($useDefaultQueryArray) {
             $query = array_merge($query, $this->defaultQueryArray());
@@ -1098,8 +1094,12 @@ class Pubnub
                 return $this->defaultClient->add($path, $query);
             }
         } catch (PubnubException $e) {
-            $this->handleError($e);
-            return null;
+            if ($throw) {
+                throw $e;
+            } else {
+                $this->handleError($e);
+                return null;
+            }
         }
     }
 
