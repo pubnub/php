@@ -25,7 +25,6 @@ class Pubnub
     private $SESSION_UUID = '';
     private $PROXY = false;
     private $NEW_STYLE_RESPONSE = true;
-
     private $pipelinedFlag = false;
     private $defaultClient;
     private $pipelinedClient;
@@ -48,6 +47,7 @@ class Pubnub
      * @param bool $uuid
      * @param bool $proxy
      * @param bool $auth_key
+     * @param bool $verify_peer
      *
      * @throws PubnubException
      */
@@ -61,7 +61,8 @@ class Pubnub
         $pem_path = false,
         $uuid = false,
         $proxy = false,
-        $auth_key = false
+        $auth_key = false,
+        $verify_peer = true
     ) {
 
         if (is_array($first_argument)) {
@@ -75,6 +76,7 @@ class Pubnub
             $uuid = isset($first_argument['uuid']) ? $first_argument['uuid'] : false;
             $proxy = isset($first_argument['proxy']) ? $first_argument['proxy'] : false;
             $auth_key = isset($first_argument['auth_key']) ? $first_argument['auth_key'] : false;
+            $verify_peer = isset($first_argument['verify_peer']) ? $first_argument['verify_peer'] : $verify_peer;
         } else {
             $publish_key = $first_argument;
         }
@@ -96,8 +98,8 @@ class Pubnub
         $this->AES = new PubnubAES();
         $this->AUTH_KEY = $auth_key;
 
-        $this->defaultClient = new DefaultClient($origin, $ssl, $proxy, $pem_path);
-        $this->pipelinedClient = new PipelinedClient($origin, $ssl, $proxy, $pem_path);
+        $this->defaultClient = new DefaultClient($origin, $ssl, $proxy, $pem_path, $verify_peer);
+        $this->pipelinedClient = new PipelinedClient($origin, $ssl, $proxy, $pem_path, $verify_peer);
 
         if (!$this->AES->isBlank($cipher_key)) {
             $this->CIPHER_KEY = $cipher_key;

@@ -30,7 +30,10 @@ abstract class Client
     /** @var int timeout for subscribe requests in seconds */
     protected $curlSubscribeTimeout = 310;
 
-    public function __construct($origin, $ssl, $proxy, $pem)
+    /** @var bool check for peer certificate validity */
+    protected $verifyPeer = true;
+
+    public function __construct($origin, $ssl, $proxy, $pem, $verifyPeer)
     {
         $this->ssl = (bool) $ssl;
 
@@ -45,6 +48,8 @@ abstract class Client
         if (!empty($origin)) {
             $this->origin = $origin;
         }
+
+        $this->verifyPeer = $verifyPeer;
 
         // TODO: review origin
         if ($origin == "PHP.pubnub.com") {
@@ -82,7 +87,7 @@ abstract class Client
         }
 
         if ($this->ssl) {
-            $options[CURLOPT_SSL_VERIFYPEER] = true;
+            $options[CURLOPT_SSL_VERIFYPEER] = $this->verifyPeer;
             $options[CURLOPT_SSL_VERIFYHOST] = 2;
 
             $pemPathAndFilename = $this->pem_path . "/pubnub.com.pem";
