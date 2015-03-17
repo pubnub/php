@@ -24,7 +24,6 @@ class Pubnub
     private $SSL = false;
     private $SESSION_UUID = '';
     private $PROXY = false;
-    private $NEW_STYLE_RESPONSE = true;
     private $pipelinedFlag = false;
     private $defaultClient;
     private $pipelinedClient;
