@@ -57,6 +57,42 @@ $pubnub = new Pubnub(array(
     'ssl' => true
 ));
 ```
+
+#### SSL mode
+To enable secure connection using SSL, you should explicitly enable it in Pubnub instance initializer and specify local path to `pubnub.com.pem` file. Do not add file name to the path. Certificate file is located at the root of github PHP SDK repository. If you want to disable SSL certificate verification, you should explicitly specify it in initializer as `verify_peer` param.
+
+###### Example 1. Enable SSL and specify .pem file location as one level up.
+
+```
+$pubnub = new Pubnub(array(
+    'subscribe_key' => 'demo',
+    'publish_key' => 'demo',
+    'ssl' => true,
+    'pem_path' => "../"
+));
+```
+
+###### Example 2. Enable SSL and specify .pem file location using positional arguments.
+
+```
+$pubnub = new Pubnub("demo", "demo", false, false, false, true, false, "../");
+```
+
+###### Example 3. Enable SSL, but do not verify ceritificate file. It may not even exist. Just send requests to the secure SSL 443 port.
+
+```
+$pubnub = new Pubnub(array(
+    'subscribe_key' => 'demo',
+    'publish_key' => 'demo',
+    'ssl' => true,
+    'verify_peer' => false
+));
+```
+
+###### Default SSL options values:
+- ssl: false
+- verify_host: true
+
 #### Send Message (PUBLISH)
 ```php
 $info = $pubnub->publish('my_channel', 'Hey World!');
@@ -271,4 +307,11 @@ $pubnub->setTimeout(5);
 $pubnub->setSubscribeTimeout(100);
 
 ```
+
+#### Errors and Exceptions handling:
+
+1. Errors are triggered using `trigger_error()` when cURL request fails with HTTP or cURL error
+
+2. `PubnubException`'s will be thrown if you miss any param while invoking methods of Pubnub instance. For ex. you passed empty channel string to #publish() method or forgot to pass callback to #subscribe().
+
 ## Contact support@pubnub.com for all questions
