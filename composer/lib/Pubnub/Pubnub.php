@@ -122,7 +122,7 @@ class Pubnub
      */
     public function publish($channel, $messageOrg, $storeInHistory = true)
     {
-        if (empty($channel) || empty($messageOrg)) {
+        if (!isset($channel) || !isset($messageOrg)) {
             throw new PubnubException('Missing Channel or Message in publish()');
         }
 
