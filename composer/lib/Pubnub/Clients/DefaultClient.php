@@ -43,6 +43,7 @@ class DefaultClient extends Client
                 ". Requested URL: " . $curlResponseURL );
         else
             throw new PubnubException("Empty response from Pubnub. HTTP code: " . $curlResponseCode .
+                ". cURL error code: " . $curlError .
                 ". Requested URL: " . $curlResponseURL );
     }
 }
