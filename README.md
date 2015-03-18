@@ -91,7 +91,7 @@ $pubnub = new Pubnub(array(
 
 ###### Default SSL options values:
 - ssl: false
-- verify_host: true
+- verify_peer: true
 
 #### Send Message (PUBLISH)
 ```php
