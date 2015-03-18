@@ -1,3 +1,6 @@
+03-18-15 3.7.6
+. Add explicit verify_peer = false value to cURL options
+
 03-18-15 3.7.5
 . Extend PubnubException message details in cURL errors
 . Add missing .pem file for secure HTTPS connections
