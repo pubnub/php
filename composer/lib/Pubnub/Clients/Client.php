@@ -97,6 +97,8 @@ abstract class Client
             } else {
                 throw new PubnubException("Can't find PEM file. Please set pem_path in initializer.");
             }
+        } else if ($this->ssl && !$this->verifyPeer) {
+            $options[CURLOPT_SSL_VERIFYPEER] = false;
         }
 
         return $options;
