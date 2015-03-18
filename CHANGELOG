@@ -1,3 +1,8 @@
+03-18-15 3.7.5
+. Extend PubnubException message details in cURL errors
+. Add missing .pem file for secure HTTPS connections
+. Add option to disable .pem verification in secure HTTPS connections
+
 03-13-15 3.7.4
 . Remove timeout warning from subscribe request
 
