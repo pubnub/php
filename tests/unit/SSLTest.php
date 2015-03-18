@@ -40,7 +40,6 @@ class SSLTest extends \TestCase
             'publish_key' => 'demo',
             'origin' => 'pubsub.pubnub.com',
             'ssl' => true,
-            'pem_path' => "./tests/fixtures",
             'verify_peer' => false
         ));
 

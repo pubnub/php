@@ -86,14 +86,14 @@ abstract class Client
             $options[CURLOPT_PROXY] = $this->proxy;
         }
 
-        if ($this->ssl) {
-            $options[CURLOPT_SSL_VERIFYPEER] = $this->verifyPeer;
+        if ($this->ssl && $this->verifyPeer) {
+            $options[CURLOPT_SSL_VERIFYPEER] = true;
             $options[CURLOPT_SSL_VERIFYHOST] = 2;
 
             $pemPathAndFilename = $this->pem_path . "/pubnub.com.pem";
 
             if (file_exists($pemPathAndFilename)) {
-                $options [CURLOPT_CAINFO] = $pemPathAndFilename;
+                $options[CURLOPT_CAINFO] = $pemPathAndFilename;
             } else {
                 throw new PubnubException("Can't find PEM file. Please set pem_path in initializer.");
             }
