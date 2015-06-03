@@ -26,14 +26,106 @@ class HistoryTest extends TestCase
         $m1 = time();
         $m2 = time();
         $this->pubnub->publish($this->channel, static::$message.$m1);
-        $this->pubnub->publish($this->channel, static::$message_2.$m2);
+        $this->pubnub->publish($this->channel, static::$message_2 . $m2);
 
         sleep(3);
 
+        $response = $this->pubnub->history($this->channel, 2);
+
+        $this->assertEquals(static::$message . $m1, $response['messages'][count($response['messages']) - 2]);
+        $this->assertEquals(static::$message_2 . $m2, $response['messages'][count($response['messages']) - 1]);
+    }
+
+    /**
+     * @group history
+     */
+    public function testHistoryMessagesMultipleLevel()
+    {
+        $m1 = static::$message . time();
+        $m2 = static::$message_2 . time();
+        $m3 = static::$message . time();
+        $m4 = static::$message_2 . time();
+
+        $ary1 = array(
+            'first' => $m1,
+            'second' => $m2
+        );
+
+        $ary2 = array(
+            'third' => $m3,
+            'fourth' => $m4
+        );
+
+        $this->pubnub->publish($this->channel, $ary1);
+        $this->pubnub->publish($this->channel, $ary2);
+
+        sleep(1);
+
         $response = $this->pubnub->history($this->channel,2);
 
-        $this->assertEquals(static::$message.$m1, $response['messages'][count($response['messages']) - 2]);
-        $this->assertEquals(static::$message_2.$m2, $response['messages'][count($response['messages']) - 1]);
+        $this->assertEquals($ary1, $response['messages'][count($response['messages']) - 2]);
+        $this->assertEquals($ary2, $response['messages'][count($response['messages']) - 1]);
+    }
+
+    /**
+     * @group history
+     */
+    public function testHistoryEncodedMessagesOneLevel()
+    {
+        $pubnub = new Pubnub(array(
+            'publish_key' => 'demo',
+            'subscribe_key' => 'demo',
+            'cipher_key' => 'blah'
+        ));
+
+        $m1 = time();
+        $m2 = time();
+        $pubnub->publish($this->channel, static::$message . $m1);
+        $pubnub->publish($this->channel, static::$message_2 . $m2);
+
+        sleep(1);
+
+        $response = $pubnub->history($this->channel,2);
+
+        $this->assertEquals(static::$message . $m1, $response['messages'][count($response['messages']) - 2]);
+        $this->assertEquals(static::$message_2 . $m2, $response['messages'][count($response['messages']) - 1]);
+    }
+
+    /**
+     * @group history
+     */
+    public function testHistoryEncodedMessagesMultipleLevel()
+    {
+        $pubnub = new Pubnub(array(
+            'publish_key' => 'demo',
+            'subscribe_key' => 'demo',
+            'cipher_key' => 'blah'
+        ));
+
+        $m1 = static::$message . time();
+        $m2 = static::$message_2 . time();
+        $m3 = static::$message . time();
+        $m4 = static::$message_2 . time();
+
+        $ary1 = array(
+            'first' => $m1,
+            'second' => $m2
+        );
+
+        $ary2 = array(
+            'third' => $m3,
+            'fourth' => $m4
+        );
+
+        $pubnub->publish($this->channel, $ary1);
+        $pubnub->publish($this->channel, $ary2);
+
+        sleep(1);
+
+        $response = $pubnub->history($this->channel,2);
+
+        $this->assertEquals($ary1, $response['messages'][count($response['messages']) - 2]);
+        $this->assertEquals($ary2, $response['messages'][count($response['messages']) - 1]);
     }
 
     /**
@@ -52,8 +144,22 @@ class HistoryTest extends TestCase
      */
     public function testHistoryReverse()
     {
-        $response = $this->pubnub->history($this->channel, 10, 1, null, null, true);
-        $this->assertRegExp('/[0-9]+$/', (string)$response['messages'][0]['message']);
+        $start = time() * 10000000;
+        $channel = $this->channel . time();
+
+        $this->pubnub->publish($channel, static::$message . "#1");
+        $this->pubnub->publish($channel, static::$message . "#2");
+        $this->pubnub->publish($channel, static::$message . "#3");
+        $this->pubnub->publish($channel, static::$message . "#4");
+        $this->pubnub->publish($channel, static::$message . "#5");
+
+        sleep(3);
+
+        $response = $this->pubnub->history($channel, 3, 1, $start, null, true);
+        $this->assertEquals(static::$message . '#1', (string) $response['messages']['0']['message']);
+
+        $response = $this->pubnub->history($channel, 3, 1, null, $start/* as end */, false);
+        $this->assertEquals(static::$message . '#3', (string) $response['messages']['0']['message']);
     }
 
     /**
@@ -63,5 +169,38 @@ class HistoryTest extends TestCase
     {
         $this->setExpectedException('\Pubnub\PubnubException');
         $this->pubnub->history('');
+    }
+
+    /**
+     * @group history
+     * NOTICE: non-standard server response, should be fixed
+     */
+    public function xtestHistoryErrorWhenServiceIsDisabled()
+    {
+        $pubnub = new Pubnub(array(
+            'publish_key' => 'pub-c-2123c3b4-7435-4365-b05f-d57f1746a4de',
+            'subscribe_key' => 'sub-c-458ba4d6-0536-11e5-aefa-0619f8945a4f'));
+
+        $result = $pubnub->history('channelName');
+
+        $this->assertEquals(403, $result['status']);
+        $this->assertEquals(1, $result['error']);
+    }
+
+    /**
+     * @group history
+     */
+    public function testHistoryErrorWithWrongKeys()
+    {
+        $pubnub = new Pubnub(array(
+            'publish_key' => 'asdf',
+            'subscribe_key' => 'qwer',
+        ));
+
+        $result = $pubnub->history('channelName');
+
+        $this->assertEquals(400, $result['status']);
+        $this->assertEquals(1, $result['error']);
+        $this->assertEquals('Invalid Subscribe Key', $result['message']);
     }
 }

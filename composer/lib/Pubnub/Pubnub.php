@@ -505,19 +505,28 @@ class Pubnub
      */
     public function decodeAndDecrypt($messages, $mode = "default")
     {
-        $receivedMessages = array();
-
         if ($mode == "presence") {
             return $messages;
         } elseif ($mode == "default" && is_array($messages)) {
             $messageArray = $messages;
-            $receivedMessages = $this->decodeDecryptLoop($messageArray);
+            return $this->decodeDecryptLoop($messageArray);
         } elseif ($mode == "detailedHistory" && is_array($messages)) {
-            $decodedMessages = $this->decodeDecryptLoop($messages);
-            $receivedMessages = array($decodedMessages[0], $messages[1], $messages[2]);
+            if (array_key_exists("error", $messages) && $messages["error"] == 1) {
+                return $messages;
+            } else {
+                return array(
+                    $this->decodeDecryptLoop($messages[0]),
+                    $messages[1],
+                    $messages[2]
+                );
+            }
+        } else {
+            return array(
+                'error' => 1,
+                'service' => 'in-SDK message decoder',
+                'message' => 'Unable to decode received message'
+            );
         }
-
-        return $receivedMessages;
     }
 
     /**
@@ -690,18 +699,15 @@ class Pubnub
 
         $receivedMessages = $this->decodeAndDecrypt($response, "detailedHistory");
 
-        //TODO: <timeout> and <message too large> check
-        if (!is_array($receivedMessages)) {
-            $receivedMessages = array();
+        if (array_key_exists('error', $receivedMessages) && $receivedMessages['error'] == 1) {
+            return $receivedMessages;
+        } else {
+            return array(
+                'messages' => isset($receivedMessages[0]) ? $receivedMessages[0] : array(),
+                'date_from' => isset($receivedMessages[1]) ? $receivedMessages[1] : 0,
+                'date_to' => isset($receivedMessages[2]) ? $receivedMessages[2] : 0,
+            );
         }
-
-        $result = array(
-            'messages' => isset($receivedMessages[0]) ? $receivedMessages[0] : array(),
-            'date_from' => isset($receivedMessages[1]) ? $receivedMessages[1] : 0,
-            'date_to' => isset($receivedMessages[2]) ? $receivedMessages[2] : 0,
-        );
-
-        return $result;
     }
 
     /**
