@@ -259,7 +259,7 @@ class Pubnub
         }
 
         $uuid = $uuid ? $uuid : $this->SESSION_UUID;
-        $state = PubnubUtil::json_encode($state);
+        $state = PubnubUtil::url_encode(PubnubUtil::json_encode($state));
 
         return $this->request(array(
             'v2',
@@ -293,7 +293,7 @@ class Pubnub
         }
 
         $uuid = $uuid ? $uuid : $this->SESSION_UUID;
-        $state = PubnubUtil::json_encode($state);
+        $state = PubnubUtil::url_encode(PubnubUtil::json_encode($state));
 
         return $this->request(array(
             'v2',
