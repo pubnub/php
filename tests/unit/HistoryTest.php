@@ -173,9 +173,8 @@ class HistoryTest extends TestCase
 
     /**
      * @group history
-     * NOTICE: non-standard server response, should be fixed
      */
-    public function xtestHistoryErrorWhenServiceIsDisabled()
+    public function testHistoryErrorWhenServiceIsDisabled()
     {
         $pubnub = new Pubnub(array(
             'publish_key' => 'pub-c-2123c3b4-7435-4365-b05f-d57f1746a4de',
@@ -183,8 +182,9 @@ class HistoryTest extends TestCase
 
         $result = $pubnub->history('channelName');
 
-        $this->assertEquals(403, $result['status']);
         $this->assertEquals(1, $result['error']);
+        $this->assertEquals('storage', $result['service']);
+        $this->assertEquals('Storage is not enabled for this subscribe key. Please contact help@pubnub.com', $result['message']);
     }
 
     /**

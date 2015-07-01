@@ -701,6 +701,13 @@ class Pubnub
 
         if (array_key_exists('error', $receivedMessages) && $receivedMessages['error'] == 1) {
             return $receivedMessages;
+        // HACK:
+        } else if ($receivedMessages[1] == 0 && $receivedMessages[2] == 0  && count($receivedMessages[0]) == 1) {
+            return array(
+                'error' => 1,
+                'service' => 'storage',
+                'message' => $receivedMessages[0][0]
+            );
         } else {
             return array(
                 'messages' => isset($receivedMessages[0]) ? $receivedMessages[0] : array(),
