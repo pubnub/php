@@ -8,13 +8,13 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.7.6 Real-time Push Cloud API
+ * PubNub 3.7.7 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/3.7.6';
+    const PNSDK = 'Pubnub-PHP/3.7.7';
 
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
