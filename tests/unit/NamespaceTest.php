@@ -18,7 +18,7 @@ class NamespaceTest extends TestCase
         parent::setUp();
         $this->ch = "ch1" . rand();
         $this->channelGroup = "ptest-" . rand();
-        $this->channelNamespace = "ptest-namespace" . rand();
+        $this->channelNamespace = "ptest-namespace-" . rand();
     }
 
     /**
@@ -32,6 +32,7 @@ class NamespaceTest extends TestCase
             array($this->ch)
         );
 
+        sleep(1);
         $result = $this->pubnub->channelGroupListNamespaces();
         $this->assertTrue(in_array($this->channelNamespace, $result["payload"]["namespaces"]));
 

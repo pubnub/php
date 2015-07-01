@@ -12,7 +12,7 @@ class StateTest extends TestCase
      */
     public function testSetAndGetStateForCurrentUser()
     {
-        $state = array('name' => 'John', 'status' => 'idle');
+        $state = array('name' => 'John Brown', 'status' => 'idle');
 
         $this->pubnub->setState($this->channel, $state);
         $result = $this->pubnub->getState($this->channel, $this->pubnub->getUUID());
