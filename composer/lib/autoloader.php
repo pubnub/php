@@ -16,7 +16,9 @@ function pubnubAutoloader($className)
     $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
     $fileName = PUBNUB_LIB_BASE_DIR.DIRECTORY_SEPARATOR.$fileName;
 
-    require_once $fileName;
+    if(file_exists($fileName)){
+      require_once $fileName;
+    }
 }
 
 spl_autoload_register('pubnubAutoloader', true, true);
