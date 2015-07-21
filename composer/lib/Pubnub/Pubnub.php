@@ -422,7 +422,15 @@ class Pubnub
                     $timeToken
                 ), $query, true, true);
 
-                // TODO: handle 400/Invalid Subscribe Key error
+                if (
+                    array_key_exists('error', $response)
+                    && array_key_exists('status', $response)
+                    && $response['error'] == 1 && $response['status']
+                ) {
+                    $callback($response);
+                    break;
+                }
+
                 $messages = $response[0];
                 $timeToken = $response[1];
                 $derivedGroup = null;
