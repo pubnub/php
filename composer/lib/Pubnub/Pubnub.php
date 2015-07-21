@@ -8,13 +8,14 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.7.7 Real-time Push Cloud API
+ * PubNub 3.7.8 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/3.7.7';
+    const PNSDK = 'Pubnub-PHP/3.7.8';
+    const PRESENCE_SUFFIX = '-pnpres';
 
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
@@ -381,13 +382,17 @@ class Pubnub
         }
 
         $query = array();
+        $channelArray = array();
 
         if (is_array($channelGroup)) {
             $channelGroup = join(',', $channelGroup);
         }
 
         if (is_array($channel)) {
+            $channelArray = $channel;
             $channel = join(',', $channel);
+        } else {
+            $channelArray = explode(",", $channel);
         }
 
         if ($channel === null && $channelGroup !== null) {
@@ -416,6 +421,15 @@ class Pubnub
                     '0',
                     $timeToken
                 ), $query, true, true);
+
+                if (
+                    array_key_exists('error', $response)
+                    && array_key_exists('status', $response)
+                    && $response['error'] == 1 && $response['status']
+                ) {
+                    $callback($response);
+                    break;
+                }
 
                 $messages = $response[0];
                 $timeToken = $response[1];
@@ -462,7 +476,13 @@ class Pubnub
                     );
 
                     if (isset($derivedGroup)) {
-                      $resultArray["group"] = $derivedGroup[$i];
+                        $resultArray["group"] = $derivedGroup[$i];
+                        if (
+                            PubnubUtil::string_ends_with($derivedChannel[$i], static::PRESENCE_SUFFIX)
+                            && !in_array($derivedChannel[$i], $channelArray)
+                        ) {
+                            continue;
+                        }
                     }
 
                     $cbReturn = $callback($resultArray);
@@ -564,7 +584,7 @@ class Pubnub
     public function presence($channel, $callback, $timeToken = 0)
     {
         ## Capture User Input
-        $channel = $channel . "-pnpres";
+        $channel = $channel . static::PRESENCE_SUFFIX;
         $this->subscribe($channel, $callback, $timeToken, true);
     }
 

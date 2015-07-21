@@ -1,3 +1,7 @@
+07-21-15 3.7.8
+. Add wildcard channel support
+. Fix invalid subscribe key error handling
+
 07-01-15 3.7.7
 . Fix state encoding in requests
 . Fix history error responses
