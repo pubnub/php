@@ -417,6 +417,7 @@ class Pubnub
                     $timeToken
                 ), $query, true, true);
 
+                // TODO: handle 400/Invalid Subscribe Key error
                 $messages = $response[0];
                 $timeToken = $response[1];
                 $derivedGroup = null;
