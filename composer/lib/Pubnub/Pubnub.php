@@ -15,6 +15,7 @@ use Pubnub\Clients\PipelinedClient;
 class Pubnub
 {
     const PNSDK = 'Pubnub-PHP/3.7.7';
+    const PRESENCE_SUFFIX = '-pnpres';
 
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
@@ -381,13 +382,17 @@ class Pubnub
         }
 
         $query = array();
+        $channelArray = array();
 
         if (is_array($channelGroup)) {
             $channelGroup = join(',', $channelGroup);
         }
 
         if (is_array($channel)) {
+            $channelArray = $channel;
             $channel = join(',', $channel);
+        } else {
+            $channelArray = explode(",", $channel);
         }
 
         if ($channel === null && $channelGroup !== null) {
@@ -463,7 +468,13 @@ class Pubnub
                     );
 
                     if (isset($derivedGroup)) {
-                      $resultArray["group"] = $derivedGroup[$i];
+                        $resultArray["group"] = $derivedGroup[$i];
+                        if (
+                            PubnubUtil::string_ends_with($derivedChannel[$i], static::PRESENCE_SUFFIX)
+                            && !in_array($derivedChannel[$i], $channelArray)
+                        ) {
+                            continue;
+                        }
                     }
 
                     $cbReturn = $callback($resultArray);
@@ -565,7 +576,7 @@ class Pubnub
     public function presence($channel, $callback, $timeToken = 0)
     {
         ## Capture User Input
-        $channel = $channel . "-pnpres";
+        $channel = $channel . static::PRESENCE_SUFFIX;
         $this->subscribe($channel, $callback, $timeToken, true);
     }
 
