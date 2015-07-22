@@ -16,6 +16,8 @@ class Pubnub
 {
     const PNSDK = 'Pubnub-PHP/3.7.8';
     const PRESENCE_SUFFIX = '-pnpres';
+    const WILDCARD_SUFFIX = '.*';
+    const WILDCARD_PRESENCE_SUFFIX = '.*-pnpres';
 
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
@@ -382,7 +384,10 @@ class Pubnub
         }
 
         $query = array();
-        $channelArray = array();
+        /** @var string[] $WCPresenceChannels without -pnpres suffix */
+        $WCPresenceChannels = array();
+        /** @var string[] $WCSubscribeChannels */
+        $WCSubscribeChannels = array();
 
         if (is_array($channelGroup)) {
             $channelGroup = join(',', $channelGroup);
@@ -390,10 +395,28 @@ class Pubnub
 
         if (is_array($channel)) {
             $channelArray = $channel;
-            $channel = join(',', $channel);
         } else {
             $channelArray = explode(",", $channel);
         }
+
+        foreach ($channelArray as $key => $ch) {
+            if (PubnubUtil::string_ends_with($ch, static::WILDCARD_SUFFIX)) {
+                $WCSubscribeChannels[] = $ch;
+            } else if (PubnubUtil::string_ends_with($ch, static::WILDCARD_PRESENCE_SUFFIX)) {
+                $channelWithoutPresence = str_replace(static::WILDCARD_PRESENCE_SUFFIX, static::WILDCARD_SUFFIX, $ch);
+
+                if (in_array($channelWithoutPresence, $channelArray)) {
+                    unset($channelArray[$key]);
+                    $WCSubscribeChannels[] = $channelWithoutPresence;
+                } else {
+                    $channelArray[$key] = $channelWithoutPresence;
+                }
+
+                $WCPresenceChannels[] = $channelWithoutPresence;
+            }
+        }
+
+        $channel = join(',', $channelArray);
 
         if ($channel === null && $channelGroup !== null) {
             $channel = ',';
@@ -477,10 +500,9 @@ class Pubnub
 
                     if (isset($derivedGroup)) {
                         $resultArray["group"] = $derivedGroup[$i];
-                        if (
-                            PubnubUtil::string_ends_with($derivedChannel[$i], static::PRESENCE_SUFFIX)
-                            && !in_array($derivedChannel[$i], $channelArray)
-                        ) {
+                        if (!$this->shouldWildcardMessageBePassedToUserCallback(
+                            $derivedChannel[$i], $derivedGroup[$i], $WCSubscribeChannels, $WCPresenceChannels
+                        )) {
                             continue;
                         }
                     }
@@ -1168,6 +1190,34 @@ class Pubnub
         }
 
         return $this->PAM;
+    }
+
+    /**
+     * Check if wc message should be passed to user callback
+     *
+     * @param $channel
+     * @param $group
+     * @param $subscribe
+     * @param $presence
+     * @return bool passed if message should be passed to user callback
+     * @throws Exception
+     */
+    public static function shouldWildcardMessageBePassedToUserCallback($channel, $group, $subscribe, $presence) {
+        // if presence message while only subscribe
+        if (
+            PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
+            && !in_array($group, $presence)
+        ) {
+            return false;
+        // if subscribe message while only presence
+        } elseif (
+            !PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
+            && !in_array($group, $subscribe)
+        ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
