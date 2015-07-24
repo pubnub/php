@@ -1,3 +1,7 @@
+07-24-15 3.7.9
+. Add wildcard presence support
+. Add logger
+
 07-21-15 3.7.8
 . Add wildcard channel support
 . Fix invalid subscribe key error handling
