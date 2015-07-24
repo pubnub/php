@@ -8,14 +8,16 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.7.8 Real-time Push Cloud API
+ * PubNub 3.7.9 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/3.7.8';
+    const PNSDK = 'Pubnub-PHP/3.7.9';
     const PRESENCE_SUFFIX = '-pnpres';
+    const WILDCARD_SUFFIX = '.*';
+    const WILDCARD_PRESENCE_SUFFIX = '.*-pnpres';
 
     private $PUBLISH_KEY;
     private $SUBSCRIBE_KEY;
@@ -32,6 +34,7 @@ class Pubnub
     public $AES;
     private $PAM = null;
 
+    private $logger;
     /**
      * Pubnub Client API constructor
      *
@@ -80,6 +83,8 @@ class Pubnub
         } else {
             $publish_key = $first_argument;
         }
+
+        $this->logger = new PubnubLogger("Pubnub");
 
         if (empty($publish_key)) {
             throw new PubnubException('Missing required $publish_key param');
@@ -382,7 +387,10 @@ class Pubnub
         }
 
         $query = array();
-        $channelArray = array();
+        /** @var string[] $WCPresenceChannels without -pnpres suffix */
+        $WCPresenceChannels = array();
+        /** @var string[] $WCSubscribeChannels */
+        $WCSubscribeChannels = array();
 
         if (is_array($channelGroup)) {
             $channelGroup = join(',', $channelGroup);
@@ -390,10 +398,29 @@ class Pubnub
 
         if (is_array($channel)) {
             $channelArray = $channel;
-            $channel = join(',', $channel);
         } else {
             $channelArray = explode(",", $channel);
         }
+
+        foreach ($channelArray as $key => $ch) {
+            if (PubnubUtil::string_ends_with($ch, static::WILDCARD_SUFFIX)) {
+                $WCSubscribeChannels[] = $ch;
+            } else if (PubnubUtil::string_ends_with($ch, static::WILDCARD_PRESENCE_SUFFIX)) {
+                $channelWithoutPresence = str_replace(static::WILDCARD_PRESENCE_SUFFIX, static::WILDCARD_SUFFIX, $ch);
+
+                if (in_array($channelWithoutPresence, $channelArray)) {
+                    unset($channelArray[$key]);
+                    $WCSubscribeChannels[] = $channelWithoutPresence;
+                } else {
+                    $channelArray[$key] = $channelWithoutPresence;
+                }
+
+                $WCPresenceChannels[] = $channelWithoutPresence;
+            }
+        }
+
+        $channel = join(',', $channelArray);
+        $this->logger->debug("Subscribe channels string: " . $channel);
 
         if ($channel === null && $channelGroup !== null) {
             $channel = ',';
@@ -477,10 +504,10 @@ class Pubnub
 
                     if (isset($derivedGroup)) {
                         $resultArray["group"] = $derivedGroup[$i];
-                        if (
-                            PubnubUtil::string_ends_with($derivedChannel[$i], static::PRESENCE_SUFFIX)
-                            && !in_array($derivedChannel[$i], $channelArray)
-                        ) {
+                        if (!$this->shouldWildcardMessageBePassedToUserCallback(
+                            $derivedChannel[$i], $derivedGroup[$i], $WCSubscribeChannels,
+                                $WCPresenceChannels, $this->logger
+                        )) {
                             continue;
                         }
                     }
@@ -1168,6 +1195,37 @@ class Pubnub
         }
 
         return $this->PAM;
+    }
+
+    /**
+     * Check if wc message should be passed to user callback
+     *
+     * @param string $channel
+     * @param string $group
+     * @param array $subscribe
+     * @param array $presence
+     * @param PubnubLogger $logger
+     * @return bool passed if message should be passed to user callback
+     */
+    public static function shouldWildcardMessageBePassedToUserCallback(
+        $channel, $group, $subscribe, $presence, $logger) {
+        // if presence message while only subscribe
+        if (
+            PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
+            && !in_array($group, $presence)
+        ) {
+            $logger->debug("WC presence message on " . $channel . " while is not subscribe for presence");
+            return false;
+        // if subscribe message while only presence
+        } elseif (
+            !PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
+            && !in_array($group, $subscribe)
+        ) {
+            $logger->debug("WC subscribe message on " . $channel . " while is not subscribe for messages");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
