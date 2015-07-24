@@ -34,6 +34,7 @@ class Pubnub
     public $AES;
     private $PAM = null;
 
+    private $logger;
     /**
      * Pubnub Client API constructor
      *
@@ -82,6 +83,8 @@ class Pubnub
         } else {
             $publish_key = $first_argument;
         }
+
+        $this->logger = new PubnubLogger("Pubnub");
 
         if (empty($publish_key)) {
             throw new PubnubException('Missing required $publish_key param');
@@ -417,6 +420,7 @@ class Pubnub
         }
 
         $channel = join(',', $channelArray);
+        $this->logger->debug("Subscribe channels string: " . $channel);
 
         if ($channel === null && $channelGroup !== null) {
             $channel = ',';
@@ -501,7 +505,8 @@ class Pubnub
                     if (isset($derivedGroup)) {
                         $resultArray["group"] = $derivedGroup[$i];
                         if (!$this->shouldWildcardMessageBePassedToUserCallback(
-                            $derivedChannel[$i], $derivedGroup[$i], $WCSubscribeChannels, $WCPresenceChannels
+                            $derivedChannel[$i], $derivedGroup[$i], $WCSubscribeChannels,
+                                $WCPresenceChannels, $this->logger
                         )) {
                             continue;
                         }
@@ -1195,25 +1200,28 @@ class Pubnub
     /**
      * Check if wc message should be passed to user callback
      *
-     * @param $channel
-     * @param $group
-     * @param $subscribe
-     * @param $presence
+     * @param string $channel
+     * @param string $group
+     * @param array $subscribe
+     * @param array $presence
+     * @param PubnubLogger $logger
      * @return bool passed if message should be passed to user callback
-     * @throws Exception
      */
-    public static function shouldWildcardMessageBePassedToUserCallback($channel, $group, $subscribe, $presence) {
+    public static function shouldWildcardMessageBePassedToUserCallback(
+        $channel, $group, $subscribe, $presence, $logger) {
         // if presence message while only subscribe
         if (
             PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
             && !in_array($group, $presence)
         ) {
+            $logger->debug("WC presence message on " . $channel . " while is not subscribe for presence");
             return false;
         // if subscribe message while only presence
         } elseif (
             !PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
             && !in_array($group, $subscribe)
         ) {
+            $logger->debug("WC subscribe message on " . $channel . " while is not subscribe for messages");
             return false;
         } else {
             return true;

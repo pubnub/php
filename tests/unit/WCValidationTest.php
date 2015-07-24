@@ -7,6 +7,11 @@ class WCValidationTest extends TestCase
 {
     protected static $message = 'Hello from uuid() test';
     protected static $channel = 'pubnub_php_test';
+    private $logger;
+
+    public function setUp() {
+        $this->logger = new \Pubnub\PubnubLogger("WCValidationTest");
+    }
 
     /**
      * @group wc
@@ -14,7 +19,7 @@ class WCValidationTest extends TestCase
     public function testPresenceWhenOnlyPresence()
     {
         $this->assertTrue(Pubnub::shouldWildcardMessageBePassedToUserCallback(
-            "foo.bar-pnpres", "foo.*", array(), array("foo.*")
+            "foo.bar-pnpres", "foo.*", array(), array("foo.*"), $this->logger
         ));
     }
 
@@ -24,7 +29,7 @@ class WCValidationTest extends TestCase
     public function testPresenceWhenBothPresenceAndSubscribe()
     {
         $this->assertTrue(Pubnub::shouldWildcardMessageBePassedToUserCallback(
-            "foo.bar-pnpres", "foo.*", array("foo.*"), array("foo.*")
+            "foo.bar-pnpres", "foo.*", array("foo.*"), array("foo.*"), $this->logger
         ));
     }
 
@@ -34,7 +39,7 @@ class WCValidationTest extends TestCase
     public function testPresenceWhenOnlySubscribe()
     {
         $this->assertFalse(Pubnub::shouldWildcardMessageBePassedToUserCallback(
-            "foo.bar-pnpres", "foo.*", array("foo.*"), array()
+            "foo.bar-pnpres", "foo.*", array("foo.*"), array(), $this->logger
         ));
     }
 
@@ -44,7 +49,7 @@ class WCValidationTest extends TestCase
     public function testSubscribeWhenOnlyPresence()
     {
         $this->assertFalse(Pubnub::shouldWildcardMessageBePassedToUserCallback(
-            "foo.bar", "foo.*", array(), array("foo.*")
+            "foo.bar", "foo.*", array(), array("foo.*"), $this->logger
         ));
     }
 
@@ -54,7 +59,7 @@ class WCValidationTest extends TestCase
     public function testSubscribeWhenBothSubscribeAndPresence()
     {
         $this->assertTrue(Pubnub::shouldWildcardMessageBePassedToUserCallback(
-            "foo.bar", "foo.*", array("foo.*"), array("foo.*")
+            "foo.bar", "foo.*", array("foo.*"), array("foo.*"), $this->logger
         ));
     }
 
@@ -64,7 +69,7 @@ class WCValidationTest extends TestCase
     public function testSubscribeWhenOnlySubscribe()
     {
         $this->assertTrue(Pubnub::shouldWildcardMessageBePassedToUserCallback(
-            "foo.bar", "foo.*", array("foo.*"), array()
+            "foo.bar", "foo.*", array("foo.*"), array(), $this->logger
         ));
     }
 }
