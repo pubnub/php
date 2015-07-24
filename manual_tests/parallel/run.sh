@@ -5,6 +5,7 @@ TIMEOUT=8
 run_test() {
     timeout -s SIGKILL $TIMEOUT ./run_test.sh $1
     wait
+    sleep 1
 }
 
 run_test wc_subscribe_one_level
