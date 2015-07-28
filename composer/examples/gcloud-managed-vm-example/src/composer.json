@@ -1,0 +1,12 @@
+{
+    "name": "anovikov/gae-php",
+    "require": {
+        "pubnub/pubnub": "3.7.9"
+    },
+    "authors": [
+        {
+            "name": "Alexander Novikov",
+            "email": "anovikov@granpm.com"
+        }
+    ]
+}
