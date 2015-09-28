@@ -51,6 +51,7 @@ class Pubnub
      * @param bool $proxy
      * @param bool $auth_key
      * @param bool $verify_peer
+     * @param bool $gzip
      *
      * @throws PubnubException
      */
@@ -65,7 +66,8 @@ class Pubnub
         $uuid = false,
         $proxy = false,
         $auth_key = false,
-        $verify_peer = true
+        $verify_peer = true,
+        $gzip = false
     ) {
 
         if (is_array($first_argument)) {
@@ -80,6 +82,7 @@ class Pubnub
             $proxy = isset($first_argument['proxy']) ? $first_argument['proxy'] : false;
             $auth_key = isset($first_argument['auth_key']) ? $first_argument['auth_key'] : false;
             $verify_peer = isset($first_argument['verify_peer']) ? $first_argument['verify_peer'] : $verify_peer;
+            $gzip = isset($first_argument['gzip']) ? $first_argument['gzip'] : false;
         } else {
             $publish_key = $first_argument;
         }
@@ -103,8 +106,8 @@ class Pubnub
         $this->AES = new PubnubAES();
         $this->AUTH_KEY = $auth_key;
 
-        $this->defaultClient = new DefaultClient($origin, $ssl, $proxy, $pem_path, $verify_peer);
-        $this->pipelinedClient = new PipelinedClient($origin, $ssl, $proxy, $pem_path, $verify_peer);
+        $this->defaultClient = new DefaultClient($origin, $ssl, $proxy, $pem_path, $verify_peer, $gzip);
+        $this->pipelinedClient = new PipelinedClient($origin, $ssl, $proxy, $pem_path, $verify_peer, $gzip);
 
         if (!$this->AES->isBlank($cipher_key)) {
             $this->CIPHER_KEY = $cipher_key;

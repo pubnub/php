@@ -33,7 +33,10 @@ abstract class Client
     /** @var bool check for peer certificate validity */
     protected $verifyPeer = true;
 
-    public function __construct($origin, $ssl, $proxy, $pem, $verifyPeer)
+    /** @var bool use gzip compression */
+    protected $gzip = false;
+
+    public function __construct($origin, $ssl, $proxy, $pem, $verifyPeer, $gzip)
     {
         $this->ssl = (bool) $ssl;
 
@@ -50,6 +53,10 @@ abstract class Client
         }
 
         $this->verifyPeer = $verifyPeer;
+
+        if (!empty($gzip)) {
+            $this->gzip = $gzip;
+        }
 
         // TODO: review origin
         if ($origin == "PHP.pubnub.com") {
@@ -99,6 +106,10 @@ abstract class Client
             }
         } else if ($this->ssl && !$this->verifyPeer) {
             $options[CURLOPT_SSL_VERIFYPEER] = false;
+        }
+
+        if ($this->gzip) {
+            $options[CURLOPT_ENCODING] = 'gzip';
         }
 
         return $options;
