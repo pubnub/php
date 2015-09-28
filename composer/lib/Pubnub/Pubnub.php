@@ -853,11 +853,14 @@ class Pubnub
     /**
      * Get the list of groups
      *
+     * @deprecated 3.7.10 Namespace support will be dropped out soon
      * @param string|null $namespace name
      * @return array
      */
     public function channelGroupListGroups($namespace = null)
     {
+        trigger_error('channelGroupListGroups() methods is deprecated. Namespace support will be dropped out soon.', E_USER_DEPRECATED);
+
         $path = array(
             "v1",
             "channel-registration",

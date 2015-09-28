@@ -184,53 +184,6 @@ class ChannelGroupTest extends TestCase
     /**
      * @group cg
      */
-    public function testGetAllChannelGroupNames()
-    {
-        $group1 = "ptest_group1" . rand();
-        $group2 = "ptest_group2" . rand();
-        $ch1 = "ch1" . rand();
-        $ch2 = "ch2" . rand();
-
-        $result = $this->pubnub->channelGroupAddChannel($group1, array($ch1));
-        $this->assertEquals('OK', $result['message']);
-
-        $result = $this->pubnub->channelGroupAddChannel($group2, array($ch2));
-        $this->assertEquals('OK', $result['message']);
-
-        $result = $this->pubnub->channelGroupListGroups();
-
-        $this->assertTrue(in_array($group1, $result["payload"]["groups"]));
-        $this->assertTrue(in_array($group2, $result["payload"]["groups"]));
-        $this->assertEquals("", $result["payload"]["namespace"]);
-    }
-
-    /**
-     * @group cg
-     */
-    public function testGetAllChannelGroupNamesNamespace()
-    {
-        $group1 = "ptest_group1" . rand();
-        $group2 = "ptest_group2" . rand();
-        $ch1 = "ch1" . rand();
-        $ch2 = "ch2" . rand();
-
-        $result = $this->pubnub->channelGroupAddChannel($this->channelNamespace . ":" . $group1, array($ch1));
-        $this->assertEquals('OK', $result['message']);
-
-        $result = $this->pubnub->channelGroupAddChannel($this->channelNamespace . ":" . $group2, array($ch2));
-        $this->assertEquals('OK', $result['message']);
-
-        $result = $this->pubnub->channelGroupListGroups($this->channelNamespace);
-        $payload = $result["payload"];
-
-        $this->assertTrue(in_array($group1, $payload["groups"]));
-        $this->assertTrue(in_array($group2, $payload["groups"]));
-        $this->assertEquals($this->channelNamespace, $payload["namespace"]);
-    }
-
-    /**
-     * @group cg
-     */
     public function testRemoveGroup()
     {
         $ch1 = "ch1" . rand();
@@ -238,39 +191,7 @@ class ChannelGroupTest extends TestCase
         $result = $this->pubnub->channelGroupAddChannel($this->channelGroup, array($ch1));
         $this->assertEquals('OK', $result['message']);
 
-        $result = $this->pubnub->channelGroupListGroups();
-        $this->assertEquals('', $result['payload']['namespace']);
-        $this->assertTrue(in_array($this->channelGroup, $result["payload"]["groups"]));
-
         $result = $this->pubnub->channelGroupRemoveGroup($this->channelGroup);
         $this->assertEquals('OK', $result['message']);
-
-        sleep(1);
-        $result = $this->pubnub->channelGroupListGroups();
-        $this->assertEquals('', $result['payload']['namespace']);
-        $this->assertFalse(in_array($this->channelGroup, $result["payload"]["groups"]));
-    }
-
-    /**
-     * @group cg
-     */
-    public function testRemoveNamespacedGroup()
-    {
-        $ch1 = "ch1" . rand();
-
-        $result = $this->pubnub->channelGroupAddChannel($this->channelNamespace . ":" . $this->channelGroup, array($ch1));
-        $this->assertEquals('OK', $result['message']);
-
-        $result = $this->pubnub->channelGroupListGroups($this->channelNamespace);
-        $this->assertEquals($this->channelNamespace, $result["payload"]["namespace"]);
-        $this->assertTrue(in_array($this->channelGroup, $result["payload"]["groups"]));
-
-        $result = $this->pubnub->channelGroupRemoveGroup($this->channelNamespace . ":" . $this->channelGroup);
-        $this->assertEquals('OK', $result['message']);
-
-        sleep(1);
-        $result = $this->pubnub->channelGroupListGroups($this->channelNamespace);
-        $this->assertEquals($this->channelNamespace, $result["payload"]["namespace"]);
-        $this->assertFalse(in_array($this->channelGroup, $result["payload"]["groups"]));
     }
 }
