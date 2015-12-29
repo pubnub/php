@@ -359,31 +359,33 @@ class Pubnub
      * Listen for a message on a channel.
      *
      * @param string $channel for channel name
-     * @param string $callback  for callback definition.
+     * @param string $callback for callback definition.
      * @param int $timeToken for current time token value.
      * @param bool $presence
+     * @param callable|null $timeoutHandler
      *
      * @throws PubnubException
      */
-    public function subscribe($channel, $callback, $timeToken = 0, $presence = false)
+    public function subscribe($channel, $callback, $timeToken = 0, $presence = false, $timeoutHandler = null)
     {
         if (empty($channel)) {
             throw new PubnubException("Missing Channel in subscribe()");
         }
 
-        $this->_subscribe($channel, null, $callback, $timeToken, $presence);
+        $this->_subscribe($channel, null, $callback, $timeToken, $presence, $timeoutHandler);
     }
 
-    public function channelGroupSubscribe($group, $callback, $timetoken = 0)
+    public function channelGroupSubscribe($group, $callback, $timetoken = 0, $timeoutHandler = null)
     {
         if (empty($group)) {
             throw new PubnubException("Missing Group in channelGroupSubscribe()");
         }
 
-        $this->_subscribe(null, $group, $callback, $timetoken);
+        $this->_subscribe(null, $group, $callback, $timetoken, $timeoutHandler);
     }
 
-    protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false)
+    protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false,
+        $timeoutHandler = null)
     {
         if (empty($callback)) {
             throw new PubnubException("Missing Callback in subscribe()");
@@ -422,6 +424,12 @@ class Pubnub
             }
         }
 
+        $leave = function () use ($channelArray) {
+            foreach ($channelArray as $ch) {
+                $this->leave($ch);
+            }
+        };
+
         $channel = join(',', $channelArray);
         $this->logger->debug("Subscribe channels string: " . $channel);
 
@@ -452,13 +460,21 @@ class Pubnub
                     $timeToken
                 ), $query, true, true);
 
-                if (
-                    array_key_exists('error', $response)
-                    && array_key_exists('status', $response)
-                    && $response['error'] == 1 && $response['status']
-                ) {
-                    $callback($response);
-                    break;
+                if (array_key_exists('error', $response) && $response['error'] == 1) {
+                    // FUTURE: add $response['message'] condition if more cURL responses be added
+                    if  ($response['service'] == 'cURL') {
+                        if ((is_callable($timeoutHandler) && $timeoutHandler($response)) || $callback($response)) {
+                            continue;
+                        } else {
+                            $leave();
+                            break;
+                        }
+                    } else if (array_key_exists('status', $response) && $response['status']) {
+                        $callback($response);
+                        break;
+                    } else {
+                        continue;
+                    }
                 }
 
                 $messages = $response[0];
@@ -524,11 +540,7 @@ class Pubnub
 
                 # Explicitly invoke leave event
                 if ($exit_now) {
-                    $channels = explode(',', $channel);
-
-                    foreach ($channels as $ch) {
-                        $this->leave($ch);
-                    }
+                    $leave();
 
                     return;
                 }
@@ -1120,6 +1132,8 @@ class Pubnub
         $this->pipelinedClient->setSubscribeTimeout($timeout);
     }
 
+    // REVIEW: make public
+    // TODO: add channel group leave
     private function leave($channel)
     {
         $this->request(array(
