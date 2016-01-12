@@ -7,15 +7,17 @@ abstract class TestCase extends PHPUnit_Framework_TestCase {
     /** @var Pubnub pubnub */
     protected $pubnub;
 
+    protected static $keys = array(
+        'subscribe_key' => 'sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe',
+        'publish_key' => 'pub-c-139c0366-9b6a-4a3f-ac03-4f8d31c86df2',
+        'origin' => 'pubsub.pubnub.com'
+    );
+
     public function setUp()
     {
         parent::setUp();
 
-        $this->pubnub = new Pubnub(array(
-            'subscribe_key' => 'sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe',
-            'publish_key' => 'pub-c-139c0366-9b6a-4a3f-ac03-4f8d31c86df2',
-            'origin' => 'pubsub.pubnub.com'
-        ));
+        $this->pubnub = new Pubnub(static::$keys);
     }
 
     /**
@@ -23,10 +25,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase {
      */
     public static function cleanup()
     {
-        $pn = new Pubnub(array(
-            'publish_key' => 'demo',
-            'subscribe_key' => 'demo'
-        ));
+        $pn = new Pubnub(static::$keys);
 
         $result = $pn->channelGroupListGroups();
         $groups = $result["payload"]["groups"];

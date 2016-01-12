@@ -16,12 +16,9 @@ class PublishTest extends \TestCase
     {
         parent::setUp();
 
-        $this->pubnub_enc = new Pubnub(array(
-            'subscribe_key' => 'demo',
-            'publish_key' => 'demo',
-            'origin' => 'pubsub.pubnub.com',
+        $this->pubnub_enc = new Pubnub(array_merge(static::$keys, array(
             'cipher_key' => 'enigma'
-        ));
+        )));
 
         sleep(1);
     }
