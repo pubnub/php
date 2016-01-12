@@ -15,13 +15,10 @@ class SSLTest extends \TestCase
      */
     public function testPublishToSecureConnection()
     {
-        $pubnub = new Pubnub(array(
-            'subscribe_key' => 'demo',
-            'publish_key' => 'demo',
-            'origin' => 'pubsub.pubnub.com',
+        $pubnub = new Pubnub(array_merge(static::$keys, array(
             'ssl' => true,
             'pem_path' => "."
-        ));
+        )));
 
         $response = $pubnub->publish(static::$channel, static::$message);
 
@@ -35,13 +32,10 @@ class SSLTest extends \TestCase
      */
     public function testDisableSSLPeerVerification()
     {
-        $pubnub = new Pubnub(array(
-            'subscribe_key' => 'demo',
-            'publish_key' => 'demo',
-            'origin' => 'pubsub.pubnub.com',
+        $pubnub = new Pubnub(array_merge(static::$keys, array(
             'ssl' => true,
             'verify_peer' => false
-        ));
+        )));
 
         $response = $pubnub->publish(static::$channel, static::$message);
 
