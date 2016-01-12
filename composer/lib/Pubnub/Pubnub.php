@@ -310,7 +310,7 @@ class Pubnub
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            '.',
+            ',',
             'uuid',
             PubnubUtil::url_encode($uuid),
             'data'
