@@ -463,7 +463,13 @@ class Pubnub
                 if (array_key_exists('error', $response) && $response['error'] == 1) {
                     // FUTURE: add $response['message'] condition if more cURL responses be added
                     if  ($response['service'] == 'cURL') {
-                        if ((is_callable($timeoutHandler) && $timeoutHandler($response)) || $callback($response)) {
+                        if (is_callable($timeoutHandler)) {
+                            $continue = $timeoutHandler($response);
+                        } else {
+                            $continue = $callback($response);
+                        }
+
+                        if ($continue) {
                             continue;
                         } else {
                             $leave();

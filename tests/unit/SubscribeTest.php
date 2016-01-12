@@ -29,8 +29,8 @@ class SubscribeTest extends TestCase
     public function testSubscribeTimeoutHandlerReturnsFalse()
     {
         $this->pubnub->setSubscribeTimeout(static::$timeout);
-        $this->pubnub->subscribe("timeout_test", function ($response) {
-
+        $this->pubnub->subscribe("timeout_test", function () {
+            $this->fail("Should not be invoked");
         }, 0, false, function ($response) {
             $this->assertEquals("cURL", $response['service']);
             $this->assertEquals("request timeout", $response['message']);
