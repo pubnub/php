@@ -184,7 +184,7 @@ class HistoryTest extends TestCase
 
         $this->assertEquals(1, $result['error']);
         $this->assertEquals('storage', $result['service']);
-        $this->assertEquals('Storage is not enabled for this subscribe key. Please contact help@pubnub.com', $result['message']);
+        $this->assertEquals('Use of the history API requires the Storage & Playback add-on which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and ADD the Storage & Playback add-on. Contact support@pubnub.com if you require further assistance.', $result['message']);
     }
 
     /**
