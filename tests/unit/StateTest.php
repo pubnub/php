@@ -5,7 +5,14 @@ use \Pubnub\PubnubException;
 
 class StateTest extends TestCase
 {
-    protected $channel = 'pubnub_php_test_state';
+    protected $channel;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->channel = 'pubnub_php_test_state-' . rand();
+    }
 
     /**
      * @group state

@@ -9,6 +9,7 @@ class PublishTest extends \TestCase
 
     protected $pubnub_enc;
     protected $pubnub_sec;
+    protected $random_channel;
     protected static $message = 'Hello from publish() test!';
     protected static $channel = 'pubnub_php_test';
 
@@ -19,6 +20,8 @@ class PublishTest extends \TestCase
         $this->pubnub_enc = new Pubnub(array_merge(static::$keys, array(
             'cipher_key' => 'enigma'
         )));
+
+        $this->random_channel = static::$channel . "-" . rand();
 
         sleep(1);
     }
@@ -44,12 +47,12 @@ class PublishTest extends \TestCase
     {
         $message1 = static::$message . rand(0, 100000);
         $message2 = static::$message . rand(0, 100000);
-        $this->pubnub->publish(static::$channel, $message1);
-        $this->pubnub->publish(static::$channel, $message2, false);
+        $this->pubnub->publish($this->random_channel , $message1);
+        $this->pubnub->publish($this->random_channel , $message2, false);
 
         sleep(1);
 
-        $response = $this->pubnub->history(static::$channel, 5);
+        $response = $this->pubnub->history($this->random_channel , 5);
 
         $this->assertContains($message1, $response['messages']);
         $this->assertNotContains($message2, $response['messages']);
@@ -76,20 +79,20 @@ class PublishTest extends \TestCase
 
         if (PHP_VERSION_ID > 50400) {
             $this->pubnub->pipeline(function ($pubnub) use ($timetoken) {
-                $pubnub->publish(self::$channel, "Pipelined message $timetoken #1");
-                $pubnub->publish(self::$channel, "Pipelined message $timetoken #2");
+                $pubnub->publish($this->random_channel , "Pipelined message $timetoken #1");
+                $pubnub->publish($this->random_channel , "Pipelined message $timetoken #2");
             });
         } else {
             $this->pubnub->pipelineStart();
-            $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #1");
-            $this->pubnub->publish(self::$channel, "Pipelined message $timetoken #2");
+            $this->pubnub->publish($this->random_channel , "Pipelined message $timetoken #1");
+            $this->pubnub->publish($this->random_channel , "Pipelined message $timetoken #2");
             $this->pubnub->pipelineEnd();
         }
 
 
         sleep(1);
 
-        $history = $this->pubnub->history(self::$channel, 2);
+        $history = $this->pubnub->history($this->random_channel , 2);
 
         $this->assertContains("Pipelined message $timetoken #1", $history['messages']);
         $this->assertContains("Pipelined message $timetoken #2", $history['messages']);

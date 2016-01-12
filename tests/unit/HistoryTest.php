@@ -5,7 +5,7 @@ use \Pubnub\PubnubException;
 
 class HistoryTest extends TestCase
 {
-    protected $channel = 'pubnub_php_test_history';
+    protected $channel;
     protected $bootstrap;
     protected $start = 5;
     protected static $message = 'Hello from history() test!';
@@ -16,6 +16,7 @@ class HistoryTest extends TestCase
         parent::setUp();
 
         $this->start = $this->pubnub->time();
+        $this->channel =  'pubnub_php_test_history-' . rand();
     }
 
     /**
@@ -125,6 +126,11 @@ class HistoryTest extends TestCase
      */
     public function testHistoryIncludeToken()
     {
+        $this->pubnub->publish($this->channel, "hey");
+        $this->pubnub->publish($this->channel, "hey");
+
+        sleep(1);
+
         $response = $this->pubnub->history($this->channel, 2, true);
 
         $this->assertArrayHasKey('message', $response['messages'][0]);
