@@ -924,11 +924,14 @@ class Pubnub
     /**
      * Get the list of namespaces
      *
+     * @deprecated 3.7.10 Namespace support will be dropped out soon
      * @return array|null
      * @throws PubnubException
      */
     public function channelGroupListNamespaces()
     {
+        trigger_error('channelGroupListNamespaces() methods is deprecated. Namespace support will be dropped out soon.', E_USER_DEPRECATED);
+
         return $this->request(array(
             "v1",
             "channel-registration",
@@ -941,12 +944,15 @@ class Pubnub
     /**
      * Remove namespace
      *
+     * @deprecated 3.7.10 Namespace support will be dropped out soon
      * @param string $namespace name
      * @return array|null
      * @throws PubnubException
      */
     public function channelGroupRemoveNamespace($namespace)
     {
+        trigger_error('channelGroupRemoveNamespace() methods is deprecated. Namespace support will be dropped out soon.', E_USER_DEPRECATED);
+
         return $this->request(array(
             "v1",
             "channel-registration",
