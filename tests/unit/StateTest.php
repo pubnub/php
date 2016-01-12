@@ -55,7 +55,11 @@ class StateTest extends TestCase
 
         $this->pubnub->channelGroupAddChannel($group, $channels);
 
+        sleep(1);
+
         $this->pubnub->setChannelGroupState($group, $state, $uuid);
+
+        sleep(1);
 
         $result = $this->pubnub->getState($channels[0], $uuid);
 
