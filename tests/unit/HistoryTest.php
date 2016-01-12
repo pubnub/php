@@ -72,11 +72,7 @@ class HistoryTest extends TestCase
      */
     public function testHistoryEncodedMessagesOneLevel()
     {
-        $pubnub = new Pubnub(array(
-            'publish_key' => 'demo',
-            'subscribe_key' => 'demo',
-            'cipher_key' => 'blah'
-        ));
+        $pubnub = new Pubnub(array_merge(static::$keys, array('cipher_key' => 'blah')));
 
         $m1 = time();
         $m2 = time();
@@ -96,11 +92,7 @@ class HistoryTest extends TestCase
      */
     public function testHistoryEncodedMessagesMultipleLevel()
     {
-        $pubnub = new Pubnub(array(
-            'publish_key' => 'demo',
-            'subscribe_key' => 'demo',
-            'cipher_key' => 'blah'
-        ));
+        $pubnub = new Pubnub(array_merge(static::$keys, array('cipher_key' => 'blah')));
 
         $m1 = static::$message . time();
         $m2 = static::$message_2 . time();
