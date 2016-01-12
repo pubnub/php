@@ -13,12 +13,14 @@ class SubscribeTest extends TestCase
      */
     public function testSubscribeTimeoutHandlerReturnsNothing()
     {
-        $this->pubnub->setSubscribeTimeout(static::$timeout);
-        $this->pubnub->subscribe("timeout_test", function ($response) {
+        $test = $this;
 
-        }, 0, false, function ($response) {
-            $this->assertEquals("cURL", $response['service']);
-            $this->assertEquals("request timeout", $response['message']);
+        $test->pubnub->setSubscribeTimeout(static::$timeout);
+        $test->pubnub->subscribe("timeout_test", function ($response) {
+
+        }, 0, false, function ($response) use ($test) {
+            $test->assertEquals("cURL", $response['service']);
+            $test->assertEquals("request timeout", $response['message']);
         });
     }
 
@@ -28,12 +30,14 @@ class SubscribeTest extends TestCase
      */
     public function testSubscribeTimeoutHandlerReturnsFalse()
     {
+        $test = $this;
+
         $this->pubnub->setSubscribeTimeout(static::$timeout);
-        $this->pubnub->subscribe("timeout_test", function () {
-            $this->fail("Should not be invoked");
-        }, 0, false, function ($response) {
-            $this->assertEquals("cURL", $response['service']);
-            $this->assertEquals("request timeout", $response['message']);
+        $this->pubnub->subscribe("timeout_test", function () use ($test) {
+            $test->fail("Should not be invoked");
+        }, 0, false, function ($response) use ($test) {
+            $test->assertEquals("cURL", $response['service']);
+            $test->assertEquals("request timeout", $response['message']);
 
             return false;
         });
@@ -46,10 +50,11 @@ class SubscribeTest extends TestCase
      */
     public function testSubscribeResponseHandlerActsAsTimeoutHandler()
     {
+        $test = $this;
         $this->pubnub->setSubscribeTimeout(static::$timeout);
-        $this->pubnub->subscribe("timeout_test", function ($response) {
-            $this->assertEquals("cURL", $response['service']);
-            $this->assertEquals("request timeout", $response['message']);
+        $this->pubnub->subscribe("timeout_test", function ($response) use ($test) {
+            $test->assertEquals("cURL", $response['service']);
+            $test->assertEquals("request timeout", $response['message']);
 
             return false;
         });
@@ -61,11 +66,13 @@ class SubscribeTest extends TestCase
      */
     public function testSubscribeWithInvalidCredentials()
     {
+        $test = $this;
+
         $pubnub = new Pubnub("invalid", "credentials");
 
-        $pubnub->subscribe("error_test", function ($response) {
-            $this->assertTrue($response['error']);
-            $this->assertEquals("Invalid Subscribe Key", $response['message']);
+        $pubnub->subscribe("error_test", function ($response) use ($test) {
+            $test->assertTrue($response['error']);
+            $test->assertEquals("Invalid Subscribe Key", $response['message']);
             return false;
         });
     }

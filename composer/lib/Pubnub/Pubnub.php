@@ -424,12 +424,6 @@ class Pubnub
             }
         }
 
-        $leave = function () use ($channelArray) {
-            foreach ($channelArray as $ch) {
-                $this->leave($ch);
-            }
-        };
-
         $channel = join(',', $channelArray);
         $this->logger->debug("Subscribe channels string: " . $channel);
 
@@ -472,7 +466,7 @@ class Pubnub
                         if ($continue) {
                             continue;
                         } else {
-                            $leave();
+                            $this->invokeLeaveOnChannels($channelArray);
                             break;
                         }
                     } else if (array_key_exists('status', $response) && $response['status']) {
@@ -546,7 +540,7 @@ class Pubnub
 
                 # Explicitly invoke leave event
                 if ($exit_now) {
-                    $leave();
+                    $this->invokeLeaveOnChannels($channelArray);
 
                     return;
                 }
@@ -1144,7 +1138,17 @@ class Pubnub
         $this->pipelinedClient->setSubscribeTimeout($timeout);
     }
 
-    // REVIEW: make public
+    /**
+     * Invokes leave requests on passed in channels
+     *
+     * @param array $channelsArray
+     */
+    private function invokeLeaveOnChannels($channelsArray) {
+        foreach ($channelsArray as $ch) {
+            $this->leave($ch);
+        }
+    }
+
     // TODO: add channel group leave
     private function leave($channel)
     {
