@@ -14,11 +14,7 @@ class GzipCompressionTest extends \TestCase
      */
     public function testEnableGzipCompression()
     {
-        $pubnub = new Pubnub(array(
-            'subscribe_key' => 'demo',
-            'publish_key' => 'demo',
-            'gzip' => true
-        ));
+        $pubnub = new Pubnub(array_merge(static::$keys, array('gzip' => true)));
 
         $response = $pubnub->publish(static::$channel, static::$message);
 
