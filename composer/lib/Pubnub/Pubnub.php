@@ -361,8 +361,8 @@ class Pubnub
      * @param string $channel for channel name
      * @param string $callback for callback definition.
      * @param int $timeToken for current time token value.
-     * @param bool $presence
-     * @param callable|null $timeoutHandler
+     * @param bool $presence should be set to true in presence requests
+     * @param callable|null $timeoutHandler to invoke on timeout event
      *
      * @throws PubnubException
      */
@@ -375,6 +375,15 @@ class Pubnub
         $this->_subscribe($channel, null, $callback, $timeToken, $presence, $timeoutHandler);
     }
 
+    /**
+     * Subscribe to channel group
+     *
+     * @param string|array $group to subscribe
+     * @param callable $callback to invoke on success
+     * @param int $timetoken
+     * @param null $timeoutHandler to invoke on timeout event
+     * @throws PubnubException
+     */
     public function channelGroupSubscribe($group, $callback, $timetoken = 0, $timeoutHandler = null)
     {
         if (empty($group)) {
@@ -466,7 +475,7 @@ class Pubnub
                         if ($continue) {
                             continue;
                         } else {
-                            $this->invokeLeaveOnChannels($channelArray);
+                            $this->leave($channel, $channelGroup);
                             break;
                         }
                     } else if (array_key_exists('status', $response) && $response['status']) {
@@ -540,7 +549,7 @@ class Pubnub
 
                 # Explicitly invoke leave event
                 if ($exit_now) {
-                    $this->invokeLeaveOnChannels($channelArray);
+                    $this->leave($channelArray, $channelGroup);
 
                     return;
                 }
@@ -1139,28 +1148,36 @@ class Pubnub
     }
 
     /**
-     * Invokes leave requests on passed in channels
+     * Send leave request
      *
-     * @param array $channelsArray
+     * @param string|null $channels separated by comma or a single channel
+     * @param string|null $channel_groups separated by comma or a single channel group
+     *
+     * @throws PubnubException
      */
-    private function invokeLeaveOnChannels($channelsArray) {
-        foreach ($channelsArray as $ch) {
-            $this->leave($ch);
-        }
-    }
-
-    // TODO: add channel group leave
-    private function leave($channel)
+    private function leave($channels, $channel_groups = null)
     {
+        if (strlen($channels) > 0) {
+            $channelsValue = PubnubUtil::url_encode($channels);
+        } else {
+            $channelsValue = ",";
+        }
+
+        $query = array();
+
+        if (strlen($channel_groups) > 0) {
+            $query["channel-group"] =  PubnubUtil::url_encode($channel_groups);
+        }
+
         $this->request(array(
             'v2',
             'presence',
             'sub_key',
             $this->SUBSCRIBE_KEY,
             'channel',
-            PubnubUtil::url_encode($channel),
+            $channelsValue,
             'leave'
-        ));
+        ), $query);
     }
 
     /**
