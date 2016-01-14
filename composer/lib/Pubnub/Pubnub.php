@@ -390,7 +390,7 @@ class Pubnub
             throw new PubnubException("Missing Group in channelGroupSubscribe()");
         }
 
-        $this->_subscribe(null, $group, $callback, $timetoken, $timeoutHandler);
+        $this->_subscribe(null, $group, $callback, $timetoken, false, $timeoutHandler);
     }
 
     protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false,
@@ -436,7 +436,7 @@ class Pubnub
         $channel = join(',', $channelArray);
         $this->logger->debug("Subscribe channels string: " . $channel);
 
-        if ($channel === null && $channelGroup !== null) {
+        if ($channel === "" && $channelGroup !== null) {
             $channel = ',';
         } else {
             $channel = PubnubUtil::url_encode($channel);
@@ -532,9 +532,9 @@ class Pubnub
 
                     if (isset($derivedGroup)) {
                         $resultArray["group"] = $derivedGroup[$i];
-                        if (!$this->shouldWildcardMessageBePassedToUserCallback(
+                        if (!$this->shouldComplexMessageBePassedToUserCallback(
                             $derivedChannel[$i], $derivedGroup[$i], $WCSubscribeChannels,
-                                $WCPresenceChannels, $this->logger
+                                $WCPresenceChannels, explode(",", $channelGroup), $this->logger
                         )) {
                             continue;
                         }
@@ -1153,9 +1153,10 @@ class Pubnub
      * @param string|null $channels separated by comma or a single channel
      * @param string|null $channel_groups separated by comma or a single channel group
      *
+     * @return array
      * @throws PubnubException
      */
-    private function leave($channels, $channel_groups = null)
+    public function leave($channels, $channel_groups = null)
     {
         if (strlen($channels) > 0) {
             $channelsValue = PubnubUtil::url_encode($channels);
@@ -1169,7 +1170,7 @@ class Pubnub
             $query["channel-group"] =  PubnubUtil::url_encode($channel_groups);
         }
 
-        $this->request(array(
+        return $this->request(array(
             'v2',
             'presence',
             'sub_key',
@@ -1251,28 +1252,30 @@ class Pubnub
     }
 
     /**
-     * Check if wc message should be passed to user callback
+     * Checks should a complex subscribe response (with 3d and 4th elements) be passed to user callback
      *
-     * @param string $channel
-     * @param string $group
-     * @param array $subscribe
-     * @param array $presence
+     * @param string $channel of current message
+     * @param string $group element of current message (group or wc channel)
+     * @param array $WCMessageChannels currently subscribed wildcard messages channels
+     * @param array $WCPresenceChannels currently subscribed wildcard presence channels
+     * @param array $CGs currently subscribed channel groups
+     *
      * @param PubnubLogger $logger
      * @return bool passed if message should be passed to user callback
      */
-    public static function shouldWildcardMessageBePassedToUserCallback(
-        $channel, $group, $subscribe, $presence, $logger) {
+    public static function shouldComplexMessageBePassedToUserCallback(
+        $channel, $group, $WCMessageChannels, $WCPresenceChannels, $CGs, $logger) {
         // if presence message while only subscribe
         if (
             PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
-            && !in_array($group, $presence)
+            && !in_array($group, $WCPresenceChannels)
         ) {
             $logger->debug("WC presence message on " . $channel . " while is not subscribe for presence");
             return false;
         // if subscribe message while only presence
         } elseif (
             !PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
-            && !in_array($group, $subscribe)
+            && !in_array($group, $WCMessageChannels) && !in_array($group, $CGs)
         ) {
             $logger->debug("WC subscribe message on " . $channel . " while is not subscribe for messages");
             return false;

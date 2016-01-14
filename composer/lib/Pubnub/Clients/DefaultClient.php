@@ -39,6 +39,7 @@ class DefaultClient extends Client
         if ($JSONDecodedResponse != null)
             return $JSONDecodedResponse;
         elseif ($curlError == 28)
+            // TODO: Fix value in timeout messages of subscribe requests
             return array(
                 'error' => true,
                 'service' => 'cURL',
