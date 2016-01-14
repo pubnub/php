@@ -1,0 +1,4 @@
+-. Add asynchronous subscribe tests using Pthreads or another language SDK
+-. Add connected callback to subcribe* methods
+-. Add PSR-3 compatible logger
+-. Add channelGroupGetState method
