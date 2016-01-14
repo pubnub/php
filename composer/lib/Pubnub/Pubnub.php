@@ -549,7 +549,7 @@ class Pubnub
 
                 # Explicitly invoke leave event
                 if ($exit_now) {
-                    $this->leave($channelArray, $channelGroup);
+                    $this->leave($channel, $channelGroup);
 
                     return;
                 }
@@ -1158,7 +1158,7 @@ class Pubnub
      */
     public function leave($channels, $channel_groups = null)
     {
-        if (strlen($channels) > 0) {
+        if (strlen($channels) > 0 && $channels != ",") {
             $channelsValue = PubnubUtil::url_encode($channels);
         } else {
             $channelsValue = ",";
