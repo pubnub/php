@@ -33,6 +33,18 @@ class HereNowTest extends TestCase
 
     /**
      * @group herenow
+     */
+    public function testGlobalHereNow()
+    {
+        $response = $this->pubnub->hereNow();
+
+        $this->assertEquals('200', $response['status']);
+        $this->assertEquals('Presence', $response['service']);
+        $this->assertArrayNotHasKey('uuids', $response);
+    }
+
+    /**
+     * @group herenow
      *
      * @expectedException \Pubnub\PubnubException
      * @expectedExceptionMessage Missing Channel in hereNow()
