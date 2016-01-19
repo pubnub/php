@@ -60,7 +60,7 @@ class HistoryTest extends TestCase
         $this->pubnub->publish($this->channel, $ary1);
         $this->pubnub->publish($this->channel, $ary2);
 
-        sleep(1);
+        sleep(3);
 
         $response = $this->pubnub->history($this->channel,2);
 
@@ -80,7 +80,7 @@ class HistoryTest extends TestCase
         $pubnub->publish($this->channel, static::$message . $m1);
         $pubnub->publish($this->channel, static::$message_2 . $m2);
 
-        sleep(1);
+        sleep(3);
 
         $response = $pubnub->history($this->channel,2);
 
@@ -113,7 +113,7 @@ class HistoryTest extends TestCase
         $pubnub->publish($this->channel, $ary1);
         $pubnub->publish($this->channel, $ary2);
 
-        sleep(1);
+        sleep(3);
 
         $response = $pubnub->history($this->channel,2);
 
@@ -129,7 +129,7 @@ class HistoryTest extends TestCase
         $this->pubnub->publish($this->channel, "hey");
         $this->pubnub->publish($this->channel, "hey");
 
-        sleep(1);
+        sleep(3);
 
         $response = $this->pubnub->history($this->channel, 2, true);
 
