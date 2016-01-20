@@ -5,9 +5,7 @@
 # composer vendor dir
 /vendor
 
-# composer lock file
-/composer.lock
-
 # IDEA files
 /.idea
+
 .DS_Store
