@@ -30,7 +30,7 @@
     ``` json
     {
         "require": {
-            "pubnub/pubnub": "3.7.*"
+            "pubnub/pubnub": "3.8.*"
         }
     }
     ```
