@@ -1,6 +1,6 @@
 # PubNub PHP SDK
 
-[![Build Status](https://travis-ci.org/pubnub/php.svg)](https://travis-ci.org/pubnub/php)
+[![Build Status](https://travis-ci.org/pubnub/php.svg?branch=master)](https://travis-ci.org/pubnub/php)
 
 ## Contact support@pubnub.com for all questions
 
@@ -19,14 +19,14 @@
 
   2. Copy **composer/lib** folder to your project and include **autoloader.php** file.
   3. Require autoloader.php:
-  
+
     ```php
     require_once('lib/autoloader.php');
     ```
-    
+
 #### PHP >= 5.3 with composer
   1. Add **pubnub** package to your composer.json file:
-  
+
     ``` json
     {
         "require": {
