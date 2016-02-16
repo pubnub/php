@@ -1,3 +1,13 @@
+02-16-16 3.8.1
+. Remove constructor exception about missing publish key
+
+01-10-16 3.8.0
+. Add timeout customization to subscribe and non-subscribe requests
+. Add subscribe timeout handler
+. Fix leave requests
+. Deprecate CG Namespace-related methods
+. Add gzip compression support
+
 07-24-15 3.7.9
 . Add wildcard presence support
 . Add logger

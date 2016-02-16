@@ -8,22 +8,16 @@ class InstantiationTest extends \TestCase
 {
     /**
      * @group instantiation
-     *
-     * @expectedException \Pubnub\PubnubException
-     * @expectedExceptionMessage Missing required $publish_key param
      */
-    public function testMissingPublishKey()
+    public function testNotMissingPublishKey()
     {
-        new Pubnub();
+        new Pubnub(false, 'demo');
     }
 
     /**
      * @group instantiation
-     *
-     * @expectedException \Pubnub\PubnubException
-     * @expectedExceptionMessage Missing required $publish_key param
      */
-    public function testMissingPublishNamedKey()
+    public function testNoMissingPublishNamedKey()
     {
         new Pubnub(array(
             'subscribe_key' => 'demo'

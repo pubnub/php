@@ -8,13 +8,13 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.7.9 Real-time Push Cloud API
+ * PubNub 3.8.1 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/3.7.9';
+    const PNSDK = 'Pubnub-PHP/3.8.1';
     const PRESENCE_SUFFIX = '-pnpres';
     const WILDCARD_SUFFIX = '.*';
     const WILDCARD_PRESENCE_SUFFIX = '.*-pnpres';
@@ -89,10 +89,6 @@ class Pubnub
 
         $this->logger = new PubnubLogger("Pubnub");
 
-        if (empty($publish_key)) {
-            throw new PubnubException('Missing required $publish_key param');
-        }
-
         if (empty($subscribe_key)) {
             throw new PubnubException('Missing required $subscribe_key param');
         }
@@ -122,7 +118,7 @@ class Pubnub
      * Sends a message to a channel.
      *
      * @param string $channel
-     * @param string $messageOrg
+     * @param mixed $messageOrg
      * @param boolean $storeInHistory
      *
      * @throws PubnubException
