@@ -89,10 +89,6 @@ class Pubnub
 
         $this->logger = new PubnubLogger("Pubnub");
 
-        if (empty($publish_key)) {
-            throw new PubnubException('Missing required $publish_key param');
-        }
-
         if (empty($subscribe_key)) {
             throw new PubnubException('Missing required $subscribe_key param');
         }
