@@ -118,7 +118,7 @@ class Pubnub
      * Sends a message to a channel.
      *
      * @param string $channel
-     * @param string $messageOrg
+     * @param mixed $messageOrg
      * @param boolean $storeInHistory
      *
      * @throws PubnubException
