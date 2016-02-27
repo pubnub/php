@@ -5,7 +5,7 @@ namespace Pubnub;
 use Exception;
 use Pubnub\Clients\DefaultClient;
 use Pubnub\Clients\PipelinedClient;
-
+use Psr\Log\LoggerInterface;
 
 /**
  * PubNub 3.8.1 Real-time Push Cloud API
@@ -67,7 +67,8 @@ class Pubnub
         $proxy = false,
         $auth_key = false,
         $verify_peer = true,
-        $gzip = false
+        $gzip = false,
+        LoggerInterface $logger = null
     ) {
 
         if (is_array($first_argument)) {
@@ -83,11 +84,16 @@ class Pubnub
             $auth_key = isset($first_argument['auth_key']) ? $first_argument['auth_key'] : false;
             $verify_peer = isset($first_argument['verify_peer']) ? $first_argument['verify_peer'] : $verify_peer;
             $gzip = isset($first_argument['gzip']) ? $first_argument['gzip'] : false;
+            $logger = isset($first_argument['logger']) ? $first_argument['logger'] : null;
         } else {
             $publish_key = $first_argument;
         }
 
-        $this->logger = new PubnubLogger("Pubnub");
+        if ($logger == null) {
+            $logger = new PubnubLogger("Pubnub");
+        }
+
+        $this->logger = $logger;
 
         if (empty($subscribe_key)) {
             throw new PubnubException('Missing required $subscribe_key param');
