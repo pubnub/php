@@ -388,6 +388,29 @@ class Pubnub
 
         $this->_subscribe(null, $group, $callback, $timetoken, false, $timeoutHandler);
     }
+    
+    /**
+     * Presence to channel group -- New added by Wangdiwen.
+     *
+     * @param string|array $group to subscribe
+     * @param callable $callback to invoke on success
+     * @throws PubnubException
+     */
+    public function channelGroupPresence($group, $callback)
+    {
+        if (empty($group)) {
+            throw new PubnubException("Missing Group in channelGroupSubscribe()");
+        }
+        
+        // Add the presence suffix automaticly
+        if (! PubnubUtil::string_ends_with($group, static::PRESENCE_SUFFIX)) {
+            $group = $group . static::PRESENCE_SUFFIX;
+        }
+        
+        // Also invoke the '_subscribe' function,
+        // the 5th parameter set to true because it satisfied the meaning of presence to channel group.
+        $this->_subscribe(null, $group, $callback, 0, true, null);
+    }
 
     protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false,
         $timeoutHandler = null)
@@ -1264,7 +1287,8 @@ class Pubnub
         // if presence message while only subscribe
         if (
             PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
-            && !in_array($group, $WCPresenceChannels)
+            // && !in_array($group, $WCPresenceChannels)
+            && !in_array($group, $WCPresenceChannels) && !in_array($group, $CGs)    // Fix it, new added by Wangdiwen.
         ) {
             $logger->debug("WC presence message on " . $channel . " while is not subscribe for presence");
             return false;
