@@ -111,7 +111,6 @@ class Pubnub
     }
 
 
-
     /**
      * Publish
      *
@@ -120,12 +119,12 @@ class Pubnub
      * @param string $channel
      * @param mixed $messageOrg
      * @param boolean $storeInHistory
+     * @param mixed|null $meta data for publish V2 requests
      *
+     * @return array
      * @throws PubnubException
-     *
-     * @return array success information.
      */
-    public function publish($channel, $messageOrg, $storeInHistory = true)
+    public function publish($channel, $messageOrg, $storeInHistory = true, $meta = null)
     {
         if (empty($channel) || empty($messageOrg)) {
             throw new PubnubException('Missing Channel or Message in publish()');
@@ -145,6 +144,11 @@ class Pubnub
 
         if ($storeInHistory == false) {
             $query["store"] = "0";
+        }
+
+        if ($meta != null) {
+            // TODO: add tests/refactor to be testable
+            $query["meta"] = PubnubUtil::json_encode($meta);
         }
 
         $signature = "0";
