@@ -376,8 +376,8 @@ class Pubnub
      *
      * @param string|array $group to subscribe
      * @param callable $callback to invoke on success
-     * @param int $timetoken
-     * @param null $timeoutHandler to invoke on timeout event
+     * @param int $timetoken to start listen from
+     * @param callable|null $timeoutHandler to invoke on timeout event
      * @throws PubnubException
      */
     public function channelGroupSubscribe($group, $callback, $timetoken = 0, $timeoutHandler = null)
@@ -388,28 +388,27 @@ class Pubnub
 
         $this->_subscribe(null, $group, $callback, $timetoken, false, $timeoutHandler);
     }
-    
+
     /**
-     * Presence to channel group -- New added by Wangdiwen.
+     * Presence to channel group
      *
      * @param string|array $group to subscribe
      * @param callable $callback to invoke on success
+     * @param int $timetoken to start listen from
+     * @param callable|null $timeoutHandler to invoke on timeout event
      * @throws PubnubException
      */
-    public function channelGroupPresence($group, $callback)
+    public function channelGroupPresence($group, $callback, $timetoken = 0, $timeoutHandler = null)
     {
         if (empty($group)) {
-            throw new PubnubException("Missing Group in channelGroupSubscribe()");
+            throw new PubnubException("Missing Group in channelGroupPresence()");
         }
-        
-        // Add the presence suffix automaticly
-        if (! PubnubUtil::string_ends_with($group, static::PRESENCE_SUFFIX)) {
+
+        if (!PubnubUtil::string_ends_with($group, static::PRESENCE_SUFFIX)) {
             $group = $group . static::PRESENCE_SUFFIX;
         }
-        
-        // Also invoke the '_subscribe' function,
-        // the 5th parameter set to true because it satisfied the meaning of presence to channel group.
-        $this->_subscribe(null, $group, $callback, 0, true, null);
+
+        $this->_subscribe(null, $group, $callback, $timetoken, true, $timeoutHandler);
     }
 
     protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false,
@@ -1287,8 +1286,7 @@ class Pubnub
         // if presence message while only subscribe
         if (
             PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
-            // && !in_array($group, $WCPresenceChannels)
-            && !in_array($group, $WCPresenceChannels) && !in_array($group, $CGs)    // Fix it, new added by Wangdiwen.
+            && !in_array($group, $WCPresenceChannels) && !in_array($group, $CGs)
         ) {
             $logger->debug("WC presence message on " . $channel . " while is not subscribe for presence");
             return false;
