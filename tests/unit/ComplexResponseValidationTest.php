@@ -83,5 +83,14 @@ class ComplexResponseValidationTest extends TestCase
         ));
     }
 
+    /**
+     * @group complex-parsing
+     */
+    public function testPresenceChannelGroupMessage()
+    {
+        $this->assertTrue(Pubnub::shouldComplexMessageBePassedToUserCallback(
+            "foo-pnpres", "bar-pnpres", array(), array(), array("bar-pnpres"), $this->logger
+        ));
+    }
 }
  

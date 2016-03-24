@@ -8,13 +8,13 @@ use Pubnub\Clients\PipelinedClient;
 
 
 /**
- * PubNub 3.8.1 Real-time Push Cloud API
+ * PubNub 3.8.2 Real-time Push Cloud API
  *
  * @package Pubnub
  */
 class Pubnub
 {
-    const PNSDK = 'Pubnub-PHP/3.8.1';
+    const PNSDK = 'Pubnub-PHP/3.8.2';
     const PRESENCE_SUFFIX = '-pnpres';
     const WILDCARD_SUFFIX = '.*';
     const WILDCARD_PRESENCE_SUFFIX = '.*-pnpres';
@@ -111,7 +111,6 @@ class Pubnub
     }
 
 
-
     /**
      * Publish
      *
@@ -120,12 +119,12 @@ class Pubnub
      * @param string $channel
      * @param mixed $messageOrg
      * @param boolean $storeInHistory
+     * @param mixed|null $meta data for publish V2 requests
      *
+     * @return array
      * @throws PubnubException
-     *
-     * @return array success information.
      */
-    public function publish($channel, $messageOrg, $storeInHistory = true)
+    public function publish($channel, $messageOrg, $storeInHistory = true, $meta = null)
     {
         if (empty($channel) || empty($messageOrg)) {
             throw new PubnubException('Missing Channel or Message in publish()');
@@ -145,6 +144,11 @@ class Pubnub
 
         if ($storeInHistory == false) {
             $query["store"] = "0";
+        }
+
+        if ($meta != null) {
+            // TODO: add tests/refactor to be testable
+            $query["meta"] = PubnubUtil::url_encode(PubnubUtil::json_encode($meta));
         }
 
         $signature = "0";
@@ -376,8 +380,8 @@ class Pubnub
      *
      * @param string|array $group to subscribe
      * @param callable $callback to invoke on success
-     * @param int $timetoken
-     * @param null $timeoutHandler to invoke on timeout event
+     * @param int $timetoken to start listen from
+     * @param callable|null $timeoutHandler to invoke on timeout event
      * @throws PubnubException
      */
     public function channelGroupSubscribe($group, $callback, $timetoken = 0, $timeoutHandler = null)
@@ -387,6 +391,28 @@ class Pubnub
         }
 
         $this->_subscribe(null, $group, $callback, $timetoken, false, $timeoutHandler);
+    }
+
+    /**
+     * Presence to channel group
+     *
+     * @param string|array $group to subscribe
+     * @param callable $callback to invoke on success
+     * @param int $timetoken to start listen from
+     * @param callable|null $timeoutHandler to invoke on timeout event
+     * @throws PubnubException
+     */
+    public function channelGroupPresence($group, $callback, $timetoken = 0, $timeoutHandler = null)
+    {
+        if (empty($group)) {
+            throw new PubnubException("Missing Group in channelGroupPresence()");
+        }
+
+        if (!PubnubUtil::string_ends_with($group, static::PRESENCE_SUFFIX)) {
+            $group = $group . static::PRESENCE_SUFFIX;
+        }
+
+        $this->_subscribe(null, $group, $callback, $timetoken, true, $timeoutHandler);
     }
 
     protected function _subscribe($channel, $channelGroup, $callback, $timeToken = 0, $presence = false,
@@ -1264,7 +1290,7 @@ class Pubnub
         // if presence message while only subscribe
         if (
             PubnubUtil::string_ends_with($channel, static::PRESENCE_SUFFIX)
-            && !in_array($group, $WCPresenceChannels)
+            && !in_array($group, $WCPresenceChannels) && !in_array($group, $CGs)
         ) {
             $logger->debug("WC presence message on " . $channel . " while is not subscribe for presence");
             return false;

@@ -1,3 +1,7 @@
+03-24-16 3.8.2
+. Add publish meta argument
+. Fix channel group presence subscription
+
 02-16-16 3.8.1
 . Remove constructor exception about missing publish key
 
