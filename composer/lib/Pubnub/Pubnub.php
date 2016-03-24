@@ -148,7 +148,7 @@ class Pubnub
 
         if ($meta != null) {
             // TODO: add tests/refactor to be testable
-            $query["meta"] = PubnubUtil::json_encode($meta);
+            $query["meta"] = PubnubUtil::url_encode(PubnubUtil::json_encode($meta));
         }
 
         $signature = "0";
