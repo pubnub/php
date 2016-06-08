@@ -185,9 +185,7 @@ class HistoryTest extends TestCase
         $this->assertEquals('Use of the history API requires the Storage & Playback add-on which is not enabled for this subscribe key. Login to your PubNub Dashboard Account and ADD the Storage & Playback add-on. Contact support@pubnub.com if you require further assistance.', $result['message']);
     }
 
-    /**
-     * @group history
-     */
+    /*
     public function testHistoryErrorWithWrongKeys()
     {
         $pubnub = new Pubnub(array(
@@ -201,4 +199,5 @@ class HistoryTest extends TestCase
         $this->assertEquals(1, $result['error']);
         $this->assertEquals('Invalid Subscribe Key', $result['message']);
     }
+    */
 }
