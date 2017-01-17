@@ -4,8 +4,6 @@ namespace PubNub;
 
 class PNConfiguration
 {
-    const EXPOSED_PROPERTIES = ['uuid'];
-
     /** @var  string Subscribe key provided by PubNub */
     private $subscribeKey;
 
