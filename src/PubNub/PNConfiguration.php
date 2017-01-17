@@ -16,10 +16,13 @@ class PNConfiguration
     private $secretKey;
 
     /** @var  string */
-    private $uuid;
+    private $cipherKey;
 
     /** @var  string */
     private $authKey;
+
+    /** @var  string */
+    private $uuid;
 
     /** @var  string */
     private $origin;
@@ -43,26 +46,51 @@ class PNConfiguration
 
     /**
      * @param string $subscribeKey
+     * @return $this
      */
     public function setSubscribeKey($subscribeKey)
     {
         $this->subscribeKey = $subscribeKey;
+
+        return $this;
     }
 
     /**
      * @param string $publishKey
+     * @return $this
      */
     public function setPublishKey($publishKey)
     {
         $this->publishKey = $publishKey;
+
+        return $this;
     }
 
     /**
      * @param string $secretKey
+     * @return $this
      */
     public function setSecretKey($secretKey)
     {
         $this->secretKey = $secretKey;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCipherKey()
+    {
+        return $this->cipherKey;
+    }
+
+    /**
+     * @param string $cipherKey
+     */
+    public function setCipherKey($cipherKey)
+    {
+        $this->cipherKey = $cipherKey;
     }
 
     /**
@@ -115,10 +143,13 @@ class PNConfiguration
 
     /**
      * @param string $uuid
+     * @return $this
      */
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
+
+        return $this;
     }
 
     /**

@@ -4,6 +4,7 @@ namespace PubNub\Endpoints;
 
 
 use Enums\PNOperationTypes;
+use PubNub\Enums\PNHttpMethod;
 use PubNub\Models\Consumer\PNTimeResult;
 
 class Time extends Endpoint
@@ -12,7 +13,15 @@ class Time extends Endpoint
 
     protected function validateParams()
     {
-        // do nothing
+        // nothing to validate
+    }
+
+    /**
+     * @return array
+     */
+    protected function buildParams()
+    {
+        return $this->defaultParams();
     }
 
     /**
@@ -45,6 +54,6 @@ class Time extends Endpoint
 
     protected function httpMethod()
     {
-        // TODO: Implement httpMethod() method.
+        return PNHttpMethod::GET;
     }
 }

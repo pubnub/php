@@ -2,18 +2,21 @@
 
 namespace PubNub;
 
+use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
 
 class PubNub
 {
     const SDK_VERSION = "4.0.0.alpha.1";
+    const SDK_NAME = "PubNub-PHP";
 
     /** @var PNConfiguration  */
     private $configuration;
 
     /** @var  BasePathManager */
     private $basePathManager;
+
     /**
      * PNConfiguration constructor.
      *
@@ -25,6 +28,11 @@ class PubNub
         $this->basePathManager = new BasePathManager($initialConfig);
     }
 
+    public function publish()
+    {
+        return new Publish($this);
+    }
+
     public function time()
     {
         return new Time($this);
@@ -33,6 +41,18 @@ class PubNub
     public function getVersion()
     {
         return static::SDK_VERSION;
+    }
+
+    public function getName()
+    {
+        return static::SDK_NAME;
+    }
+
+    public function getFullName()
+    {
+        $fullName = static::SDK_NAME . "/" . static::SDK_VERSION;
+
+        return $fullName;
     }
 
     /**

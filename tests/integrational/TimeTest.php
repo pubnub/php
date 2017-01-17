@@ -3,14 +3,15 @@
 //use PHPUnit\Framework\TestCase;
 
 
-class TimeTest extends TestCase
+class TimeTest extends PubNubTestCase
 {
     protected static $channel = 'pubnub_php_test';
 
     /**
-     * @group herenow
+     * @group time
+     * @group time-integrational
      */
-    public function testHereNow()
+    public function testTime()
     {
         $response = $this->pubnub->time()->sync();
 
