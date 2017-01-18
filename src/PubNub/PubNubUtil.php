@@ -13,7 +13,7 @@ class PubNubUtil
      */
     public static function buildUrl($basePath, $path, $params)
     {
-        return $basePath . $path . http_build_query($params);
+        return $basePath . $path . "?" . http_build_query($params);
     }
 
     public static function urlWrite($value)

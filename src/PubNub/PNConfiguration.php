@@ -136,6 +136,11 @@ class PNConfiguration
      */
     public function getUuid()
     {
+        if (empty($this->uuid)) {
+            // TODO: generate uuid
+            $this->uuid = 'blah';
+        }
+
         return $this->uuid;
     }
 

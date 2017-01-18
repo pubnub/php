@@ -3,10 +3,13 @@
 namespace PubNub\Endpoints;
 
 
-use Enums\PNOperationTypes;
 use PubNub\Builders\PubNubErrorBuilder;
+use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
-use PubNub\Models\Consumer\PNStatus;
+use PubNub\Enums\PNStatusCategory;
+use PubNub\Models\ResponseHelpers\PNEnvelope;
+use PubNub\Models\ResponseHelpers\PNStatus;
+use PubNub\Models\ResponseHelpers\ResponseInfo;
 use PubNub\PubNub;
 use PubNub\PubNubException;
 use PubNub\PubNubUtil;
@@ -16,6 +19,9 @@ abstract class Endpoint
 {
     /** @var  PubNub */
     protected $pubnub;
+
+    /** @var  PNEnvelope */
+    protected $envelope;
 
     public function __construct($pubnubInstance)
     {
@@ -31,7 +37,7 @@ abstract class Endpoint
     abstract protected function createResponse($json);
 
     /**
-     * @return PNOperationTypes
+     * @return PNOperationType
      */
     abstract protected function getOperationType();
 
@@ -73,22 +79,64 @@ abstract class Endpoint
         }
     }
 
+    /**
+     * Return a Result only.
+     * Errors are thrown explicitly, so catch them with try/catch block
+     *
+     * @return mixed
+     * @throws PubNubException
+     */
     public function sync()
     {
         $this->validateParams();
 
-        return $this->request()->getResult();
-    }
-
-    public function envelope()
-    {
-        return $this->request();
+        return $this->invokeRequestAndCacheIt()->getResult();
     }
 
     /**
-     * @return Envelope
+     * Returns an Envelope that contains both result and status.
+     * All Errors are wrapped, so no need to use try/catch blocks
+     *
+     * @return PNEnvelope
      */
-    protected function request()
+    public function envelope()
+    {
+        try {
+            return $this->invokeRequestAndCacheIt();
+        } catch (PubNubException $e) {
+            // TODO: build envelope
+            return new PNEnvelope(null, $this->createStatus());
+        } catch (\Exception $e) {
+            // TODO: build an exception
+            return new PNEnvelope(null, $this->createStatus());
+        }
+    }
+
+    /**
+     * Clear cached envelope
+     */
+    public function clear()
+    {
+        $this->envelope = null;
+    }
+
+    /**
+     * @return PNEnvelope
+     * @throws PubNubException
+     */
+    protected function invokeRequestAndCacheIt()
+    {
+        if ($this->envelope === null) {
+            $this->envelope = $this->invokeRequest();
+        }
+
+        return $this->envelope;
+    }
+
+    /**
+     * @return PNEnvelope
+     */
+    protected function invokeRequest()
     {
         $headers = ['Accept' => 'application/json'];
         $url = PubNubUtil::buildUrl($this->pubnub->getBasePath(), $this->buildPath(), $this->buildParams());
@@ -100,19 +148,48 @@ abstract class Endpoint
             $type = \Requests::POST;
         }
 
+        $statusCategory = PNStatusCategory::PNUnknownCategory;
+
         try {
             $request = \Requests::request($url, $headers, $data, $type, $options);
         } catch (Requests_Exception $e) {
             // TODO: build exception
-            return new Envelope(null, null);
+            return new PNEnvelope(null, null);
         }
+
+        $url = parse_url($url);
+        $query = [];
+        parse_str($url['query'], $query);
+        $uuid = null;
+        $authKey = null;
+
+        if (key_exists('uuid', $query) && strlen($query['uuid']) > 0) {
+            $uuid = $query['uuid'];
+        }
+
+        if (key_exists('auth', $query) && strlen($query['auth']) > 0) {
+            $uuid = $query['auth'];
+        }
+
+        $responseInfo = new ResponseInfo(
+            $request->status_code,
+            $url['scheme'] == 'https',
+            $url['host'],
+            $uuid,
+            $authKey,
+            $request
+        );
 
         if ($request->status_code == 200) {
             $parsedJSON = json_decode($request->body);
 
-            return new Envelope($this->createResponse($parsedJSON), $this->createStatus());
+            return new PNEnvelope($this->createResponse($parsedJSON),
+                $this->createStatus($statusCategory, $request->body, $responseInfo, null)
+            );
         } else {
-            return new Envelope(null, null);
+            $exception = null;
+
+            return new PNEnvelope(null, $this->createStatus($statusCategory, $request->body, $responseInfo, $exception));
         }
     }
 
@@ -137,13 +214,38 @@ abstract class Endpoint
     }
 
     /**
+     * @param int{PNStatusCategory::PNUnknownCategory..PNStatusCategory::PNRequestMessageCountExceededCategory} $category
+     * @param $response
+     * @param ResponseInfo $responseInfo
+     * @param PubNubException $exception
      * @return PNStatus
      */
-    private function createStatus()
+    private function createStatus($category, $response, $responseInfo, $exception)
     {
-        $status = new PNStatus();
+        $pnStatus = new PNStatus();
 
-        return $status;
+        if ($response !== null) {
+            $pnStatus->setOriginalResponse($response);
+        }
+
+        if ($exception !== null) {
+            $pnStatus->setException($exception);
+        }
+
+        if ($responseInfo !== null) {
+            $pnStatus->setStatusCode($responseInfo->getStatusCode());
+            $pnStatus->setTlsEnabled($responseInfo->isTlsEnabled());
+            $pnStatus->setOrigin($responseInfo->getOrigin());
+            $pnStatus->setUuid($responseInfo->getUuid());
+            $pnStatus->setAuthKey($responseInfo->getAuthKey());
+        }
+
+        $pnStatus->setOperation($this->getOperationType());
+        $pnStatus->setCategory($category);
+        $pnStatus->setAffectedChannels($this->getAffectedChannels());
+        $pnStatus->setAffectedChannelGroups($this->getAffectedChannelGroups());
+
+        return $pnStatus;
     }
 
     protected function getAffectedChannels()
@@ -154,40 +256,5 @@ abstract class Endpoint
     protected function getAffectedChannelGroups()
     {
         return null;
-    }
-}
-
-
-class Envelope
-{
-    private $state;
-    private $result;
-
-    /**
-     * Envelope constructor.
-     *
-     * @param $state
-     * @param $result
-     */
-    public function __construct($result, $state)
-    {
-        $this->state = $state;
-        $this->result = $result;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResult()
-    {
-        return $this->result;
     }
 }

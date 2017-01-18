@@ -3,13 +3,21 @@
 namespace PubNub\Endpoints;
 
 
-use Enums\PNOperationTypes;
+use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Models\Consumer\PNTimeResult;
 
 class Time extends Endpoint
 {
     const TIME_PATH = "/time/0";
+
+    /**
+     * @return PNTimeResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
 
     protected function validateParams()
     {
@@ -39,7 +47,7 @@ class Time extends Endpoint
 
     protected function getOperationType()
     {
-        return PNOperationTypes::PNTimeOperation;
+        return PNOperationType::PNTimeOperation;
     }
 
     protected function isAuthRequired()

@@ -3,10 +3,10 @@
 namespace PubNub\Endpoints\PubSub;
 
 
-use Enums\PNOperationTypes;
 use PubNub\Builders\PubNubErrorBuilder;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
+use PubNub\Enums\PNOperationType;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\PubNubException;
 use PubNub\PubNubUtil;
@@ -39,6 +39,14 @@ class Publish extends Endpoint
 
     /** @var  int $sequenceCounter */
     private $sequenceCounter;
+
+    /**
+     * @return PNPublishResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
 
     /**
      * @param mixed $message
@@ -110,11 +118,11 @@ class Publish extends Endpoint
 
     protected function validateParams()
     {
-        if ($this->message == null) {
+        if ($this->message === null) {
             throw (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_MESSAGE_MISSING);
         }
 
-        if ($this->channel == null) {
+        if (empty($this->channel)) {
             throw (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING);
         }
 
@@ -157,14 +165,16 @@ class Publish extends Endpoint
      */
     protected function createResponse($json)
     {
-        $result = new PNPublishResult();
+        $timetoken = (int) $json[2];
 
-        return $result;
+        $response = new PNPublishResult($timetoken);
+
+        return $response;
     }
 
     protected function getOperationType()
     {
-        return PNOperationTypes::PNPublishOperation;
+        return PNOperationType::PNPublishOperation;
     }
 
     protected function isAuthRequired()

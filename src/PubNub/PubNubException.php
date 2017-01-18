@@ -33,12 +33,13 @@ class PubNubException extends \Exception
     }
 
     /**
-     * @param mixed $pubnubError
+     * @param PubNubError $pubnubError
      * @return $this
      */
     public function setPubnubError($pubnubError)
     {
         $this->pubnubError = $pubnubError;
+        $this->message = $this->pubnubError->getMessage();
 
         return $this;
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace Enums;
+namespace PubNub\Enums;
 
 
-class PNOperationTypes
+class PNOperationType
 {
     const PNSubscribeOperation = 1;
     const PNUnsubscribeOperation = 2;
