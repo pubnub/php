@@ -23,7 +23,7 @@ class PublishTest extends \PubNubTestCase
             $publish->setChannel("blah")->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubException $exception) {
-            $this->assertEquals("Message Missing.", $exception->getPubnubError()->getMessage());
+            $this->assertEquals("Message Missing.", $exception->getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ class PublishTest extends \PubNubTestCase
             $publish->setMessage("blah")->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubException $exception) {
-            $this->assertEquals("Channel Missing.", $exception->getPubnubError()->getMessage());
+            $this->assertEquals("Channel Missing.", $exception->getMessage());
         }
     }
 

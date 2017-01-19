@@ -52,9 +52,6 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccess($pubnub->publish()->setChannel('blah')->setMessage($message));
     }
 
-    /**
-     * @vcr blah
-     */
     public function testPublishMixedViaGet()
     {
         $this->assertSuccessPublishGet($this->pubnub, 'hi');

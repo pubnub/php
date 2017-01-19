@@ -22,7 +22,7 @@ class EndpointTest extends TestCase
             $endpoint->validateSubscribeKey();
             $this->fail("No exception was thrown");
         } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Subscribe Key not configured.", $exception->getPubnubError()->getMessage());
+            $this->assertEquals("ULS configuration failed. Subscribe Key not configured.", $exception->getMessage());
         }
     }
 
@@ -35,7 +35,7 @@ class EndpointTest extends TestCase
             $endpoint->validateSubscribeKey();
             $this->fail("No exception was thrown");
         } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Subscribe Key not configured.", $exception->getPubnubError()->getMessage());
+            $this->assertEquals("ULS configuration failed. Subscribe Key not configured.", $exception->getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ class EndpointTest extends TestCase
             $endpoint->validatePublishKey();
             $this->fail("No exception was thrown");
         } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Publish Key not configured.", $exception->getPubnubError()->getMessage());
+            $this->assertEquals("ULS configuration failed. Publish Key not configured.", $exception->getMessage());
         }
     }
 
@@ -61,7 +61,7 @@ class EndpointTest extends TestCase
             $endpoint->validatePublishKey();
             $this->fail("No exception was thrown");
         } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Publish Key not configured.", $exception->getPubnubError()->getMessage());
+            $this->assertEquals("ULS configuration failed. Publish Key not configured.", $exception->getMessage());
         }
     }
 }
