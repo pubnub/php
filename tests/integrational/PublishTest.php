@@ -10,11 +10,15 @@ use PubNub\PubNub;
 use PubNub\PubNubException;
 use PubNub\PubNubUtil;
 use ReflectionMethod;
+use VCR\VCR;
 
 
 class PublishTest extends \PubNubTestCase
 {
-    protected static $channel = 'pubnub_php_test';
+    public static function setUpBeforeClass()
+    {
+//        static::setupVCR();
+    }
 
     /**
      * @param Publish $publish
@@ -48,6 +52,9 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccess($pubnub->publish()->setChannel('blah')->setMessage($message));
     }
 
+    /**
+     * @vcr blah
+     */
     public function testPublishMixedViaGet()
     {
         $this->assertSuccessPublishGet($this->pubnub, 'hi');

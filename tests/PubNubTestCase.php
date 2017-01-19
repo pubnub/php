@@ -23,4 +23,15 @@ abstract class PubNubTestCase extends TestCase
         $config->setPublishKey(static::PUBLISH_KEY);
         $this->pubnub = new PubNub($config);
     }
+
+    protected static function setupVCR()
+    {
+        $dir = realpath(dirname(__FILE__)) . "/fixtures";
+
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+
+        \VCR\VCR::configure()->setCassettePath($dir);
+    }
 }

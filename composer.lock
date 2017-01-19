@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0ac5363a8215aa14dc2ee87f9257f23",
+    "content-hash": "97a027abdd9bbb55668fc061fbf7a8fd",
     "packages": [
         {
             "name": "rmccue/requests",
@@ -258,6 +258,40 @@
             ],
             "description": "Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests.",
             "time": "2016-12-23T13:28:14+00:00"
+        },
+        {
+            "name": "php-vcr/phpunit-testlistener-vcr",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-vcr/phpunit-testlistener-vcr.git",
+                "reference": "392d7e11bfe30d7c376ba2bc25d3f372bcea98cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-vcr/phpunit-testlistener-vcr/zipball/392d7e11bfe30d7c376ba2bc25d3f372bcea98cb",
+                "reference": "392d7e11bfe30d7c376ba2bc25d3f372bcea98cb",
+                "shasum": ""
+            },
+            "require": {
+                "php-vcr/php-vcr": "^1.1.8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adrian Philipp",
+                    "email": "mail@adrian-philipp.com"
+                }
+            ],
+            "description": "Integrates PHPUnit with PHP-VCR.",
+            "time": "2016-12-19T10:10:57+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",

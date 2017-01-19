@@ -90,7 +90,13 @@ abstract class Endpoint
     {
         $this->validateParams();
 
-        return $this->invokeRequestAndCacheIt()->getResult();
+        $envelope = $this->invokeRequestAndCacheIt();
+
+        if ($envelope->isError()) {
+            throw $envelope->getStatus()->getException();
+        }
+
+        return $envelope->getResult();
     }
 
     /**
@@ -101,15 +107,7 @@ abstract class Endpoint
      */
     public function envelope()
     {
-        try {
-            return $this->invokeRequestAndCacheIt();
-        } catch (PubNubException $e) {
-            // TODO: build envelope
-            return new PNEnvelope(null, $this->createStatus());
-        } catch (\Exception $e) {
-            // TODO: build an exception
-            return new PNEnvelope(null, $this->createStatus());
-        }
+        return $this->invokeRequestAndCacheIt();
     }
 
     /**
@@ -152,9 +150,34 @@ abstract class Endpoint
 
         try {
             $request = \Requests::request($url, $headers, $data, $type, $options);
+        } catch (\Requests_Exception_HTTP_Unknown $e) {
+            // TODO: build exception
+            return new PNEnvelope($e->getData(), $this->createStatus(
+                $statusCategory,
+                null,
+                null,
+                (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING)
+            ));
+        } catch (\Requests_Exception_HTTP $e) {
+            // TODO: build exception
+            return new PNEnvelope($e->getData(), $this->createStatus(
+                $statusCategory,
+                null,
+                null,
+                (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING)
+            ));
         } catch (Requests_Exception $e) {
             // TODO: build exception
-            return new PNEnvelope(null, null);
+            return new PNEnvelope($e->getData(), $this->createStatus(
+                $statusCategory,
+                null,
+                null,
+                (new PubNubException())
+                    ->setPubnubError(PubNubErrorBuilder::predefined()->UNEXPECTED_REQUESTS_EXCEPTION
+                        ->setMessage($e->getMessage())
+                    )
+                    ->setStatusCode($e->getCode())
+            ));
         }
 
         $url = parse_url($url);

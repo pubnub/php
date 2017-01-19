@@ -54,4 +54,23 @@ class PubNubError
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getErrorString()
+    {
+        return $this->errorString;
+    }
+
+    /**
+     * @param string $errorString
+     * @return $this
+     */
+    public function setErrorString($errorString)
+    {
+        $this->errorString = $errorString;
+
+        return $this;
+    }
 }

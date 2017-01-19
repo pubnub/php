@@ -249,6 +249,16 @@ class PubNubErrorBuilder
 
     protected static $instance;
 
+    /** @var PubNubError PNERROBJ_MESSAGE_MISSING */
+    public $PNERROBJ_MESSAGE_MISSING;
+
+    /** @var PubNubError UNEXPECTED_REQUESTS_EXCEPTION*/
+    public $UNEXPECTED_REQUESTS_EXCEPTION ;
+
+    public function __construct()
+    {
+    }
+
     public static function predefined()
     {
         if (static::$instance == null) {
@@ -263,22 +273,26 @@ class PubNubErrorBuilder
     {
         static::$instance->PNERROBJ_MESSAGE_MISSING = (new PubNubError())
             ->setErrorCode(static::PNERR_MESSAGE_MISSING)
-            ->setMessage("Message Missing.");
+            ->setErrorString("Message Missing.");
 
         static::$instance->PNERROBJ_CHANNEL_MISSING = (new PubNubError())
             ->setErrorCode(static::PNERR_CHANNEL_MISSING)
-            ->setMessage("Channel Missing.");
+            ->setErrorString("Channel Missing.");
 
         static::$instance->PNERROBJ_SUBSCRIBE_KEY_MISSING = (new PubNubError())
             ->setErrorCode(static::PNERR_SUBSCRIBE_KEY_MISSING)
-            ->setMessage("ULS configuration failed. Subscribe Key not configured.");
+            ->setErrorString("ULS configuration failed. Subscribe Key not configured.");
 
         static::$instance->PNERROBJ_PUBLISH_KEY_MISSING = (new PubNubError())
             ->setErrorCode(static::PNERR_PUBLISH_KEY_MISSING)
-            ->setMessage("ULS configuration failed. Publish Key not configured.");
+            ->setErrorString("ULS configuration failed. Publish Key not configured.");
 
         static::$instance->PNERROBJ_SECRET_KEY_MISSING = (new PubNubError())
             ->setErrorCode(static::PNERR_SECRET_KEY_MISSING)
-            ->setMessage("ULS configuration failed. Secret Key not configured.");
+            ->setErrorString("ULS configuration failed. Secret Key not configured.");
+
+        static::$instance->UNEXPECTED_REQUESTS_EXCEPTION = (new PubNubError())
+            ->setErrorCode(0)
+            ->setErrorString("Unexpected exception while invoking request.");
     }
 }
