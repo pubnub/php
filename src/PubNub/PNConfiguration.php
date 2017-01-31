@@ -28,6 +28,9 @@ class PNConfiguration
     /** @var  bool Set to true to switch the client to HTTPS:// based communications. */
     private $secure;
 
+    /** @var  PubNubCryptoCore */
+    private $crypto;
+
     /**
      * Already configured PNConfiguration object with demo/demo as publish/subscribe keys.
      *
@@ -85,10 +88,17 @@ class PNConfiguration
 
     /**
      * @param string $cipherKey
+     * @return $this
      */
     public function setCipherKey($cipherKey)
     {
         $this->cipherKey = $cipherKey;
+
+        if ($this->crypto != null) {
+            $this->crypto->setCipherKey($cipherKey);
+        }
+
+        return $this;
     }
 
     /**
@@ -169,5 +179,29 @@ class PNConfiguration
     public function setAuthKey($authKey)
     {
         $this->authKey = $authKey;
+    }
+
+    /**
+     * @return PubNubCryptoCore
+     * @throws \Exception
+     */
+    public function getCrypto()
+    {
+        if (!$this->crypto && !$this->cipherKey) {
+            // TODO: raise with comprehensive description
+            throw new \Exception("You should set either cipher key are crypto instance before");
+        } else if (!$this->crypto) {
+            $this->crypto = new PubNubCrypto($this->cipherKey);
+        }
+
+        return $this->crypto;
+    }
+
+    /**
+     * @param PubNubCryptoCore $crypto
+     */
+    public function setCrypto($crypto)
+    {
+        $this->crypto = $crypto;
     }
 }
