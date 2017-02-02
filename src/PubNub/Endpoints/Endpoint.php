@@ -37,7 +37,7 @@ abstract class Endpoint
     abstract protected function createResponse($json);
 
     /**
-     * @return PNOperationType
+     * @return int
      */
     abstract protected function getOperationType();
 
@@ -45,6 +45,11 @@ abstract class Endpoint
      * @return bool
      */
     abstract protected function isAuthRequired();
+
+    /**
+     * @return null|string
+     */
+    abstract protected function buildData();
 
     /**
      * @return string
@@ -138,7 +143,7 @@ abstract class Endpoint
     {
         $headers = ['Accept' => 'application/json'];
         $url = PubNubUtil::buildUrl($this->pubnub->getBasePath(), $this->buildPath(), $this->buildParams());
-        $data = null;
+        $data = $this->buildData();
         $type = \Requests::GET;
         $options = [];
 
@@ -210,9 +215,24 @@ abstract class Endpoint
                 $this->createStatus($statusCategory, $request->body, $responseInfo, null)
             );
         } else {
-            $exception = null;
+            switch ($request->status_code) {
+                case 400:
+                    $statusCategory = PNStatusCategory::PNBadRequestCategory;
+                    break;
+                case 403:
+                    $statusCategory = PNStatusCategory::PNAccessDeniedCategory;
+                    break;
+            }
 
-            return new PNEnvelope(null, $this->createStatus($statusCategory, $request->body, $responseInfo, $exception));
+            // TODO: build an exception:
+            $exception = (new PubNubException())
+                ->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING)
+                ->setErrormsg();
+
+            return new PNEnvelope(
+                null,
+                $this->createStatus($statusCategory, $request->body, $responseInfo, $exception)
+            );
         }
     }
 

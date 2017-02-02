@@ -14,6 +14,9 @@ abstract class PubNubTestCase extends TestCase
     /** @var Pubnub pubnub */
     protected $pubnub;
 
+    /** @var PubNub pubnub_enc */
+    protected $pubnub_enc;
+
     public function setUp()
     {
         parent::setUp();
@@ -21,7 +24,13 @@ abstract class PubNubTestCase extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey(static::SUBSCRIBE_KEY);
         $config->setPublishKey(static::PUBLISH_KEY);
-        $this->pubnub = new PubNub($config);
+
+        $config_enc = new PNConfiguration();
+        $config_enc->setSubscribeKey(static::SUBSCRIBE_KEY);
+        $config_enc->setPublishKey(static::PUBLISH_KEY);
+
+        $this->pubnub = new PubNub($config_enc);
+        $this->pubnub_enc = new PubNub($config_enc);
     }
 
     protected static function setupVCR()

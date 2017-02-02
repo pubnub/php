@@ -14,9 +14,6 @@ class PNConfiguration
     private $secretKey;
 
     /** @var  string */
-    private $cipherKey;
-
-    /** @var  string */
     private $authKey;
 
     /** @var  string */
@@ -83,7 +80,12 @@ class PNConfiguration
      */
     public function getCipherKey()
     {
-        return $this->cipherKey;
+        return $this->getCrypto()->getCipherKey();
+    }
+
+    public function isAesEnabled()
+    {
+        return !!$this->crypto;
     }
 
     /**
@@ -92,10 +94,10 @@ class PNConfiguration
      */
     public function setCipherKey($cipherKey)
     {
-        $this->cipherKey = $cipherKey;
-
-        if ($this->crypto != null) {
-            $this->crypto->setCipherKey($cipherKey);
+        if ($this->crypto == null) {
+            $this->crypto = new PubNubCrypto($cipherKey);
+        } else {
+            $this->getCrypto()->setCipherKey($cipherKey);
         }
 
         return $this;
@@ -187,11 +189,9 @@ class PNConfiguration
      */
     public function getCrypto()
     {
-        if (!$this->crypto && !$this->cipherKey) {
+        if (!$this->crypto) {
             // TODO: raise with comprehensive description
-            throw new \Exception("You should set either cipher key are crypto instance before");
-        } else if (!$this->crypto) {
-            $this->crypto = new PubNubCrypto($this->cipherKey);
+            throw new \Exception("You should set up either a cipher key or a crypto instance before");
         }
 
         return $this->crypto;

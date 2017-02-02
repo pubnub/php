@@ -40,6 +40,19 @@ class PublishTest extends \PubNubTestCase
         }
     }
 
+    public function testNonSerializable()
+    {
+        $pubnub = new PubNub(new PNConfiguration());
+        $publish = new Publish($pubnub);
+
+        try {
+            $publish->setMessage("blah")->sync();
+            $this->fail("No exception was thrown");
+        } catch (PubNubException $exception) {
+            $this->assertEquals("Channel Missing.", $exception->getMessage());
+        }
+    }
+
     private function assertGeneratesCorrectPath($message, $channel, $usePost)
     {
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');

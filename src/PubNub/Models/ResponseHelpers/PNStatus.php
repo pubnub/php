@@ -107,7 +107,7 @@ class PNStatus
     }
 
     /**
-     * @param PNOperationType $operation
+     * @param int $operation
      */
     public function setOperation($operation)
     {

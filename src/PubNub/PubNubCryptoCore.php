@@ -21,6 +21,14 @@ abstract class PubNubCryptoCore{
     abstract function encrypt($plainText);
 
     /**
+     * @return string
+     */
+    public function getCipherKey()
+    {
+        return $this->cipherKey;
+    }
+
+    /**
      * @param string $cipherKey
      */
     public function setCipherKey($cipherKey)

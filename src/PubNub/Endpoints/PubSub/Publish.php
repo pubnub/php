@@ -94,10 +94,13 @@ class Publish extends Endpoint
 
     /**
      * @param array $meta
+     * @return $this
      */
     public function setMeta($meta)
     {
         $this->meta = $meta;
+
+        return $this;
     }
 
     /**
@@ -130,6 +133,21 @@ class Publish extends Endpoint
         $this->validatePublishKey();
     }
 
+    protected function buildData()
+    {
+        if ($this->usePost == true) {
+            $msg = PubNubUtil::writeValueAsString($this->message);
+
+            if ($this->pubnub->getConfiguration()->isAesEnabled()) {
+                return '"' . $this->pubnub->getConfiguration()->getCrypto()->encrypt($msg) . '"';
+            } else {
+                return $msg;
+            }
+        } else {
+            return null;
+        }
+    }
+
     protected function buildParams()
     {
         $params = $this->defaultParams();
@@ -159,6 +177,34 @@ class Publish extends Endpoint
         return $params;
     }
 
+    protected function buildPath()
+    {
+        if ($this->usePost) {
+            return sprintf(
+                static::POST_PATH,
+                $this->pubnub->getConfiguration()->getPublishKey(),
+                $this->pubnub->getConfiguration()->getSubscribeKey(),
+                $this->channel,
+                0
+            );
+        } else {
+            $stringifiedMessage = PubNubUtil::urlWrite($this->message);
+
+            if ($this->pubnub->getConfiguration()->isAesEnabled()) {
+                $stringifiedMessage = $this->pubnub->getConfiguration()->getCrypto()->encrypt($stringifiedMessage);
+            }
+
+            return sprintf(
+                static::GET_PATH,
+                $this->pubnub->getConfiguration()->getPublishKey(),
+                $this->pubnub->getConfiguration()->getSubscribeKey(),
+                $this->channel,
+                0,
+                $stringifiedMessage
+            );
+        }
+    }
+
     /**
      * @param array $json Decoded json
      * @return PNPublishResult
@@ -180,36 +226,6 @@ class Publish extends Endpoint
     protected function isAuthRequired()
     {
         return true;
-    }
-
-    protected function buildPath()
-    {
-        if ($this->usePost) {
-            return sprintf(
-                static::POST_PATH,
-                $this->pubnub->getConfiguration()->getPublishKey(),
-                $this->pubnub->getConfiguration()->getSubscribeKey(),
-                $this->channel,
-                0
-            );
-        } else {
-            $cipher = $this->pubnub->getConfiguration()->getCipherKey();
-            $stringifiedMessage = PubNubUtil::urlWrite($this->message);
-
-            // TODO: handle cipher key
-//            if ($cipher != null) {
-//                $stringifiedMessage =
-//            }
-
-            return sprintf(
-                static::GET_PATH,
-                $this->pubnub->getConfiguration()->getPublishKey(),
-                $this->pubnub->getConfiguration()->getSubscribeKey(),
-                $this->channel,
-                0,
-                $stringifiedMessage
-            );
-        }
     }
 
     protected function httpMethod()
