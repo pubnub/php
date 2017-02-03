@@ -3,20 +3,17 @@
 namespace Tests\Integrational;
 
 use PubNub\Endpoints\PubSub\Publish;
+use PubNub\Exceptions\PubNubException;
+use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\Models\ResponseHelpers\PNEnvelope;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
-use PubNub\PubNubException;
-use PubNub\PubNubUtil;
-use ReflectionMethod;
 use VCR\VCR;
 
 
 class PublishTest extends \PubNubTestCase
 {
-    static $pnconf_encrypted;
-
     public static function setUpBeforeClass()
     {
 //        static::setupVCR();
@@ -103,7 +100,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
     }
 
-    public function testPublishWithMeta()
+    public function xtestPublishWithMeta()
     {
         $this->assertSuccess($this->pubnub->publish()->setChannel('blah')->setMessage('hey')
             ->setMeta([
@@ -117,13 +114,39 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccess($this->pubnub->publish()->setChannel('blah')->setMessage('hey')->setShouldStore(true));
     }
 
-    public function testServerSideError()
+    public function testServerSideErrorSync()
+    {
+        $this->expectException(PubNubServerException::class);
+        $this->expectExceptionMessage("Server responded with an error and the status code is 400");
+
+        $pnconf = PNConfiguration::demoKeys();
+        $pnconf->setPublishKey("fake");
+
+        $pubnub = new PubNub($pnconf);
+
+        $pubnub->publish()->setChannel('blah')->setMessage('hey')->sync();
+    }
+
+    public function testServerSideErrorEnvelope()
     {
         $pnconf = PNConfiguration::demoKeys();
         $pnconf->setPublishKey("fake");
 
         $pubnub = new PubNub($pnconf);
 
-        $this->assertSuccess($pubnub->publish()->setChannel('blah')->setMessage('hey'));
+        $envelope = $pubnub->publish()->setChannel('blah')->setMessage('hey')->envelope();
+
+        $this->assertNull($envelope->getResult());
+        $this->assertEquals(400, $envelope->getStatus()->getStatusCode());
+
+        /** @var PubNubServerException $exception */
+        $exception = $envelope->getStatus()->getException();
+
+        $this->assertEquals(400, $exception->getStatusCode());
+        $this->assertEquals("Server responded with an error and the status code is 400", $exception->getMessage());
+
+        $body = $exception->getBody();
+        $this->assertEquals(0, $body[0]);
+        $this->assertEquals("Invalid Key", $body[1]);
     }
 }

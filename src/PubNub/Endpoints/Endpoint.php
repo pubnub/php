@@ -3,15 +3,17 @@
 namespace PubNub\Endpoints;
 
 
-use PubNub\Builders\PubNubErrorBuilder;
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNStatusCategory;
+use PubNub\Exceptions\PubNubException;
+use PubNub\Exceptions\PubNubConnectionException;
+use PubNub\Exceptions\PubNubServerException;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\ResponseHelpers\PNEnvelope;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\Models\ResponseHelpers\ResponseInfo;
 use PubNub\PubNub;
-use PubNub\PubNubException;
 use PubNub\PubNubUtil;
 use Requests_Exception;
 
@@ -71,7 +73,7 @@ abstract class Endpoint
         $subscribeKey = $this->pubnub->getConfiguration()->getSubscribeKey();
 
         if ($subscribeKey == null || empty($subscribeKey)) {
-            throw (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_SUBSCRIBE_KEY_MISSING);
+            throw new PubNubValidationException("Subscribe Key not configured");
         }
     }
 
@@ -80,7 +82,7 @@ abstract class Endpoint
         $publishKey = $this->pubnub->getConfiguration()->getPublishKey();
 
         if ($publishKey == null || empty($publishKey)) {
-            throw (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_PUBLISH_KEY_MISSING);
+            throw new PubNubValidationException("Publish Key not configured");
         }
     }
 
@@ -161,7 +163,7 @@ abstract class Endpoint
                 $statusCategory,
                 null,
                 null,
-                (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING)
+                (new PubNubConnectionException())->setOriginalException($e)
             ));
         } catch (\Requests_Exception_HTTP $e) {
             // TODO: build exception
@@ -169,7 +171,7 @@ abstract class Endpoint
                 $statusCategory,
                 null,
                 null,
-                (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING)
+                (new PubNubConnectionException())->setOriginalException($e)
             ));
         } catch (Requests_Exception $e) {
             // TODO: build exception
@@ -177,11 +179,7 @@ abstract class Endpoint
                 $statusCategory,
                 null,
                 null,
-                (new PubNubException())
-                    ->setPubnubError(PubNubErrorBuilder::predefined()->UNEXPECTED_REQUESTS_EXCEPTION
-                        ->setMessage($e->getMessage())
-                    )
-                    ->setStatusCode($e->getCode())
+                (new PubNubConnectionException())->setOriginalException($e)
             ));
         }
 
@@ -224,10 +222,9 @@ abstract class Endpoint
                     break;
             }
 
-            // TODO: build an exception:
-            $exception = (new PubNubException())
-                ->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING)
-                ->setErrormsg();
+            $exception = (new PubNubServerException())
+                ->setStatusCode($request->status_code)
+                ->setRawBody($request->body);
 
             return new PNEnvelope(
                 null,

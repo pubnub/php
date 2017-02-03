@@ -3,9 +3,9 @@
 namespace PubNub\Models\ResponseHelpers;
 
 
-use Enums\PNOperationType;
+use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNStatusCategory;
-use PubNub\PubNubException;
+use PubNub\Exceptions\PubNubException;
 
 class PNStatus
 {

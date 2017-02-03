@@ -3,9 +3,10 @@
 namespace Tests\Functional;
 
 use PubNub\Endpoints\PubSub\Publish;
+use PubNub\Exceptions\PubNubBuildRequestException;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
-use PubNub\PubNubException;
 use PubNub\PubNubUtil;
 use ReflectionMethod;
 
@@ -22,8 +23,8 @@ class PublishTest extends \PubNubTestCase
         try {
             $publish->setChannel("blah")->sync();
             $this->fail("No exception was thrown");
-        } catch (PubNubException $exception) {
-            $this->assertEquals("Message Missing.", $exception->getMessage());
+        } catch (PubNubValidationException$exception) {
+            $this->assertEquals("Message Missing", $exception->getMessage());
         }
     }
 
@@ -35,21 +36,19 @@ class PublishTest extends \PubNubTestCase
         try {
             $publish->setMessage("blah")->sync();
             $this->fail("No exception was thrown");
-        } catch (PubNubException $exception) {
-            $this->assertEquals("Channel Missing.", $exception->getMessage());
+        } catch (PubNubValidationException $exception) {
+            $this->assertEquals("Channel Missing", $exception->getMessage());
         }
     }
 
     public function testNonSerializable()
     {
-        $pubnub = new PubNub(new PNConfiguration());
-        $publish = new Publish($pubnub);
-
         try {
-            $publish->setMessage("blah")->sync();
+            $this->pubnub->publish()->setMessage(["key" => "\xB1\x31"])->setChannel('ch')->sync();
             $this->fail("No exception was thrown");
-        } catch (PubNubException $exception) {
-            $this->assertEquals("Channel Missing.", $exception->getMessage());
+        } catch (PubNubBuildRequestException $exception) {
+            $this->assertEquals("Value serialization error: Malformed UTF-8 characters, possibly incorrectly encoded",
+                $exception->getMessage());
         }
     }
 

@@ -4,9 +4,9 @@ namespace Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
 use PubNub\Endpoints\Endpoint;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
-use PubNub\PubNubException;
 
 
 class EndpointTest extends TestCase
@@ -21,8 +21,8 @@ class EndpointTest extends TestCase
         try {
             $endpoint->validateSubscribeKey();
             $this->fail("No exception was thrown");
-        } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Subscribe Key not configured.", $exception->getMessage());
+        } catch (PubNubValidationException $exception) {
+            $this->assertEquals("Subscribe Key not configured", $exception->getMessage());
         }
     }
 
@@ -34,8 +34,8 @@ class EndpointTest extends TestCase
         try {
             $endpoint->validateSubscribeKey();
             $this->fail("No exception was thrown");
-        } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Subscribe Key not configured.", $exception->getMessage());
+        } catch (PubNubValidationException $exception) {
+            $this->assertEquals("Subscribe Key not configured", $exception->getMessage());
         }
     }
 
@@ -47,8 +47,8 @@ class EndpointTest extends TestCase
         try {
             $endpoint->validatePublishKey();
             $this->fail("No exception was thrown");
-        } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Publish Key not configured.", $exception->getMessage());
+        } catch (PubNubValidationException $exception) {
+            $this->assertEquals("Publish Key not configured", $exception->getMessage());
         }
     }
 
@@ -60,8 +60,8 @@ class EndpointTest extends TestCase
         try {
             $endpoint->validatePublishKey();
             $this->fail("No exception was thrown");
-        } catch (PubNubException $exception) {
-            $this->assertEquals("ULS configuration failed. Publish Key not configured.", $exception->getMessage());
+        } catch (PubNubValidationException $exception) {
+            $this->assertEquals("Publish Key not configured", $exception->getMessage());
         }
     }
 }
@@ -119,5 +119,13 @@ class EndpointImplementation extends Endpoint
     protected function buildParams()
     {
         // TODO: Implement buildParams() method.
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function buildData()
+    {
+        // TODO: Implement buildData() method.
     }
 }

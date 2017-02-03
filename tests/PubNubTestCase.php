@@ -17,13 +17,16 @@ abstract class PubNubTestCase extends TestCase
     /** @var PubNub pubnub_enc */
     protected $pubnub_enc;
 
+    /** @var PNConfiguration config */
+    protected $config;
+
     public function setUp()
     {
         parent::setUp();
 
-        $config = new PNConfiguration();
-        $config->setSubscribeKey(static::SUBSCRIBE_KEY);
-        $config->setPublishKey(static::PUBLISH_KEY);
+        $this->config = new PNConfiguration();
+        $this->config->setSubscribeKey(static::SUBSCRIBE_KEY);
+        $this->config->setPublishKey(static::PUBLISH_KEY);
 
         $config_enc = new PNConfiguration();
         $config_enc->setSubscribeKey(static::SUBSCRIBE_KEY);

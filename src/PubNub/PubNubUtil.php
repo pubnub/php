@@ -3,6 +3,9 @@
 namespace PubNub;
 
 
+use PubNub\Exceptions\PubNubBuildRequestException;
+use PubNub\Exceptions\PubNubValidationException;
+
 class PubNubUtil
 {
     /**
@@ -28,14 +31,16 @@ class PubNubUtil
 
     public static function writeValueAsString($value)
     {
-        try {
-            if (gettype($value) == 'string') {
-                return "\"" . $value . "\"";
-            } else {
-                return json_encode($value);
+        if (gettype($value) == 'string') {
+            return "\"" . $value . "\"";
+        } else {
+            $res = json_encode($value);
+
+            if (json_last_error()) {
+                throw new PubNubBuildRequestException("Value serialization error: " . json_last_error_msg());
             }
-        } catch (\Exception $e) {
-            return $value;
+
+            return $res;
         }
     }
 }

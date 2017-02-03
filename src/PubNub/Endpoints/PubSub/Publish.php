@@ -7,6 +7,7 @@ use PubNub\Builders\PubNubErrorBuilder;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\PubNubException;
 use PubNub\PubNubUtil;
@@ -122,11 +123,11 @@ class Publish extends Endpoint
     protected function validateParams()
     {
         if ($this->message === null) {
-            throw (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_MESSAGE_MISSING);
+            throw new PubNubValidationException("Message Missing");
         }
 
         if (empty($this->channel)) {
-            throw (new PubNubException())->setPubnubError(PubNubErrorBuilder::predefined()->PNERROBJ_CHANNEL_MISSING);
+            throw new PubNubValidationException("Channel Missing");
         }
 
         $this->validateSubscribeKey();
@@ -153,7 +154,7 @@ class Publish extends Endpoint
         $params = $this->defaultParams();
 
         if ($this->meta !== null) {
-            $params['meta'] = PubNubUtil::urlEncode(PubNubUtil::writeValueAsString($this->meta));
+            $params['meta'] = PubNubUtil::writeValueAsString($this->meta);
         }
 
         if ($this->shouldStore !== null) {

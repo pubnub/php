@@ -25,6 +25,14 @@ class Time extends Endpoint
     }
 
     /**
+     * @return null
+     */
+    protected function buildData()
+    {
+        return null;
+    }
+
+    /**
      * @return array
      */
     protected function buildParams()
