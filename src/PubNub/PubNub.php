@@ -38,17 +38,17 @@ class PubNub
         return new Time($this);
     }
 
-    public function getVersion()
+    public function getSdkVersion()
     {
         return static::SDK_VERSION;
     }
 
-    public function getName()
+    public function getSdkName()
     {
         return static::SDK_NAME;
     }
 
-    public function getFullName()
+    public function getSdkFullName()
     {
         $fullName = static::SDK_NAME . "/" . static::SDK_VERSION;
 

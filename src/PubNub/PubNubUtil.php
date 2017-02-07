@@ -43,4 +43,67 @@ class PubNubUtil
             return $res;
         }
     }
+
+    /**
+     * @param array $channels
+     * @return string
+     */
+    public static function joinChannels($channels)
+    {
+        if (count($channels) == 0) {
+            return ",";
+        } else {
+            $encodedChannels = [];
+
+            foreach ($channels as $ch) {
+                $encodedChannels[] = urlencode($ch);
+            }
+
+            return join(",", $encodedChannels);
+        }
+    }
+
+    public static function joinItems($items)
+    {
+        return join(",", $items);
+    }
+
+
+    /**
+     * @param $existingItems
+     * @param $newItems
+     * @return array
+     */
+    public static function extendArray($existingItems, $newItems)
+    {
+        if (is_array($newItems)) {
+            return array_merge($existingItems, $newItems);
+        } else {
+            return array_merge($existingItems, static::splitItems($newItems));
+        }
+    }
+
+    /**
+     * @param string $itemsString
+     * @return array
+     */
+    public static function splitItems($itemsString)
+    {
+        if (strlen($itemsString) == 0) {
+            return [];
+        } else {
+            return explode(",", $itemsString);
+        }
+    }
+
+    public static function uuid()
+    {
+        if (function_exists('com_create_guid') === true) {
+            return trim(com_create_guid(), '{}');
+        } else {
+            return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535),
+                mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535),
+                mt_rand(0, 65535));
+        }
+    }
 }

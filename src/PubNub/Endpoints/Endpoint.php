@@ -240,7 +240,7 @@ abstract class Endpoint
     {
         $params = [];
 
-        $params['pnsdk'] = "PubNub-PHP/" . $this->pubnub->getVersion();
+        $params['pnsdk'] = "PubNub-PHP/" . $this->pubnub->getSdkVersion();
         $params['uuid'] = $this->pubnub->getConfiguration()->getUuid();
 
         // TODO: check for instance identifier

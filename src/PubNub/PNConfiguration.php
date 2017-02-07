@@ -149,8 +149,7 @@ class PNConfiguration
     public function getUuid()
     {
         if (empty($this->uuid)) {
-            // TODO: generate uuid
-            $this->uuid = 'blah';
+            $this->uuid = PubNubUtil::uuid();
         }
 
         return $this->uuid;

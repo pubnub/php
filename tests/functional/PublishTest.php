@@ -83,7 +83,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getFullName(),
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "seqn" => null,
                 "norep" => 'true'
@@ -152,7 +152,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getFullName(),
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "seqn" => null,
                 "norep" => 'true',
@@ -193,7 +193,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getFullName(),
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "seqn" => null,
                 "norep" => 'true',
@@ -234,7 +234,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getFullName(),
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "seqn" => null,
                 "norep" => 'true',
@@ -275,7 +275,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getFullName(),
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "seqn" => null,
                 "norep" => 'true',
@@ -314,7 +314,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getFullName(),
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "seqn" => null,
                 "norep" => 'true'
