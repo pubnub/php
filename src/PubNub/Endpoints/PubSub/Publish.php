@@ -154,7 +154,7 @@ class Publish extends Endpoint
         $params = $this->defaultParams();
 
         if ($this->meta !== null) {
-            $params['meta'] = PubNubUtil::writeValueAsString($this->meta);
+            $params['meta'] = PubNubUtil::urlWrite($this->meta);
         }
 
         if ($this->shouldStore !== null) {

@@ -123,6 +123,7 @@ class SubscribeTest extends \PubNubTestCase
         $this->sub->setChannelGroups("cg1,cg2,cg3");
         $this->sub->setFilterExpression("blah");
         $this->sub->setRegion("us-east-1");
+        $this->sub->setTimetoken(123);
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), "ch1"),
@@ -132,7 +133,11 @@ class SubscribeTest extends \PubNubTestCase
         $this->assertEquals([
             'pnsdk' => $this->pubnub->getSdkFullName(),
             'uuid' => $this->pubnub->getConfiguration()->getUuid(),
-            'channel-group' => "cg1,cg2,cg3"
+            'channel-group' => "cg1,cg2,cg3",
+            'tr' => 'us-east-1',
+            'tt' => '123',
+            'filter-expr' => 'blah'
+
         ], $this->sub->buildParams());
 
         $this->assertEquals(["ch1"], $this->sub->getChannels());
