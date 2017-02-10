@@ -28,6 +28,9 @@ class PNConfiguration
     /** @var  PubNubCryptoCore */
     private $crypto;
 
+    /** @var  string */
+    private $filterExpression;
+
     /**
      * Already configured PNConfiguration object with demo/demo as publish/subscribe keys.
      *
@@ -176,10 +179,13 @@ class PNConfiguration
 
     /**
      * @param string|null $authKey
+     * @return $this
      */
     public function setAuthKey($authKey)
     {
         $this->authKey = $authKey;
+
+        return $this;
     }
 
     /**
@@ -198,9 +204,31 @@ class PNConfiguration
 
     /**
      * @param PubNubCryptoCore $crypto
+     * @return $this
      */
     public function setCrypto($crypto)
     {
         $this->crypto = $crypto;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilterExpression()
+    {
+        return $this->filterExpression;
+    }
+
+    /**
+     * @param string $filterExpression
+     * @return $this
+     */
+    public function setFilterExpression($filterExpression)
+    {
+        $this->filterExpression = $filterExpression;
+
+        return $this;
     }
 }

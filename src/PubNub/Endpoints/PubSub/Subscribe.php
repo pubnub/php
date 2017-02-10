@@ -54,9 +54,8 @@ class Subscribe extends Endpoint
     }
 
     /**
-     * @param $cgs
+     * @param string|array $cgs
      * @return $this
-     * @internal param array $channelGroups
      */
     public function setChannelGroups($cgs)
     {
@@ -67,34 +66,46 @@ class Subscribe extends Endpoint
 
     /**
      * @param string $region
+     * @return $this
      */
     public function setRegion($region)
     {
         $this->region = $region;
+
+        return $this;
     }
 
     /**
      * @param string $filterExpression
+     * @return $this
      */
     public function setFilterExpression($filterExpression)
     {
         $this->filterExpression = $filterExpression;
+
+        return $this;
     }
 
     /**
      * @param int $timetoken
+     * @return $this
      */
     public function setTimetoken($timetoken)
     {
         $this->timetoken = $timetoken;
+
+        return $this;
     }
 
     /**
      * @param bool $withPresence
+     * @return $this
      */
     public function setWithPresence($withPresence)
     {
         $this->withPresence = $withPresence;
+
+        return $this;
     }
 
     protected function validateParams()

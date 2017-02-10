@@ -2,9 +2,11 @@
 
 namespace PubNub;
 
+use PubNub\Builders\SubscribeBuilder;
 use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
+use PubNub\Managers\SubscriptionManager;
 
 class PubNub
 {
@@ -17,6 +19,9 @@ class PubNub
     /** @var  BasePathManager */
     private $basePathManager;
 
+    /** @var  SubscriptionManager */
+    private $subscriptionManager;
+
     /**
      * PNConfiguration constructor.
      *
@@ -26,11 +31,22 @@ class PubNub
     {
         $this->configuration = $initialConfig;
         $this->basePathManager = new BasePathManager($initialConfig);
+        $this->subscriptionManager = new SubscriptionManager($this);
+    }
+
+    public function addListener($listener)
+    {
+        $this->subscriptionManager->addListener($listener);
     }
 
     public function publish()
     {
         return new Publish($this);
+    }
+
+    public function subscribe()
+    {
+        return new SubscribeBuilder($this->subscriptionManager);
     }
 
     public function time()
