@@ -3,6 +3,7 @@
 namespace PubNub;
 
 use PubNub\Builders\SubscribeBuilder;
+use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
@@ -47,6 +48,11 @@ class PubNub
     public function subscribe()
     {
         return new SubscribeBuilder($this->subscriptionManager);
+    }
+
+    public function addChannelToChannelGroup()
+    {
+        return new AddChannelToChannelGroup($this);
     }
 
     public function time()

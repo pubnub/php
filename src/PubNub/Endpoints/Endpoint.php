@@ -64,7 +64,7 @@ abstract class Endpoint
     abstract protected function buildParams();
 
     /**
-     * @return PNHttpMethod
+     * @return string PNHttpMethod
      */
     abstract protected function httpMethod();
 

@@ -4,8 +4,6 @@ use PHPUnit\Framework\TestCase;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 
-echo 'included';
-
 abstract class PubNubTestCase extends TestCase
 {
     const SUBSCRIBE_KEY = 'sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe';
