@@ -4,6 +4,9 @@ namespace PubNub;
 
 use PubNub\Builders\SubscribeBuilder;
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
+use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
+use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
+use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
@@ -53,6 +56,21 @@ class PubNub
     public function addChannelToChannelGroup()
     {
         return new AddChannelToChannelGroup($this);
+    }
+
+    public function removeChannelFromChannelGroup()
+    {
+        return new RemoveChannelFromChannelGroup($this);
+    }
+
+    public function removeChannelGroup()
+    {
+        return new RemoveChannelGroup($this);
+    }
+
+    public function listChannelsInChannelGroup()
+    {
+        return new ListChannelsInChannelGroup($this);
     }
 
     public function time()
