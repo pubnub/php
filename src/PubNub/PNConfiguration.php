@@ -31,6 +31,12 @@ class PNConfiguration
     /** @var  string */
     private $filterExpression;
 
+    /** @var int */
+    protected $nonSubscribeRequestTimeout = 10;
+
+    /** @var int */
+    protected $connectedTimeout = 5;
+
     /**
      * Already configured PNConfiguration object with demo/demo as publish/subscribe keys.
      *
@@ -104,6 +110,22 @@ class PNConfiguration
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNonSubscribeRequestTimeout()
+    {
+        return $this->nonSubscribeRequestTimeout;
+    }
+
+    /**
+     * @return int
+     */
+    public function getConnectTimeout()
+    {
+        return $this->connectedTimeout;
     }
 
     /**
@@ -231,4 +253,5 @@ class PNConfiguration
 
         return $this;
     }
+
 }

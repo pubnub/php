@@ -2,6 +2,7 @@
 
 namespace PubNub;
 
+use Grant;
 use PubNub\Builders\SubscribeBuilder;
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
@@ -51,6 +52,11 @@ class PubNub
     public function subscribe()
     {
         return new SubscribeBuilder($this->subscriptionManager);
+    }
+
+    public function grant()
+    {
+        return new Grant($this);
     }
 
     public function addChannelToChannelGroup()

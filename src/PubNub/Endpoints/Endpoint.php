@@ -85,6 +85,15 @@ abstract class Endpoint
         }
     }
 
+    protected function validateSecretKey()
+    {
+        $secretKey = $this->pubnub->getConfiguration()->getSecretKey();
+
+        if ($secretKey === null || empty($secretKey)) {
+            throw new PubNubValidationException("Secret key not configured");
+        }
+    }
+
     /**
      * Return a Result only.
      * Errors are thrown explicitly, so catch them with try/catch block
