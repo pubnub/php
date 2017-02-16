@@ -318,4 +318,9 @@ $pubnub->setSubscribeTimeout(100);
 
 2. `PubnubException`'s will be thrown if you miss any param while invoking methods of Pubnub instance. For ex. you passed empty channel string to #publish() method or forgot to pass callback to #subscribe().
 
+# Framework Integrations
+ - **Laravel** - https://github.com/zoophp/pubnub
+ 
+If you have integrated PubNub into a popular PHP framework let us know!
+
 ## Contact support@pubnub.com for all questions
