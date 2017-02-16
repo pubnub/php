@@ -2,15 +2,11 @@
 
 namespace PubNub\Endpoints\ChannelGroups;
 
-
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
-use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsAddChannelResult;
 use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsListChannelsResult;
-use PubNub\PubNub;
-use PubNub\PubNubUtil;
 
 class ListChannelsInChannelGroup extends Endpoint
 {
@@ -22,7 +18,7 @@ class ListChannelsInChannelGroup extends Endpoint
      * @param string $channelGroup
      * @return $this
      */
-    public function channelGroup($channelGroup)
+    public function group($channelGroup)
     {
         $this->channelGroup = $channelGroup;
 
@@ -44,7 +40,11 @@ class ListChannelsInChannelGroup extends Endpoint
      */
     protected function createResponse($json)
     {
-        return new PNChannelGroupsListChannelsResult();
+        if (array_key_exists('payload', $json) && array_key_exists('channels', $json['payload'])) {
+            return new PNChannelGroupsListChannelsResult($json['payload']['channels']);
+        } else {
+            return new PNChannelGroupsListChannelsResult([]);
+        }
     }
 
     /**

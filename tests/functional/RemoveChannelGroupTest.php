@@ -23,7 +23,7 @@ class RemoveChannelGroupTest extends \PubNubTestCase
     {
         $listGroup = new RemoveChannelGroupExposed($this->pubnub);
 
-        $listGroup->channelGroup("blah");
+        $listGroup->group("blah");
 
         $this->assertEquals(
             sprintf(

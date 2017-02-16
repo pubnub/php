@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints;
 
-
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNStatusCategory;
@@ -207,7 +206,7 @@ abstract class Endpoint
         );
 
         if ($request->status_code == 200) {
-            $parsedJSON = json_decode($request->body);
+            $parsedJSON = json_decode($request->body, true, 512, JSON_OBJECT_AS_ARRAY);
 
             return new PNEnvelope($this->createResponse($parsedJSON),
                 $this->createStatus($statusCategory, $request->body, $responseInfo, null)

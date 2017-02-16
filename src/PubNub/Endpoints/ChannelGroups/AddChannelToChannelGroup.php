@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints\ChannelGroups;
 
-
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;

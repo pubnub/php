@@ -22,7 +22,7 @@ class ListChannelsInChannelGroupTest extends \PubNubTestCase
     {
         $listGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $listGroup->channelGroup("blah");
+        $listGroup->group("blah");
 
         $this->assertEquals(
             sprintf(
