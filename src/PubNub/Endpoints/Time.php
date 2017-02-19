@@ -35,7 +35,7 @@ class Time extends Endpoint
     /**
      * @return array
      */
-    protected function buildParams()
+    protected function customParams()
     {
         return $this->defaultParams();
     }

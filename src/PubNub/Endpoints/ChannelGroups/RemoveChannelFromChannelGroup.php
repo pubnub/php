@@ -96,7 +96,7 @@ class RemoveChannelFromChannelGroup extends Endpoint
     /**
      * @return array
      */
-    protected function buildParams()
+    protected function customParams()
     {
         $params = $this->defaultParams();
 

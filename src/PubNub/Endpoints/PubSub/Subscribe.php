@@ -123,9 +123,9 @@ class Subscribe extends Endpoint
         return null;
     }
 
-    protected function buildParams()
+    protected function customParams()
     {
-        $params = $this->defaultParams();
+        $params = [];
 
         if (count($this->channelGroups) > 0) {
             $params['channel-group'] = PubNubUtil::joinChannels($this->channelGroups);

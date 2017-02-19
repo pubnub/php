@@ -60,7 +60,7 @@ abstract class Endpoint
     /**
      * @return array
      */
-    abstract protected function buildParams();
+    abstract protected function customParams();
 
     /**
      * @return string PNHttpMethod
@@ -147,12 +147,60 @@ abstract class Endpoint
     }
 
     /**
+     * Params build flow: signed <- custom <- default
+     *
+     * @return array
+     */
+    protected function buildParams()
+    {
+        $params = array_merge($this->customParams(), $this->defaultParams());
+        $config = $this->pubnub->getConfiguration();
+
+        // TODO: assign default params here
+        if ($this->isAuthRequired() && !empty($config->getAuthKey())) {
+            $params['auth'] = $config->getAuthKey();
+        }
+
+        if ($config->getSecretKey()) {
+            $params['timestamp'] = (string) $this->pubnub->timestamp();
+            $signedInput = $config->getSubscribeKey() . "\n" . $config->getPublishKey() . "\n";
+
+            // TODO: add revoke
+            if ($this->getOperationType() == PNOperationType::PNAccessManagerGrant ||
+                $this->getOperationType() == PNOperationType::PNAccessManagerGrant) {
+                $signedInput .= "grant\n";
+            } else if ($this->getOperationType() === PNOperationType::PNAccessManagerAudit) {
+                $signedInput .= "audit\n";
+            } else {
+                $signedInput .= $this->buildPath();
+            }
+
+            $signedInput .= PubNubUtil::preparePamParams($params);
+
+            $params['signature'] = PubNubUtil::signSha256(
+                $this->pubnub->getConfiguration()->getSecretKey(),
+                $signedInput
+            );
+
+        }
+
+        // TODO: publish meta should be encoded here
+        // TODO: pnsdk should be reassigned here
+        return $params;
+    }
+
+    /**
      * @return PNEnvelope
      */
     protected function invokeRequest()
     {
         $headers = ['Accept' => 'application/json'];
-        $url = PubNubUtil::buildUrl($this->pubnub->getBasePath(), $this->buildPath(), $this->buildParams());
+
+        $url = PubNubUtil::buildUrl(
+            $this->pubnub->getBasePath(),
+            $this->buildPath(),
+            $this->buildParams()
+        );
         $data = $this->buildData();
         $type = \Requests::GET;
         $options = [];

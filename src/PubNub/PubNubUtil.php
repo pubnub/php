@@ -106,4 +106,59 @@ class PubNubUtil
                 mt_rand(0, 65535));
         }
     }
+
+    public static function preparePamParams($params)
+    {
+        ksort($params);
+
+        $sortedParams = $params;
+        $stringifiedArguments = "";
+        $index = 0;
+
+        foreach ($sortedParams as $key => $value) {
+            if (is_bool($value)) {
+                $value = $value ? "true" : "false";
+            }
+
+            if ($index === count($sortedParams) - 1) {
+                $stringifiedArguments .= ($key . "=" . self::pamEncode($value));
+            } else {
+                $stringifiedArguments .= ($key . "=" . self::pamEncode($value) . "&");
+            }
+
+            $index++;
+        }
+
+        return $stringifiedArguments;
+    }
+
+    public static function pamEncode($url)
+    {
+        $encoded = self::urlEncode($url);
+
+        if (!empty($encoded)) {
+            $encoded = str_replace("*", "%2A", $encoded);
+            $encoded = str_replace("!", "%21", $encoded);
+            $encoded = str_replace("'", "%27", $encoded);
+            $encoded = str_replace("(", "%28", $encoded);
+            $encoded = str_replace(")", "%29", $encoded);
+            $encoded = str_replace("[", "%5B", $encoded);
+            $encoded = str_replace("]", "%5D", $encoded);
+            $encoded = str_replace("~", "%7E", $encoded);
+        }
+
+        return $encoded;
+    }
+
+    public static function signSha256($secret, $signInput)
+    {
+        $result = base64_encode(hash_hmac(
+            'sha256',
+            utf8_encode($signInput),
+            utf8_encode($secret),
+            true
+        ));
+
+        return $result;
+    }
 }

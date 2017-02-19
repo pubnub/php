@@ -2,8 +2,8 @@
 
 namespace PubNub;
 
-use Grant;
 use PubNub\Builders\SubscribeBuilder;
+use PubNub\Endpoints\Access\Grant;
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
@@ -84,17 +84,22 @@ class PubNub
         return new Time($this);
     }
 
-    public function getSdkVersion()
+    public function timestamp()
+    {
+        return time() * 10000000;
+    }
+
+    static public function getSdkVersion()
     {
         return static::SDK_VERSION;
     }
 
-    public function getSdkName()
+    static public function getSdkName()
     {
         return static::SDK_NAME;
     }
 
-    public function getSdkFullName()
+    static public function getSdkFullName()
     {
         $fullName = static::SDK_NAME . "/" . static::SDK_VERSION;
 

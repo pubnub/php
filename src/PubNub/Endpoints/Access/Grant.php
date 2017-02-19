@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints\Access;
 
-
 use PubNub\Endpoints\Endpoint;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNubUtil;
@@ -12,57 +11,101 @@ use PubNub\Enums\PNOperationType;
 
 class Grant extends Endpoint
 {
-    const GRANT_PATH = "/v1/auth/grant/sub-key/%s";
+    const PATH = "/v1/auth/grant/sub-key/%s";
 
+    /** @var string[] */
     protected $authKeys = [];
+
+    /** @var string[] */
     protected $channels = [];
+
+    /** @var string[]  */
     protected $groups = [];
+
+    /** @var  bool */
     protected $read;
+
+    /** @var  bool */
     protected $write;
+
+    /** @var  bool */
     protected $manage;
+
+    /** @var  int */
     protected $ttl;
 
-    protected $sortParams = true;
-
+    /**
+     * @param string|string[] $authKeys
+     * @return $this
+     */
     public function authKeys($authKeys)
     {
-        PubNubUtil::extendArray($this->authKeys, $authKeys);
+        $this->authKeys = PubNubUtil::extendArray($this->authKeys, $authKeys);
         return $this;
     }
 
+    /**
+     * @param string|string[]$channels
+     * @return $this
+     */
     public function channels($channels)
     {
-        PubNubUtil::extendArray($this->channels, $channels);
+        $this->channels = PubNubUtil::extendArray($this->channels, $channels);
         return $this;
     }
 
+    /**
+     * @param string[]|string $channelsGroups
+     * @return $this
+     */
     public function channelGroups($channelsGroups)
     {
-        PubNubUtil::extendArray($this->groups, $channelsGroups);
+        $this->groups = PubNubUtil::extendArray($this->groups, $channelsGroups);
+
         return $this;
     }
 
+    /**
+     * @param bool $flag
+     * @return $this
+     */
     public function read($flag)
     {
         $this->read = $flag;
+
         return $this;
     }
 
+    /**
+     * @param bool $flag
+     * @return $this
+     */
     public function write($flag)
     {
         $this->write = $flag;
+
         return $this;
     }
 
+    /**
+     * @param bool $flag
+     * @return $this
+     */
     public function manage($flag)
     {
         $this->manage = $flag;
+
         return $this;
     }
 
-    public function ttl($flag)
+    /**
+     * @param int $value
+     * @return $this
+     */
+    public function ttl($value)
     {
-        $this->ttl = $flag;
+        $this->ttl = $value;
+
         return $this;
     }
 
@@ -81,20 +124,20 @@ class Grant extends Endpoint
         return null;
     }
 
-    public function buildParams()
+    public function customParams()
     {
-        $params = $this->defaultParams();
+        $params = [];
 
         if ($this->read !== null) {
             $params["r"] = ($this->read) ? "1" : "0";
         }
 
         if ($this->write !== null) {
-            $params["w"] = ($this->read) ? "1" : "0";
+            $params["w"] = ($this->write) ? "1" : "0";
         }
 
         if ($this->manage !== null) {
-            $params["m"] = ($this->read) ? "1" : "0";
+            $params["m"] = ($this->manage) ? "1" : "0";
         }
 
         if (count($this->authKeys) > 0) {
@@ -109,26 +152,28 @@ class Grant extends Endpoint
             $params["channel-group"] = PubNubUtil::joinItems($this->groups);
         }
 
-        if (count($this->ttl) > 0) {
-            $params["ttl"] = $this->ttl;
+        if ($this->ttl > 0) {
+            $params["ttl"] = (string) $this->ttl;
         }
+
+        $params['timestamp'] = strval($this->pubnub->timestamp());
 
         return $params;
     }
 
     public function buildPath()
     {
-        return Grant::GRANT_PATH % $this->pubnub->getConfiguration()->getSubscribeKey();
-    }
-
-    public function httpMethod()
-    {
-        PNHttpMethod::GET;
+        return sprintf(static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey());
     }
 
     public function createResponse($json)
     {
         return null;
+    }
+
+    public function httpMethod()
+    {
+        PNHttpMethod::GET;
     }
 
     public function isAuthRequired()

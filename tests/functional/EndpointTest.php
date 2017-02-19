@@ -116,7 +116,7 @@ class EndpointImplementation extends Endpoint
     /**
      * @return array
      */
-    protected function buildParams()
+    protected function customParams()
     {
         // TODO: Implement buildParams() method.
     }

@@ -39,7 +39,7 @@ class RemoveChannelGroupTest extends \PubNubTestCase
                 "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
             ],
-            $listGroup->buildParams()
+            $listGroup->customParams()
         );
     }
 }
@@ -47,9 +47,9 @@ class RemoveChannelGroupTest extends \PubNubTestCase
 
 class RemoveChannelGroupExposed extends RemoveChannelGroup
 {
-    public function buildParams()
+    public function customParams()
     {
-        return parent::buildParams();
+        return parent::customParams();
     }
 
     public function buildPath()

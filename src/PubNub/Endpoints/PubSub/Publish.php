@@ -149,9 +149,9 @@ class Publish extends Endpoint
         }
     }
 
-    protected function buildParams()
+    protected function customParams()
     {
-        $params = $this->defaultParams();
+        $params = [];
 
         if ($this->meta !== null) {
             $params['meta'] = PubNubUtil::urlWrite($this->meta);

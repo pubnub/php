@@ -12,7 +12,6 @@ namespace PubNub\Exceptions;
  * - PubNubRequestException (like 'network error', 'request timeout')
  * - PubNubServerException (like 400, 403, 500, etc.)
  */
-class PubNubException extends \Exception
+abstract class PubNubException extends \Exception
 {
-
 }
