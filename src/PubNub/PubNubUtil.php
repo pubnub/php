@@ -161,4 +161,30 @@ class PubNubUtil
 
         return $result;
     }
+
+    public static function fetchPamPermissionsFrom($jsonInput)
+    {
+        $r = null;
+        $w = null;
+        $m = null;
+        $ttl = null;
+
+        if (array_key_exists('r', $jsonInput)) {
+            $r = $jsonInput['r'] === 1;
+        }
+
+        if (array_key_exists('w', $jsonInput)) {
+            $w = $jsonInput['w'] === 1;
+        }
+
+        if (array_key_exists('m', $jsonInput)) {
+            $m = $jsonInput['m'] === 1;
+        }
+
+        if (array_key_exists('ttl', $jsonInput)) {
+            $ttl = $jsonInput['ttl'] === 1;
+        }
+
+        return [$r, $w, $m, $ttl];
+    }
 }

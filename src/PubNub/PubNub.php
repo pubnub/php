@@ -86,7 +86,7 @@ class PubNub
 
     public function timestamp()
     {
-        return time() * 10000000;
+        return time();
     }
 
     static public function getSdkVersion()

@@ -4,6 +4,7 @@ namespace PubNub\Endpoints\Access;
 
 use PubNub\Endpoints\Endpoint;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\AccessManager\PNAccessManagerGrantResult;
 use PubNub\PubNubUtil;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
@@ -168,7 +169,7 @@ class Grant extends Endpoint
 
     public function createResponse($json)
     {
-        return null;
+        return PNAccessManagerGrantResult::fromJson($json['payload']);
     }
 
     public function httpMethod()
