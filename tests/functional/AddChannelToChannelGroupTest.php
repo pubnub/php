@@ -4,6 +4,8 @@ namespace Tests\Functional;
 
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\PubNub;
+use PubNub\PubNubUtil;
 
 
 class AddChannelToChannelGroupTest extends \PubNubTestCase
@@ -45,7 +47,7 @@ class AddChannelToChannelGroupTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getSdkFullName(),
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "add" => 'ch'
             ],
@@ -71,7 +73,7 @@ class AddChannelToChannelGroupTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getSdkFullName(),
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "add" => 'ch1,ch2,ch3'
             ],

@@ -15,7 +15,7 @@ class AuditTest extends \PubNubTestCase
     {
         parent::setUp();
 
-        $this->pubnub_pam = new PubNubStubbed($this->config_pam);
+        $this->pubnub_pam = new PubNubStubbedAudit($this->config_pam);
         $this->audit = new AuditExposed($this->pubnub_pam);
     }
 
@@ -66,7 +66,7 @@ class AuditTest extends \PubNubTestCase
     }
 }
 
-class PubNubStubbed extends PubNub
+class PubNubStubbedAudit extends PubNub
 {
     public function timestamp()
     {

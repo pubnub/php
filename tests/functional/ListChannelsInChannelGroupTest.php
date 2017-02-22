@@ -4,6 +4,8 @@ namespace Tests\Functional;
 
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\PubNub;
+use PubNub\PubNubUtil;
 
 
 class ListChannelsInChannelGroupTest extends \PubNubTestCase
@@ -35,7 +37,7 @@ class ListChannelsInChannelGroupTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getSdkFullName(),
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
             ],
             $listGroup->buildParams()

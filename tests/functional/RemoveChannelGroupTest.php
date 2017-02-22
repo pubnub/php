@@ -5,6 +5,8 @@ namespace Tests\Functional;
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\PubNub;
+use PubNub\PubNubUtil;
 
 
 class RemoveChannelGroupTest extends \PubNubTestCase
@@ -36,7 +38,7 @@ class RemoveChannelGroupTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getSdkFullName(),
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
             ],
             $listGroup->buildParams()

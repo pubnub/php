@@ -4,6 +4,8 @@ namespace Tests\Functional;
 
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\PubNub;
+use PubNub\PubNubUtil;
 
 
 class RemoveChannelFromChannelGroupTest extends \PubNubTestCase
@@ -45,7 +47,7 @@ class RemoveChannelFromChannelGroupTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getSdkFullName(),
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "remove" => 'ch'
             ],
@@ -71,7 +73,7 @@ class RemoveChannelFromChannelGroupTest extends \PubNubTestCase
 
         $this->assertEquals(
             [
-                "pnsdk" => $this->pubnub->getSdkFullName(),
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "remove" => 'ch1,ch2,ch3'
             ],

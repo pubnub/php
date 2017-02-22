@@ -4,6 +4,8 @@ namespace Tests\Functional;
 
 use PubNub\Endpoints\PubSub\Subscribe;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\PubNub;
+use PubNub\PubNubUtil;
 
 
 class SubscribeTest extends \PubNubTestCase
@@ -40,7 +42,7 @@ class SubscribeTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => $this->pubnub->getSdkFullName(),
+            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid()
         ], $this->sub->buildParams());
 
@@ -57,7 +59,7 @@ class SubscribeTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => $this->pubnub->getSdkFullName(),
+            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid()
         ], $this->sub->buildParams());
 
@@ -74,7 +76,7 @@ class SubscribeTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => $this->pubnub->getSdkFullName(),
+            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid()
         ], $this->sub->buildParams());
 
@@ -91,7 +93,7 @@ class SubscribeTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => $this->pubnub->getSdkFullName(),
+            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid(),
             'channel-group' => "cg1,cg2,cg3"
         ], $this->sub->buildParams());
@@ -109,7 +111,7 @@ class SubscribeTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => $this->pubnub->getSdkFullName(),
+            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid(),
             'channel-group' => "cg1,cg2,cg3"
         ], $this->sub->buildParams());
@@ -131,7 +133,7 @@ class SubscribeTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => $this->pubnub->getSdkFullName(),
+            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid(),
             'channel-group' => "cg1,cg2,cg3",
             'tr' => 'us-east-1',
