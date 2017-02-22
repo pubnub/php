@@ -43,7 +43,7 @@ class GrantTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => PubNub::getSdkFullName(),
+            'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
             'r' => '1',
             'w' => '1',
@@ -78,7 +78,7 @@ class GrantTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            'pnsdk' => PubNub::getSdkFullName(),
+            'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
             'r' => '1',
             'w' => '0',

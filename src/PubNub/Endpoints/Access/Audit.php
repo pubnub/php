@@ -138,7 +138,7 @@ class Audit extends Endpoint
         }
 
         if (count($this->groups) > 0) {
-            $params['groups'] = PubNubUtil::joinItems($this->groups);
+            $params['channel-group'] = PubNubUtil::joinItems($this->groups);
         }
 
         return $params;

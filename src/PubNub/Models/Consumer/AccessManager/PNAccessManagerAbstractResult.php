@@ -85,7 +85,14 @@ class PNAccessManagerAbstractResult
                     $constructedAuthKeys[$authKeyName] = PNAccessManagerKeyData::fromJson($value);
                 }
 
-                $constructedGroups[$groupName] = PNAccessManagerChannelGroupData::fromJson($groupName, $constructedAuthKeys);
+                $constructedGroups[$groupName] = new PNAccessManagerChannelGroupData(
+                    $groupName,
+                    $constructedAuthKeys,
+                    null,
+                    null,
+                    null,
+                    $ttl
+                );
             }
 
             if (is_array($jsonInput['channel-group'])) {
@@ -104,7 +111,14 @@ class PNAccessManagerAbstractResult
                     $constructedAuthKeys[$authKeyName] = PNAccessManagerKeyData::fromJson($value);
                 }
 
-                $constructedGroups[$groupName] = PNAccessManagerChannelGroupData::fromJson($groupName, $constructedAuthKeys);
+                $constructedGroups[$groupName] = new PNAccessManagerChannelGroupData(
+                    $groupName,
+                    $constructedAuthKeys,
+                    null,
+                    null,
+                    null,
+                    $ttl
+                );
             }
 
             if (PubNubUtil::isAssoc($jsonInput['channel-groups'])) {

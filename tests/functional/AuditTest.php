@@ -26,7 +26,7 @@ class AuditTest extends \PubNubTestCase
         $this->assertEquals(sprintf(Audit::PATH, $this->config_pam->getSubscribeKey()), $this->audit->buildPath());
 
         $this->assertEquals([
-            'pnsdk' => PubNub::getSdkFullName(),
+            'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
             'timestamp' => '123',
             'channel' => 'ch',
@@ -49,16 +49,16 @@ class AuditTest extends \PubNubTestCase
         $this->assertEquals(sprintf(Audit::PATH, $this->config_pam->getSubscribeKey()), $this->audit->buildPath());
 
         $this->assertEquals([
-            'pnsdk' => PubNub::getSdkFullName(),
+            'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
             'timestamp' => '123',
-            'groups' => 'gr1,gr2',
+            'channel-group' => 'gr1,gr2',
             'signature' => PubNubUtil::signSha256(
                 $this->config_pam->getSecretKey(),
                 $this->config_pam->getSubscribeKey() . "\n" . $this->config_pam->getPublishKey() . "\n" .
                 "audit\n" . PubNubUtil::preparePamParams([
                     "timestamp" => "123",
-                    "groups" => "gr1,gr2",
+                    "channel-group" => "gr1,gr2",
                     "pnsdk" => PubNub::getSdkFullName(),
                     "uuid" => $this->pubnub_pam->getConfiguration()->getUuid()])
             )
