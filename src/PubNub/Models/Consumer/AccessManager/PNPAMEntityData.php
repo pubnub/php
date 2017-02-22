@@ -56,7 +56,7 @@ abstract class PNPAMEntityData
             }
         }
 
-        return static($name, $r, $w, $m, $ttl);
+        return new static($name, $constructedAuthKeys, $r, $w, $m, $ttl);
     }
 
     /**
@@ -68,7 +68,7 @@ abstract class PNPAMEntityData
     }
 
     /**
-     * @return array
+     * @return PNAccessManagerKeyData[]
      */
     public function getAuthKeys()
     {

@@ -33,4 +33,5 @@ class PNOperationType
     const PNGetState = 20;
     const PNAccessManagerAudit = 21;
     const PNAccessManagerGrant = 22;
+    const PNAccessManagerRevoke = 23;
 }

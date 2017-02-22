@@ -95,6 +95,65 @@ abstract class Endpoint
     }
 
     /**
+     * @return array
+     */
+    protected function defaultParams()
+    {
+        $params = [];
+        $config = $this->pubnub->getConfiguration();
+
+        $params['pnsdk'] = "PubNub-PHP/" . $this->pubnub->getSdkVersion();
+        $params['uuid'] = $config->getUuid();
+
+        // TODO: check for instance identifier
+        // TODO: check for request identifier
+
+        if ($this->isAuthRequired() && $config->getAuthKey()) {
+            $params['auth'] = $config->getAuthKey();
+        }
+
+        return $params;
+    }
+
+    /**
+     * Params build flow: signed <- custom <- default
+     *
+     * @return array
+     */
+    protected function buildParams()
+    {
+        $params = array_merge($this->customParams(), $this->defaultParams());
+        $config = $this->pubnub->getConfiguration();
+
+        if ($config->getSecretKey()) {
+            $params['timestamp'] = (string) $this->pubnub->timestamp();
+            $signedInput = $config->getSubscribeKey() . "\n" . $config->getPublishKey() . "\n";
+
+            if ($this->getOperationType() == PNOperationType::PNAccessManagerGrant ||
+                $this->getOperationType() == PNOperationType::PNAccessManagerRevoke) {
+                $signedInput .= "grant\n";
+            } else if ($this->getOperationType() === PNOperationType::PNAccessManagerAudit) {
+                $signedInput .= "audit\n";
+            } else {
+                $signedInput .= $this->buildPath();
+            }
+
+            $signedInput .= PubNubUtil::preparePamParams($params);
+
+            $params['signature'] = PubNubUtil::signSha256(
+                $this->pubnub->getConfiguration()->getSecretKey(),
+                $signedInput
+            );
+
+        }
+
+        $params['pnsdk'] = PubNubUtil::urlEncode($params['pnsdk']);
+        // TODO: publish meta should be encoded here
+        // TODO: pnsdk should be reassigned here
+        return $params;
+    }
+
+    /**
      * Return a Result only.
      * Errors are thrown explicitly, so catch them with try/catch block
      *
@@ -144,49 +203,6 @@ abstract class Endpoint
         }
 
         return $this->envelope;
-    }
-
-    /**
-     * Params build flow: signed <- custom <- default
-     *
-     * @return array
-     */
-    protected function buildParams()
-    {
-        $params = array_merge($this->customParams(), $this->defaultParams());
-        $config = $this->pubnub->getConfiguration();
-
-        // TODO: assign default params here
-        if ($this->isAuthRequired() && !empty($config->getAuthKey())) {
-            $params['auth'] = $config->getAuthKey();
-        }
-
-        if ($config->getSecretKey()) {
-            $params['timestamp'] = (string) $this->pubnub->timestamp();
-            $signedInput = $config->getSubscribeKey() . "\n" . $config->getPublishKey() . "\n";
-
-            // TODO: add revoke
-            if ($this->getOperationType() == PNOperationType::PNAccessManagerGrant ||
-                $this->getOperationType() == PNOperationType::PNAccessManagerGrant) {
-                $signedInput .= "grant\n";
-            } else if ($this->getOperationType() === PNOperationType::PNAccessManagerAudit) {
-                $signedInput .= "audit\n";
-            } else {
-                $signedInput .= $this->buildPath();
-            }
-
-            $signedInput .= PubNubUtil::preparePamParams($params);
-
-            $params['signature'] = PubNubUtil::signSha256(
-                $this->pubnub->getConfiguration()->getSecretKey(),
-                $signedInput
-            );
-
-        }
-
-        // TODO: publish meta should be encoded here
-        // TODO: pnsdk should be reassigned here
-        return $params;
     }
 
     /**
@@ -287,26 +303,6 @@ abstract class Endpoint
                 $this->createStatus($statusCategory, $request->body, $responseInfo, $exception)
             );
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function defaultParams()
-    {
-        $params = [];
-
-        $params['pnsdk'] = "PubNub-PHP/" . $this->pubnub->getSdkVersion();
-        $params['uuid'] = $this->pubnub->getConfiguration()->getUuid();
-
-        // TODO: check for instance identifier
-        // TODO: check for request identifier
-
-        if ($this->isAuthRequired() && $this->pubnub->getConfiguration()->getAuthKey()) {
-            $params['auth'] = $this->pubnub->getConfiguration()->getAuthKey();
-        }
-
-        return $params;
     }
 
     /**

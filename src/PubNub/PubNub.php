@@ -3,7 +3,9 @@
 namespace PubNub;
 
 use PubNub\Builders\SubscribeBuilder;
+use PubNub\Endpoints\Access\Audit;
 use PubNub\Endpoints\Access\Grant;
+use PubNub\Endpoints\Access\Revoke;
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
@@ -57,6 +59,16 @@ class PubNub
     public function grant()
     {
         return new Grant($this);
+    }
+
+    public function audit()
+    {
+        return new Audit($this);
+    }
+
+    public function revoke()
+    {
+        return new Revoke($this);
     }
 
     public function addChannelToChannelGroup()

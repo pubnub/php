@@ -95,8 +95,27 @@ class PNAccessManagerAbstractResult
             }
         }
 
-        if (array_key_exists('channel', $jsonInput)) {
-            foreach ($jsonInput['auths'] as $channelName => $value) {
+        if (array_key_exists('channel-groups', $jsonInput)) {
+            if (is_string($jsonInput['channel-groups'])) {
+                $groupName = $jsonInput['channel-groups'];
+                $constructedAuthKeys = [];
+
+                foreach ($jsonInput['auths'] as $authKeyName => $value) {
+                    $constructedAuthKeys[$authKeyName] = PNAccessManagerKeyData::fromJson($value);
+                }
+
+                $constructedGroups[$groupName] = PNAccessManagerChannelGroupData::fromJson($groupName, $constructedAuthKeys);
+            }
+
+            if (PubNubUtil::isAssoc($jsonInput['channel-groups'])) {
+                foreach ($jsonInput['channel-groups'] as $groupName => $value) {
+                    $constructedGroups[$groupName] = PNAccessManagerChannelGroupData::fromJson($groupName, $value);
+                }
+            }
+        }
+
+        if (array_key_exists('channels', $jsonInput)) {
+            foreach ($jsonInput['channels'] as $channelName => $value) {
                 $constructedChannels[$channelName] = PNAccessManagerChannelData::fromJson($channelName, $value);
             }
         }
@@ -138,7 +157,7 @@ class PNAccessManagerAbstractResult
     }
 
     /**
-     * @return array
+     * @return PNAccessManagerChannelData[]
      */
     public function getChannels()
     {
@@ -146,7 +165,7 @@ class PNAccessManagerAbstractResult
     }
 
     /**
-     * @return array
+     * @return PNAccessManagerChannelGroupData[]
      */
     public function getChannelGroups()
     {
