@@ -10,6 +10,7 @@ use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
+use PubNub\Endpoints\History;
 use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
@@ -54,6 +55,11 @@ class PubNub
     public function subscribe()
     {
         return new SubscribeBuilder($this->subscriptionManager);
+    }
+
+    public function history()
+    {
+        return new History($this);
     }
 
     public function grant()

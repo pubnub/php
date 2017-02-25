@@ -48,7 +48,7 @@ class PublishTest extends \PubNubTestCase
      */
     private function assertSuccessPublishGet($publish, $message)
     {
-        $this->assertSuccess($publish->setChannel('blah')->setMessage($message));
+        $this->assertSuccess($publish->channel('blah')->message($message));
     }
 
     /**
@@ -57,7 +57,7 @@ class PublishTest extends \PubNubTestCase
      */
     private function assertSuccessPublishPost($publish, $message)
     {
-        $this->assertSuccess($publish->setChannel('blah')->setUsePost(true)->setMessage($message));
+        $this->assertSuccess($publish->channel('blah')->setUsePost(true)->message($message));
     }
 
     public function testPublishMixedViaGet()
@@ -102,7 +102,7 @@ class PublishTest extends \PubNubTestCase
 
     public function xtestPublishWithMeta()
     {
-        $this->assertSuccess($this->pubnub->publish()->setChannel('blah')->setMessage('hey')
+        $this->assertSuccess($this->pubnub->publish()->channel('blah')->message('hey')
             ->setMeta([
                 'a' => 2,
                 'b' => 'qwer'
@@ -111,7 +111,7 @@ class PublishTest extends \PubNubTestCase
 
     public function testPublishDoNotStore()
     {
-        $this->assertSuccess($this->pubnub->publish()->setChannel('blah')->setMessage('hey')->setShouldStore(true));
+        $this->assertSuccess($this->pubnub->publish()->channel('blah')->message('hey')->setShouldStore(true));
     }
 
     public function testServerSideErrorSync()
@@ -124,7 +124,7 @@ class PublishTest extends \PubNubTestCase
 
         $pubnub = new PubNub($pnconf);
 
-        $pubnub->publish()->setChannel('blah')->setMessage('hey')->sync();
+        $pubnub->publish()->channel('blah')->message('hey')->sync();
     }
 
     public function testServerSideErrorEnvelope()
@@ -134,7 +134,7 @@ class PublishTest extends \PubNubTestCase
 
         $pubnub = new PubNub($pnconf);
 
-        $envelope = $pubnub->publish()->setChannel('blah')->setMessage('hey')->envelope();
+        $envelope = $pubnub->publish()->channel('blah')->message('hey')->envelope();
 
         $this->assertNull($envelope->getResult());
         $this->assertEquals(400, $envelope->getStatus()->getStatusCode());

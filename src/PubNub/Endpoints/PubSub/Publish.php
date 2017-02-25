@@ -53,7 +53,7 @@ class Publish extends Endpoint
      * @param mixed $message
      * @return $this
      */
-    public function setMessage($message)
+    public function message($message)
     {
         $this->message = $message;
 
@@ -64,7 +64,7 @@ class Publish extends Endpoint
      * @param string $channel
      * @return $this
      */
-    public function setChannel($channel)
+    public function channel($channel)
     {
         $this->channel = $channel;
 
@@ -189,11 +189,14 @@ class Publish extends Endpoint
                 0
             );
         } else {
-            $stringifiedMessage = PubNubUtil::urlWrite($this->message);
+            $stringifiedMessage = PubNubUtil::writeValueAsString($this->message);
 
             if ($this->pubnub->getConfiguration()->isAesEnabled()) {
-                $stringifiedMessage = $this->pubnub->getConfiguration()->getCrypto()->encrypt($stringifiedMessage);
+                $stringifiedMessage = "\"" .
+                    $this->pubnub->getConfiguration()->getCrypto()->encrypt($stringifiedMessage) . "\"";
             }
+
+            $stringifiedMessage = PubNubUtil::urlEncode($stringifiedMessage);
 
             return sprintf(
                 static::GET_PATH,

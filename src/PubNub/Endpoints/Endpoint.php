@@ -135,7 +135,7 @@ abstract class Endpoint
             } else if ($this->getOperationType() === PNOperationType::PNAccessManagerAudit) {
                 $signedInput .= "audit\n";
             } else {
-                $signedInput .= $this->buildPath();
+                $signedInput .= $this->buildPath() . "\n";
             }
 
             $signedInput .= PubNubUtil::preparePamParams($params);

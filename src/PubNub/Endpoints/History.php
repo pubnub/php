@@ -6,9 +6,8 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\History\PNHistoryResult;
-use PubNub\Models\Consumer\PNTimeResult;
 use PubNub\PubNubUtil;
-use PubNubTestCase;
+
 
 class History extends Endpoint
 {
@@ -107,7 +106,8 @@ class History extends Endpoint
 
     public function validateChannel()
     {
-        if ($this->channel !== null || count(PubNubUtil::joinItems($this->channel)) === 0) {
+        if ($this->channel === null || strlen($this->channel) === 0) {
+            print_r(strlen($this->channel));
             throw new PubNubValidationException("Channel missing");
         }
     }
@@ -118,12 +118,21 @@ class History extends Endpoint
      */
     protected function createResponse($json)
     {
-        return PNHistoryResult::fromJson(
-            $json,
-            $this->pubnub->getConfiguration()->getCrypto(),
-            $this->includeTimetoken,
-            $this->pubnub->getConfiguration()->getCipherKey()
-        );
+        try {
+            return PNHistoryResult::fromJson(
+                $json,
+                $this->pubnub->getConfiguration()->getCryptoSafe(),
+                $this->includeTimetoken,
+                $this->pubnub->getConfiguration()->getCipherKey()
+            );
+        } catch (PubNubValidationException $e) {
+            return PNHistoryResult::fromJson(
+                $json,
+                null,
+                $this->includeTimetoken,
+                null
+            );
+        }
     }
 
     /**
@@ -171,7 +180,10 @@ class History extends Endpoint
      */
     protected function buildPath()
     {
-        return sprintf(static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), PubNubUtil::urlEncode($this->channel));
+        return sprintf(
+            static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
+            PubNubUtil::urlEncode($this->channel)
+        );
     }
 
     /**

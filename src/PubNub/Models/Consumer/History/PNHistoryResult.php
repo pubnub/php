@@ -4,12 +4,27 @@ namespace PubNub\Models\Consumer\History;
 
 use PubNub\PubNubUtil;
 
+/**
+ * Class PNHistoryResult
+ * @package PubNub\Models\Consumer\History
+ */
 class PNHistoryResult
 {
+    /** @var  PNHistoryItemResult[] */
     private $messages;
+
+    /** @var  int */
     private $startTimetoken;
+
+    /** @var  int */
     private $endTimetoken;
 
+    /**
+     * PNHistoryResult constructor.
+     * @param PNHistoryItemResult[] $messages
+     * @param int $startTimetoken
+     * @param int $endTimetoken
+     */
     public function __construct($messages, $startTimetoken, $endTimetoken)
     {
         $this->messages = $messages;
@@ -22,6 +37,7 @@ class PNHistoryResult
         return sprintf("History result for range %s..%s", $this->startTimetoken, $this->endTimetoken);
     }
 
+    // TODO: $cipher refactoring
     public static function fromJson($jsonInput, $crypto, $includeTTOption = false, $cipher = null)
     {
         $rawItems = $jsonInput[0];
@@ -39,10 +55,10 @@ class PNHistoryResult
             }
 
             if ($cipher !== null) {
-                $message->decrypt($cipher);
+                $message->decrypt();
             }
 
-            array_push($messages, $message);
+            $messages[] = $message;
         }
 
         return new PNHistoryResult(
@@ -50,5 +66,29 @@ class PNHistoryResult
             $startTimetoken,
             $endTimetoken
         );
+    }
+
+    /**
+     * @return PNHistoryItemResult[]
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStartTimetoken()
+    {
+        return $this->startTimetoken;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEndTimetoken()
+    {
+        return $this->endTimetoken;
     }
 }

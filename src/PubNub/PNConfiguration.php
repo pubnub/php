@@ -2,6 +2,8 @@
 
 namespace PubNub;
 
+use PubNub\Exceptions\PubNubValidationException;
+
 class PNConfiguration
 {
     /** @var  string Subscribe key provided by PubNub */
@@ -217,11 +219,22 @@ class PNConfiguration
     public function getCrypto()
     {
         if (!$this->crypto) {
-            // TODO: raise with comprehensive description
-            throw new \Exception("You should set up either a cipher key or a crypto instance before");
+            throw new PubNubValidationException("You should set up either a cipher key or a crypto instance before");
         }
 
         return $this->crypto;
+    }
+
+    /**
+     * @return null|PubNubCryptoCore
+     */
+    public function getCryptoSafe()
+    {
+        try {
+            return $this->getCrypto();
+        } catch (PubNubValidationException $e) {
+            return null;
+        }
     }
 
     /**

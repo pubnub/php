@@ -13,6 +13,8 @@ abstract class PubNubTestCase extends TestCase
     const SUBSCRIBE_KEY_PAM = "sub-c-7ba2ac4c-4836-11e6-85a4-0619f8945a4f";
     const SECRET_KEY_PAM = "sec-c-MGFkMjQxYjMtNTUxZC00YzE3LWFiZGYtNzUwMjdjNmM3NDhk";
 
+    const CIPHER_KEY = "enigma";
+
     /** @var Pubnub pubnub */
     protected $pubnub;
 
@@ -42,6 +44,7 @@ abstract class PubNubTestCase extends TestCase
         $this->config_enc = new PNConfiguration();
         $this->config_enc->setSubscribeKey(static::SUBSCRIBE_KEY);
         $this->config_enc->setPublishKey(static::PUBLISH_KEY);
+        $this->config_enc->setCipherKey(static::CIPHER_KEY);
 
         $this->config_pam = new PNConfiguration();
         $this->config_pam->setSubscribeKey(static::SUBSCRIBE_KEY_PAM);

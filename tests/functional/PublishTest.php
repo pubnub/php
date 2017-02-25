@@ -21,7 +21,7 @@ class PublishTest extends \PubNubTestCase
         $publish = new Publish($pubnub);
 
         try {
-            $publish->setChannel("blah")->sync();
+            $publish->channel("blah")->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubValidationException$exception) {
             $this->assertEquals("Message Missing", $exception->getMessage());
@@ -34,7 +34,7 @@ class PublishTest extends \PubNubTestCase
         $publish = new Publish($pubnub);
 
         try {
-            $publish->setMessage("blah")->sync();
+            $publish->message("blah")->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubValidationException $exception) {
             $this->assertEquals("Channel Missing", $exception->getMessage());
@@ -44,7 +44,7 @@ class PublishTest extends \PubNubTestCase
     public function testNonSerializable()
     {
         try {
-            $this->pubnub->publish()->setMessage(["key" => "\xB1\x31"])->setChannel('ch')->sync();
+            $this->pubnub->publish()->message(["key" => "\xB1\x31"])->channel('ch')->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubBuildRequestException $exception) {
             $this->assertEquals("Value serialization error: Malformed UTF-8 characters, possibly incorrectly encoded",
@@ -60,8 +60,8 @@ class PublishTest extends \PubNubTestCase
         $encodedMessage = PubNubUtil::urlWrite($message);
 
         $publish = $this->pubnub->publish();
-        $publish->setChannel($channel);
-        $publish->setMessage($message);
+        $publish->channel($channel);
+        $publish->message($message);
 
         if ($usePost) {
             $publish->setUsePost(true);
@@ -132,8 +132,8 @@ class PublishTest extends \PubNubTestCase
         $meta = ['m1', 'm2'];
 
         $publish = $this->pubnub->publish();
-        $publish->setChannel($channel);
-        $publish->setMessage($message);
+        $publish->channel($channel);
+        $publish->message($message);
         $publish->setMeta($meta);
 
         $this->assertEquals(
@@ -173,8 +173,8 @@ class PublishTest extends \PubNubTestCase
         $encodedMessage = PubNubUtil::urlWrite($message);
 
         $publish = $this->pubnub->publish();
-        $publish->setChannel($channel);
-        $publish->setMessage($message);
+        $publish->channel($channel);
+        $publish->message($message);
         $publish->setShouldStore(true);
 
         $this->assertEquals(
@@ -214,8 +214,8 @@ class PublishTest extends \PubNubTestCase
         $encodedMessage = PubNubUtil::urlWrite($message);
 
         $publish = $this->pubnub->publish();
-        $publish->setChannel($channel);
-        $publish->setMessage($message);
+        $publish->channel($channel);
+        $publish->message($message);
         $publish->setShouldStore(false);
 
         $this->assertEquals(
@@ -256,8 +256,8 @@ class PublishTest extends \PubNubTestCase
         $encodedMessage = PubNubUtil::urlWrite($message);
 
         $publish = $this->pubnub->publish();
-        $publish->setChannel($channel);
-        $publish->setMessage($message);
+        $publish->channel($channel);
+        $publish->message($message);
 
         $this->assertEquals(
             sprintf(
@@ -285,7 +285,7 @@ class PublishTest extends \PubNubTestCase
         );
     }
 
-    public function xtestPublishWithCipher()
+    public function testPublishWithCipher()
     {
         $channel = 'ch';
         $message = ['hi', 'hi2', 'hi3'];
@@ -295,8 +295,8 @@ class PublishTest extends \PubNubTestCase
         $r->setAccessible(true);
 
         $publish = $this->pubnub->publish();
-        $publish->setChannel($channel);
-        $publish->setMessage($message);
+        $publish->channel($channel);
+        $publish->message($message);
 
         $this->assertEquals(
             sprintf(
@@ -304,7 +304,9 @@ class PublishTest extends \PubNubTestCase
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
-                "%22FQyKoIWWm7oN27zKyoU0bpjpgx49JxD04EI%2F0a8rg%2Fo%3D%22"
+                // NOTICE: php doesn't add spaces to stringified object,
+                // so encoded string not equal ones in python or javascript
+                "%22eErTQPTE1fuozhUTkDjKE08LPAz4N1fg%2Fp9RNVUF52w%3D%22"
             ),
             $r->invoke($publish)
         );

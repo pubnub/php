@@ -2,15 +2,26 @@
 
 namespace PubNub\Models\Consumer\History;
 
-use PubNub\PubNubCrypto;
-use PubNub\PubNubUtil;
+use PubNub\PubNubCryptoCore;
+
 
 class PNHistoryItemResult
 {
+    /** @var  string */
     private $entry;
+
+    /** @var  PubNubCryptoCore */
     private $crypto;
+
+    /** @var int */
     private $timetoken;
 
+    /**
+     * PNHistoryItemResult constructor.
+     * @param string $entry
+     * @param PubNubCryptoCore $crypto
+     * @param int $timetoken
+     */
     public function __construct($entry, $crypto, $timetoken = null)
     {
         $this->entry = $entry;
@@ -20,12 +31,29 @@ class PNHistoryItemResult
 
     public function __toString()
     {
-        return sprintf("History item with tt: %s and content: %s", $this->timetoken, $this->entry);
+        return sprintf("History item with tt: %s and content: %s", $this->getTimetoken(), $this->getEntry());
     }
 
 
-    public function decrypt($cipherKey)
+    public function decrypt()
     {
-        $this->entry = new PubNubCrypto($cipherKey, $this->entry);
+        $this->entry = $this->crypto->decrypt($this->entry);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getEntry()
+    {
+        return $this->entry;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimetoken()
+    {
+        return $this->timetoken;
     }
 }
