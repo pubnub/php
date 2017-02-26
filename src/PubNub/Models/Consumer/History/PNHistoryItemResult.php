@@ -34,12 +34,10 @@ class PNHistoryItemResult
         return sprintf("History item with tt: %s and content: %s", $this->getTimetoken(), $this->getEntry());
     }
 
-
     public function decrypt()
     {
         $this->entry = $this->crypto->decrypt($this->entry);
     }
-
 
     /**
      * @return string

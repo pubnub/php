@@ -1,8 +1,10 @@
 <?php
+namespace Tests\Functional;
 
 use PubNub\Endpoints\History;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
+use PubNubTestCase;
 
 class HistoryTest extends PubNubTestCase
 {
