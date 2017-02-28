@@ -95,6 +95,18 @@ abstract class Endpoint
     }
 
     /**
+     * @param string[]|string $channels
+     * @param string[]|string $groups
+     * @throws PubNubValidationException
+     */
+    protected function validateChannelGroups($channels, $groups)
+    {
+        if (count($channels) === 0 && count($groups) === 0) {
+            throw new PubNubValidationException("Channel or group missing");
+        }
+    }
+
+    /**
      * @return array
      */
     protected function defaultParams()
