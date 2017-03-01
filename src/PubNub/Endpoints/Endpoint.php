@@ -156,7 +156,11 @@ abstract class Endpoint
                 $this->pubnub->getConfiguration()->getSecretKey(),
                 $signedInput
             );
+        }
 
+        if ($this->getOperationType() == PNOperationType::PNSetStateOperation
+            && array_key_exists('state', $this->customParams())) {
+            $params['state'] = PubNubUtil::urlEncode($params['state']);
         }
 
         $params['pnsdk'] = PubNubUtil::urlEncode($params['pnsdk']);

@@ -14,13 +14,13 @@ class SetState extends Endpoint
 
     protected $subscriptionManager = null;
 
-    /** @var array */
-    protected $state = null;
+    /** @var string[] */
+    protected $state = [];
 
-    /** @var array  */
+    /** @var string[] */
     protected $channels = [];
 
-    /** @var array  */
+    /** @var string[] */
     protected $groups = [];
 
     /**
@@ -44,10 +44,13 @@ class SetState extends Endpoint
 
     /**
      * @param string[]|string $groups
+     * @return $this
      */
     public function groups($groups)
     {
         $this->groups = PubNubUtil::extendArray($this->groups, $groups);
+
+        return $this;
     }
 
     /**
@@ -102,9 +105,9 @@ class SetState extends Endpoint
 //            ));
 //        }
 
-        $params = [
-            'state' => PubNubUtil::writeValueAsString($this->groups)
-        ];
+        $params = [];
+
+        $params['state'] = PubNubUtil::writeValueAsString($this->state);
 
         if (count($this->groups) > 0) {
             $params['channel-group'] = PubNubUtil::joinItems($this->groups);
@@ -119,7 +122,7 @@ class SetState extends Endpoint
     public function buildPath()
     {
         return sprintf(
-            GetState::PATH,
+            static::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             PubNubUtil::joinChannels($this->channels),
             $this->pubnub->getConfiguration()->getUuid()
