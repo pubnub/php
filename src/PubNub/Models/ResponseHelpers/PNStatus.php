@@ -60,10 +60,14 @@ class PNStatus
 
     /**
      * @param PubNubException $exception
+     * @return $this
      */
     public function setException($exception)
     {
         $this->exception = $exception;
+        $this->exception->setStatus($this);
+
+        return $this;
     }
 
     /**
@@ -75,11 +79,14 @@ class PNStatus
     }
 
     /**
-     * @param PNStatusCategory $category
+     * @param int $category PNStatusCategory
+     * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
+
+        return $this;
     }
 
     /**

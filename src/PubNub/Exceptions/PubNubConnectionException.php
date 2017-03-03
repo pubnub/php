@@ -3,6 +3,8 @@
 namespace PubNub\Exceptions;
 
 
+use PubNub\Models\ResponseHelpers\PNStatus;
+
 class PubNubConnectionException extends PubNubException
 {
     /** @var  \Exception */
@@ -18,9 +20,12 @@ class PubNubConnectionException extends PubNubException
 
     /**
      * @param \Exception $originalException
+     * @return $this
      */
     public function setOriginalException($originalException)
     {
         $this->originalException = $originalException;
+
+        return $this;
     }
 }

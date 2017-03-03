@@ -222,6 +222,16 @@ class Publish extends Endpoint
         return $response;
     }
 
+    protected function getRequestTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+    }
+
+    protected function getConnectTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
     protected function getOperationType()
     {
         return PNOperationType::PNPublishOperation;

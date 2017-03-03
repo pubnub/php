@@ -63,6 +63,16 @@ abstract class Endpoint
     abstract protected function customParams();
 
     /**
+     * @return int
+     */
+    abstract protected function getRequestTimeout();
+
+    /**
+     * @return int
+     */
+    abstract protected function getConnectTimeout();
+
+    /**
      * @return string PNHttpMethod
      */
     abstract protected function httpMethod();
@@ -222,6 +232,18 @@ abstract class Endpoint
     }
 
     /**
+     * @return array
+     */
+    protected function requestOptions() {
+        $options = [
+            'timeout' => $this->getRequestTimeout(),
+            'connect_timeout' => $this->getConnectTimeout()
+        ];
+
+        return $options;
+    }
+
+    /**
      * @return PNEnvelope
      */
     protected function invokeRequest()
@@ -235,7 +257,7 @@ abstract class Endpoint
         );
         $data = $this->buildData();
         $type = \Requests::GET;
-        $options = [];
+        $options = $this->requestOptions();
 
         if ($this->httpMethod() == PNHttpMethod::POST) {
             $type = \Requests::POST;
@@ -253,6 +275,14 @@ abstract class Endpoint
                 null,
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
+        } catch (\Requests_Exception_Transport_cURL  $e) {
+            // TODO: build exception
+            return new PNEnvelope($e->getData(), $this->createStatus(
+                $statusCategory,
+                null,
+                null,
+                (new PubNubConnectionException())->setOriginalException($e)
+            ));
         } catch (\Requests_Exception_HTTP $e) {
             // TODO: build exception
             return new PNEnvelope($e->getData(), $this->createStatus(
@@ -262,6 +292,16 @@ abstract class Endpoint
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
         } catch (Requests_Exception $e) {
+            if ($e->getType() === 'curlerror' && strpos($e->getMessage(), "cURL error 28") === 0) {
+                $statusCategory = PNStatusCategory::PNTimeoutCategory;
+            }
+            return new PNEnvelope(null, $this->createStatus(
+                $statusCategory,
+                null,
+                null,
+                (new PubNubConnectionException())->setOriginalException($e)
+            ));
+        } catch (\Exception $e) {
             // TODO: build exception
             return new PNEnvelope($e->getData(), $this->createStatus(
                 $statusCategory,

@@ -6,6 +6,10 @@ use PubNub\Exceptions\PubNubValidationException;
 
 class PNConfiguration
 {
+    const DEFAULT_NON_SUBSCRIBE_REQUEST_TIMEOUT = 10;
+    const DEFAULT_SUBSCRIBE_TIMEOUT = 310;
+    const DEFAULT_CONNECT_TIMEOUT = 10;
+
     /** @var  string Subscribe key provided by PubNub */
     private $subscribeKey;
 
@@ -34,10 +38,23 @@ class PNConfiguration
     private $filterExpression;
 
     /** @var int */
-    protected $nonSubscribeRequestTimeout = 10;
+    protected $nonSubscribeRequestTimeout;
 
     /** @var int */
-    protected $connectedTimeout = 5;
+    protected $connectTimeout;
+
+    /** @var  int */
+    protected $subscribeTimeout;
+
+    /**
+     * PNConfiguration constructor.
+     */
+    public function __construct()
+    {
+        $this->nonSubscribeRequestTimeout = static::DEFAULT_NON_SUBSCRIBE_REQUEST_TIMEOUT;
+        $this->connectTimeout = static::DEFAULT_CONNECT_TIMEOUT;
+        $this->subscribeTimeout = static::DEFAULT_SUBSCRIBE_TIMEOUT;
+    }
 
     /**
      * Already configured PNConfiguration object with demo/demo as publish/subscribe keys.
@@ -125,9 +142,17 @@ class PNConfiguration
     /**
      * @return int
      */
+    public function getSubscribeTimeout()
+    {
+        return $this->subscribeTimeout;
+    }
+
+    /**
+     * @return int
+     */
     public function getConnectTimeout()
     {
-        return $this->connectedTimeout;
+        return $this->connectTimeout;
     }
 
     /**
@@ -267,4 +292,27 @@ class PNConfiguration
         return $this;
     }
 
+    /**
+     * @param int $nonSubscribeRequestTimeout
+     */
+    public function setNonSubscribeRequestTimeout($nonSubscribeRequestTimeout)
+    {
+        $this->nonSubscribeRequestTimeout = $nonSubscribeRequestTimeout;
+    }
+
+    /**
+     * @param int $connectTimeout
+     */
+    public function setConnectTimeout($connectTimeout)
+    {
+        $this->connectTimeout = $connectTimeout;
+    }
+
+    /**
+     * @param int $subscribeTimeout
+     */
+    public function setSubscribeTimeout($subscribeTimeout)
+    {
+        $this->subscribeTimeout = $subscribeTimeout;
+    }
 }

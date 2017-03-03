@@ -9,6 +9,7 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PNPublishResult;
+use PubNub\Models\Consumer\PubSub\SubscribeEnvelope;
 use PubNub\PubNubException;
 use PubNub\PubNubUtil;
 
@@ -46,7 +47,7 @@ class Subscribe extends Endpoint
      * @param string|array $ch
      * @return $this
      */
-    public function setChannels($ch)
+    public function channels($ch)
     {
         $this->channels = PubNubUtil::extendArray($this->channels, $ch);
 
@@ -57,7 +58,7 @@ class Subscribe extends Endpoint
      * @param string|array $cgs
      * @return $this
      */
-    public function setChannelGroups($cgs)
+    public function groups($cgs)
     {
         $this->channelGroups = PubNubUtil::extendArray($this->channelGroups, $cgs);
 
@@ -108,9 +109,14 @@ class Subscribe extends Endpoint
         return $this;
     }
 
+    public function getChannel()
+    {
+
+    }
+
     protected function validateParams()
     {
-        if (!(count($this->channels) && count($this->channelGroups))) {
+        if (count($this->channels) && count($this->channelGroups)) {
             throw new PubNubValidationException("At least one channel or channel group should be specified");
         }
 
@@ -159,15 +165,11 @@ class Subscribe extends Endpoint
 
     /**
      * @param array $json Decoded json
-     * @return PNPublishResult
+     * @return SubscribeEnvelope
      */
     protected function createResponse($json)
     {
-//        $timetoken = (int) $json[2];
-//
-//        $response = new PNPublishResult($timetoken);
-//
-//        return $response;
+        return SubscribeEnvelope::fromJson($json);
     }
 
     protected function getOperationType()
@@ -180,9 +182,16 @@ class Subscribe extends Endpoint
         return true;
     }
 
-    /**
-     * @return string
-     */
+    protected function getRequestTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getSubscribeTimeout();
+    }
+
+    protected function getConnectTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
     protected function httpMethod()
     {
         return PNHttpMethod::GET;

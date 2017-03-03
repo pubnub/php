@@ -2,6 +2,8 @@
 
 namespace PubNub\Exceptions;
 
+use PubNub\Models\ResponseHelpers\PNStatus;
+
 /**
  * Class PubNubException
  * @package PubNub\Exceptions
@@ -14,4 +16,25 @@ namespace PubNub\Exceptions;
  */
 abstract class PubNubException extends \Exception
 {
+    /** @var  PNStatus */
+
+    private $status;
+    /**
+     * @return PNStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param PNStatus $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
 }

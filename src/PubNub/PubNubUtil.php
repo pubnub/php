@@ -207,4 +207,19 @@ class PubNubUtil
 
         return array_keys($arr) !== range(0, count($arr) -1 );
     }
+
+    /**
+     * Tests if given string ends with the specified suffix.
+     *
+     * @param string $string
+     * @param string $suffix
+     * @return bool
+     */
+    public static function stringEndsWith($string, $suffix)
+    {
+        $str_len = strlen($string);
+        $suffix_len = strlen($suffix);
+        if ($suffix_len > $str_len) return false;
+        return substr_compare($string, $suffix, $str_len - $suffix_len, $suffix_len) === 0;
+    }
 }

@@ -125,7 +125,7 @@ class HereNow extends Endpoint
 
     /**
      * @param array $json Decoded json
-     * @return mixed
+     * @return PNHereNowResult
      */
     protected function createResponse($json)
     {
