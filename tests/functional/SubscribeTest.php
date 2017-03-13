@@ -33,7 +33,7 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubSingleChannel()
     {
-        $this->sub->setChannels("ch");
+        $this->sub->channels("ch");
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), "ch"),
@@ -50,7 +50,7 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubMultipleChannelsUsingList()
     {
-        $this->sub->setChannels(["ch1", "ch2", "ch3"]);
+        $this->sub->channels(["ch1", "ch2", "ch3"]);
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), "ch1,ch2,ch3"),
@@ -67,7 +67,7 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubMultipleChannelsUsingString()
     {
-        $this->sub->setChannels("ch1,ch2,ch3");
+        $this->sub->channels("ch1,ch2,ch3");
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), "ch1,ch2,ch3"),
@@ -84,7 +84,7 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubMultipleGroupsUsingList()
     {
-        $this->sub->setChannelGroups(["cg1", "cg2", "cg3"]);
+        $this->sub->groups(["cg1", "cg2", "cg3"]);
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), ","),
@@ -102,7 +102,7 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubMultipleGroupsUsingString()
     {
-        $this->sub->setChannelGroups("cg1,cg2,cg3");
+        $this->sub->groups("cg1,cg2,cg3");
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), ","),
@@ -120,8 +120,8 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubMixed()
     {
-        $this->sub->setChannels("ch1");
-        $this->sub->setChannelGroups("cg1,cg2,cg3");
+        $this->sub->channels("ch1");
+        $this->sub->groups("cg1,cg2,cg3");
         $this->sub->setFilterExpression("blah");
         $this->sub->setRegion("us-east-1");
         $this->sub->setTimetoken(123);

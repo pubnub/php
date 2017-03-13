@@ -5,12 +5,14 @@ namespace PubNub\Managers;
 
 use PNPresenceEventResult;
 use PubNub\Builders\DTO\SubscribeOperation;
+use PubNub\Builders\DTO\UnsubscribeOperation;
 use PubNub\Callbacks\SubscribeCallback;
+use PubNub\Endpoints\Presence\Leave;
 use PubNub\Endpoints\Presence\Server\PresenceEnvelope;
-use PubNub\Endpoints\Presence\SubscribeMessage;
+use PubNub\Exceptions\PubNubUnsubscribeException;
+use PubNub\Models\Server\SubscribeMessage;
 use PubNub\Endpoints\PubSub\Subscribe;
 use PubNub\Enums\PNStatusCategory;
-use PubNub\Exceptions\Internal\PubNubSubscriptionLoopBreak;
 use PubNub\Exceptions\PubNubConnectionException;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
@@ -69,7 +71,6 @@ class SubscriptionManager
                     ->setFilterExpression($this->pubnub->getConfiguration()->getFilterExpression())
                     ->sync();
             } catch (PubNubConnectionException $e) {
-                // TODO: continue if timeout
                 if ($e->getStatus()->getCategory() === PNStatusCategory::PNTimeoutCategory) {
                     continue;
                 }
@@ -87,12 +88,17 @@ class SubscriptionManager
             }
             // TODO Handle connect event
 
-            print_r($result);
-
             if (!$this->subscriptionStatusAnnounced) {
                 $pnStatus = (new PNStatus())->setCategory(PNStatusCategory::PNConnectedCategory);
 
-                $this->listenerManager->announceStatus($pnStatus);
+                try {
+                    $this->listenerManager->announceStatus($pnStatus);
+                } catch (PubNubUnsubscribeException $e) {
+                    $this->adaptUnsubscribeBuilder($e->getUnsubscribeOperation($this), false);
+                    break;
+                }
+
+                $this->subscriptionStatusAnnounced = true;
             }
 
             if (!$result->isEmpty()) {
@@ -100,14 +106,37 @@ class SubscriptionManager
                     foreach ($result->getMessages() as $message) {
                         $this->processIncomingPayload($message);
                     }
-                } catch (PubNubSubscriptionLoopBreak $e) {
-                    // TODO: announce status
+                } catch (PubNubUnsubscribeException $e) {
+                    $this->adaptUnsubscribeBuilder($e->getUnsubscribeOperation($this));
                     break;
                 }
             }
 
             $this->timetoken = (int) $result->getMetadata()->getTimetoken();
             $this->region = (int) $result->getMetadata()->getRegion();
+        }
+    }
+
+    /**
+     * @param UnsubscribeOperation $operation
+     * @param bool $announceStatus
+     */
+    public function adaptUnsubscribeBuilder(UnsubscribeOperation $operation, $announceStatus = true)
+    {
+        $leave = (new Leave($this->pubnub))
+            ->channels($operation->getChannels())
+            ->groups($operation->getChannelGroups());
+
+        $this->subscriptionState->adaptUnsubscribeBuilder($operation);
+
+        $this->subscriptionStatusAnnounced = false;
+
+        $leave->sync();
+
+        if ($announceStatus) {
+            $pnStatus = (new PNStatus())->setCategory(PNStatusCategory::PNDisconnectedCategory);
+
+            $this->listenerManager->announceStatus($pnStatus);
         }
     }
 
@@ -151,6 +180,7 @@ class SubscriptionManager
 
     /**
      * @param SubscribeMessage $message
+     * @throws PubNubUnsubscribeException
      */
     protected function processIncomingPayload($message)
     {
@@ -210,12 +240,17 @@ class SubscriptionManager
     }
 
     /**
-     * @param array $message
+     * @param mixed $message
+     * @return mixed
      */
-    protected function processMessage(array $message)
+    protected function processMessage($message)
     {
-        $output = null;
+        $this->pubnub->getConfiguration()->setCipherKey(null);
 
-        return $output;
+        if ($this->pubnub->getConfiguration()->getCipherKey() === null) {
+            return $message;
+        } else {
+            return $this->pubnub->getConfiguration()->getCryptoSafe()->decrypt($message);
+        }
     }
 }

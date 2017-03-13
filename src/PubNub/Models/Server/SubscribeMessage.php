@@ -1,9 +1,9 @@
 <?php
 
-namespace PubNub\Endpoints\Presence;
+namespace PubNub\Models\Server;
 
 
-use PubNub\Endpoints\Presence\Server\PublishMetadata;
+use PubNub\Models\Server\PublishMetadata;
 
 class SubscribeMessage
 {
@@ -33,7 +33,6 @@ class SubscribeMessage
 
     /** @var  PublishMetadata */
     private $publishMetaData;
-
 
     /**
      * @param array $jsonInput

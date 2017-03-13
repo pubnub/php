@@ -263,6 +263,8 @@ abstract class Endpoint
             $type = \Requests::POST;
         }
 
+        // TODO: log url
+//        print_r("URL: " . $url . "\n");
         $statusCategory = PNStatusCategory::PNUnknownCategory;
 
         try {

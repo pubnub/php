@@ -28,7 +28,7 @@ class PNMessageResult
      * @param int $timetoken
      * @param string $publisher
      */
-    public function __construct(array $message, $channel, $subscription, $timetoken, $publisher)
+    public function __construct($message, $channel, $subscription, $timetoken, $publisher)
     {
         $this->message = $message;
         $this->channel = $channel;

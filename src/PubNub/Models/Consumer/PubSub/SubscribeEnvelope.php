@@ -3,7 +3,7 @@
 namespace PubNub\Models\Consumer\PubSub;
 
 
-use PubNub\Endpoints\Presence\SubscribeMessage;
+use PubNub\Models\Server\SubscribeMessage;
 use PubNub\Models\Server\SubscribeMetadata;
 
 class SubscribeEnvelope
@@ -35,7 +35,7 @@ class SubscribeEnvelope
         $metadata = SubscribeMetadata::fromJson($json['t']);
 
         try {
-            foreach ($json['messages'] as $message) {
+            foreach ($json['m'] as $message) {
                 $messages[] = SubscribeMessage::fromJson($message);
             }
         } catch (\Exception $e) {

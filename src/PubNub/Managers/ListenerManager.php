@@ -4,6 +4,8 @@ namespace PubNub\Managers;
 
 
 use PubNub\Callbacks\SubscribeCallback;
+use PubNub\Exceptions\PubNubSubscriptionLoopBreak;
+use PubNub\Models\Consumer\PubSub\PNMessageResult;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 
@@ -46,6 +48,7 @@ class ListenerManager
 
     /**
      * @param PNStatus $status
+     * @throws PubNubSubscriptionLoopBreak
      */
     public function announceStatus($status)
     {
@@ -55,8 +58,8 @@ class ListenerManager
     }
 
     /**
-     * // TODO: add PNMessageResult type
-     * @param $message
+     * @param PNMessageResult $message
+     * @throws PubNubSubscriptionLoopBreak
      */
     public function announceMessage($message)
     {
@@ -68,6 +71,7 @@ class ListenerManager
     /**
      * // TODO: add PNPresenceEventResult.php type
      * @param $presence
+     * @throws PubNubSubscriptionLoopBreak
      */
     public function announcePresence($presence)
     {

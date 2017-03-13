@@ -4,6 +4,7 @@ namespace PubNub\Managers;
 
 
 use PubNub\Builders\DTO\SubscribeOperation;
+use PubNub\Builders\DTO\UnsubscribeOperation;
 use PubNub\Models\SubscriptionItem;
 use PubNub\PubNub;
 
@@ -30,7 +31,7 @@ class StateManager
     /**
      * @param SubscribeOperation $subscribeOperation
      */
-    public function adaptSubscribeBuilder($subscribeOperation)
+    public function adaptSubscribeBuilder(SubscribeOperation $subscribeOperation)
     {
         foreach ($subscribeOperation->getChannels() as $channel) {
             $subscriptionItem = (new SubscriptionItem())->setName($channel);
@@ -51,6 +52,27 @@ class StateManager
                 $this->presenceChannelGroups[$channelGroup] = $subscriptionItem;
             }
         }
+    }
+
+    public function adaptUnsubscribeBuilder(UnsubscribeOperation $unsubscribeOperation)
+    {
+        foreach ($unsubscribeOperation->getChannels() as $channel) {
+            unset($this->channels[$channel]);
+            unset($this->presenceChannels[$channel]);
+        }
+
+        foreach ($unsubscribeOperation->getChannelGroups() as $group) {
+            unset($this->channelGroups[$group]);
+            unset($this->presenceChannelGroups[$group]);
+        }
+    }
+
+    public function isEmpty()
+    {
+        return (empty($this->channels)
+            && empty($this->channelGroups)
+            && empty($this->presenceChannels)
+            && empty($this->presenceChannelGroups));
     }
 
     /**

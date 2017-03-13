@@ -73,5 +73,4 @@ class HistoryExposed extends History
     {
         return parent::buildParams();
     }
-
 }

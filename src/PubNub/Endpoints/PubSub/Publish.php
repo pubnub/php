@@ -32,14 +32,14 @@ class Publish extends Endpoint
     /** @var  array $meta data */
     private $meta;
 
-    // TODO: not sure what it means
-    private $replicate;
-
     /** @var  int $ttl in storage (min ?)*/
     private $ttl;
 
     /** @var  int $sequenceCounter */
-    private $sequenceCounter;
+    private $sequenceCounter = 0;
+
+    /** @var  bool */
+    private $replicate = true;
 
     /**
      * @return PNPublishResult

@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNub\Endpoints\Presence\Server;
+namespace PubNub\Models\Server;
 
 
 class PublishMetadata
