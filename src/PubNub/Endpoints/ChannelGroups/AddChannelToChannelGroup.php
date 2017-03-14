@@ -93,7 +93,7 @@ class AddChannelToChannelGroup extends Endpoint
     protected function buildPath()
     {
         return sprintf(
-            self::PATH,
+            static::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             $this->group
         );
@@ -117,5 +117,21 @@ class AddChannelToChannelGroup extends Endpoint
     protected function httpMethod()
     {
         return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getRequestTimeout()
+    {
+        // TODO: Implement getRequestTimeout() method.
+    }
+
+    /**
+     * @return int
+     */
+    protected function getConnectTimeout()
+    {
+        // TODO: Implement getConnectTimeout() method.
     }
 }

@@ -13,13 +13,13 @@ class Leave extends Endpoint
     const PATH = "/v2/presence/sub-key/%s/channel/%s/leave";
 
     /** @var array */
-    private $channels = [];
+    protected $channels = [];
 
     /** @var array */
-    private $groups = [];
+    protected $groups = [];
 
     /**
-     * @param $channels string
+     * @param $channels string|string[]
      * @return $this
      */
     public function channels($channels)
@@ -30,14 +30,31 @@ class Leave extends Endpoint
     }
 
     /**
-     * @param $groups
+     * @param $groups string|string[]
      * @return $this
      */
     public function groups($groups)
     {
-        $this->groups = $groups;
+        $this->groups = PubNubUtil::extendArray($this->groups, $groups);
 
         return $this;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getChannels()
+    {
+        return $this->channels;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 
     public function getAffectedChannels()
@@ -97,6 +114,7 @@ class Leave extends Endpoint
      */
     protected function buildData()
     {
+        return null;
     }
 
     /**

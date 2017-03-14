@@ -245,9 +245,7 @@ class SubscriptionManager
      */
     protected function processMessage($message)
     {
-        $this->pubnub->getConfiguration()->setCipherKey(null);
-
-        if ($this->pubnub->getConfiguration()->getCipherKey() === null) {
+        if ($this->pubnub->getConfiguration()->getCryptoSafe() === null) {
             return $message;
         } else {
             return $this->pubnub->getConfiguration()->getCryptoSafe()->decrypt($message);

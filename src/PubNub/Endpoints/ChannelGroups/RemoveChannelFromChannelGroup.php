@@ -112,4 +112,20 @@ class RemoveChannelFromChannelGroup extends Endpoint
     {
         return PNHttpMethod::GET;
     }
+
+    /**
+     * @return int
+     */
+    protected function getRequestTimeout()
+    {
+        // TODO: Implement getRequestTimeout() method.
+    }
+
+    /**
+     * @return int
+     */
+    protected function getConnectTimeout()
+    {
+        // TODO: Implement getConnectTimeout() method.
+    }
 }
