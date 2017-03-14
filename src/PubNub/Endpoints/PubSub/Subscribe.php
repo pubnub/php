@@ -116,7 +116,7 @@ class Subscribe extends Endpoint
 
     protected function validateParams()
     {
-        if (count($this->channels) && count($this->channelGroups)) {
+        if (count($this->channels) === 0 && count($this->channelGroups) === 0) {
             throw new PubNubValidationException("At least one channel or channel group should be specified");
         }
 

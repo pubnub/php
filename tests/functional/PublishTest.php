@@ -85,8 +85,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => null,
-                "norep" => 'true'
+                "seqn" => 0,
             ],
             $r->invoke($publish)
         );
@@ -154,8 +153,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => null,
-                "norep" => 'true',
+                "seqn" => 0,
                 "meta" => '%5B%22m1%22%2C%22m2%22%5D'
             ],
             $r->invoke($publish)
@@ -195,8 +193,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => null,
-                "norep" => 'true',
+                "seqn" => 0,
                 "store" => '1',
             ],
             $r->invoke($publish)
@@ -236,8 +233,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => null,
-                "norep" => 'true',
+                "seqn" => 0,
                 "store" => '0',
             ],
             $r->invoke($publish)
@@ -277,8 +273,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => null,
-                "norep" => 'true',
+                "seqn" => 0,
                 "auth" => 'my_auth',
             ],
             $r->invoke($publish)
@@ -318,8 +313,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => null,
-                "norep" => 'true'
+                "seqn" => 0,
             ],
             $r->invoke($publish)
         );

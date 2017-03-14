@@ -128,4 +128,20 @@ class EndpointImplementation extends Endpoint
     {
         // TODO: Implement buildData() method.
     }
+
+    /**
+     * @return int
+     */
+    protected function getRequestTimeout()
+    {
+        // TODO: Implement getRequestTimeout() method.
+    }
+
+    /**
+     * @return int
+     */
+    protected function getConnectTimeout()
+    {
+        // TODO: Implement getConnectTimeout() method.
+    }
 }

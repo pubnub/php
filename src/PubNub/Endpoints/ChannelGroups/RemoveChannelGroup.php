@@ -98,4 +98,20 @@ class RemoveChannelGroup extends Endpoint
     {
         return PNHttpMethod::GET;
     }
+
+    /**
+     * @return int
+     */
+    protected function getRequestTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+    }
+
+    /**
+     * @return int
+     */
+    protected function getConnectTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
 }
