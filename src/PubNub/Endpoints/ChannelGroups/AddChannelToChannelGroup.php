@@ -124,7 +124,7 @@ class AddChannelToChannelGroup extends Endpoint
      */
     protected function getRequestTimeout()
     {
-        // TODO: Implement getRequestTimeout() method.
+        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
     }
 
     /**
@@ -132,6 +132,6 @@ class AddChannelToChannelGroup extends Endpoint
      */
     protected function getConnectTimeout()
     {
-        // TODO: Implement getConnectTimeout() method.
+        return $this->pubnub->getConfiguration()->getConnectTimeout();
     }
 }

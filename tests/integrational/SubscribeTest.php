@@ -13,7 +13,7 @@ use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 
-Requests::request("https://httpstatuses.com/200");
+//Requests::request("https://httpstatuses.com/200");
 
 const CHANNEL = 'ch1';
 const MESSAGE = 'hey';
@@ -51,9 +51,18 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testCGSubscribeUnsubscribe()
     {
-        $this->pubnub->addListener(new MySubscribeCGCallback($this->config));
+        $this->pubnub->addListener(new MySubscribeCallback($this->config));
         $this->pubnub->addChannelToChannelGroup()->channels(CHANNEL)->group(GROUP)->sync();
         $this->pubnub->subscribe()->channelGroups(GROUP)->execute();
+        $this->pubnub->removeChannelFromChannelGroup()->group(GROUP)->channels(CHANNEL)->sync();
+    }
+
+    public function testCGSubscribePublishUnsubscribe()
+    {
+        $this->pubnub->addListener(new MySubscribePublishCallback($this->config));
+        $this->pubnub->addChannelToChannelGroup()->channels(CHANNEL)->group(GROUP)->sync();
+        $this->pubnub->subscribe()->channelGroups(GROUP)->execute();
+        $this->pubnub->removeChannelFromChannelGroup()->group(GROUP)->channels(CHANNEL)->sync();
     }
 }
 
@@ -74,11 +83,7 @@ class MySubscribeCallback extends SubscribeCallback
     function status($pubnub, $status)
     {
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
-            $publishThread = new PublishThread($this->config);
-
-            $worker = new AutoloadingWorker();
-            $worker->stack($publishThread);
-            $worker->start();
+            throw new PubNubUnsubscribeException();
         }
     }
 
@@ -89,9 +94,6 @@ class MySubscribeCallback extends SubscribeCallback
      */
     function message($pubnub, $message)
     {
-        if ($message->getMessage() === MESSAGE) {
-            throw new PubNubUnsubscribeException();
-        }
     }
 
     function presence($pubnub, $presence)
@@ -141,37 +143,6 @@ class MySubscribePublishCallback extends SubscribeCallback
     {
     }
 }
-
-
-class MySubscribeCGCallback extends SubscribeCallback
-{
-    protected $config;
-
-    function __construct($config)
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * @param PubNub $pubnub
-     * @param PNStatus $status
-     */
-    function status($pubnub, $status)
-    {
-        if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
-            $pubnub->removeChannelFromChannelGroup()->group(GROUP)->channels(CHANNEL)->sync();
-        }
-    }
-
-    function message($pubnub, $message)
-    {
-    }
-
-    function presence($pubnub, $presence)
-    {
-    }
-}
-
 
 class PublishThread extends \Thread {
     /** @var  PNConfiguration */
