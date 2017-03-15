@@ -22,16 +22,6 @@ class PamTest extends PubNubTestCase
         $this->assertTrue($response->isWriteEnabled());
         $this->assertFalse($response->isManageEnabled());
 
-        /** @var  PNAccessManagerAuditResult $response */
-        $response = $this->pubnub_pam->audit()->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
-        $this->assertGreaterThanOrEqual(0, $response->getChannels());
-        $this->assertGreaterThanOrEqual(0, $response->getChannelGroups());
-        $this->assertTrue($response->isReadEnabled());
-        $this->assertTrue($response->isWriteEnabled());
-        $this->assertFalse($response->isManageEnabled());
-
         $response = $this->pubnub_pam->revoke()->sync();
 
         $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
@@ -59,14 +49,6 @@ class PamTest extends PubNubTestCase
         $this->assertTrue($response->getChannels()[$ch]->isReadEnabled());
         $this->assertTrue($response->getChannels()[$ch]->isWriteEnabled());
         $this->assertFalse($response->getChannels()[$ch]->isManageEnabled());
-
-        /** @var PNAccessManagerAuditResult $response */
-        $response = $this->pubnub_pam->audit()->channels($ch)->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
-        $this->assertTrue($response->getChannels()[$ch]->isReadEnabled());
-        $this->assertTrue($response->getChannels()[$ch]->isWriteEnabled());
-        $this->assertFalse($response->getChannels()[$ch]->isManageEnabled());
     }
 
     /**
@@ -85,14 +67,6 @@ class PamTest extends PubNubTestCase
             ->grant()->channels($ch)->write(true)->read(true)->authKeys($auth)->sync();
 
         $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
-        $this->assertTrue($response->getChannels()[$ch]->getAuthKeys()[$auth]->isReadEnabled());
-        $this->assertTrue($response->getChannels()[$ch]->getAuthKeys()[$auth]->isWriteEnabled());
-        $this->assertFalse($response->getChannels()[$ch]->getAuthKeys()[$auth]->isManageEnabled());
-
-        /** @var PNAccessManagerGrantResult $response */
-        $response = $this->pubnub_pam->audit()->channels($ch)->authKeys($auth)->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
         $this->assertTrue($response->getChannels()[$ch]->getAuthKeys()[$auth]->isReadEnabled());
         $this->assertTrue($response->getChannels()[$ch]->getAuthKeys()[$auth]->isWriteEnabled());
         $this->assertFalse($response->getChannels()[$ch]->getAuthKeys()[$auth]->isManageEnabled());
@@ -118,17 +92,6 @@ class PamTest extends PubNubTestCase
         $this->assertTrue($response->getChannels()[$ch2]->isReadEnabled());
         $this->assertTrue($response->getChannels()[$ch1]->isWriteEnabled());
         $this->assertTrue($response->getChannels()[$ch2]->isWriteEnabled());
-        $this->assertFalse($response->getChannels()[$ch1]->isManageEnabled());
-        $this->assertFalse($response->getChannels()[$ch2]->isManageEnabled());
-
-        /** @var PNAccessManagerAuditResult $response */
-        $response = $this->pubnub_pam->audit()->channels([$ch1, $ch2])->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
-        $this->assertTrue($response->getChannels()[$ch1]->isReadEnabled());
-        $this->assertTrue($response->getChannels()[$ch2]->isReadEnabled());
-        $this->assertTrue($response->getChannels()[$ch1]->isWriteEnabled());
-        $this->assertTrue($response->getChannels()[$ch1]->isWriteEnabled());
         $this->assertFalse($response->getChannels()[$ch1]->isManageEnabled());
         $this->assertFalse($response->getChannels()[$ch2]->isManageEnabled());
     }
@@ -160,20 +123,6 @@ class PamTest extends PubNubTestCase
         $this->assertTrue($response->getChannels()[$ch2]->getAuthKeys()[$auth]->isWriteEnabled());
         $this->assertFalse($response->getChannels()[$ch1]->getAuthKeys()[$auth]->isManageEnabled());
         $this->assertFalse($response->getChannels()[$ch2]->getAuthKeys()[$auth]->isManageEnabled());
-
-        /** @var PNAccessManagerAuditResult $response */
-        $response = $this->pubnub_pam
-            ->audit()
-            ->channels([$ch1, $ch2])
-            ->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
-        $this->assertTrue($response->getChannels()[$ch1]->getAuthKeys()[$auth]->isReadEnabled());
-        $this->assertTrue($response->getChannels()[$ch2]->getAuthKeys()[$auth]->isReadEnabled());
-        $this->assertTrue($response->getChannels()[$ch1]->getAuthKeys()[$auth]->isWriteEnabled());
-        $this->assertTrue($response->getChannels()[$ch1]->getAuthKeys()[$auth]->isWriteEnabled());
-        $this->assertFalse($response->getChannels()[$ch1]->getAuthKeys()[$auth]->isManageEnabled());
-        $this->assertFalse($response->getChannels()[$ch2]->getAuthKeys()[$auth]->isManageEnabled());
     }
 
     /**
@@ -195,18 +144,6 @@ class PamTest extends PubNubTestCase
             ->sync();
 
         $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
-        $this->assertEquals("channel-group", $response->getLevel());
-        $this->assertTrue($response->getChannelGroups()[$cg]->isReadEnabled());
-        $this->assertTrue($response->getChannelGroups()[$cg]->isWriteEnabled());
-        $this->assertFalse($response->getChannelGroups()[$cg]->isManageEnabled());
-
-        /** @var PNAccessManagerAuditResult $response */
-        $response = $this->pubnub_pam
-            ->audit()
-            ->channelGroups($cg)
-            ->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
         $this->assertEquals("channel-group", $response->getLevel());
         $this->assertTrue($response->getChannelGroups()[$cg]->isReadEnabled());
         $this->assertTrue($response->getChannelGroups()[$cg]->isWriteEnabled());
@@ -234,18 +171,6 @@ class PamTest extends PubNubTestCase
             ->sync();
 
         $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
-        $this->assertEquals("channel-group+auth", $response->getLevel());
-        $this->assertTrue($response->getChannelGroups()[$cg]->getAuthKeys()[$auth]->isReadEnabled());
-        $this->assertTrue($response->getChannelGroups()[$cg]->getAuthKeys()[$auth]->isWriteEnabled());
-        $this->assertFalse($response->getChannelGroups()[$cg]->getAuthKeys()[$auth]->isManageEnabled());
-
-        $response = $this->pubnub_pam
-            ->audit()
-            ->channelGroups($cg)
-            ->authKeys($auth)
-            ->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
         $this->assertEquals("channel-group+auth", $response->getLevel());
         $this->assertTrue($response->getChannelGroups()[$cg]->getAuthKeys()[$auth]->isReadEnabled());
         $this->assertTrue($response->getChannelGroups()[$cg]->getAuthKeys()[$auth]->isWriteEnabled());
@@ -279,21 +204,6 @@ class PamTest extends PubNubTestCase
         $this->assertTrue($response->getChannelGroups()[$gr2]->isWriteEnabled());
         $this->assertFalse($response->getChannelGroups()[$gr1]->isManageEnabled());
         $this->assertFalse($response->getChannelGroups()[$gr2]->isManageEnabled());
-
-        /** @var PNAccessManagerAuditResult $response */
-        $response = $this->pubnub_pam
-            ->audit()
-            ->channelGroups([$gr1, $gr2])
-            ->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
-        $this->assertEquals("channel-group", $response->getLevel());
-        $this->assertTrue($response->getChannelGroups()[$gr1]->isReadEnabled());
-        $this->assertTrue($response->getChannelGroups()[$gr2]->isReadEnabled());
-        $this->assertTrue($response->getChannelGroups()[$gr1]->isWriteEnabled());
-        $this->assertTrue($response->getChannelGroups()[$gr2]->isWriteEnabled());
-        $this->assertFalse($response->getChannelGroups()[$gr1]->isManageEnabled());
-        $this->assertFalse($response->getChannelGroups()[$gr2]->isManageEnabled());
     }
 
     /**
@@ -319,21 +229,6 @@ class PamTest extends PubNubTestCase
 
         $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
         $this->assertEquals("channel-group+auth", $response->getLevel());
-        $this->assertTrue($response->getChannelGroups()[$gr1]->getAuthKeys()[$auth]->isReadEnabled());
-        $this->assertTrue($response->getChannelGroups()[$gr2]->getAuthKeys()[$auth]->isReadEnabled());
-        $this->assertTrue($response->getChannelGroups()[$gr1]->getAuthKeys()[$auth]->isWriteEnabled());
-        $this->assertTrue($response->getChannelGroups()[$gr2]->getAuthKeys()[$auth]->isWriteEnabled());
-        $this->assertFalse($response->getChannelGroups()[$gr1]->getAuthKeys()[$auth]->isManageEnabled());
-        $this->assertFalse($response->getChannelGroups()[$gr2]->getAuthKeys()[$auth]->isManageEnabled());
-
-        /** @var PNAccessManagerAuditResult $response */
-        $response = $this->pubnub_pam
-            ->audit()
-            ->channelGroups([$gr1, $gr2])
-            ->sync();
-
-        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $response);
-        $this->assertEquals("channel-group", $response->getLevel());
         $this->assertTrue($response->getChannelGroups()[$gr1]->getAuthKeys()[$auth]->isReadEnabled());
         $this->assertTrue($response->getChannelGroups()[$gr2]->getAuthKeys()[$auth]->isReadEnabled());
         $this->assertTrue($response->getChannelGroups()[$gr1]->getAuthKeys()[$auth]->isWriteEnabled());
