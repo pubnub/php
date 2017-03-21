@@ -2,31 +2,19 @@
 
 namespace Tests\Integrational;
 
-require __DIR__ . '/../../vendor/autoload.php';
 
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubUnsubscribeException;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
 use PubNub\PNConfiguration;
-use Requests;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 
-//Requests::request("https://httpstatuses.com/200");
 
 const CHANNEL = 'ch1';
 const MESSAGE = 'hey';
 const GROUP = 'gr1';
-
-
-class AutoloadingWorker extends \Worker
-{
-    public function run()
-    {
-        require __DIR__ . '/../../src/autoloader.php';
-    }
-}
 
 
 class SubscribeTest extends \PubNubTestCase
@@ -121,9 +109,7 @@ class MySubscribePublishCallback extends SubscribeCallback
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
             $publishThread = new PublishThread($this->config, false);
 
-            $worker = new AutoloadingWorker();
-            $worker->stack($publishThread);
-            $worker->start();
+            $publishThread->start();
         }
     }
 
@@ -159,6 +145,7 @@ class PublishThread extends \Thread {
 
     public function run()
     {
+        require __DIR__ . '/../../src/autoloader.php';
         $pubnub = new PubNub($this->config);
 
         $pubnub->publish()->channel(CHANNEL)->message(MESSAGE)->sync();
