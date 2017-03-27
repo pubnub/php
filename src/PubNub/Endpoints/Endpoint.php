@@ -25,7 +25,7 @@ abstract class Endpoint
     /** @var  PNEnvelope */
     protected $envelope;
 
-    public function __construct($pubnubInstance)
+    public function __construct(PubNub $pubnubInstance)
     {
         $this->pubnub = $pubnubInstance;
     }
@@ -78,6 +78,9 @@ abstract class Endpoint
      */
     abstract protected function httpMethod();
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateSubscribeKey()
     {
         $subscribeKey = $this->pubnub->getConfiguration()->getSubscribeKey();
@@ -87,6 +90,9 @@ abstract class Endpoint
         }
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validatePublishKey()
     {
         $publishKey = $this->pubnub->getConfiguration()->getPublishKey();
@@ -96,6 +102,9 @@ abstract class Endpoint
         }
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateSecretKey()
     {
         $secretKey = $this->pubnub->getConfiguration()->getSecretKey();
@@ -384,10 +393,10 @@ abstract class Endpoint
      * @param int{PNStatusCategory::PNUnknownCategory..PNStatusCategory::PNRequestMessageCountExceededCategory} $category
      * @param $response
      * @param ResponseInfo $responseInfo
-     * @param PubNubException $exception
+     * @param PubNubException | null $exception
      * @return PNStatus
      */
-    private function createStatus($category, $response, $responseInfo, $exception)
+    private function createStatus($category, $response, ResponseInfo $responseInfo, $exception)
     {
         $pnStatus = new PNStatus();
 
