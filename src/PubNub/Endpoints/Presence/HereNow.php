@@ -124,6 +124,14 @@ class HereNow extends Endpoint
     }
 
     /**
+     * @return PNHereNowResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
      * @param array $json Decoded json
      * @return PNHereNowResult
      */

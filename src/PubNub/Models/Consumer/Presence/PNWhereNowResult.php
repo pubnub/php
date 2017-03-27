@@ -13,13 +13,22 @@ class PNWhereNowResult
         $this->channels = $channels;
     }
 
+    public function getChannels()
+    {
+        return $this->channels;
+    }
+
     public function __toString()
     {
         return sprintf("User is currently subscribed to %s", PubNubUtil::joinItems($this->channels));
     }
 
-    public static function fromJson($json)
+    /**
+     * @param array $payload
+     * @return PNWhereNowResult
+     */
+    public static function fromPayload(array $payload)
     {
-        return new PNWhereNowResult($json['payload']['channels']);
+        return new PNWhereNowResult($payload['channels']);
     }
 }

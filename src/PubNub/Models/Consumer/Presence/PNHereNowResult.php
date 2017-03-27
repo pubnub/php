@@ -10,6 +10,7 @@ class PNHereNowResult
 
     protected $totalOccupancy;
 
+    /** @var  PNHereNowChannelData[] */
     protected $channels;
 
     public function __construct($totalChannels, $totalOccupancy, $channels)
@@ -17,6 +18,24 @@ class PNHereNowResult
         $this->totalChannels = $totalChannels;
         $this->totalOccupancy = $totalOccupancy;
         $this->channels = $channels;
+    }
+
+    /**
+     * @return PNHereNowChannelData[]
+     */
+    public function getChannels()
+    {
+        return $this->channels;
+    }
+
+    public function getTotalChannels()
+    {
+        return $this->totalChannels;
+    }
+
+    public function getTotalOccupancy()
+    {
+        return $this->totalOccupancy;
     }
 
     public function __toString()
@@ -38,20 +57,20 @@ class PNHereNowResult
                 }
 
                 return new PNHereNowResult(
-                    (int)$jsonInput['total-channels'],
-                    (int)$jsonInput['total-occupancy'],
+                    (int) $jsonInput['total_channels'],
+                    (int) $jsonInput['total_occupancy'],
                     $channels
                 );
             } else if (count($channelNames) === 1) {
                 return new PNHereNowResult(
                     1,
-                    (int)$jsonInput['total-occupancy'],
+                    (int) $jsonInput['total_occupancy'],
                     [new PNHereNowChannelData($channelNames[0], 0, [])]
                 );
             } else {
                 return new PNHereNowResult(
-                    (int)$jsonInput['total-channels'],
-                    (int)$jsonInput['total-occupancy'],
+                    (int) $jsonInput['total_channels'],
+                    (int) $jsonInput['total_occupancy'],
                     []
                 );
             }
@@ -60,7 +79,7 @@ class PNHereNowResult
         } else if (array_key_exists('occupancy', $json) && (int)$json['occupancy']) {
             return new PNHereNowResult(
                 1,
-                (int)$json['occupancy'],
+                (int) $json['occupancy'],
                 [new PNHereNowChannelData($channelNames[0], 0, [])]
 
             );
@@ -73,14 +92,20 @@ class PNHereNowResult
                 if (is_string($user)) {
                     $occupants[] = (new PNHereNowOccupantsData($user, null));
                 } else {
-                    (array_key_exists('state', $user)) ? $state = $user['state'] : null;
-                    $occupants[] = (new PNHereNowOccupantsData($user['uuid'], $state));
+
+                    if (array_key_exists('state', $user)) {
+                        $state = $user['state'];
+                    } else {
+                        $state = null;
+                    }
+
+                    $occupants[] = new PNHereNowOccupantsData($user['uuid'], $state);
                 }
             }
 
             return new PNHereNowResult(
                 1,
-                (int)$json['occupancy'],
+                (int) $json['occupancy'],
                 [new PNHereNowChannelData(
                     $channelNames[0],
                     $json['occupancy'],

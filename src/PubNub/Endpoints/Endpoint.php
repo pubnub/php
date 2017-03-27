@@ -7,6 +7,7 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubException;
 use PubNub\Exceptions\PubNubConnectionException;
+use PubNub\Exceptions\PubNubResponseParsingException;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\ResponseHelpers\PNEnvelope;
@@ -305,7 +306,7 @@ abstract class Endpoint
             ));
         } catch (\Exception $e) {
             // TODO: build exception
-            return new PNEnvelope($e->getData(), $this->createStatus(
+            return new PNEnvelope(null, $this->createStatus(
                 $statusCategory,
                 null,
                 null,
@@ -339,6 +340,17 @@ abstract class Endpoint
         if ($request->status_code == 200) {
             $parsedJSON = json_decode($request->body, true, 512, JSON_OBJECT_AS_ARRAY);
 
+            if (json_last_error()) {
+                return new PNEnvelope(null, $this->createStatus(
+                    $statusCategory,
+                    $request->body,
+                    $responseInfo,
+                    (new PubNubResponseParsingException())
+                        ->setResponseString($request->body)
+                        ->setDescription(json_last_error_msg())
+                ));
+            }
+
             return new PNEnvelope($this->createResponse($parsedJSON),
                 $this->createStatus($statusCategory, $request->body, $responseInfo, null)
             );
@@ -355,6 +367,11 @@ abstract class Endpoint
             $exception = (new PubNubServerException())
                 ->setStatusCode($request->status_code)
                 ->setRawBody($request->body);
+
+            // NOTICE: 530 code is for testing purposes only
+            if ($request->status_code === 530) {
+                $exception->forceMessage($request->body);
+            }
 
             return new PNEnvelope(
                 null,
@@ -406,5 +423,18 @@ abstract class Endpoint
     protected function getAffectedChannelGroups()
     {
         return null;
+    }
+
+    /**
+     * @param $json
+     * @return array
+     * @throws PubNubResponseParsingException
+     */
+    protected static function fetchPayload($json) {
+        if (!array_key_exists('payload', $json)) {
+            throw (new PubNubResponseParsingException())->setDescription("No payload found in response");
+        } else {
+            return $json['payload'];
+        }
     }
 }

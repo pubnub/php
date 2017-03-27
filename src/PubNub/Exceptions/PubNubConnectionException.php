@@ -3,8 +3,6 @@
 namespace PubNub\Exceptions;
 
 
-use PubNub\Models\ResponseHelpers\PNStatus;
-
 class PubNubConnectionException extends PubNubException
 {
     /** @var  \Exception */

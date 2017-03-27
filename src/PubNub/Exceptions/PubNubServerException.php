@@ -26,6 +26,14 @@ class PubNubServerException extends PubNubException
     }
 
     /**
+     * @param string $message
+     */
+    public function forceMessage($message)
+    {
+        $this->message = $message;
+    }
+
+    /**
      * @return int
      */
     public function getStatusCode()

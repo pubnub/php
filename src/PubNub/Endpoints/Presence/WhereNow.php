@@ -23,7 +23,7 @@ class WhereNow extends Endpoint
 
     /**
      * @param $uuid
-     * @return string
+     * @return $this
      */
     public function uuid($uuid)
     {
@@ -72,12 +72,20 @@ class WhereNow extends Endpoint
     }
 
     /**
+     * @return PNWhereNowResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
      * @param array $json Decoded json
      * @return PNWhereNowResult
      */
     protected function createResponse($json)
     {
-        return PNWhereNowResult::fromJson($json);
+        return PNWhereNowResult::fromPayload(static::fetchPayload($json));
     }
 
 

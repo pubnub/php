@@ -17,6 +17,11 @@ const MESSAGE = 'hey';
 const GROUP = 'gr1';
 
 
+/**
+ * Class SubscribeTest
+ * @requires extension pthreads
+ * @package Tests\Integrational
+ */
 class SubscribeTest extends \PubNubTestCase
 {
     public function testSubscribeUnsubscribe()

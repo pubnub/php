@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
+use PubNub\PubNubUtil;
 
 abstract class PubNubTestCase extends TestCase
 {
@@ -33,6 +34,9 @@ abstract class PubNubTestCase extends TestCase
     /** @var PNConfiguration config */
     protected $config_pam;
 
+    /** @var  string */
+    protected $encodedSdkName;
+
     public function setUp()
     {
         parent::setUp();
@@ -54,6 +58,8 @@ abstract class PubNubTestCase extends TestCase
         $this->pubnub = new PubNub($this->config);
         $this->pubnub_enc = new PubNub($this->config_enc);
         $this->pubnub_pam = new PubNub($this->config_pam);
+
+        $this->encodedSdkName = PubNubUtil::urlEncode($this->pubnub->getSdkFullName());
     }
 
     protected static function setupVCR()
