@@ -347,7 +347,8 @@ abstract class Endpoint
         );
 
         if ($request->status_code == 200) {
-            $parsedJSON = json_decode($request->body, true, 512, JSON_OBJECT_AS_ARRAY);
+            // NOTICE: 1 == JSON_OBJECT_AS_ARRAY
+            $parsedJSON = json_decode($request->body, true, 512, 1);
 
             if (json_last_error()) {
                 return new PNEnvelope(null, $this->createStatus(
