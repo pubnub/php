@@ -115,6 +115,12 @@ class Stub
             }
         }
 
+        foreach ($this->query as $key => $value) {
+            if (!array_key_exists($key, $actualQuery)) {
+                return false;
+            }
+        }
+
         return true;
     }
 

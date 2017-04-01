@@ -38,6 +38,13 @@ class PNHistoryResult
     }
 
     // TODO: $cipher refactoring
+    /**
+     * @param $jsonInput
+     * @param $crypto
+     * @param bool $includeTTOption
+     * @param null $cipher
+     * @return PNHistoryResult
+     */
     public static function fromJson($jsonInput, $crypto, $includeTTOption = false, $cipher = null)
     {
         $rawItems = $jsonInput[0];
@@ -46,8 +53,8 @@ class PNHistoryResult
         $messages = [];
 
         foreach ($rawItems as $item) {
-            if (PubNubUtil::isAssoc($item) && in_array('timetoken', $item)
-                                           && in_array('message', $item)
+            if (PubNubUtil::isAssoc($item) && array_key_exists('timetoken', $item)
+                                           && array_key_exists('message', $item)
                                            && $includeTTOption) {
                 $message = new PNHistoryItemResult($item['message'], $crypto, $item['timetoken']);
             } else {

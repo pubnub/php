@@ -6,6 +6,7 @@ use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\Presence\PNSetStateResult;
 use PubNub\PubNubUtil;
 
 class SetState extends Endpoint
@@ -25,10 +26,13 @@ class SetState extends Endpoint
 
     /**
      * @param $state
+     * @return $this
      */
     public function state($state)
     {
         $this->state = $state;
+
+        return $this;
     }
 
     /**
@@ -46,7 +50,7 @@ class SetState extends Endpoint
      * @param string[]|string $groups
      * @return $this
      */
-    public function groups($groups)
+    public function channelGroups($groups)
     {
         $this->groups = PubNubUtil::extendArray($this->groups, $groups);
 
@@ -92,19 +96,18 @@ class SetState extends Endpoint
     }
 
     /**
+     * @return PNSetStateResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
      * @return array
      */
     protected function customParams()
     {
-        // TODO SubscriptionManager
-//        if ($this->subscriptionManager !== null) {
-//            $this->subscriptionManager->adaptStateBuilder(StateOperation(
-//                $this->channels,
-//                $this->groups,
-//                $this->state
-//            ));
-//        }
-
         $params = [];
 
         $params['state'] = PubNubUtil::writeValueAsString($this->state);
@@ -139,16 +142,15 @@ class SetState extends Endpoint
 
     /**
      * @param array $json Decoded json
-     * @return mixed
+     * @return PNSetStateResult|array
      */
     public function createResponse($json)
     {
-        if (array_key_exists('state', $json) && $json['status'] === 200) {
-            return new \PNSetStateResult($json['payload']);
+        if (array_key_exists('status', $json) && $json['status'] === 200) {
+            return new PNSetStateResult($json['payload']);
         } else {
             return $json;
         }
-
     }
 
     /**

@@ -13,7 +13,7 @@ class PNHistoryItemResult
     /** @var  PubNubCryptoCore */
     private $crypto;
 
-    /** @var int */
+    /** @var  int */
     private $timetoken;
 
     /**

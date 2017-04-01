@@ -325,15 +325,19 @@ abstract class Endpoint
 
         $url = parse_url($url);
         $query = [];
-        parse_str($url['query'], $query);
+
+        if (array_key_exists('query', $url)) {
+            parse_str($url['query'], $query);
+        }
+
         $uuid = null;
         $authKey = null;
 
-        if (key_exists('uuid', $query) && strlen($query['uuid']) > 0) {
+        if (array_key_exists('uuid', $query) && strlen($query['uuid']) > 0) {
             $uuid = $query['uuid'];
         }
 
-        if (key_exists('auth', $query) && strlen($query['auth']) > 0) {
+        if (array_key_exists('auth', $query) && strlen($query['auth']) > 0) {
             $uuid = $query['auth'];
         }
 

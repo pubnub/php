@@ -41,7 +41,7 @@ class GetStateTest extends PubNubTestCase
 
     public function testGetStateSingleGroup()
     {
-        $this->getState->groups("gr");
+        $this->getState->channelGroups("gr");
 
         $this->assertEquals(
             sprintf(

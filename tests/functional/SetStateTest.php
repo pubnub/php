@@ -53,7 +53,7 @@ class testSetState extends PubNubTestCase
 
     public function testSetStateSingleGroups()
     {
-        $this->setState->groups('gr')->state($this->state);
+        $this->setState->channelGroups('gr')->state($this->state);
 
         $this->assertEquals(
             sprintf(

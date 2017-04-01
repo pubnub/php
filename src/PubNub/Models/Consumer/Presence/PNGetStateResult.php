@@ -1,5 +1,8 @@
 <?php
 
+namespace PubNub\Models\Consumer\Presence;
+
+
 class PNGetStateResult
 {
     protected $channels;
@@ -7,6 +10,14 @@ class PNGetStateResult
     public function __construct($channels)
     {
         $this->channels = $channels;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getChannels()
+    {
+        return $this->channels;
     }
 
     public function __toString()

@@ -21,7 +21,7 @@ class PNHereNowChannelData
      * @param int $occupancy
      * @param PNHereNowOccupantsData[] $occupants
      */
-    public function __construct($channelName, $occupancy, array $occupants)
+    public function __construct($channelName, $occupancy, $occupants)
     {
         $this->channelName = $channelName;
         $this->occupancy = $occupancy;

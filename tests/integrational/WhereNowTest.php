@@ -99,6 +99,15 @@ class WhereNowTest extends PubNubTestCase
 
         $whereNow->sync();
     }
+
+    public function testSuperCall()
+    {
+        $uuid = 'test-where-now-php-uuid-.*|@#';
+
+        $result = $this->pubnub_pam->whereNow()->uuid($uuid)->sync();
+
+        $this->assertInternalType('array', $result->getChannels());
+    }
 }
 
 

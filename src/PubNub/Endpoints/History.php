@@ -5,6 +5,7 @@ namespace PubNub\Endpoints;
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\History\PNHistoryItemResult;
 use PubNub\Models\Consumer\History\PNHistoryResult;
 use PubNub\PubNubUtil;
 
@@ -184,6 +185,14 @@ class History extends Endpoint
             static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
             PubNubUtil::urlEncode($this->channel)
         );
+    }
+
+    /**
+     * @return PNHistoryResult
+     */
+    public function sync()
+    {
+        return parent::sync();
     }
 
     /**

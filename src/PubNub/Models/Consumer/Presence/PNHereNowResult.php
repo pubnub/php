@@ -6,8 +6,10 @@ use PubNub\PubNubUtil;
 
 class PNHereNowResult
 {
+    /** @var  int */
     protected $totalChannels;
 
+    /** @var  int */
     protected $totalOccupancy;
 
     /** @var  PNHereNowChannelData[] */
@@ -28,11 +30,17 @@ class PNHereNowResult
         return $this->channels;
     }
 
+    /**
+     * @return int
+     */
     public function getTotalChannels()
     {
         return $this->totalChannels;
     }
 
+    /**
+     * @return int
+     */
     public function getTotalOccupancy()
     {
         return $this->totalOccupancy;
@@ -76,7 +84,7 @@ class PNHereNowResult
             }
 
         /** empty */
-        } else if (array_key_exists('occupancy', $json) && (int)$json['occupancy']) {
+        } else if (array_key_exists('occupancy', $json) && (int)$json['occupancy'] === 0) {
             return new PNHereNowResult(
                 1,
                 (int) $json['occupancy'],

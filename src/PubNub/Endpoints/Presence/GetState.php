@@ -5,6 +5,7 @@ namespace PubNub\Endpoints\Presence;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Models\Consumer\Presence\PNGetStateResult;
 use PubNub\PubNubUtil;
 
 class GetState extends Endpoint
@@ -31,7 +32,7 @@ class GetState extends Endpoint
     /**
      * @param string[]|string $groups
      */
-    public function groups($groups)
+    public function channelGroups($groups)
     {
         $this->groups = PubNubUtil::extendArray($this->groups, $groups);
     }
@@ -114,7 +115,7 @@ class GetState extends Endpoint
             $channels = $json['payload']['channels'];
         }
 
-        return new \PNGetStateResult($channels);
+        return new PNGetStateResult($channels);
     }
 
     /**
