@@ -61,15 +61,4 @@ abstract class PubNubTestCase extends TestCase
 
         $this->encodedSdkName = PubNubUtil::urlEncode($this->pubnub->getSdkFullName());
     }
-
-    protected static function setupVCR()
-    {
-        $dir = realpath(dirname(__FILE__)) . "/fixtures";
-
-        if (!is_dir($dir)) {
-            mkdir($dir);
-        }
-
-        \VCR\VCR::configure()->setCassettePath($dir);
-    }
 }

@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests\Helpers;
+
+
 class Stub
 {
     const ANY = 'any value';
@@ -140,7 +143,6 @@ class Stub
     }
 }
 
-class StubException extends Exception
+class StubException extends \Exception
 {
-
 }

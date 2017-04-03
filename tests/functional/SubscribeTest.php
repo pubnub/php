@@ -84,7 +84,7 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubMultipleGroupsUsingList()
     {
-        $this->sub->groups(["cg1", "cg2", "cg3"]);
+        $this->sub->channelGroups(["cg1", "cg2", "cg3"]);
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), ","),
@@ -102,7 +102,7 @@ class SubscribeTest extends \PubNubTestCase
 
     public function testSubMultipleGroupsUsingString()
     {
-        $this->sub->groups("cg1,cg2,cg3");
+        $this->sub->channelGroups("cg1,cg2,cg3");
 
         $this->assertEquals(
             sprintf(Subscribe::PATH, $this->config->getSubscribeKey(), ","),
@@ -121,7 +121,7 @@ class SubscribeTest extends \PubNubTestCase
     public function testSubMixed()
     {
         $this->sub->channels("ch1");
-        $this->sub->groups("cg1,cg2,cg3");
+        $this->sub->channelGroups("cg1,cg2,cg3");
         $this->sub->setFilterExpression("blah");
         $this->sub->setRegion("us-east-1");
         $this->sub->setTimetoken(123);

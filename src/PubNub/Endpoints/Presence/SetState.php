@@ -9,13 +9,12 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNSetStateResult;
 use PubNub\PubNubUtil;
 
+
 class SetState extends Endpoint
 {
     const PATH = "/v2/presence/sub-key/%s/channel/%s/uuid/%s/data";
 
-    protected $subscriptionManager = null;
-
-    /** @var string[] */
+    /** @var array */
     protected $state = [];
 
     /** @var string[] */
@@ -25,7 +24,7 @@ class SetState extends Endpoint
     protected $groups = [];
 
     /**
-     * @param $state
+     * @param array $state
      * @return $this
      */
     public function state($state)
@@ -47,7 +46,7 @@ class SetState extends Endpoint
     }
 
     /**
-     * @param string[]|string $groups
+     * @param string|[]string $groups
      * @return $this
      */
     public function channelGroups($groups)
@@ -58,21 +57,8 @@ class SetState extends Endpoint
     }
 
     /**
-     * @return array
+     * @throws PubNubValidationException
      */
-    public function getChannels()
-    {
-        return $this->channels;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
     protected function validateParams()
     {
         $this->validateSubscribeKey();
@@ -93,14 +79,6 @@ class SetState extends Endpoint
     protected function buildData()
     {
         return null;
-    }
-
-    /**
-     * @return PNSetStateResult
-     */
-    public function sync()
-    {
-        return parent::sync();
     }
 
     /**
@@ -141,6 +119,14 @@ class SetState extends Endpoint
     }
 
     /**
+     * @return PNSetStateResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
      * @param array $json Decoded json
      * @return PNSetStateResult|array
      */
@@ -153,13 +139,6 @@ class SetState extends Endpoint
         }
     }
 
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNGetState;
-    }
 
     /**
      * @return bool
@@ -207,5 +186,21 @@ class SetState extends Endpoint
     protected function httpMethod()
     {
         return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNGetState;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "SetState";
     }
 }

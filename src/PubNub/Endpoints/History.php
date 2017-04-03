@@ -5,7 +5,6 @@ namespace PubNub\Endpoints;
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Exceptions\PubNubValidationException;
-use PubNub\Models\Consumer\History\PNHistoryItemResult;
 use PubNub\Models\Consumer\History\PNHistoryResult;
 use PubNub\PubNubUtil;
 
@@ -99,100 +98,16 @@ class History extends Endpoint
         return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     public function validateParams()
     {
         $this->validateSubscribeKey();
-        $this->validateChannel();
-    }
 
-    public function validateChannel()
-    {
         if ($this->channel === null || strlen($this->channel) === 0) {
-            print_r(strlen($this->channel));
             throw new PubNubValidationException("Channel missing");
         }
-    }
-
-    /**
-     * @param array $json Decoded json
-     * @return mixed
-     */
-    protected function createResponse($json)
-    {
-        try {
-            return PNHistoryResult::fromJson(
-                $json,
-                $this->pubnub->getConfiguration()->getCryptoSafe(),
-                $this->includeTimetoken,
-                $this->pubnub->getConfiguration()->getCipherKey()
-            );
-        } catch (PubNubValidationException $e) {
-            return PNHistoryResult::fromJson(
-                $json,
-                null,
-                $this->includeTimetoken,
-                null
-            );
-        }
-    }
-
-    /**
-     * @return int
-     */
-    public function getRequestTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
-    }
-
-    /**
-     * @return int
-     */
-    public function getConnectTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getConnectTimeout();
-    }
-
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNHistoryOperation;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return true;
-    }
-
-    /**
-     * @return null|string
-     */
-    protected function buildData()
-    {
-        return null;
-    }
-
-    /**
-     * @return string
-     */
-    protected function buildPath()
-    {
-        return sprintf(
-            static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
-            PubNubUtil::urlEncode($this->channel)
-        );
-    }
-
-    /**
-     * @return PNHistoryResult
-     */
-    public function sync()
-    {
-        return parent::sync();
     }
 
     /**
@@ -228,11 +143,93 @@ class History extends Endpoint
     }
 
     /**
+     * @return null
+     */
+    protected function buildData()
+    {
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    protected function buildPath()
+    {
+        return sprintf(
+            static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
+            PubNubUtil::urlEncode($this->channel)
+        );
+    }
+
+    /**
+     * @return PNHistoryResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
+     * @param array $json Decoded json
+     * @return PNHistoryResult
+     */
+    protected function createResponse($json)
+    {
+        try {
+            return PNHistoryResult::fromJson(
+                $json,
+                $this->pubnub->getConfiguration()->getCryptoSafe(),
+                $this->includeTimetoken,
+                $this->pubnub->getConfiguration()->getCipherKey()
+            );
+        } catch (PubNubValidationException $e) {
+            return PNHistoryResult::fromJson(
+                $json,
+                null,
+                $this->includeTimetoken,
+                null
+            );
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAuthRequired()
+    {
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRequestTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+    }
+
+    /**
+     * @return int
+     */
+    public function getConnectTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
+    /**
      * @return string PNHttpMethod
      */
     protected function httpMethod()
     {
         return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNHistoryOperation;
     }
 
     /**

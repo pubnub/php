@@ -23,7 +23,7 @@ class RemoveChannelFromChannelGroupTest extends \PubNubTestCase
     public function testValidatesChannelGroupsNotEmpty()
     {
         try {
-            $this->pubnub->removeChannelFromChannelGroup()->group("blah")->sync();
+            $this->pubnub->removeChannelFromChannelGroup()->channelGroup("blah")->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubValidationException$exception) {
             $this->assertEquals("Channels missing", $exception->getMessage());
@@ -34,7 +34,7 @@ class RemoveChannelFromChannelGroupTest extends \PubNubTestCase
     {
         $remove = new RemoveChannelChannelGroupExposed($this->pubnub);
 
-        $remove->channels("ch")->group("blah");
+        $remove->channels("ch")->channelGroup("blah");
 
         $this->assertEquals(
             sprintf(
@@ -60,7 +60,7 @@ class RemoveChannelFromChannelGroupTest extends \PubNubTestCase
     {
         $remove = new RemoveChannelChannelGroupExposed($this->pubnub);
 
-        $remove->channels(["ch1", "ch2", "ch3"])->group("blah");
+        $remove->channels(["ch1", "ch2", "ch3"])->channelGroup("blah");
 
         $this->assertEquals(
             sprintf(

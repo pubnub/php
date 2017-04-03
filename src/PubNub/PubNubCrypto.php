@@ -3,6 +3,8 @@
 namespace PubNub;
 
 
+use PubNub\Exceptions\PubNubResponseParsingException;
+
 class PubNubCrypto extends PubNubCryptoCore {
     public function encrypt($plainText) {
         $shaCipherKey = hash("sha256", $this->cipherKey);
@@ -16,9 +18,12 @@ class PubNubCrypto extends PubNubCryptoCore {
     }
 
     public function decrypt($cipherText) {
-        if (gettype($cipherText) != "string"){
-            // TODO: raise error
-            return "DECRYPTION_ERROR";
+        if (gettype($cipherText) !== "string"){
+            throw new PubNubResponseParsingException("Decryption error: message is not a string");
+        }
+
+        if (strlen($cipherText) === 0){
+            throw new PubNubResponseParsingException("Decryption error: message is empty");
         }
 
         $shaCipherKey = hash("sha256", $this->cipherKey);
@@ -28,9 +33,7 @@ class PubNubCrypto extends PubNubCryptoCore {
             $this->initializationVector);
 
         if ($decrypted === false) {
-            // TODO: log a string
-            openssl_error_string();
-            return "";
+            throw new PubNubResponseParsingException("Decryption error: " . openssl_error_string());
         }
 
         $unPadded = $this->unPadPKCS7($decrypted, 16);

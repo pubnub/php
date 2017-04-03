@@ -2,26 +2,26 @@
 
 namespace PubNub\Endpoints;
 
-
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Models\Consumer\PNTimeResult;
+
 
 class Time extends Endpoint
 {
     const TIME_PATH = "/time/0";
 
-    /**
-     * @return PNTimeResult
-     */
-    public function sync()
-    {
-        return parent::sync();
-    }
-
     protected function validateParams()
     {
         // nothing to validate
+    }
+
+    /**
+     * @return array
+     */
+    protected function customParams()
+    {
+        return $this->defaultParams();
     }
 
     /**
@@ -32,12 +32,17 @@ class Time extends Endpoint
         return null;
     }
 
-    /**
-     * @return array
-     */
-    protected function customParams()
+    protected function buildPath()
     {
-        return $this->defaultParams();
+        return static::TIME_PATH;
+    }
+
+    /**
+     * @return PNTimeResult
+     */
+    public function sync()
+    {
+        return parent::sync();
     }
 
     /**
@@ -53,24 +58,12 @@ class Time extends Endpoint
         return $response;
     }
 
-    protected function getOperationType()
-    {
-        return PNOperationType::PNTimeOperation;
-    }
-
+    /**
+     * @return bool
+     */
     protected function isAuthRequired()
     {
         return false;
-    }
-
-    protected function buildPath()
-    {
-        return static::TIME_PATH;
-    }
-
-    protected function httpMethod()
-    {
-        return PNHttpMethod::GET;
     }
 
     /**
@@ -87,5 +80,29 @@ class Time extends Endpoint
     protected function getConnectTimeout()
     {
         return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
+    /**
+     * @return string
+     */
+    protected function httpMethod()
+    {
+        return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNTimeOperation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return "Time";
     }
 }

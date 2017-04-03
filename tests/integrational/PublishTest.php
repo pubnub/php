@@ -3,22 +3,15 @@
 namespace Tests\Integrational;
 
 use PubNub\Endpoints\PubSub\Publish;
-use PubNub\Exceptions\PubNubException;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\Models\ResponseHelpers\PNEnvelope;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
-use VCR\VCR;
 
 
 class PublishTest extends \PubNubTestCase
 {
-    public static function setUpBeforeClass()
-    {
-//        static::setupVCR();
-    }
-
     /**
      * @param Publish $publish
      */
@@ -100,6 +93,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
     }
 
+    // TODO: fix test
     public function xtestPublishWithMeta()
     {
         $this->assertSuccess($this->pubnub->publish()->channel('blah')->message('hey')

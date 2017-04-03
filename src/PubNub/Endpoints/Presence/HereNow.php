@@ -5,9 +5,10 @@ namespace PubNub\Endpoints\Presence;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNHereNowResult;
 use PubNub\PubNubUtil;
-use PubNub\PubNub;
+
 
 class HereNow extends Endpoint
 {
@@ -26,11 +27,8 @@ class HereNow extends Endpoint
     /**  @var bool */
     protected $includeUuids = true;
 
-    /**  @var  PubNub */
-    protected $pubnub;
-
     /**
-     * @param string|array $channels
+     * @param string|string[] $channels
      * @return $this
      */
     public function channels($channels)
@@ -41,7 +39,7 @@ class HereNow extends Endpoint
     }
 
     /**
-     * @param string|array $channelGroups
+     * @param string|string[] $channelGroups
      * @return $this
      */
     public function channelGroups($channelGroups)
@@ -73,17 +71,12 @@ class HereNow extends Endpoint
         return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateParams()
     {
         $this->validateSubscribeKey();
-    }
-
-    /**
-     * @return null|string
-     */
-    protected function buildData()
-    {
-        return null;
     }
 
     /**
@@ -106,6 +99,14 @@ class HereNow extends Endpoint
         }
 
         return $params;
+    }
+
+    /**
+     * @return null
+     */
+    protected function buildData()
+    {
+        return null;
     }
 
     /**
@@ -141,27 +142,11 @@ class HereNow extends Endpoint
     }
 
     /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNHereNowOperation;
-    }
-
-    /**
      * @return bool
      */
     protected function isAuthRequired()
     {
         return true;
-    }
-
-    /**
-     * @return string PNHttpMethod
-     */
-    protected function httpMethod()
-    {
-        return PNHttpMethod::GET;
     }
 
     /**
@@ -178,5 +163,29 @@ class HereNow extends Endpoint
     protected function getConnectTimeout()
     {
         return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
+    /**
+     * @return string PNHttpMethod
+     */
+    protected function httpMethod()
+    {
+        return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNHereNowOperation;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "HereNow";
     }
 }

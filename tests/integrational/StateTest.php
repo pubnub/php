@@ -1,12 +1,15 @@
 <?php
 
+namespace Tests\Integrational;
+
 use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\SetState;
 use PubNub\PubNub;
 use PubNub\Exceptions\PubNubException;
+use Tests\Helpers\StubTransport;
 
 
-class StateTest extends PubNubTestCase
+class StateTest extends \PubNubTestCase
 {
     public function testApplyStateForChannel()
     {

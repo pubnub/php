@@ -2,12 +2,13 @@
 
 namespace PubNub\Endpoints\Access;
 
-
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerAuditResult;
 use PubNub\PubNubUtil;
+
 
 class Audit extends Endpoint
 {
@@ -57,7 +58,7 @@ class Audit extends Endpoint
     }
 
     /**
-     * @param string[]|string $channelsGroups
+     * @param string|string[] $channelsGroups
      * @return $this
      */
     public function channelGroups($channelsGroups)
@@ -67,6 +68,9 @@ class Audit extends Endpoint
         return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateParams()
     {
         $this->validateSubscribeKey();
@@ -82,8 +86,16 @@ class Audit extends Endpoint
     }
 
     /**
+     * @return PNAccessManagerAuditResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
      * @param array $json Decoded json
-     * @return mixed
+     * @return PNAccessManagerAuditResult
      */
     protected function createResponse($json)
     {

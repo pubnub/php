@@ -70,7 +70,7 @@ class LeaveTest extends PubNubTestCase
 
     public function testLeaveSingleGroup()
     {
-        $this->leave->groups("gr");
+        $this->leave->channelGroups("gr");
 
         $this->assertEquals(
             sprintf(Leave::PATH, $this->config->getSubscribeKey(), ","),
@@ -88,7 +88,7 @@ class LeaveTest extends PubNubTestCase
 
     public function testLeaveMultipleGroups()
     {
-        $this->leave->groups("gr1,gr2,gr3");
+        $this->leave->channelGroups("gr1,gr2,gr3");
 
         $this->assertEquals(
             sprintf(Leave::PATH, $this->config->getSubscribeKey(), ","),
@@ -106,7 +106,7 @@ class LeaveTest extends PubNubTestCase
 
     public function testLeaveMultipleGroupsUsingArray()
     {
-        $this->leave->groups(["gr1","gr2","gr3"]);
+        $this->leave->channelGroups(["gr1","gr2","gr3"]);
 
         $this->assertEquals(
             sprintf(Leave::PATH, $this->config->getSubscribeKey(), ","),
@@ -124,7 +124,7 @@ class LeaveTest extends PubNubTestCase
 
     public function testLeaveChannelsAndGroups()
     {
-        $this->leave->channels("ch1,ch2")->groups(["gr1", "gr2"]);
+        $this->leave->channels("ch1,ch2")->channelGroups(["gr1", "gr2"]);
 
         $this->assertEquals(
             sprintf(Leave::PATH, $this->config->getSubscribeKey(), "ch1,ch2"),

@@ -2,15 +2,13 @@
 
 namespace PubNub\Endpoints\PubSub;
 
-
-use PubNub\Builders\PubNubErrorBuilder;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PNPublishResult;
-use PubNub\PubNubException;
 use PubNub\PubNubUtil;
+
 
 class Publish extends Endpoint
 {
@@ -18,36 +16,28 @@ class Publish extends Endpoint
     const POST_PATH = "/publish/%s/%s/0/%s/%s";
 
     /** @var  mixed $message to publish */
-    private $message;
+    protected $message;
 
     /** @var  string $channel to send message on*/
-    private $channel;
+    protected $channel;
 
     /** @var  bool $shouldStore in history */
-    private $shouldStore;
+    protected $shouldStore;
 
     /** @var bool $usePost HTTP method instead of default GET  */
-    private $usePost;
+    protected $usePost;
 
     /** @var  array $meta data */
-    private $meta;
+    protected $meta;
 
     /** @var  int $ttl in storage (min ?)*/
-    private $ttl;
+    protected $ttl;
 
     /** @var  int $sequenceCounter */
-    private $sequenceCounter = 0;
+    protected $sequenceCounter = 0;
 
     /** @var  bool */
-    private $replicate = true;
-
-    /**
-     * @return PNPublishResult
-     */
-    public function sync()
-    {
-        return parent::sync();
-    }
+    protected $replicate = true;
 
     /**
      * @param mixed $message
@@ -105,21 +95,30 @@ class Publish extends Endpoint
     }
 
     /**
-     * @param mixed $replicate
+     * @param bool $replicate
+     * @return $this
      */
     public function setReplicate($replicate)
     {
         $this->replicate = $replicate;
+
+        return $this;
     }
 
     /**
      * @param int $ttl
+     * @return $this
      */
     public function setTtl($ttl)
     {
         $this->ttl = $ttl;
+
+        return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateParams()
     {
         if ($this->message === null) {
@@ -134,21 +133,9 @@ class Publish extends Endpoint
         $this->validatePublishKey();
     }
 
-    protected function buildData()
-    {
-        if ($this->usePost == true) {
-            $msg = PubNubUtil::writeValueAsString($this->message);
-
-            if ($this->pubnub->getConfiguration()->isAesEnabled()) {
-                return '"' . $this->pubnub->getConfiguration()->getCrypto()->encrypt($msg) . '"';
-            } else {
-                return $msg;
-            }
-        } else {
-            return null;
-        }
-    }
-
+    /**
+     * @return array
+     */
     protected function customParams()
     {
         $params = [];
@@ -178,6 +165,27 @@ class Publish extends Endpoint
         return $params;
     }
 
+    /**
+     * @return string
+     */
+    protected function buildData()
+    {
+        if ($this->usePost == true) {
+            $msg = PubNubUtil::writeValueAsString($this->message);
+
+            if ($this->pubnub->getConfiguration()->isAesEnabled()) {
+                return '"' . $this->pubnub->getConfiguration()->getCrypto()->encrypt($msg) . '"';
+            } else {
+                return $msg;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return string
+     */
     protected function buildPath()
     {
         if ($this->usePost) {
@@ -210,6 +218,14 @@ class Publish extends Endpoint
     }
 
     /**
+     * @return PNPublishResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
      * @param array $json Decoded json
      * @return PNPublishResult
      */
@@ -217,34 +233,7 @@ class Publish extends Endpoint
     {
         $timetoken = (int) $json[2];
 
-        $response = new PNPublishResult($timetoken);
-
-        return $response;
-    }
-
-    protected function getRequestTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
-    }
-
-    protected function getConnectTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getConnectTimeout();
-    }
-
-    protected function getOperationType()
-    {
-        return PNOperationType::PNPublishOperation;
-    }
-
-    protected function isAuthRequired()
-    {
-        return true;
-    }
-
-    protected function httpMethod()
-    {
-        return $this->usePost ? PNHttpMethod::POST : PNHttpMethod::GET;
+        return new PNPublishResult($timetoken);
     }
 
     /**
@@ -253,5 +242,53 @@ class Publish extends Endpoint
     private function getSequenceId()
     {
         return $this->sequenceCounter++;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAuthRequired()
+    {
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getRequestTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+    }
+
+    /**
+     * @return int
+     */
+    protected function getConnectTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
+    /**
+     * @return string
+     */
+    protected function httpMethod()
+    {
+        return $this->usePost ? PNHttpMethod::POST : PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNPublishOperation;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "SetState";
     }
 }

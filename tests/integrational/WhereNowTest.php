@@ -1,7 +1,12 @@
 <?php
 
+namespace Tests\Integrational;
+
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Exceptions\PubNubResponseParsingException;
+use PubNubTestCase;
+use Tests\Helpers\StubTransport;
+
 
 class WhereNowTest extends PubNubTestCase
 {

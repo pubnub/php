@@ -65,7 +65,7 @@ class SubscriptionManager
                 /** @var SubscribeEnvelope $result */
                 $result = (new Subscribe($this->pubnub))
                     ->channels($combinedChannels)
-                    ->groups($combinedChannelGroups)
+                    ->channelGroups($combinedChannelGroups)
                     ->setTimetoken($this->timetoken)
                     ->setRegion($this->region)
                     ->setFilterExpression($this->pubnub->getConfiguration()->getFilterExpression())
@@ -125,7 +125,7 @@ class SubscriptionManager
     {
         $leave = (new Leave($this->pubnub))
             ->channels($operation->getChannels())
-            ->groups($operation->getChannelGroups());
+            ->channelGroups($operation->getChannelGroups());
 
         $this->subscriptionState->adaptUnsubscribeBuilder($operation);
 

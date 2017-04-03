@@ -8,18 +8,19 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNubUtil;
 
+
 class Leave extends Endpoint
 {
     const PATH = "/v2/presence/sub-key/%s/channel/%s/leave";
 
-    /** @var array */
+    /** @var string[] */
     protected $channels = [];
 
-    /** @var array */
+    /** @var string[] */
     protected $groups = [];
 
     /**
-     * @param $channels string|string[]
+     * @param string|string[] $channels
      * @return $this
      */
     public function channels($channels)
@@ -30,51 +31,19 @@ class Leave extends Endpoint
     }
 
     /**
-     * @param $groups string|string[]
+     * @param string|string[] $groups
      * @return $this
      */
-    public function groups($groups)
+    public function channelGroups($groups)
     {
         $this->groups = PubNubUtil::extendArray($this->groups, $groups);
 
         return $this;
     }
 
-
     /**
-     * @return array
+     * @throws PubNubValidationException
      */
-    public function getChannels()
-    {
-        return $this->channels;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
-    public function getAffectedChannels()
-    {
-        return parent::getAffectedChannels();
-    }
-
-    public function getAffectedChannelGroups()
-    {
-        return parent::getAffectedChannelGroups();
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return "Leave";
-    }
-
     protected function validateParams()
     {
         $this->validateSubscribeKey();
@@ -85,32 +54,21 @@ class Leave extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
-     * @return array
+     * @return array $params
      */
-    protected function createResponse($json)
+    protected function customParams()
     {
-        return $json;
+        $params = [];
+
+        if (count($this->groups) > 0) {
+            $params['channel-group'] = PubNubUtil::joinItems($this->groups);
+        }
+
+        return $params;
     }
 
     /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNUnsubscribeOperation;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return true;
-    }
-
-    /**
-     * @return null|string
+     * @return null
      */
     protected function buildData()
     {
@@ -129,17 +87,20 @@ class Leave extends Endpoint
     }
 
     /**
-     * @return $params
+     * @param array $json Decoded json
+     * @return array
      */
-    protected function customParams()
+    protected function createResponse($json)
     {
-        $params = [];
+        return $json;
+    }
 
-        if (count($this->groups) > 0) {
-            $params['channel-group'] = PubNubUtil::joinItems($this->groups);
-        }
-
-        return $params;
+    /**
+     * @return bool
+     */
+    protected function isAuthRequired()
+    {
+        return true;
     }
 
     /**
@@ -165,4 +126,21 @@ class Leave extends Endpoint
     {
         return PNHttpMethod::GET;
     }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNUnsubscribeOperation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return "Leave";
+    }
+
 }

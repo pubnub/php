@@ -1,11 +1,14 @@
 <?php
 
+namespace Tests\Integrational;
+
 use \PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsAddChannelResult;
 use \PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsListChannelsResult;
 use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsRemoveChannelResult;
 use \PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsRemoveGroupResult;
 
-class ChannelGroupsTest extends PubNubTestCase
+
+class ChannelGroupsTest extends \PubNubTestCase
 {
     /**
      * @group cg
@@ -27,7 +30,7 @@ class ChannelGroupsTest extends PubNubTestCase
         sleep(1);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub->listChannelsInChannelGroup()->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
 
@@ -35,21 +38,24 @@ class ChannelGroupsTest extends PubNubTestCase
         $this->assertEquals($ch, $response->getChannels()[0]);
 
         // remove
-        $response = $this->pubnub->removeChannelFromChannelGroup()->channels($ch)->group($gr)->sync();
+        $response = $this->pubnub->removeChannelFromChannelGroup()->channels($ch)->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsRemoveChannelResult);
 
         sleep(1);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub->listChannelsInChannelGroup()->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
 
         $this->assertEquals(0, count($response->getChannels()));
     }
 
-    // TODO testMultipleChannels
+    /**
+     * @group cg
+     * @group cg-integrational
+     */
     public function testMultipleChannels()
     {
         $ch1 = "channel-groups-native-ch1";
@@ -67,7 +73,7 @@ class ChannelGroupsTest extends PubNubTestCase
         sleep(1);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub->listChannelsInChannelGroup()->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
         $this->assertEquals(2, count($response->getChannels()));
@@ -75,18 +81,22 @@ class ChannelGroupsTest extends PubNubTestCase
         $this->assertEquals(true, in_array($ch2, $response->getChannels()));
 
         // remove
-        $response = $this->pubnub->removeChannelFromChannelGroup()->channels([$ch1, $ch2])->group($gr)->sync();
+        $response = $this->pubnub->removeChannelFromChannelGroup()->channels([$ch1, $ch2])->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsRemoveChannelResult);
 
         sleep(1);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub->listChannelsInChannelGroup()->channelGroup($gr)->sync();
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
         $this->assertEquals(0, count($response->getChannels()));
     }
 
+    /**
+     * @group cg
+     * @group cg-integrational
+     */
     public function testAddChannelRemoveGroup()
     {
         $ch = "channel-groups-native-ch";
@@ -103,7 +113,7 @@ class ChannelGroupsTest extends PubNubTestCase
         sleep(1);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub->listChannelsInChannelGroup()->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
 
@@ -118,41 +128,44 @@ class ChannelGroupsTest extends PubNubTestCase
         sleep(1);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub->listChannelsInChannelGroup()->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
 
         $this->assertEquals(0, count($response->getChannels()));
     }
 
+    /**
+     * @group cg
+     * @group cg-integrational
+     */
     public function testSuperCall()
     {
         $ch = "channel-groups-native-ch";
         $gr = "channel-groups-native-cg";
 
-        // TODO: replace with super-instance
         // add
-        $response = $this->pubnub->addChannelToChannelGroup()->channels($ch)->group($gr)->sync();
+        $response = $this->pubnub_pam->addChannelToChannelGroup()->channels($ch)->group($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsAddChannelResult);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub_pam->listChannelsInChannelGroup()->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
 
         // remove channel
-        $response = $this->pubnub->removeChannelFromChannelGroup()->group($gr)->channels($ch)->sync();
+        $response = $this->pubnub_pam->removeChannelFromChannelGroup()->channelGroup($gr)->channels($ch)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsRemoveChannelResult);
 
         // remove group
-        $response = $this->pubnub->removeChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub_pam->removeChannelGroup()->group($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsRemoveGroupResult);
 
         // list
-        $response = $this->pubnub->listChannelsInChannelGroup()->group($gr)->sync();
+        $response = $this->pubnub_pam->listChannelsInChannelGroup()->channelGroup($gr)->sync();
 
         $this->assertEquals(true, $response instanceof PNChannelGroupsListChannelsResult);
     }

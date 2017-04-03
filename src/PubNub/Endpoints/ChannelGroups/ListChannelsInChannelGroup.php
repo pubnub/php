@@ -8,23 +8,28 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsListChannelsResult;
 
+
 class ListChannelsInChannelGroup extends Endpoint
 {
     const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s";
 
-    private $channelGroup;
+    /** @var  string */
+    protected $channelGroup;
 
     /**
      * @param string $channelGroup
      * @return $this
      */
-    public function group($channelGroup)
+    public function channelGroup($channelGroup)
     {
         $this->channelGroup = $channelGroup;
 
         return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateParams()
     {
         $this->validateSubscribeKey();
@@ -35,36 +40,17 @@ class ListChannelsInChannelGroup extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
-     * @return PNChannelGroupsListChannelsResult
+     * @return array
      */
-    protected function createResponse($json)
+    protected function customParams()
     {
-        if (array_key_exists('payload', $json) && array_key_exists('channels', $json['payload'])) {
-            return new PNChannelGroupsListChannelsResult($json['payload']['channels']);
-        } else {
-            return new PNChannelGroupsListChannelsResult([]);
-        }
+        $params = $this->defaultParams();
+
+        return $params;
     }
 
     /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNChannelsForGroupOperation;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return True;
-    }
-
-    /**
-     * @return null|string
+     * @return null
      */
     protected function buildData()
     {
@@ -84,21 +70,32 @@ class ListChannelsInChannelGroup extends Endpoint
     }
 
     /**
-     * @return array
+     * @return PNChannelGroupsListChannelsResult
      */
-    protected function customParams()
+    public function sync()
     {
-        $params = $this->defaultParams();
-
-        return $params;
+        return parent::sync();
     }
 
     /**
-     * @return string PNHttpMethod
+     * @param array $json Decoded json
+     * @return PNChannelGroupsListChannelsResult
      */
-    protected function httpMethod()
+    protected function createResponse($json)
     {
-        return PNHttpMethod::GET;
+        if (array_key_exists('payload', $json) && array_key_exists('channels', $json['payload'])) {
+            return new PNChannelGroupsListChannelsResult($json['payload']['channels']);
+        } else {
+            return new PNChannelGroupsListChannelsResult([]);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAuthRequired()
+    {
+        return True;
     }
 
     /**
@@ -115,5 +112,29 @@ class ListChannelsInChannelGroup extends Endpoint
     protected function getConnectTimeout()
     {
         return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
+    /**
+     * @return string PNHttpMethod
+     */
+    protected function httpMethod()
+    {
+        return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNChannelsForGroupOperation;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "ListChannelsInChannelGroup";
     }
 }

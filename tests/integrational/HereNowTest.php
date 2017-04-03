@@ -1,11 +1,20 @@
 <?php
 
+namespace Tests\Integrational;
+
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Exceptions\PubNubValidationException;
+use RawTransport;
+use Tests\Helpers\Stub;
+use Tests\Helpers\StubTransport;
 
 
-class HereNowTest extends PubNubTestCase
+class HereNowTest extends \PubNubTestCase
 {
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testMultipleChannelState()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -37,6 +46,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals($response->getChannels()[1]->getOccupants()[1]->getState(), null);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testMultipleChannel()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -68,6 +81,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals($response->getChannels()[1]->getOccupants()[1]->getState(), null);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testMultipleChannelWithoutState()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -90,6 +107,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals($response->getChannels()[0]->getOccupants()[0]->getState(), null);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testMultipleChannelWithoutStateUUIDs()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -111,6 +132,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals(count($response->getChannels()[0]->getOccupants()), null);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testSingularChannelWithoutStateUUIDs()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -128,6 +153,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals($response->getTotalOccupancy(), 3);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testSingularChannelWithoutState()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -149,6 +178,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals($response->getChannels()[0]->getOccupants()[0]->getState(), null);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testSingularChannel()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -171,6 +204,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals($response->getChannels()[0]->getOccupants()[0]->getState(), ["age" => 10]);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testSingularChannelAndGroup()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -188,6 +225,10 @@ class HereNowTest extends PubNubTestCase
         $this->assertEquals($response->getTotalOccupancy(), 0);
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testIsAuthRequiredSuccess()
     {
         $hereNow = new HereNowExposed($this->pubnub);
@@ -205,6 +246,10 @@ class HereNowTest extends PubNubTestCase
         $hereNow->channels(["ch1", "ch2"])->includeState(true)->sync();
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testNullSubKey()
     {
         $this->expectException(PubNubValidationException::class);
@@ -225,6 +270,10 @@ class HereNowTest extends PubNubTestCase
         $hereNow->channels(["ch1", "ch2"])->includeState(true)->sync();
     }
 
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     */
     public function testEmptySubKey()
     {
         $this->expectException(PubNubValidationException::class);
@@ -249,7 +298,6 @@ class HereNowTest extends PubNubTestCase
 
 class HereNowExposed extends HereNow
 {
-    /** @var  RawTransport */
     protected $transport;
 
     public function __construct($pubnubInstance)

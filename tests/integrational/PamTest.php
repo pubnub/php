@@ -1,10 +1,17 @@
 <?php
 
+namespace Tests\Integrational;
 
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerGrantResult;
-use PubNub\Models\Consumer\AccessManager\PNAccessManagerAuditResult;
 
-class PamTest extends PubNubTestCase
+
+/**
+ * Class PamTest
+ * NOTICE: Endpoint requests aren't mocked
+ *
+ * @package Tests\Integrational
+ */
+class PamTest extends \PubNubTestCase
 {
     /**
      * @group pam
@@ -12,7 +19,6 @@ class PamTest extends PubNubTestCase
      */
     public function testGlobalLevel()
     {
-        /** @var  PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam->grant()->read(true)->write(true)->sync();
 
         $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
@@ -42,7 +48,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam->grant()->channels($ch)->write(true)->read(true)->sync();
 
         $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
@@ -62,7 +67,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam
             ->grant()->channels($ch)->write(true)->read(true)->authKeys($auth)->sync();
 
@@ -83,7 +87,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam
             ->grant()->channels([$ch1, $ch2])->write(true)->read(true)->sync();
 
@@ -108,7 +111,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam
             ->grant()
             ->channels([$ch1, $ch2])
@@ -135,7 +137,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam
             ->grant()
             ->channelGroups($cg)
@@ -161,7 +162,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam
             ->grant()
             ->channelGroups($cg)
@@ -188,7 +188,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam
             ->grant()
             ->channelGroups([$gr1, $gr2])
@@ -218,7 +217,6 @@ class PamTest extends PubNubTestCase
 
         $this->pubnub->getConfiguration()->setUuid('my_uuid');
 
-        /** @var PNAccessManagerGrantResult $response */
         $response = $this->pubnub_pam
             ->grant()
             ->channelGroups([$gr1, $gr2])

@@ -5,8 +5,10 @@ namespace PubNub\Endpoints\Presence;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNGetStateResult;
 use PubNub\PubNubUtil;
+
 
 class GetState extends Endpoint
 {
@@ -16,7 +18,7 @@ class GetState extends Endpoint
     protected $channels = [];
 
     /** @var array  */
-    protected $groups = [];
+    protected $channelGroups = [];
 
     /**
      * @param string|string[] $channels
@@ -30,34 +32,21 @@ class GetState extends Endpoint
     }
 
     /**
-     * @param string[]|string $groups
+     * @param string|string[] $groups
      */
     public function channelGroups($groups)
     {
-        $this->groups = PubNubUtil::extendArray($this->groups, $groups);
+        $this->channelGroups = PubNubUtil::extendArray($this->channelGroups, $groups);
     }
 
     /**
-     * @return array
+     * @throws PubNubValidationException
      */
-    public function getChannels()
-    {
-        return $this->channels;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
     protected function validateParams()
     {
         $this->validateSubscribeKey();
 
-        $this->validateChannelGroups($this->channels, $this->groups);
+        $this->validateChannelGroups($this->channels, $this->channelGroups);
     }
 
     /**
@@ -75,8 +64,8 @@ class GetState extends Endpoint
     {
         $params = [];
 
-        if (count($this->groups) > 0) {
-            $params['channel-group'] = PubNubUtil::joinItems($this->groups);
+        if (count($this->channelGroups) > 0) {
+            $params['channel-group'] = PubNubUtil::joinItems($this->channelGroups);
         }
 
         return $params;
@@ -96,34 +85,26 @@ class GetState extends Endpoint
     }
 
     /**
-     * @return array
+     * @return PNGetStateResult
      */
-    public function buildParams()
+    public function sync()
     {
-        return parent::buildParams();
+        return parent::sync();
     }
 
     /**
      * @param array $json Decoded json
-     * @return mixed
+     * @return PNGetStateResult
      */
     public function createResponse($json)
     {
-        if (count($this->channels) === 1 && count($this->groups) === 0) {
+        if (count($this->channels) === 1 && count($this->channelGroups) === 0) {
             $channels = [$this->channels[0] => $json['payload']];
         } else {
             $channels = $json['payload']['channels'];
         }
 
         return new PNGetStateResult($channels);
-    }
-
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNGetState;
     }
 
     /**
@@ -135,7 +116,7 @@ class GetState extends Endpoint
     }
 
     /**
-     * @return string[]|string
+     * @return string|string[]
      */
     public function getAffectedChannels()
     {
@@ -143,11 +124,11 @@ class GetState extends Endpoint
     }
 
     /**
-     * @return string[]|string
+     * @return string|string[]
      */
     public function getAffectedChannelGroups()
     {
-        return $this->groups;
+        return $this->channelGroups;
     }
 
     /**
@@ -172,5 +153,21 @@ class GetState extends Endpoint
     protected function httpMethod()
     {
         return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNGetState;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return "Grant";
     }
 }

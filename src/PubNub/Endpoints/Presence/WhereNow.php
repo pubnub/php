@@ -7,6 +7,8 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNWhereNowResult;
+use PubNub\PubNub;
+
 
 class WhereNow extends Endpoint
 {
@@ -15,14 +17,18 @@ class WhereNow extends Endpoint
     /** @var string */
     protected $uuid;
 
-    public function __construct($pubnubInstance)
+    /**
+     * WhereNow constructor.
+     * @param PubNub $pubnubInstance
+     */
+    public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
         $this->uuid = $this->pubnub->getConfiguration()->getUuid();
     }
 
     /**
-     * @param $uuid
+     * @param string $uuid
      * @return $this
      */
     public function uuid($uuid)
@@ -45,19 +51,19 @@ class WhereNow extends Endpoint
     }
 
     /**
-     * @return null|string
-     */
-    protected function buildData()
-    {
-        return null;
-    }
-
-    /**
      * @return array
      */
     protected function customParams()
     {
         return [];
+    }
+
+    /**
+     * @return null
+     */
+    protected function buildData()
+    {
+        return null;
     }
 
     /**
@@ -86,15 +92,6 @@ class WhereNow extends Endpoint
     protected function createResponse($json)
     {
         return PNWhereNowResult::fromPayload(static::fetchPayload($json));
-    }
-
-
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNWhereNowOperation;
     }
 
     /**
@@ -127,5 +124,21 @@ class WhereNow extends Endpoint
     protected function httpMethod()
     {
         return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNWhereNowOperation;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "WhereNow";
     }
 }

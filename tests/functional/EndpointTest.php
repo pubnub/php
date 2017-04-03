@@ -144,4 +144,12 @@ class EndpointImplementation extends Endpoint
     {
         // TODO: Implement getConnectTimeout() method.
     }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        // TODO: Implement getName() method.
+    }
 }

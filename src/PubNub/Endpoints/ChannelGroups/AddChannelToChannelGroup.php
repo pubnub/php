@@ -9,6 +9,7 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsAddChannelResult;
 use PubNub\PubNubUtil;
 
+
 class AddChannelToChannelGroup extends Endpoint
 {
     const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s";
@@ -41,6 +42,9 @@ class AddChannelToChannelGroup extends Endpoint
         return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateParams()
     {
         $this->validateSubscribeKey();
@@ -55,32 +59,7 @@ class AddChannelToChannelGroup extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
-     * @return PNChannelGroupsAddChannelResult
-     */
-    protected function createResponse($json)
-    {
-        return new PNChannelGroupsAddChannelResult();
-    }
-
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNAddChannelsToGroupOperation;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return True;
-    }
-
-    /**
-     * @return null|string
+     * @return null
      */
     protected function buildData()
     {
@@ -100,6 +79,15 @@ class AddChannelToChannelGroup extends Endpoint
     }
 
     /**
+     * @param array $json Decoded json
+     * @return PNChannelGroupsAddChannelResult
+     */
+    protected function createResponse($json)
+    {
+        return new PNChannelGroupsAddChannelResult();
+    }
+
+    /**
      * @return array
      */
     protected function customParams()
@@ -112,11 +100,11 @@ class AddChannelToChannelGroup extends Endpoint
     }
 
     /**
-     * @return string PNHttpMethod
+     * @return bool
      */
-    protected function httpMethod()
+    protected function isAuthRequired()
     {
-        return PNHttpMethod::GET;
+        return True;
     }
 
     /**
@@ -133,5 +121,29 @@ class AddChannelToChannelGroup extends Endpoint
     protected function getConnectTimeout()
     {
         return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
+    /**
+     * @return string PNHttpMethod
+     */
+    protected function httpMethod()
+    {
+        return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNAddChannelsToGroupOperation;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "AddChannelToChannelGroup";
     }
 }

@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints\PubSub;
 
-
 use PubNub\Builders\PubNubErrorBuilder;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
@@ -13,14 +12,15 @@ use PubNub\Models\Consumer\PubSub\SubscribeEnvelope;
 use PubNub\PubNubException;
 use PubNub\PubNubUtil;
 
+
 class Subscribe extends Endpoint
 {
     const PATH = "/v2/subscribe/%s/%s/0";
 
-    /** @var  array */
+    /** @var  string[] */
     protected $channels = [];
 
-    /** @var  array */
+    /** @var  string[] */
     protected $channelGroups = [];
 
     /** @var  string */
@@ -36,15 +36,7 @@ class Subscribe extends Endpoint
     protected $withPresence;
 
     /**
-     * @return PNPublishResult
-     */
-    public function sync()
-    {
-        return parent::sync();
-    }
-
-    /**
-     * @param string|array $ch
+     * @param string|string[] $ch
      * @return $this
      */
     public function channels($ch)
@@ -55,10 +47,10 @@ class Subscribe extends Endpoint
     }
 
     /**
-     * @param string|array $cgs
+     * @param string|string[] $cgs
      * @return $this
      */
-    public function groups($cgs)
+    public function channelGroups($cgs)
     {
         $this->channelGroups = PubNubUtil::extendArray($this->channelGroups, $cgs);
 
@@ -109,11 +101,9 @@ class Subscribe extends Endpoint
         return $this;
     }
 
-    public function getChannel()
-    {
-
-    }
-
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateParams()
     {
         if (count($this->channels) === 0 && count($this->channelGroups) === 0) {
@@ -124,11 +114,9 @@ class Subscribe extends Endpoint
         $this->validatePublishKey();
     }
 
-    protected function buildData()
-    {
-        return null;
-    }
-
+    /**
+     * @return array
+     */
     protected function customParams()
     {
         $params = [];
@@ -152,6 +140,17 @@ class Subscribe extends Endpoint
         return $params;
     }
 
+    /**
+     * @return null
+     */
+    protected function buildData()
+    {
+        return null;
+    }
+
+    /**
+     * @return string
+     */
     protected function buildPath()
     {
         $channels = PubNubUtil::joinChannels($this->channels);
@@ -164,6 +163,14 @@ class Subscribe extends Endpoint
     }
 
     /**
+     * @return SubscribeEnvelope
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
      * @param array $json Decoded json
      * @return SubscribeEnvelope
      */
@@ -172,28 +179,51 @@ class Subscribe extends Endpoint
         return SubscribeEnvelope::fromJson($json);
     }
 
-    protected function getOperationType()
-    {
-        return PNOperationType::PNSubscribeOperation;
-    }
-
+    /**
+     * @return bool
+     */
     protected function isAuthRequired()
     {
         return true;
     }
 
+    /**
+     * @return int
+     */
     protected function getRequestTimeout()
     {
         return $this->pubnub->getConfiguration()->getSubscribeTimeout();
     }
 
+    /**
+     * @return int
+     */
     protected function getConnectTimeout()
     {
         return $this->pubnub->getConfiguration()->getConnectTimeout();
     }
 
+    /**
+     * @return string
+     */
     protected function httpMethod()
     {
         return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNSubscribeOperation;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "Subscribe";
     }
 }

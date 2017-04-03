@@ -79,6 +79,11 @@ abstract class Endpoint
     abstract protected function httpMethod();
 
     /**
+     * @return string
+     */
+    abstract protected function getName();
+
+    /**
      * @throws PubNubValidationException
      */
     protected function validateSubscribeKey()

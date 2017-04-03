@@ -20,7 +20,7 @@ class Grant extends Endpoint
     /** @var string[] */
     protected $channels = [];
 
-    /** @var string[]  */
+    /** @var string[] */
     protected $groups = [];
 
     /** @var  bool */
@@ -46,7 +46,7 @@ class Grant extends Endpoint
     }
 
     /**
-     * @param string|string[]$channels
+     * @param string|string[] $channels
      * @return $this
      */
     public function channels($channels)
@@ -110,6 +110,9 @@ class Grant extends Endpoint
         return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     public function validateParams()
     {
         $this->validateSubscribeKey();
@@ -120,11 +123,9 @@ class Grant extends Endpoint
         }
     }
 
-    public function buildData()
-    {
-        return null;
-    }
-
+    /**
+     * @return array
+     */
     public function customParams()
     {
         $params = [];
@@ -154,7 +155,7 @@ class Grant extends Endpoint
         }
 
         if ($this->ttl > 0) {
-            $params["ttl"] = (string) $this->ttl;
+            $params["ttl"] = (string)$this->ttl;
         }
 
         $params['timestamp'] = strval($this->pubnub->timestamp());
@@ -162,51 +163,98 @@ class Grant extends Endpoint
         return $params;
     }
 
+    /**
+     * @return null
+     */
+    public function buildData()
+    {
+        return null;
+    }
+
+    /**
+     * @return string
+     */
     public function buildPath()
     {
         return sprintf(static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey());
     }
 
+    /**
+     * @return PNAccessManagerGrantResult
+     */
+    public function sync()
+    {
+        return parent::sync();
+    }
+
+    /**
+     * @param array $json
+     * @return PNAccessManagerGrantResult
+     */
     public function createResponse($json)
     {
         return PNAccessManagerGrantResult::fromJson($json['payload']);
     }
 
-    public function httpMethod()
-    {
-        PNHttpMethod::GET;
-    }
-
+    /**
+     * @return bool
+     */
     public function isAuthRequired()
     {
         return false;
     }
 
+    /**
+     * @return \string[]
+     */
     public function getAffectedChannels()
     {
         return $this->channels;
     }
 
+    /**
+     * @return \string[]
+     */
     public function getAffectedChannelGroups()
     {
         return $this->groups;
     }
 
+    /**
+     * @return int
+     */
     public function getRequestTimeout()
     {
         return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
     }
 
+    /**
+     * @return int
+     */
     public function getConnectTimeout()
     {
         return $this->pubnub->getConfiguration()->getConnectTimeout();
     }
 
+    /**
+     * @return string
+     */
+    public function httpMethod()
+    {
+        return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
     public function getOperationType()
     {
         return PNOperationType::PNAccessManagerGrant;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return "Grant";

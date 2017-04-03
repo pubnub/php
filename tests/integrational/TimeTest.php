@@ -1,9 +1,9 @@
 <?php
 
-//use PHPUnit\Framework\TestCase;
+namespace Tests\Integrational;
 
 
-class TimeTest extends PubNubTestCase
+class TimeTest extends \PubNubTestCase
 {
     protected static $channel = 'pubnub_php_test';
 

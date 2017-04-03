@@ -1,17 +1,14 @@
 <?php
 
+namespace Tests\Helpers;
 
-class StubTransport implements Requests_Transport {
+
+class StubTransport implements \Requests_Transport {
+    /** @var string  */
     protected $method = "GET";
 
-    /** @var Stub[] */
+    /** @var Stub[]  */
     protected $stubs = [];
-
-    protected $scheme;
-    protected $host;
-    protected $path;
-    protected $query;
-    protected $body;
 
     public function request($url, $headers = array(), $data = array(), $options = array()) {
         $parsedUrl = parse_url($url);
@@ -52,7 +49,7 @@ class StubTransport implements Requests_Transport {
     }
 
     public function request_multiple($requests, $options) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
 
     public static function test() {

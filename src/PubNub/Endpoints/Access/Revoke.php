@@ -6,6 +6,7 @@ use PubNub\Endpoints\Access\Grant;
 use PubNub\Exceptions\PubNubNotImplementException;
 use PubNub\Enums\PNOperationType;
 
+
 class Revoke extends Grant
 {
     protected $read = false;

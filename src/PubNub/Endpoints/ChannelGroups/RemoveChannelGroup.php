@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints\ChannelGroups;
 
-
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
@@ -14,6 +13,7 @@ class RemoveChannelGroup extends Endpoint
 {
     const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s/remove";
 
+    /** @var  string */
     private $channelGroup;
 
     /**
@@ -27,6 +27,9 @@ class RemoveChannelGroup extends Endpoint
         return $this;
     }
 
+    /**
+     * @throws PubNubValidationException
+     */
     protected function validateParams()
     {
         $this->validateSubscribeKey();
@@ -37,32 +40,17 @@ class RemoveChannelGroup extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
-     * @return PNChannelGroupsRemoveGroupResult
+     * @return array
      */
-    protected function createResponse($json)
+    protected function customParams()
     {
-        return new PNChannelGroupsRemoveGroupResult();
+        $params = $this->defaultParams();
+
+        return $params;
     }
 
     /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNRemoveGroupOperation;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return True;
-    }
-
-    /**
-     * @return null|string
+     * @return null
      */
     protected function buildData()
     {
@@ -82,21 +70,28 @@ class RemoveChannelGroup extends Endpoint
     }
 
     /**
-     * @return array
+     * @return PNChannelGroupsRemoveGroupResult
      */
-    protected function customParams()
+    public function sync()
     {
-        $params = $this->defaultParams();
-
-        return $params;
+        return parent::sync();
     }
 
     /**
-     * @return string PNHttpMethod
+     * @param array $json Decoded json
+     * @return PNChannelGroupsRemoveGroupResult
      */
-    protected function httpMethod()
+    protected function createResponse($json)
     {
-        return PNHttpMethod::GET;
+        return new PNChannelGroupsRemoveGroupResult();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAuthRequired()
+    {
+        return True;
     }
 
     /**
@@ -113,5 +108,29 @@ class RemoveChannelGroup extends Endpoint
     protected function getConnectTimeout()
     {
         return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
+
+    /**
+     * @return string PNHttpMethod
+     */
+    protected function httpMethod()
+    {
+        return PNHttpMethod::GET;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getOperationType()
+    {
+        return PNOperationType::PNRemoveGroupOperation;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getName()
+    {
+        return "RemoveChannelGroup";
     }
 }
