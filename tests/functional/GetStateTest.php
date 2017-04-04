@@ -6,9 +6,10 @@ use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
 
+
 class GetStateTest extends PubNubTestCase
 {
-    /** @var  GetState */
+    /** @var  ExposedGetState */
     protected $getState;
 
     public function setUp()
@@ -58,7 +59,7 @@ class GetStateTest extends PubNubTestCase
         ], $this->getState->buildParams());
 
         $this->assertEquals(0, count($this->getState->getChannels()));
-        $this->assertEquals(["gr"], $this->getState->getGroups());
+        $this->assertEquals(["gr"], $this->getState->getChannelGroups());
     }
 }
 
@@ -73,5 +74,21 @@ class ExposedGetState extends GetState
     public function buildPath()
     {
         return parent::buildPath();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getChannels()
+    {
+        return $this->channels;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getChannelGroups()
+    {
+        return $this->channelGroups;
     }
 }

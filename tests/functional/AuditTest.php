@@ -6,6 +6,7 @@ use PubNub\Endpoints\Access\Audit;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
+
 class AuditTest extends \PubNubTestCase
 {
     /** @var  AuditExposed */

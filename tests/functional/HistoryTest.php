@@ -6,6 +6,7 @@ use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
 
+
 class HistoryTest extends PubNubTestCase
 {
     /** @var HistoryExposed */

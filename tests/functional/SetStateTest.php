@@ -1,10 +1,13 @@
 <?php
 
+namespace Tests\Functional;
+
 use PubNub\Endpoints\Presence\SetState;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
-class testSetState extends PubNubTestCase
+
+class testSetState extends \PubNubTestCase
 {
     /** @var  SetStateExposed */
     protected $setState;
@@ -86,5 +89,21 @@ class SetStateExposed extends SetState
     public function buildPath()
     {
         return parent::buildPath();
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getChannels()
+    {
+        return $this->channels;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

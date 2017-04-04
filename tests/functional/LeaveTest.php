@@ -1,10 +1,13 @@
 <?php
 
+namespace Tests\Integrational;
+
 use PubNub\PubNub;
 use PubNub\Endpoints\Presence\Leave;
 use PubNub\PubNubUtil;
 
-class LeaveTest extends PubNubTestCase
+
+class LeaveTest extends \PubNubTestCase
 {
     /** @var  LeaveExposed */
     protected $leave;
@@ -153,5 +156,21 @@ class LeaveExposed extends Leave
     public function buildParams()
     {
         return parent::buildParams();
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getChannels()
+    {
+        return $this->channels;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

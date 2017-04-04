@@ -7,6 +7,7 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
+
 class SubscribeTest extends \PubNubTestCase
 {
     /** @var  ExposedSubscribe */

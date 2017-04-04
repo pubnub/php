@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Tests\Helpers\Stub;
 
 
 class StubTest extends TestCase

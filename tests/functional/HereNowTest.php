@@ -6,6 +6,7 @@ use PubNub\Endpoints\Presence\HereNow;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
 
+
 class HereNowTest extends PubNubTestCase
 {
     /** @var  ExposedHereNow */
