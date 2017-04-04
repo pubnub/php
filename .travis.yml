@@ -9,7 +9,9 @@ install:
   - composer self-update && composer --version
   - composer install --prefer-dist
 script:
-  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
 notifications:
     flowdock:
           secure: kOxa/6eB6+bQumvYSh7yf/uPNQ5xRastjSkRbUrqVbYEiMiguCuoe8xkmU5JJxmNMpvFjYL9yowPo9LELMceVsWVflNEEWFQE5sJe9qifZu/SpOD8RUWfHmZ2jZBELmnLSDSAIxaAjQMb1LEedkBHGMVJknbb+DRs4fT31ilMUM=
