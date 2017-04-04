@@ -93,8 +93,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
     }
 
-    // TODO: fix test
-    public function xtestPublishWithMeta()
+    public function testPublishWithMeta()
     {
         $this->assertSuccess($this->pubnub->publish()->channel('blah')->message('hey')
             ->setMeta([

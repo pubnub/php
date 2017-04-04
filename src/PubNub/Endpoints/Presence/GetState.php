@@ -33,10 +33,13 @@ class GetState extends Endpoint
 
     /**
      * @param string|string[] $groups
+     * @return $this
      */
     public function channelGroups($groups)
     {
         $this->channelGroups = PubNubUtil::extendArray($this->channelGroups, $groups);
+
+        return $this;
     }
 
     /**

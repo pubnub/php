@@ -2,14 +2,13 @@
 
 namespace Tests\Integrational;
 
-use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\SetState;
 use PubNub\PubNub;
 use PubNub\Exceptions\PubNubException;
 use Tests\Helpers\StubTransport;
 
 
-class StateTest extends \PubNubTestCase
+class SetStateTest extends \PubNubTestCase
 {
     public function testApplyStateForChannel()
     {
@@ -45,7 +44,7 @@ class StateTest extends \PubNubTestCase
 
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/someoneElseUUID/data")
             ->withQuery([
-                "uuid" => "myUUID",
+                "uuid" => "someoneElseUUID",
                 "state" => "%7B%22age%22:20%7D",
                 "pnsdk" => $this->encodedSdkName
             ])
@@ -190,6 +189,7 @@ class StateTest extends \PubNubTestCase
             ->withQuery([
                 "uuid" => "myUUID",
                 "pnsdk" => $this->encodedSdkName,
+                "state" => "%5B%5D"
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
 
@@ -224,6 +224,7 @@ class StateTest extends \PubNubTestCase
     public function testNullSubKey()
     {
         $this->expectException(PubNubException::class);
+        $this->expectExceptionMessage("Subscribe Key not configured");
 
         $setState = new SetStateExposed($this->pubnub);
 
@@ -248,6 +249,7 @@ class StateTest extends \PubNubTestCase
     public function testEmptySubKey()
     {
         $this->expectException(PubNubException::class);
+        $this->expectExceptionMessage("Subscribe Key not configured");
 
         $setState = new SetStateExposed($this->pubnub);
 
@@ -272,6 +274,7 @@ class StateTest extends \PubNubTestCase
     public function testChannelAndGroupMissing()
     {
         $this->expectException(PubNubException::class);
+        $this->expectExceptionMessage("Channel or group missing");
 
         $setState = new SetStateExposed($this->pubnub);
 
@@ -314,112 +317,10 @@ class StateTest extends \PubNubTestCase
 
         $setState->channels("testChannel")->state($myState)->sync();
     }
-
-    public function testOneChannel()
-    {
-        $getState = new GetStateExposed($this->pubnub);
-
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
-            ->withQuery([
-                "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
-            ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
-
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $response = $getState->channels("testChannel")->sync();
-
-        $this->assertEquals($response->getChannels()["testChannel"]["age"], 20);
-        $this->assertEquals($response->getChannels()["testChannel"]["status"], "online");
-    }
-
-    public function testOneChannelWithoutUUID()
-    {
-        $getState = new GetStateExposed($this->pubnub);
-
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
-            ->withQuery([
-                "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
-            ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
-
-        $response = $getState->channels("testChannel")->sync();
-
-        $this->assertEquals($response->getChannels()["testChannel"]["age"], 20);
-        $this->assertEquals($response->getChannels()["testChannel"]["status"], "online");
-    }
-
-    public function testFailedPayload()
-    {
-        $this->expectException(PubNubException::class);
-
-        $getState = new GetStateExposed($this->pubnub);
-
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
-            ->withQuery([
-                "uuid" => "sampleUUID",
-            ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
-
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $getState->channels("testChannel")->sync();
-    }
-
-    public function testMultipleChannel()
-    {
-        $getState = new GetStateExposed($this->pubnub);
-
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1,ch2/uuid/sampleUUID")
-            ->withQuery([
-                "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
-            ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"channels\": { \"ch1\": { \"age\" : 20, \"status\" : \"online\"}, \"ch2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
-
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $response = $getState->channels(["ch1", "ch2"])->sync();
-
-        $this->assertEquals($response->getChannels()["ch1"]["age"], 20);
-        $this->assertEquals($response->getChannels()["ch1"]["status"], "online");
-
-        $this->assertEquals($response->getChannels()["ch2"]["age"], 100);
-        $this->assertEquals($response->getChannels()["ch2"]["status"], "offline");
-    }
-
-
 }
 
 
 class SetStateExposed extends SetState
-{
-    protected $transport;
-
-    public function __construct(PubNub $pubnubInstance)
-    {
-        parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
-    }
-
-    public function stubFor($url)
-    {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
-    }
-}
-
-
-class GetStateExposed extends GetState
 {
     protected $transport;
 

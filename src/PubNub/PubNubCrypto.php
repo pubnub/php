@@ -18,8 +18,12 @@ class PubNubCrypto extends PubNubCryptoCore {
     }
 
     public function decrypt($cipherText) {
-        if (gettype($cipherText) !== "string"){
-            throw new PubNubResponseParsingException("Decryption error: message is not a string");
+        if (gettype($cipherText) !== "string") {
+            if (array_key_exists("pn_other", $cipherText)) {
+                $cipherText = $cipherText["pn_other"];
+            } else {
+                throw new PubNubResponseParsingException("Decryption error: message is not a string");
+            }
         }
 
         if (strlen($cipherText) === 0){

@@ -116,9 +116,11 @@ class TestPubNubHistory extends \PubNubTestCase
                 "include_token" => "true",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => Stub::ANY,
-                "auth" => "blah"
+                "auth" => "auth"
             ])
             ->setResponseBody(json_encode($testArray));
+
+        $this->pubnub->getConfiguration()->setAuthKey("auth");
 
         $history->channel("niceChannel")->includeTimetoken(true)->sync();
     }
@@ -163,7 +165,7 @@ class TestPubNubHistory extends \PubNubTestCase
         $this->assertEquals($response->getMessages()[2]->getEntry()[2], "m3");
     }
 
-    public function xtestEncryptedWithPNOtherSuccess()
+    public function testEncryptedWithPNOtherSuccess()
     {
         $history = new HistoryExposed($this->pubnub);
 
@@ -409,8 +411,7 @@ class TestPubNubHistory extends \PubNubTestCase
         $this->assertInstanceOf(PNHistoryResult::class, $result);
     }
 
-    // TODO: fix test
-    public function xtestSuperCallWithAllParams()
+    public function testSuperCallWithAllParams()
     {
         $ch = "history-php-ch";
 
