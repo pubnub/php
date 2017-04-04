@@ -20,7 +20,7 @@ use PubNub\Managers\SubscriptionManager;
 
 class PubNub
 {
-    const SDK_VERSION = "4.0.0.alpha.1";
+    const SDK_VERSION = "4.0.0-alpha";
     const SDK_NAME = "PubNub-PHP";
 
     /** @var PNConfiguration  */
