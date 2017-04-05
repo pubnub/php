@@ -23,7 +23,7 @@ class AddChannelToChannelGroupTest extends \PubNubTestCase
     public function testValidatesChannelsNotEmpty()
     {
         try {
-            $this->pubnub->addChannelToChannelGroup()->group("blah")->sync();
+            $this->pubnub->addChannelToChannelGroup()->channelGroup("blah")->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubValidationException$exception) {
             $this->assertEquals("Channels missing", $exception->getMessage());
@@ -34,7 +34,7 @@ class AddChannelToChannelGroupTest extends \PubNubTestCase
     {
         $add = new AddChannelToChannelGroupExposed($this->pubnub);
 
-        $add->channels("ch")->group("blah");
+        $add->channels("ch")->channelGroup("blah");
 
         $this->assertEquals(
             sprintf(
@@ -60,7 +60,7 @@ class AddChannelToChannelGroupTest extends \PubNubTestCase
     {
         $add = new AddChannelToChannelGroupExposed($this->pubnub);
 
-        $add->channels(["ch1", "ch2", "ch3"])->group("blah");
+        $add->channels(["ch1", "ch2", "ch3"])->channelGroup("blah");
 
         $this->assertEquals(
             sprintf(

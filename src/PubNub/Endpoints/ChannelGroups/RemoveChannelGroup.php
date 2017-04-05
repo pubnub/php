@@ -20,7 +20,7 @@ class RemoveChannelGroup extends Endpoint
      * @param string $channelGroup
      * @return $this
      */
-    public function group($channelGroup)
+    public function channelGroup($channelGroup)
     {
         $this->channelGroup = $channelGroup;
 

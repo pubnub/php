@@ -35,7 +35,7 @@ class AddChannelToChannelGroup extends Endpoint
      * @param string $group
      * @return $this
      */
-    public function group($group)
+    public function channelGroup($group)
     {
         $this->group = $group;
 

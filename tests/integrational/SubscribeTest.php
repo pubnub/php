@@ -45,7 +45,7 @@ class SubscribeTest extends \PubNubTestCase
     public function testCGSubscribeUnsubscribe()
     {
         $this->pubnub->addListener(new MySubscribeCallback($this->config));
-        $this->pubnub->addChannelToChannelGroup()->channels(CHANNEL)->group(GROUP)->sync();
+        $this->pubnub->addChannelToChannelGroup()->channels(CHANNEL)->channelGroup(GROUP)->sync();
         $this->pubnub->subscribe()->channelGroups(GROUP)->execute();
         $this->pubnub->removeChannelFromChannelGroup()->channelGroup(GROUP)->channels(CHANNEL)->sync();
     }
@@ -53,7 +53,7 @@ class SubscribeTest extends \PubNubTestCase
     public function testCGSubscribePublishUnsubscribe()
     {
         $this->pubnub->addListener(new MySubscribePublishCallback($this->config));
-        $this->pubnub->addChannelToChannelGroup()->channels(CHANNEL)->group(GROUP)->sync();
+        $this->pubnub->addChannelToChannelGroup()->channels(CHANNEL)->channelGroup(GROUP)->sync();
         $this->pubnub->subscribe()->channelGroups(GROUP)->execute();
         $this->pubnub->removeChannelFromChannelGroup()->channelGroup(GROUP)->channels(CHANNEL)->sync();
     }

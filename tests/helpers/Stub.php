@@ -20,6 +20,9 @@ class Stub
     protected $body;
 
     /** @var  string */
+    protected $status = "HTTP/1.0 200 OK\r\n";
+
+    /** @var  string */
 
     /**
      * Stub constructor.
@@ -50,12 +53,31 @@ class Stub
     }
 
     /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * @param string $body
      * @return $this
      */
     public function setResponseBody($body)
     {
         $this->body = $body;
+
+        return $this;
+    }
+
+    /**
+     * @param string $status
+     * @return $this
+     */
+    public function setResponseStatus($status)
+    {
+        $this->status = $status;
 
         return $this;
     }

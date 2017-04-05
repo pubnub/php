@@ -15,7 +15,7 @@ class StubTransport implements \Requests_Transport {
 
         foreach ($this->stubs as $stub) {
             if ($stub->isPathMatch($parsedUrl["path"]) && $stub->isQueryMatch($parsedUrl['query'])) {
-                $response = "HTTP/1.0 200 OK\r\n";
+                $response = $stub->getStatus();
                 $response .= "Content-Type: text/plain\r\n";
                 $response .= "Connection: close\r\n\r\n";
                 $response .= $stub->getBody();
