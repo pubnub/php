@@ -3,6 +3,7 @@
 namespace Tests\Integrational;
 
 use PubNub\Endpoints\PubSub\Publish;
+use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\Models\ResponseHelpers\PNEnvelope;
@@ -91,6 +92,38 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), false);
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey', 'hey2', 'hey3']);
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
+    }
+
+    public function testPublishDoNotSerialize()
+    {
+        $response = $this->pubnub->publish()->doNotSerialize()->channel("ch1")->message("{\"message\": 2}")->sync();
+
+        $this->assertGreaterThan(0, $response->getTimetoken());
+    }
+
+    public function testPublishDoNotSerializeInvalidType()
+    {
+        $this->expectException(PubNubBuildRequestException::class);
+        $this->expectExceptionMessage("Type error, only string is expected");
+
+        $this->pubnub->publish()->doNotSerialize()->channel("ch1")->message(1)->sync();
+        $this->pubnub->publish()->doNotSerialize()->channel("ch1")->message(["key" => "value"])->sync();
+    }
+
+    public function testPublishDoNotSerializePost()
+    {
+        $response = $this->pubnub->publish()->setUsePost(true)->doNotSerialize()->channel("ch1")->message("{\"message\": 2}")->sync();
+
+        $this->assertGreaterThan(0, $response->getTimetoken());
+    }
+
+    public function testPublishDoNotSerializeInvalidTypePost()
+    {
+        $this->expectException(PubNubBuildRequestException::class);
+        $this->expectExceptionMessage("Type error, only string is expected");
+
+        $this->pubnub->publish()->setUsePost(true)->doNotSerialize()->channel("ch1")->message(1)->sync();
+        $this->pubnub->publish()->setUsePost(true)->doNotSerialize()->channel("ch1")->message(["key" => "value"])->sync();
     }
 
     public function testPublishWithMeta()

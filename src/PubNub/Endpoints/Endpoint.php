@@ -450,6 +450,10 @@ abstract class Endpoint
      * @throws PubNubResponseParsingException
      */
     protected static function fetchPayload($json) {
+        if (!boolval($json)) {
+            throw (new PubNubResponseParsingException())->setDescription("Body cannot be null");
+        }
+
         if (!array_key_exists('payload', $json)) {
             throw (new PubNubResponseParsingException())->setDescription("No payload found in response");
         } else {

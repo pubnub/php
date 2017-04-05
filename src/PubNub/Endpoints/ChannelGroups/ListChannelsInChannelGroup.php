@@ -83,11 +83,7 @@ class ListChannelsInChannelGroup extends Endpoint
      */
     protected function createResponse($json)
     {
-        if (array_key_exists('payload', $json) && array_key_exists('channels', $json['payload'])) {
-            return new PNChannelGroupsListChannelsResult($json['payload']['channels']);
-        } else {
-            return new PNChannelGroupsListChannelsResult([]);
-        }
+        return PNChannelGroupsListChannelsResult::fromPayload(static::fetchPayload($json));
     }
 
     /**

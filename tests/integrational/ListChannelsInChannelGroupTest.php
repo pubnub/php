@@ -3,10 +3,12 @@
 namespace Tests\Integrational;
 
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
+use PubNub\Exceptions\PubNubResponseParsingException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
+
 
 class ListChannelsInChannelGroupTest extends PubNubTestCase
 {
@@ -19,13 +21,13 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"groups\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
-        $response = $listChannelsInChannelGroup->sync();
+        $response = $listChannelsInChannelGroup->channelGroup("groupA")->sync();
 
-        $this->assertNotEmpty($response);
+        $this->assertEquals($response->getChannels(), ["a", "b"]);
     }
 
     public function testGroupMissing()
@@ -33,18 +35,18 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel group missing");
 
-        $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA/remove")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
-        $removeChannelGroup->sync();
+        $listChannelsInChannelGroup->sync();
     }
 
     public function testEmptyGroup()
@@ -52,35 +54,72 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel group missing");
 
-        $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA/remove")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
-        $removeChannelGroup->channelGroup("")->sync();
+        $listChannelsInChannelGroup->channelGroup("")->sync();
+    }
+
+    public function testNullPayload()
+    {
+        $this->expectException(PubNubResponseParsingException::class);
+        $this->expectExceptionMessage("Unable to parse server response: No payload found in response");
+
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+            ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => "myUUID"
+            ])
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"ChannelGroups\"}");
+
+        $this->pubnub->getConfiguration()->setUuid("myUUID");
+
+        $listChannelsInChannelGroup->channelGroup("groupA")->sync();
+    }
+
+    public function testNullBody()
+    {
+        $this->expectException(PubNubResponseParsingException::class);
+
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+            ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => "myUUID"
+            ])
+            ->setResponseBody("");
+
+        $this->pubnub->getConfiguration()->setUuid("myUUID");
+
+        $listChannelsInChannelGroup->channelGroup("groupA")->sync();
     }
 
     public function testIsAuthRequiredSuccess()
     {
-        $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA/remove")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",
                 "auth" => "myKey"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID")->setAuthKey("myKey");
 
-        $removeChannelGroup->channelGroup("groupA")->sync();
+        $listChannelsInChannelGroup->channelGroup("groupA")->sync();
     }
 }
 

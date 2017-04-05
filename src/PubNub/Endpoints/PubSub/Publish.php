@@ -5,6 +5,7 @@ namespace PubNub\Endpoints\PubSub;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\PubNubUtil;
@@ -39,6 +40,9 @@ class Publish extends Endpoint
     /** @var  bool */
     protected $replicate = true;
 
+    /** @var  bool */
+    protected $serialize = true;
+
     /**
      * @param mixed $message
      * @return $this
@@ -57,6 +61,16 @@ class Publish extends Endpoint
     public function channel($channel)
     {
         $this->channel = $channel;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function doNotSerialize()
+    {
+        $this->serialize = false;
 
         return $this;
     }
@@ -167,11 +181,20 @@ class Publish extends Endpoint
 
     /**
      * @return string
+     * @throws PubNubBuildRequestException
      */
     protected function buildData()
     {
         if ($this->usePost == true) {
-            $msg = PubNubUtil::writeValueAsString($this->message);
+            if ($this->serialize) {
+                $msg = PubNubUtil::writeValueAsString($this->message);
+            } else {
+                if (!is_string($this->message)) {
+                    throw new PubNubBuildRequestException("Type error, only string is expected");
+                } else {
+                    $msg = $this->message;
+                }
+            }
 
             if ($this->pubnub->getConfiguration()->isAesEnabled()) {
                 return '"' . $this->pubnub->getConfiguration()->getCrypto()->encrypt($msg) . '"';
@@ -185,6 +208,7 @@ class Publish extends Endpoint
 
     /**
      * @return string
+     * @throws PubNubBuildRequestException
      */
     protected function buildPath()
     {
@@ -197,7 +221,15 @@ class Publish extends Endpoint
                 0
             );
         } else {
-            $stringifiedMessage = PubNubUtil::writeValueAsString($this->message);
+            if ($this->serialize) {
+                $stringifiedMessage = PubNubUtil::writeValueAsString($this->message);
+            } else {
+                if (!is_string($this->message)) {
+                    throw new PubNubBuildRequestException("Type error, only string is expected");
+                } else {
+                    $stringifiedMessage = $this->message;
+                }
+            }
 
             if ($this->pubnub->getConfiguration()->isAesEnabled()) {
                 $stringifiedMessage = "\"" .

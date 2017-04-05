@@ -8,6 +8,7 @@ use PubNub\PubNub;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
 
+
 class RemoveChannelGroupEndpointTest extends PubNubTestCase
 {
     public function testSuccess()
