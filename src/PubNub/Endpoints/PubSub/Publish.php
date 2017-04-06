@@ -263,7 +263,7 @@ class Publish extends Endpoint
      */
     protected function createResponse($json)
     {
-        $timetoken = (int) $json[2];
+        $timetoken = floatval($json[2]);
 
         return new PNPublishResult($timetoken);
     }

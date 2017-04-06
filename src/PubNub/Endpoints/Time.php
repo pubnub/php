@@ -51,7 +51,7 @@ class Time extends Endpoint
      */
     protected function createResponse($json)
     {
-        $timetoken = (int) $json[0];
+        $timetoken = floatval($json[0]);
 
         $response = new PNTimeResult($timetoken);
 
