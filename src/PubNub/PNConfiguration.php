@@ -29,7 +29,7 @@ class PNConfiguration
     private $origin;
 
     /** @var  bool Set to true to switch the client to HTTPS:// based communications. */
-    private $secure;
+    private $secure = true;
 
     /** @var  PubNubCryptoCore */
     private $crypto;
@@ -193,6 +193,17 @@ class PNConfiguration
     public function isSecure()
     {
         return $this->secure;
+    }
+
+    /**
+     * @param $ssl
+     * @return $this
+     */
+    public function setSecure($ssl)
+    {
+        $this->secure = $ssl;
+
+        return $this;
     }
 
     /**
