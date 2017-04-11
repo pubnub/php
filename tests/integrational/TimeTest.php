@@ -5,8 +5,6 @@ namespace Tests\Integrational;
 
 class TimeTest extends \PubNubTestCase
 {
-    protected static $channel = 'pubnub_php_test';
-
     /**
      * @group time
      * @group time-integrational
