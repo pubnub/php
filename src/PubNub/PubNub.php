@@ -3,6 +3,7 @@
 namespace PubNub;
 
 use PubNub\Builders\SubscribeBuilder;
+use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Endpoints\Access\Audit;
 use PubNub\Endpoints\Access\Grant;
 use PubNub\Endpoints\Access\Revoke;
@@ -23,7 +24,7 @@ class PubNub
     const SDK_VERSION = "4.0.0-alpha";
     const SDK_NAME = "PubNub-PHP";
 
-    /** @var PNConfiguration  */
+    /** @var PNConfiguration */
     private $configuration;
 
     /** @var  BasePathManager */
@@ -44,6 +45,18 @@ class PubNub
         $this->subscriptionManager = new SubscriptionManager($this);
     }
 
+    /**
+     * Pre-configured PubNub client with demo-keys
+     * @return static
+     */
+    public static function demo()
+    {
+        return new static(PNConfiguration::demoKeys());
+    }
+
+    /**
+     * @param SubscribeCallback $listener
+     */
     public function addListener($listener)
     {
         $this->subscriptionManager->addListener($listener);

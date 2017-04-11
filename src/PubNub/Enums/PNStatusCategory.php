@@ -22,4 +22,5 @@ class PNStatusCategory
     const PNTLSConnectionFailedCategory = 15;
     const PNTLSUntrustedCertificateCategory = 16;
     const PNRequestMessageCountExceededCategory = 17;
+    const PNNoStubMatchedCategory = 18;
 }

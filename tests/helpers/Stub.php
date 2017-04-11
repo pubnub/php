@@ -74,9 +74,14 @@ class Stub
     /**
      * @param string $status
      * @return $this
+     * @throws \Exception
      */
     public function setResponseStatus($status)
     {
+        if (!is_string($status)) {
+            throw new \Exception("Stubbed status should be a string like \"HTTP/1.1 200 OK\"");
+        }
+
         $this->status = $status;
 
         return $this;

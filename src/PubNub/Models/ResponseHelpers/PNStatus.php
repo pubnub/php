@@ -12,13 +12,13 @@ class PNStatus
     /** @var  PubNubException */
     private $exception;
 
-    /** @var  PNStatusCategory */
+    /** @var  int PNStatusCategory */
     private $category;
 
     /** @var  int */
     private $statusCode;
 
-    /** @var  PNOperationType */
+    /** @var  int PNOperationType */
     private $operation;
 
     /** @var  bool */
@@ -71,7 +71,7 @@ class PNStatus
     }
 
     /**
-     * @return PNStatusCategory
+     * @return int PNStatusCategory
      */
     public function getCategory()
     {
@@ -99,14 +99,17 @@ class PNStatus
 
     /**
      * @param int $statusCode
+     * @return $this
      */
     public function setStatusCode($statusCode)
     {
         $this->statusCode = $statusCode;
+
+        return $this;
     }
 
     /**
-     * @return PNOperationType
+     * @return int PNOperationType
      */
     public function getOperation()
     {
@@ -114,11 +117,14 @@ class PNStatus
     }
 
     /**
-     * @param int $operation
+     * @param int $operation PNOperationType
+     * @return $this
      */
     public function setOperation($operation)
     {
         $this->operation = $operation;
+
+        return $this;
     }
 
     /**
@@ -131,10 +137,13 @@ class PNStatus
 
     /**
      * @param bool $tlsEnabled
+     * @return $this
      */
     public function setTlsEnabled($tlsEnabled)
     {
         $this->tlsEnabled = $tlsEnabled;
+
+        return $this;
     }
 
     /**
@@ -147,10 +156,13 @@ class PNStatus
 
     /**
      * @param string $uuid
+     * @return $this
      */
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
+
+        return $this;
     }
 
     /**
@@ -163,10 +175,13 @@ class PNStatus
 
     /**
      * @param string $authKey
+     * @return $this
      */
     public function setAuthKey($authKey)
     {
         $this->authKey = $authKey;
+
+        return $this;
     }
 
     /**
@@ -179,10 +194,13 @@ class PNStatus
 
     /**
      * @param string $origin
+     * @return $this
      */
     public function setOrigin($origin)
     {
         $this->origin = $origin;
+
+        return $this;
     }
 
     /**
@@ -195,10 +213,13 @@ class PNStatus
 
     /**
      * @param \Requests_Response $originalResponse
+     * @return $this
      */
     public function setOriginalResponse($originalResponse)
     {
         $this->originalResponse = $originalResponse;
+
+        return $this;
     }
 
     /**
@@ -211,10 +232,13 @@ class PNStatus
 
     /**
      * @param array|null $affectedChannels
+     * @return $this
      */
     public function setAffectedChannels($affectedChannels)
     {
         $this->affectedChannels = $affectedChannels;
+
+        return $this;
     }
 
     /**
@@ -227,9 +251,12 @@ class PNStatus
 
     /**
      * @param array|null $affectedChannelGroups
+     * @return $this
      */
     public function setAffectedChannelGroups($affectedChannelGroups)
     {
         $this->affectedChannelGroups = $affectedChannelGroups;
+
+        return $this;
     }
 }

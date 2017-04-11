@@ -3,6 +3,7 @@
 namespace PubNub\Managers;
 
 
+use PubNub\Exceptions\PubNubResponseParsingException;
 use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Builders\DTO\SubscribeOperation;
 use PubNub\Builders\DTO\UnsubscribeOperation;
@@ -58,6 +59,8 @@ class SubscriptionManager
             $combinedChannelGroups = $this->subscriptionState->prepareChannelGroupList(true);
 
             if (empty($combinedChannels) && empty($combinedChannelGroups)) {
+                $pnStatus = (new PNStatus())->setCategory(PNStatusCategory::PNCancelledCategory);
+                $this->listenerManager->announceStatus($pnStatus);
                 return;
             }
 
@@ -74,20 +77,37 @@ class SubscriptionManager
                 if ($e->getStatus()->getCategory() === PNStatusCategory::PNTimeoutCategory) {
                     continue;
                 }
-                // TODO: announce status
+
+                // TODO: ensure this happens when an already established radio / connectivity is lost
+                $pnStatus = $e->getStatus();
+                $pnStatus->setCategory(PNStatusCategory::PNUnexpectedDisconnectCategory);
+                $this->listenerManager->announceStatus($pnStatus);
                 return;
             } catch (PubNubServerException $e) {
+                $pnStatus = $e->getStatus();
+
                 if ($e->getStatusCode() === 403) {
-                    $pnStatus = (new PNStatus())->setCategory(PNStatusCategory::PNAccessDeniedCategory);
-                    $this->listenerManager->announceStatus($pnStatus);
+                    $pnStatus->setCategory(PNStatusCategory::PNAccessDeniedCategory);
+                } else if ($e->getStatusCode() === 400) {
+                    $pnStatus->setCategory(PNStatusCategory::PNBadRequestCategory);
+                } else if ($e->getStatusCode() === 530) {
+                    $pnStatus->setCategory(PNStatusCategory::PNNoStubMatchedCategory);
+                } else {
+                    $pnStatus->setCategory(PNStatusCategory::PNUnknownCategory);
                 }
-                // TODO: announce status
+
+                $this->listenerManager->announceStatus($pnStatus);
                 return;
+            } catch (PubNubResponseParsingException $e) {
+                $pnStatus = $e->getStatus();
+                $pnStatus->setCategory(PNStatusCategory::PNMalformedResponseCategory);
+                $this->listenerManager->announceStatus($pnStatus);
             } catch (\Exception $e) {
-                // TODO: announce status
+                $pnStatus = (new PNStatus())
+                    ->setCategory(PNStatusCategory::PNUnknownCategory);
+                $this->listenerManager->announceStatus($pnStatus);
                 return;
             }
-            // TODO Handle connect event
 
             if (!$this->subscriptionStatusAnnounced) {
                 $pnStatus = (new PNStatus())->setCategory(PNStatusCategory::PNConnectedCategory);

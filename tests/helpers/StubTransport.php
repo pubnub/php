@@ -10,7 +10,11 @@ class StubTransport implements \Requests_Transport {
     /** @var Stub[]  */
     protected $stubs = [];
 
+    protected $requestsCountInt = 0;
+
     public function request($url, $headers = array(), $data = array(), $options = array()) {
+        $this->requestsCountInt++;
+
         $parsedUrl = parse_url($url);
 
         foreach ($this->stubs as $stub) {
@@ -24,7 +28,7 @@ class StubTransport implements \Requests_Transport {
             }
         }
 
-        $response = "HTTP/1.0 530 No Stubs Matched\r\n";
+        $response = "HTTP/1.0 530 No Stub Matched\r\n";
         $response .= "Content-Type: text/plain\r\n";
         $response .= "Connection: close\r\n\r\n";
 
@@ -33,6 +37,14 @@ class StubTransport implements \Requests_Transport {
         $response .= "Existing stubs:\n" . join("\n", $this->stubs) . "\n\n";
 
         return $response;
+    }
+
+    /**
+     * @return int
+     */
+    public function requestsCount()
+    {
+        return $this->requestsCountInt;
     }
 
     /**

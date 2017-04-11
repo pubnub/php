@@ -3,6 +3,8 @@
 namespace PubNub;
 
 use PubNub\Exceptions\PubNubValidationException;
+use Requests_Transport;
+
 
 class PNConfiguration
 {
@@ -45,6 +47,9 @@ class PNConfiguration
 
     /** @var  int */
     protected $subscribeTimeout;
+
+    /** @var  Requests_Transport */
+    protected $transport;
 
     /**
      * PNConfiguration constructor.
@@ -325,5 +330,24 @@ class PNConfiguration
     public function setSubscribeTimeout($subscribeTimeout)
     {
         $this->subscribeTimeout = $subscribeTimeout;
+    }
+
+    /**
+     * @return Requests_Transport
+     */
+    public function getTransport()
+    {
+        return $this->transport;
+    }
+
+    /**
+     * @param Requests_Transport $transport
+     * @return $this
+     */
+    public function setTransport($transport)
+    {
+        $this->transport = $transport;
+
+        return $this;
     }
 }

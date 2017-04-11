@@ -2,9 +2,9 @@
 
 namespace PubNub\Builders;
 
-
 use PubNub\Managers\SubscriptionManager;
 use PubNub\PubNubUtil;
+
 
 abstract class PubSubBuilder
 {
@@ -40,12 +40,38 @@ abstract class PubSubBuilder
     }
 
     /**
+     * Alias for channels method
+     *
+     * @param string|string[] $channel
+     * @return $this
+     */
+    public function channel($channel)
+    {
+        $this->channels($channel);
+
+        return $this;
+    }
+
+    /**
      * @param string|string[] $channelGroup
      * @return $this
      */
     public function channelGroups($channelGroup)
     {
         $this->channelGroupSubscriptions = PubNubUtil::extendArray($this->channelGroupSubscriptions, $channelGroup);
+
+        return $this;
+    }
+
+    /**
+     * Alias for channelGroups method
+     *
+     * @param string|string[] $channelGroup
+     * @return $this
+     */
+    public function channelGroup($channelGroup)
+    {
+        $this->channelGroups($channelGroup);
 
         return $this;
     }

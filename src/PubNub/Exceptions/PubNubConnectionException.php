@@ -6,7 +6,7 @@ namespace PubNub\Exceptions;
 class PubNubConnectionException extends PubNubException
 {
     /** @var  \Exception */
-    private $originalException;
+    protected $originalException;
 
     /**
      * @return \Exception
@@ -23,6 +23,7 @@ class PubNubConnectionException extends PubNubException
     public function setOriginalException($originalException)
     {
         $this->originalException = $originalException;
+        $this->message = $originalException->getMessage();
 
         return $this;
     }

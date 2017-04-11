@@ -2,9 +2,9 @@
 
 namespace PubNub\Models\Consumer\PubSub;
 
-
 use PubNub\Models\Server\SubscribeMessage;
 use PubNub\Models\Server\SubscribeMetadata;
+
 
 class SubscribeEnvelope
 {

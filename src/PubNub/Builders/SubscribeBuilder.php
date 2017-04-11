@@ -8,7 +8,7 @@ use PubNub\Builders\DTO\SubscribeOperation;
 class SubscribeBuilder extends PubSubBuilder
 {
     /** @var  bool */
-    protected $presenceEnabled;
+    protected $presenceEnabled = false;
 
     /** @var  int */
     protected $timetoken;

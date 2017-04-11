@@ -255,6 +255,12 @@ abstract class Endpoint
             'connect_timeout' => $this->getConnectTimeout()
         ];
 
+        $transport = $this->pubnub->getConfiguration()->getTransport();
+
+        if ($transport) {
+            $options['transport'] = $transport;
+        }
+
         return $options;
     }
 
@@ -312,6 +318,7 @@ abstract class Endpoint
             if ($e->getType() === 'curlerror' && strpos($e->getMessage(), "cURL error 28") === 0) {
                 $statusCategory = PNStatusCategory::PNTimeoutCategory;
             }
+
             return new PNEnvelope(null, $this->createStatus(
                 $statusCategory,
                 null,
@@ -402,11 +409,11 @@ abstract class Endpoint
     /**
      * @param int{PNStatusCategory::PNUnknownCategory..PNStatusCategory::PNRequestMessageCountExceededCategory} $category
      * @param $response
-     * @param ResponseInfo $responseInfo
+     * @param ResponseInfo | null $responseInfo
      * @param PubNubException | null $exception
      * @return PNStatus
      */
-    private function createStatus($category, $response, ResponseInfo $responseInfo, $exception)
+    private function createStatus($category, $response, $responseInfo, $exception)
     {
         $pnStatus = new PNStatus();
 
