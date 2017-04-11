@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNub\Endpoints\Presence\Server;
+namespace PubNub\Models\Server;
 
 /**
  * Class PresenceEnvelope
@@ -57,7 +57,7 @@ class PresenceEnvelope
             $json['uuid'],
             $json['occupancy'],
             $json['timestamp'],
-            ($json['data'] !== null) ? $json['data'] : null
+            array_key_exists("data", $json) ? $json['data'] : null
         );
     }
 

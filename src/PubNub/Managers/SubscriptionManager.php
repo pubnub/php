@@ -3,13 +3,13 @@
 namespace PubNub\Managers;
 
 
-use PNPresenceEventResult;
+use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Builders\DTO\SubscribeOperation;
 use PubNub\Builders\DTO\UnsubscribeOperation;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Endpoints\Presence\Leave;
-use PubNub\Endpoints\Presence\Server\PresenceEnvelope;
 use PubNub\Exceptions\PubNubUnsubscribeException;
+use PubNub\Models\Server\PresenceEnvelope;
 use PubNub\Models\Server\SubscribeMessage;
 use PubNub\Endpoints\PubSub\Subscribe;
 use PubNub\Enums\PNStatusCategory;
@@ -74,15 +74,16 @@ class SubscriptionManager
                 if ($e->getStatus()->getCategory() === PNStatusCategory::PNTimeoutCategory) {
                     continue;
                 }
-                print_r($e->getMessage());
                 // TODO: announce status
                 return;
             } catch (PubNubServerException $e) {
-                print_r($e->getMessage());
+                if ($e->getStatusCode() === 403) {
+                    $pnStatus = (new PNStatus())->setCategory(PNStatusCategory::PNAccessDeniedCategory);
+                    $this->listenerManager->announceStatus($pnStatus);
+                }
                 // TODO: announce status
                 return;
             } catch (\Exception $e) {
-                print_r($e->getMessage());
                 // TODO: announce status
                 return;
             }
@@ -156,11 +157,17 @@ class SubscriptionManager
         $this->listenerManager->removeListener($listener);
     }
 
+    /**
+     * @return \string[]
+     */
     public function getSubscribedGroups()
     {
         return $this->subscriptionState->prepareChannelList(false);
     }
 
+    /**
+     * @return \string[]
+     */
     public function getSubscribedChannelGroups()
     {
         return $this->subscriptionState->prepareChannelGroupList(false);

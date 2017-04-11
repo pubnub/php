@@ -356,7 +356,7 @@ abstract class Endpoint
         );
 
         if ($request->status_code == 200) {
-            // NOTICE: 1 == JSON_OBJECT_AS_ARRAY
+            // NOTICE: 1 == JSON_OBJECT_AS_ARRAY (hhvm doesn't support this constant)
             $parsedJSON = json_decode($request->body, true, 512, 1);
 
             if (json_last_error()) {

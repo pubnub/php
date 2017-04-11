@@ -1,5 +1,8 @@
 <?php
 
+namespace PubNub\Models\Consumer\PubSub;
+
+
 class PNPresenceEventResult
 {
     /** @var  String */
