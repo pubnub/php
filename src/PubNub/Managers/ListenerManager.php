@@ -4,8 +4,9 @@ namespace PubNub\Managers;
 
 
 use PubNub\Callbacks\SubscribeCallback;
-use PubNub\Exceptions\PubNubSubscriptionLoopBreak;
+use PubNub\Exceptions\PubNubUnsubscribeException;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
+use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 
@@ -48,9 +49,9 @@ class ListenerManager
 
     /**
      * @param PNStatus $status
-     * @throws PubNubSubscriptionLoopBreak
+     * @throws PubNubUnsubscribeException
      */
-    public function announceStatus($status)
+    public function announceStatus(PNStatus $status)
     {
         foreach ($this->listeners as $listener) {
             $listener->status($this->pubnub, $status);
@@ -59,9 +60,9 @@ class ListenerManager
 
     /**
      * @param PNMessageResult $message
-     * @throws PubNubSubscriptionLoopBreak
+     * @throws PubNubUnsubscribeException
      */
-    public function announceMessage($message)
+    public function announceMessage(PNMessageResult $message)
     {
         foreach ($this->listeners as $listener) {
             $listener->message($this->pubnub, $message);
@@ -69,11 +70,10 @@ class ListenerManager
     }
 
     /**
-     * // TODO: add PNPresenceEventResult.php type
-     * @param $presence
-     * @throws PubNubSubscriptionLoopBreak
+     * @param PNPresenceEventResult $presence
+     * @throws PubNubUnsubscribeException
      */
-    public function announcePresence($presence)
+    public function announcePresence(PNPresenceEventResult $presence)
     {
         foreach ($this->listeners as $listener) {
             $listener->presence($this->pubnub, $presence);
