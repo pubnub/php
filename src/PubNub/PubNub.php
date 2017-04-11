@@ -63,6 +63,14 @@ class PubNub
     }
 
     /**
+     * @param SubscribeCallback $listener
+     */
+    public function removeListener($listener)
+    {
+        $this->subscriptionManager->removeListener($listener);
+    }
+
+    /**
      * @return Publish
      */
     public function publish()
