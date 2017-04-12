@@ -103,6 +103,8 @@ class SubscriptionManager
                 $pnStatus->setCategory(PNStatusCategory::PNMalformedResponseCategory);
                 $this->listenerManager->announceStatus($pnStatus);
             } catch (\Exception $e) {
+                $this->pubnub->getLogger()->error('Subscription Manager loop: ' . $e->getMessage());
+
                 $pnStatus = (new PNStatus())
                     ->setCategory(PNStatusCategory::PNUnknownCategory);
                 $this->listenerManager->announceStatus($pnStatus);
@@ -250,7 +252,7 @@ class SubscriptionManager
             $publisher = $message->getIssuingClientId();
 
             if ($extractedMessage === null) {
-                // TODO implement logger
+                $this->pubnub->getLogger()->debug("unable to parse payload on #processIncomingMessages");
             }
 
             $pnMessageResult = new PNMessageResult(

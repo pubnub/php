@@ -310,10 +310,13 @@ class PNConfiguration
 
     /**
      * @param int $nonSubscribeRequestTimeout
+     * @return $this
      */
     public function setNonSubscribeRequestTimeout($nonSubscribeRequestTimeout)
     {
         $this->nonSubscribeRequestTimeout = $nonSubscribeRequestTimeout;
+
+        return $this;
     }
 
     /**
@@ -326,10 +329,13 @@ class PNConfiguration
 
     /**
      * @param int $subscribeTimeout
+     * @return $this
      */
     public function setSubscribeTimeout($subscribeTimeout)
     {
         $this->subscribeTimeout = $subscribeTimeout;
+
+        return $this;
     }
 
     /**
@@ -350,4 +356,5 @@ class PNConfiguration
 
         return $this;
     }
+
 }

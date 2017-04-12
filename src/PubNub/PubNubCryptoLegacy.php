@@ -22,7 +22,7 @@ class PubNubCryptoLegacy extends PubNubCryptoCore {
         return $encode;
     }
 
-    public function decrypt($cipherText) {
+    public function decrypt($cipherText, $logger = null) {
         if (gettype($cipherText) != "string")
             return "DECRYPTION_ERROR";
         $decoded = base64_decode($cipherText);

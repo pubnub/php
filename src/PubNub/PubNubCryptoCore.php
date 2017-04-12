@@ -3,6 +3,8 @@
 namespace PubNub;
 
 
+use Monolog\Logger;
+
 abstract class PubNubCryptoCore{
     /** @var  string */
     protected $cipherKey;
@@ -10,14 +12,23 @@ abstract class PubNubCryptoCore{
     /** @var  string */
     protected $initializationVector;
 
-    public function __construct($key, $initializationVector="0123456789012345")
+    public function __construct($key, $initializationVector = "0123456789012345")
     {
         $this->cipherKey = $key;
         $this->initializationVector = $initializationVector;
     }
 
-    abstract function decrypt($cipherText);
+    /**
+     * @param string | object $cipherText
+     * @param Logger | null $logger
+     * @return mixed
+     */
+    abstract function decrypt($cipherText, $logger = null);
 
+    /**
+     * @param mixed $plainText
+     * @return mixed
+     */
     abstract function encrypt($plainText);
 
     /**

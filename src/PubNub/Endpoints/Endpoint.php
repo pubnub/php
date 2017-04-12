@@ -285,10 +285,10 @@ abstract class Endpoint
             $method = \Requests::POST;
         }
 
-        $this->pubnub->getLogger()->debug($method . " " . $url);
+        $this->pubnub->getLogger()->debug($method . " " . $url, ['method' => $this->getName()]);
 
         if ($data) {
-            $this->pubnub->getLogger()->debug("Body:\n" . $data);
+            $this->pubnub->getLogger()->debug("Body:\n" . $data, ['method' => $this->getName()]);
         }
 
         $statusCategory = PNStatusCategory::PNUnknownCategory;
@@ -296,7 +296,8 @@ abstract class Endpoint
         try {
             $request = \Requests::request($url, $headers, $data, $method, $options);
         } catch (\Requests_Exception_HTTP_Unknown $e) {
-            // TODO: build exception
+            $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
+
             return new PNEnvelope($e->getData(), $this->createStatus(
                 $statusCategory,
                 null,
@@ -304,7 +305,8 @@ abstract class Endpoint
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
         } catch (\Requests_Exception_Transport_cURL  $e) {
-            // TODO: build exception
+            $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
+
             return new PNEnvelope($e->getData(), $this->createStatus(
                 $statusCategory,
                 null,
@@ -312,7 +314,8 @@ abstract class Endpoint
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
         } catch (\Requests_Exception_HTTP $e) {
-            // TODO: build exception
+            $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
+
             return new PNEnvelope($e->getData(), $this->createStatus(
                 $statusCategory,
                 null,
@@ -324,6 +327,8 @@ abstract class Endpoint
                 $statusCategory = PNStatusCategory::PNTimeoutCategory;
             }
 
+            $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
+
             return new PNEnvelope(null, $this->createStatus(
                 $statusCategory,
                 null,
@@ -331,7 +336,8 @@ abstract class Endpoint
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
         } catch (\Exception $e) {
-            // TODO: build exception
+            $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
+
             return new PNEnvelope(null, $this->createStatus(
                 $statusCategory,
                 null,
@@ -368,10 +374,16 @@ abstract class Endpoint
         );
 
         if ($request->status_code == 200) {
+            $this->pubnub->getLogger()->debug("Response body: " . $request->body,
+                ['method' => $this->getName(), 'statusCode' => $request->status_code]);
+
             // NOTICE: 1 == JSON_OBJECT_AS_ARRAY (hhvm doesn't support this constant)
             $parsedJSON = json_decode($request->body, true, 512, 1);
 
             if (json_last_error()) {
+                $this->pubnub->getLogger()->error("Unable to decode JSON body: " . $request->body,
+                    ['method' => $this->getName()]);
+
                 return new PNEnvelope(null, $this->createStatus(
                     $statusCategory,
                     $request->body,
@@ -386,6 +398,9 @@ abstract class Endpoint
                 $this->createStatus($statusCategory, $request->body, $responseInfo, null)
             );
         } else {
+            $this->pubnub->getLogger()->warning("Response error: " . $request->body,
+                ['method' => $this->getName(), 'statusCode' => $request->status_code]);
+
             switch ($request->status_code) {
                 case 400:
                     $statusCategory = PNStatusCategory::PNBadRequestCategory;

@@ -12,6 +12,7 @@ class CryptoTest extends TestCase
      */
     public function testOpenSSL_AES()
     {
+        $logger = new \Monolog\Logger('CryptoTest');
         $toDecode = "QfD1NCBJCmt1aPPGU2cshw==";
         $key = "testKey";
         $crypto = new \PubNub\PubNubCrypto($key);
@@ -24,10 +25,10 @@ class CryptoTest extends TestCase
         ";
 
 
-        $this->assertEquals($hey, $crypto->decrypt($crypto->encrypt($hey)));
+        $this->assertEquals($hey, $crypto->decrypt($crypto->encrypt($hey), $logger));
 
         // NOTICE: The original encoded message is wrapped into quotes which are stripped out inside the decrypt method
-        $this->assertEquals("hey-0", $crypto->decrypt($toDecode));
+        $this->assertEquals("hey-0", $crypto->decrypt($toDecode, $logger));
     }
 
     /**
@@ -37,6 +38,7 @@ class CryptoTest extends TestCase
      */
     public function testMcrypt_AES()
     {
+        $logger = new \Monolog\Logger('CryptoTest');
         $toDecode = "QfD1NCBJCmt1aPPGU2cshw==";
         $key = "testKey";
         $crypto = new \PubNub\PubNubCryptoLegacy($key);
