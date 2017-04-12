@@ -17,6 +17,7 @@ use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use Requests_Exception;
 
+
 abstract class Endpoint
 {
     /** @var  PubNub */
@@ -277,19 +278,23 @@ abstract class Endpoint
             $this->buildParams()
         );
         $data = $this->buildData();
-        $type = \Requests::GET;
+        $method = \Requests::GET;
         $options = $this->requestOptions();
 
         if ($this->httpMethod() == PNHttpMethod::POST) {
-            $type = \Requests::POST;
+            $method = \Requests::POST;
         }
 
-        // TODO: log url
-//        print_r("URL: " . $url . "\n");
+        $this->pubnub->getLogger()->debug($method . " " . $url);
+
+        if ($data) {
+            $this->pubnub->getLogger()->debug("Body:\n" . $data);
+        }
+
         $statusCategory = PNStatusCategory::PNUnknownCategory;
 
         try {
-            $request = \Requests::request($url, $headers, $data, $type, $options);
+            $request = \Requests::request($url, $headers, $data, $method, $options);
         } catch (\Requests_Exception_HTTP_Unknown $e) {
             // TODO: build exception
             return new PNEnvelope($e->getData(), $this->createStatus(

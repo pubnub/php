@@ -59,6 +59,10 @@ abstract class PubNubTestCase extends TestCase
         $this->pubnub_enc = new PubNub($this->config_enc);
         $this->pubnub_pam = new PubNub($this->config_pam);
 
+        $this->pubnub->getLogger()->pushHandler(new \Monolog\Handler\ErrorLogHandler());
+        $this->pubnub_enc->getLogger()->pushHandler(new \Monolog\Handler\ErrorLogHandler());
+        $this->pubnub_pam->getLogger()->pushHandler(new \Monolog\Handler\ErrorLogHandler());
+
         $this->encodedSdkName = PubNubUtil::urlEncode($this->pubnub->getSdkFullName());
     }
 }

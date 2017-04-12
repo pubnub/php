@@ -2,6 +2,7 @@
 
 namespace PubNub;
 
+use Monolog\Logger;
 use PubNub\Builders\SubscribeBuilder;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Endpoints\Access\Audit;
@@ -19,19 +20,23 @@ use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
 
+
 class PubNub
 {
     const SDK_VERSION = "4.0.0-alpha";
     const SDK_NAME = "PubNub-PHP";
 
     /** @var PNConfiguration */
-    private $configuration;
+    protected $configuration;
 
     /** @var  BasePathManager */
-    private $basePathManager;
+    protected $basePathManager;
 
     /** @var  SubscriptionManager */
-    private $subscriptionManager;
+    protected $subscriptionManager;
+
+    /** @var  Logger */
+    protected $logger;
 
     /**
      * PNConfiguration constructor.
@@ -43,6 +48,7 @@ class PubNub
         $this->configuration = $initialConfig;
         $this->basePathManager = new BasePathManager($initialConfig);
         $this->subscriptionManager = new SubscriptionManager($this);
+        $this->logger = new Logger('PubNub');
     }
 
     /**
@@ -224,5 +230,21 @@ class PubNub
     public function getBasePath()
     {
         return $this->basePathManager->getBasePath();
+    }
+
+    /**
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param Logger $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
     }
 }
