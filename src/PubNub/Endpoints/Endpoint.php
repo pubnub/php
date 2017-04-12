@@ -143,9 +143,6 @@ abstract class Endpoint
         $params['pnsdk'] = "PubNub-PHP/" . $this->pubnub->getSdkVersion();
         $params['uuid'] = $config->getUuid();
 
-        // TODO: check for instance identifier
-        // TODO: check for request identifier
-
         if ($this->isAuthRequired() && $config->getAuthKey()) {
             $params['auth'] = $config->getAuthKey();
         }
@@ -184,13 +181,18 @@ abstract class Endpoint
             );
         }
 
+        if ($this->getOperationType() == PNOperationType::PNPublishOperation
+            && array_key_exists('state', $this->customParams())) {
+            $params['meta'] = PubNubUtil::urlEncode($params['meta']);
+        }
+
         if ($this->getOperationType() == PNOperationType::PNSetStateOperation
             && array_key_exists('state', $this->customParams())) {
             $params['state'] = PubNubUtil::urlEncode($params['state']);
         }
 
         $params['pnsdk'] = PubNubUtil::urlEncode($params['pnsdk']);
-        // TODO: publish meta should be encoded here
+
         // TODO: pnsdk should be reassigned here
         return $params;
     }
@@ -379,6 +381,7 @@ abstract class Endpoint
 
             // NOTICE: 1 == JSON_OBJECT_AS_ARRAY (hhvm doesn't support this constant)
             $parsedJSON = json_decode($request->body, true, 512, 1);
+            $errorMessage = json_last_error_msg();
 
             if (json_last_error()) {
                 $this->pubnub->getLogger()->error("Unable to decode JSON body: " . $request->body,
@@ -390,7 +393,7 @@ abstract class Endpoint
                     $responseInfo,
                     (new PubNubResponseParsingException())
                         ->setResponseString($request->body)
-                        ->setDescription(json_last_error_msg())
+                        ->setDescription($errorMessage)
                 ));
             }
 

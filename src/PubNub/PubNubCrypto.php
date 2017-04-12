@@ -29,8 +29,13 @@ class PubNubCrypto extends PubNubCryptoCore {
             if (array_key_exists("pn_other", $cipherText)) {
                 $cipherText = $cipherText["pn_other"];
             } else {
-                $logError("Decryption error: pn_other object key missing: " . $cipherText);
-                throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
+                if (is_array($cipherText)) {
+                    $logError("Decryption error: message is not a string or object");
+                    throw new PubNubResponseParsingException("Decryption error: message is not a string");
+                } else {
+                    $logError("Decryption error: pn_other object key missing: " . $cipherText);
+                    throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
+                }
             }
         } else if (!is_string($cipherText)) {
             $logError("Decryption error: message is not a string: " . $cipherText);
