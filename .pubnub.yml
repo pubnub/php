@@ -42,3 +42,17 @@ features:
   - SUBSCRIBE-WITH-TIMETOKEN
   - SUBSCRIBE-WILDCARD
   - SUBSCRIBE-PUBLISHER-UUID
+
+supported-platforms:
+  -
+    version: PubNub PHP SDK
+    platforms:
+      - FreeBSD 8-STABLE or later, amd64, 386
+      - Linux 2.6 or later, amd64, 386.
+      - Mac OS X 10.8 or later, amd64
+      - Windows 7 or later, amd64, 386
+    editors:
+      - php 5.6
+      - php 7.0
+      - php 7.1
+      - hhvm
