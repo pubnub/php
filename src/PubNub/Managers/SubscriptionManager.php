@@ -260,7 +260,6 @@ class SubscriptionManager
                 $channel,
                 $subscriptionMatch,
                 $publishMetadata->getPublishTimetoken(),
-                $message->getPublishMetaData(),
                 $publisher
             );
 

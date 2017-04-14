@@ -42,7 +42,7 @@ class SubscribeWildCardTest extends PubNubTestCase
                 "uuid" => "myUUID"
             ])
             ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"t":{"t":"14818963588185526","r":12},"m":[{"a":"2","f":0,"p":{"t":"14818963587725382","r":2},"k":"demo","c":"channel.one","d":{"action": "join", "timestamp": 1481896358, "uuid": "test-subscribe-listener", "occupancy": 1}, "b": "channel.*"}]}');
+            ->setResponseBody('{"t":{"t":"14921661962885137","r":12},"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c","p":{"t":"14921661962867845","r":12},"k":"sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe","c":"channels.one","u":{},"d":{"text":"hey"},"b":"channels.*"}]}');
 
         $callback = new MySubscribeCallbackToTestWildCard();
 
@@ -91,12 +91,16 @@ class MySubscribeCallbackToTestWildCard extends SubscribeCallback
      */
     function message($pubnub, $message)
     {
-        if ($message->getChannel() !== 'channel.one') {
-            throw new \PHPUnit_Framework_AssertionFailedError("Actual channel " . $message->getChannel() . " doesn't match expected channel.one" );
+        if ($message->getChannel() !== 'channels.one') {
+            throw new \PHPUnit_Framework_AssertionFailedError("Actual channel " . $message->getChannel() . " doesn't match expected channels.one" );
         }
 
-        if ($message->getSubscription() !== 'channel.*') {
-            throw new \PHPUnit_Framework_AssertionFailedError("Actual subscription " . $message->getChannel() . " doesn't match expected channel.one" );
+        if ($message->getSubscription() !== 'channels.*') {
+            throw new \PHPUnit_Framework_AssertionFailedError("Actual subscription " . $message->getChannel() . " doesn't match expected channels.one" );
+        }
+
+        if ($message->getPublisher() !== 'eda482a8-9de3-4891-b328-b2c1d14f210c') {
+            throw new \PHPUnit_Framework_AssertionFailedError("Actual uuid " . $message->getPublisher() . " doesn't match expected eda482a8-9de3-4891-b328-b2c1d14f210c");
         }
 
         throw new PubNubUnsubscribeException();
@@ -104,6 +108,5 @@ class MySubscribeCallbackToTestWildCard extends SubscribeCallback
 
     function presence($pubnub, $presence)
     {
-        print_r('message');
     }
 }

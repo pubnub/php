@@ -61,6 +61,7 @@ class SubscribePresenceTest extends PubNubTestCase
     }
 }
 
+
 class MySubscribeCallbackToTestPresence extends SubscribeCallback
 {
     protected $connectedInvoked = false;
@@ -93,7 +94,6 @@ class MySubscribeCallbackToTestPresence extends SubscribeCallback
      */
     function message($pubnub, $message)
     {
-        print_r('message');
     }
 
     function presence($pubnub, $presence)

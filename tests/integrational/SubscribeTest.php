@@ -135,6 +135,7 @@ class MySubscribePublishCallback extends SubscribeCallback
     }
 }
 
+
 class PublishThread extends \Thread {
     /** @var  PNConfiguration */
     protected $config;
@@ -164,5 +165,3 @@ class PublishThread extends \Thread {
     {
     }
 }
-
-
