@@ -100,6 +100,14 @@ class Grant extends Endpoint
     }
 
     /**
+     * Set time in minutes for which granted permissions are valid
+     *
+     * Max: 525600
+     * Min: 1
+     * Default: 1440
+     *
+     * Setting 0 will apply the grant indefinitely (forever grant).
+     *
      * @param int $value
      * @return $this
      */
@@ -154,8 +162,8 @@ class Grant extends Endpoint
             $params["channel-group"] = PubNubUtil::joinItems($this->groups);
         }
 
-        if ($this->ttl > 0) {
-            $params["ttl"] = (string)$this->ttl;
+        if ($this->ttl !== null && $this->ttl >= -1) {
+            $params["ttl"] = (string) $this->ttl;
         }
 
         $params['timestamp'] = strval($this->pubnub->timestamp());

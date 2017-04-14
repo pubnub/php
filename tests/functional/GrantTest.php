@@ -69,8 +69,7 @@ class GrantTest extends \PubNubTestCase
     {
         $this->grant->channelGroups(['gr1', 'gr2'])
             ->read(true)
-            ->write(false)
-            ->ttl(7);
+            ->write(false);
 
         $this->assertEquals(
             sprintf(Grant::PATH, $this->config_pam->getSubscribeKey()),
@@ -82,7 +81,6 @@ class GrantTest extends \PubNubTestCase
             'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
             'r' => '1',
             'w' => '0',
-            'ttl' => '7',
             'timestamp' => '123',
             'channel-group' => 'gr1,gr2',
             'signature' => PubNubUtil::signSha256(
@@ -91,7 +89,6 @@ class GrantTest extends \PubNubTestCase
                 "grant\n" . PubNubUtil::preparePamParams([
                     "r" => "1",
                     "w" => "0",
-                    "ttl" => "7",
                     "timestamp" => "123",
                     "channel-group" => "gr1,gr2",
                     "pnsdk" => PubNub::getSdkFullName(),
