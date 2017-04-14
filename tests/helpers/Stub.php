@@ -38,7 +38,7 @@ class Stub
         $queryString = $this->queryString();
 
         if ($queryString) {
-            return $this->path . '&' . $this->queryString();
+            return $this->path . '?' . $this->queryString();
         } else {
             return $this->path;
         }
