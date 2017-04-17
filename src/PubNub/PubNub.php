@@ -16,6 +16,9 @@ use PubNub\Endpoints\History;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Endpoints\PubSub\Publish;
+use PubNub\Endpoints\Push\AddChannelsToPush;
+use PubNub\Endpoints\Push\RemoveChannelsFromPush;
+use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
@@ -178,6 +181,30 @@ class PubNub
     public function time()
     {
         return new Time($this);
+    }
+
+    /**
+     * @return AddChannelsToPush
+     */
+    public function addChannelsToPush()
+    {
+        return new AddChannelsToPush($this);
+    }
+
+    /**
+     * @return RemoveChannelsFromPush
+     */
+    public function removeChannelsFromPush()
+    {
+        return new RemoveChannelsFromPush($this);
+    }
+
+    /**
+     * @return RemoveDeviceFromPush
+     */
+    public function RemoveAllPushChannelsForDevice()
+    {
+        return new RemoveDeviceFromPush($this);
     }
 
     /**

@@ -2,9 +2,8 @@
 
 namespace PubNub;
 
-
 use PubNub\Exceptions\PubNubBuildRequestException;
-use PubNub\Exceptions\PubNubValidationException;
+
 
 class PubNubUtil
 {
