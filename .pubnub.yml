@@ -1,7 +1,25 @@
 name: php
-version: 4.0.0-alpha
+version: 4.0.0-beta
 schema: 1
 scm: github.com/pubnub/php
+changelog:
+  - version: 4.0.0-beta
+    date:
+    changes:
+      - type: bug
+        text: Fix windows compatibility
+      - type: improvement
+        text: Add option to disable SSL
+      - type: bug
+        text: Fix subscribe presence response parsing
+      - type: bug
+        text: Add missing removeListener()
+      - type: improvement
+        text: Add logger
+      - type: bug
+        text: Fix json decoding error
+      - type: improvement
+        text: Add Push methods
 changelog:
   - version: 4.0.0-alpha
     date:
