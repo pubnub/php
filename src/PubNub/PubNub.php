@@ -13,10 +13,13 @@ use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
+use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\HereNow;
+use PubNub\Endpoints\Presence\SetState;
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Endpoints\Push\AddChannelsToPush;
+use PubNub\Endpoints\Push\ListPushProvisions;
 use PubNub\Endpoints\Push\RemoveChannelsFromPush;
 use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Endpoints\Time;
@@ -202,9 +205,17 @@ class PubNub
     /**
      * @return RemoveDeviceFromPush
      */
-    public function RemoveAllPushChannelsForDevice()
+    public function removeAllPushChannelsForDevice()
     {
         return new RemoveDeviceFromPush($this);
+    }
+
+    /**
+     * @return ListPushProvisions
+     */
+    public function listPushProvisions()
+    {
+        return new ListPushProvisions($this);
     }
 
     /**
@@ -273,5 +284,21 @@ class PubNub
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @return GetState
+     */
+    public function getState()
+    {
+        return new GetState($this);
+    }
+
+    /**
+     * @return SetState
+     */
+    public function setState()
+    {
+        return new SetState($this);
     }
 }
