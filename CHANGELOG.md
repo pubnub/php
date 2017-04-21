@@ -1,3 +1,8 @@
+## [v4.0.0-beta.2](https://github.com/pubnub/php/tree/v4.0.0-beta.2)
+
+- 🐛Add missing methods on PubNub instance
+- 🐛Fix removeAllPushChannelsForDevice method case
+
 ## [v4.0.0-beta](https://github.com/pubnub/php/tree/v4.0.0-beta)
 
 - 🐛Fix windows compatibility

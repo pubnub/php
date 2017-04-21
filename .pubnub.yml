@@ -1,8 +1,15 @@
 name: php
-version: 4.0.0-beta
+version: 4.0.0-beta.2
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.0.0-beta.2
+    date:
+    changes:
+      - type: bug
+        text: Add missing methods on PubNub instance
+      - type: bug
+        text: Fix removeAllPushChannelsForDevice method case
   - version: 4.0.0-beta
     date:
     changes:
