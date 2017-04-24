@@ -64,7 +64,7 @@ class PublishTest extends \PubNubTestCase
         $publish->message($message);
 
         if ($usePost) {
-            $publish->setUsePost(true);
+            $publish->usePost(true);
         }
 
         $this->assertEquals(
@@ -133,7 +133,7 @@ class PublishTest extends \PubNubTestCase
         $publish = $this->pubnub->publish();
         $publish->channel($channel);
         $publish->message($message);
-        $publish->setMeta($meta);
+        $publish->meta($meta);
 
         $this->assertEquals(
             sprintf(
@@ -173,7 +173,7 @@ class PublishTest extends \PubNubTestCase
         $publish = $this->pubnub->publish();
         $publish->channel($channel);
         $publish->message($message);
-        $publish->setShouldStore(true);
+        $publish->shouldStore(true);
 
         $this->assertEquals(
             sprintf(
@@ -213,7 +213,7 @@ class PublishTest extends \PubNubTestCase
         $publish = $this->pubnub->publish();
         $publish->channel($channel);
         $publish->message($message);
-        $publish->setShouldStore(false);
+        $publish->shouldStore(false);
 
         $this->assertEquals(
             sprintf(

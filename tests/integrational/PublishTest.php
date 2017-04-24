@@ -51,7 +51,7 @@ class PublishTest extends \PubNubTestCase
      */
     private function assertSuccessPublishPost($publish, $message)
     {
-        $this->assertSuccess($publish->channel('blah')->setUsePost(true)->message($message));
+        $this->assertSuccess($publish->channel('blah')->usePost(true)->message($message));
     }
 
     public function testPublishMixedViaGet()
@@ -112,7 +112,7 @@ class PublishTest extends \PubNubTestCase
 
     public function testPublishDoNotSerializePost()
     {
-        $response = $this->pubnub->publish()->setUsePost(true)->doNotSerialize()->channel("ch1")->message("{\"message\": 2}")->sync();
+        $response = $this->pubnub->publish()->usePost(true)->doNotSerialize()->channel("ch1")->message("{\"message\": 2}")->sync();
 
         $this->assertGreaterThan(0, $response->getTimetoken());
     }
@@ -122,14 +122,14 @@ class PublishTest extends \PubNubTestCase
         $this->expectException(PubNubBuildRequestException::class);
         $this->expectExceptionMessage("Type error, only string is expected");
 
-        $this->pubnub->publish()->setUsePost(true)->doNotSerialize()->channel("ch1")->message(1)->sync();
-        $this->pubnub->publish()->setUsePost(true)->doNotSerialize()->channel("ch1")->message(["key" => "value"])->sync();
+        $this->pubnub->publish()->usePost(true)->doNotSerialize()->channel("ch1")->message(1)->sync();
+        $this->pubnub->publish()->usePost(true)->doNotSerialize()->channel("ch1")->message(["key" => "value"])->sync();
     }
 
     public function testPublishWithMeta()
     {
         $this->assertSuccess($this->pubnub->publish()->channel('blah')->message('hey')
-            ->setMeta([
+            ->meta([
                 'a' => 2,
                 'b' => 'qwer'
         ]));
@@ -137,7 +137,7 @@ class PublishTest extends \PubNubTestCase
 
     public function testPublishDoNotStore()
     {
-        $this->assertSuccess($this->pubnub->publish()->channel('blah')->message('hey')->setShouldStore(true));
+        $this->assertSuccess($this->pubnub->publish()->channel('blah')->message('hey')->shouldStore(true));
     }
 
     public function testServerSideErrorSync()

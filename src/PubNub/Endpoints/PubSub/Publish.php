@@ -79,7 +79,7 @@ class Publish extends Endpoint
      * @param bool $shouldStore
      * @return $this
      */
-    public function setShouldStore($shouldStore)
+    public function shouldStore($shouldStore)
     {
         $this->shouldStore = $shouldStore;
 
@@ -90,7 +90,7 @@ class Publish extends Endpoint
      * @param bool $usePost
      * @return $this
      */
-    public function setUsePost($usePost)
+    public function usePost($usePost)
     {
         $this->usePost = $usePost;
 
@@ -101,7 +101,7 @@ class Publish extends Endpoint
      * @param array $meta
      * @return $this
      */
-    public function setMeta($meta)
+    public function meta($meta)
     {
         $this->meta = $meta;
 
@@ -112,7 +112,7 @@ class Publish extends Endpoint
      * @param bool $replicate
      * @return $this
      */
-    public function setReplicate($replicate)
+    public function replicate($replicate)
     {
         $this->replicate = $replicate;
 
@@ -123,7 +123,7 @@ class Publish extends Endpoint
      * @param int $ttl
      * @return $this
      */
-    public function setTtl($ttl)
+    public function ttl($ttl)
     {
         $this->ttl = $ttl;
 
