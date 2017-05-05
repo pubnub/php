@@ -16,6 +16,10 @@ abstract class PubNubTestCase extends TestCase
 
     const CIPHER_KEY = "enigma";
 
+    const SPECIAL_CHARACTERS = "-.,_~:/?#[]@!$&'()*+;=`|";
+    const SPECIAL_CHANNEL = "-._~:/?#[]@!$&'()*+;=`|";
+
+
     /** @var Pubnub pubnub */
     protected $pubnub;
 

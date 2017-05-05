@@ -182,7 +182,7 @@ abstract class Endpoint
         }
 
         if ($this->getOperationType() == PNOperationType::PNPublishOperation
-            && array_key_exists('state', $this->customParams())) {
+            && array_key_exists('meta', $this->customParams())) {
             $params['meta'] = PubNubUtil::urlEncode($params['meta']);
         }
 
@@ -191,9 +191,18 @@ abstract class Endpoint
             $params['state'] = PubNubUtil::urlEncode($params['state']);
         }
 
-        $params['pnsdk'] = PubNubUtil::urlEncode($params['pnsdk']);
+        if (array_key_exists('pnsdk', $params)) {
+            $params['pnsdk'] = PubNubUtil::urlEncode($params['pnsdk']);
+        }
 
-        // TODO: pnsdk should be reassigned here
+        if (array_key_exists('uuid', $params)) {
+            $params['uuid'] = PubNubUtil::urlEncode($params['uuid']);
+        }
+
+        if (array_key_exists('auth', $params)) {
+            $params['auth'] = PubNubUtil::urlEncode($params['auth']);
+        }
+
         return $params;
     }
 

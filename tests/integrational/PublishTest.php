@@ -175,4 +175,16 @@ class PublishTest extends \PubNubTestCase
         $this->assertEquals(0, $body[0]);
         $this->assertEquals("Invalid Key", $body[1]);
     }
+
+    public function testSuperCall()
+    {
+        $this->pubnub_pam->getConfiguration()->setUuid(static::SPECIAL_CHARACTERS);
+        $this->pubnub_pam->getConfiguration()->setAuthKey(static::SPECIAL_CHANNEL);
+
+        $this->pubnub_pam->publish()
+            ->channel(static::SPECIAL_CHANNEL)
+            ->message(static::SPECIAL_CHARACTERS)
+            ->meta(['name' => static::SPECIAL_CHARACTERS])
+            ->sync();
+    }
 }

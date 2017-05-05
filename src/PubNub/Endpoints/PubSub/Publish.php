@@ -155,7 +155,7 @@ class Publish extends Endpoint
         $params = [];
 
         if ($this->meta !== null) {
-            $params['meta'] = PubNubUtil::urlWrite($this->meta);
+            $params['meta'] = PubNubUtil::writeValueAsString($this->meta);
         }
 
         if ($this->shouldStore !== null) {
@@ -217,7 +217,7 @@ class Publish extends Endpoint
                 static::POST_PATH,
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
-                $this->channel,
+                PubNubUtil::urlEncode($this->channel),
                 0
             );
         } else {
@@ -242,7 +242,7 @@ class Publish extends Endpoint
                 static::GET_PATH,
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
-                $this->channel,
+                PubNubUtil::urlEncode($this->channel),
                 0,
                 $stringifiedMessage
             );
@@ -321,6 +321,6 @@ class Publish extends Endpoint
      */
     protected function getName()
     {
-        return "SetState";
+        return "Publish";
     }
 }
