@@ -317,6 +317,15 @@ class SetStateTest extends \PubNubTestCase
 
         $setState->channels("testChannel")->state($myState)->sync();
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->setState()
+            ->state(['name' => static::SPECIAL_CHARACTERS])
+            ->channels(static::SPECIAL_CHARACTERS)
+            ->channelGroups(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 

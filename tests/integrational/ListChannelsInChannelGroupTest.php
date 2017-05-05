@@ -121,6 +121,13 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 
         $listChannelsInChannelGroup->channelGroup("groupA")->sync();
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->listChannelsInChannelGroup()
+            ->channelGroup(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 

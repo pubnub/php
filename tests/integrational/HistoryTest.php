@@ -428,6 +428,13 @@ class TestPubNubHistory extends \PubNubTestCase
 
         $this->assertInstanceOf(PNHistoryResult::class, $result);
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->history()
+            ->channel(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 class HistoryExposed extends History

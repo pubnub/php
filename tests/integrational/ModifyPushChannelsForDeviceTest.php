@@ -534,6 +534,14 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
             ->deviceId("")
             ->sync();
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->removeChannelsFromPush()
+            ->channels(static::SPECIAL_CHARACTERS)
+            ->deviceId(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 

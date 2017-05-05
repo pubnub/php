@@ -129,6 +129,14 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
 
         $addChannelChannelGroup->channelGroup("groupA")->channels(["ch1", "ch2"])->sync();
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->addChannelToChannelGroup()
+            ->channelGroup(static::SPECIAL_CHARACTERS)
+            ->channels(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 

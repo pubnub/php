@@ -83,6 +83,13 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
 
         $removeChannelGroup->channelGroup("groupA")->sync();
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->removeChannelGroup()
+            ->channelGroup(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 

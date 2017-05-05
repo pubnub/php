@@ -167,6 +167,13 @@ class ListPushProvisionsTest extends \PubNubTestCase
             ->pushType(PNPushType::MPNS)
             ->sync();
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->listPushProvisions()
+            ->deviceId(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 

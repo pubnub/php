@@ -235,6 +235,13 @@ class GetStateTest extends PubNubTestCase
 
         $getState->channels("testChannel")->sync();
     }
+
+    public function superCallTest()
+    {
+        $this->pubnub_pam->getState()
+            ->channels(static::SPECIAL_CHARACTERS)
+            ->sync();
+    }
 }
 
 
