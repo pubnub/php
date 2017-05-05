@@ -6,13 +6,21 @@ use PubNub\PubNubUtil;
 
 class PNWhereNowResult
 {
+    /** @var  string[] */
     protected $channels;
 
+    /**
+     * PNWhereNowResult constructor.
+     * @param string[] $channels
+     */
     public function __construct($channels)
     {
         $this->channels = $channels;
     }
 
+    /**
+     * @return string[]
+     */
     public function getChannels()
     {
         return $this->channels;
