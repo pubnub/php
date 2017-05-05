@@ -1,8 +1,15 @@
 name: php
-version: 4.0.0-beta.2
+version: 4.0.0-beta.3
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.0.0-beta.3
+    date:
+    changes:
+      - type: bug
+        text: Fix special characters encoding
+      - type: bug
+        text: Remove set* prefix from publish setters
   - version: 4.0.0-beta.2
     date:
     changes:
