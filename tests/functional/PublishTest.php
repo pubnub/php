@@ -52,7 +52,7 @@ class PublishTest extends \PubNubTestCase
         }
     }
 
-    private function assertGeneratesCorrectPath($message, $channel, $usePost)
+    private function assertGeneratesCorrectPath($message, $channel, $usePost, $sequenceNumber)
     {
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
         $r->setAccessible(true);
@@ -85,38 +85,38 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => 0,
+                "seqn" => $sequenceNumber,
             ],
             $r->invoke($publish)
         );
     }
 
-    private function assertGeneratesCorrectPathUsingGet($message, $channel)
+    private function assertGeneratesCorrectPathUsingGet($message, $channel, $sequenceNumber)
     {
-        $this->assertGeneratesCorrectPath($message, $channel, false);
+        $this->assertGeneratesCorrectPath($message, $channel, false, $sequenceNumber);
     }
 
-    private function assertGeneratesCorrectPathUsingPost($message, $channel)
+    private function assertGeneratesCorrectPathUsingPost($message, $channel, $sequenceNumber)
     {
-        $this->assertGeneratesCorrectPath($message, $channel, false);
+        $this->assertGeneratesCorrectPath($message, $channel, false, $sequenceNumber);
     }
 
     public function testPublishGet()
     {
-        $this->assertGeneratesCorrectPathUsingGet(42, 34);
-        $this->assertGeneratesCorrectPathUsingGet('hey', 'ch');
-        $this->assertGeneratesCorrectPathUsingGet(42.345, 34.534);
-        $this->assertGeneratesCorrectPathUsingGet(true, false);
-        $this->assertGeneratesCorrectPathUsingGet(['hey'], 'ch');
+        $this->assertGeneratesCorrectPathUsingGet(42, 34, 1);
+        $this->assertGeneratesCorrectPathUsingGet('hey', 'ch', 3);
+        $this->assertGeneratesCorrectPathUsingGet(42.345, 34.534, 5);
+        $this->assertGeneratesCorrectPathUsingGet(true, false, 7);
+        $this->assertGeneratesCorrectPathUsingGet(['hey'], 'ch',9);
     }
 
     public function testPublishPost()
     {
-        $this->assertGeneratesCorrectPathUsingPost('hey', 'ch');
-        $this->assertGeneratesCorrectPathUsingPost(42, 34);
-        $this->assertGeneratesCorrectPathUsingPost(42.345, 34.534);
-        $this->assertGeneratesCorrectPathUsingPost(true, false);
-        $this->assertGeneratesCorrectPathUsingPost(['hey'], 'ch');
+        $this->assertGeneratesCorrectPathUsingPost('hey', 'ch', 1);
+        $this->assertGeneratesCorrectPathUsingPost(42, 34, 3);
+        $this->assertGeneratesCorrectPathUsingPost(42.345, 34.534, 5);
+        $this->assertGeneratesCorrectPathUsingPost(true, false, 7);
+        $this->assertGeneratesCorrectPathUsingPost(['hey'], 'ch', 9);
     }
 
     public function testPublishMeta()
@@ -153,7 +153,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => 0,
+                "seqn" => 1,
                 "meta" => '%5B%22m1%22%2C%22m2%22%5D'
             ],
             $r->invoke($publish)
@@ -193,7 +193,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => 0,
+                "seqn" => 1,
                 "store" => '1',
             ],
             $r->invoke($publish)
@@ -233,7 +233,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => 0,
+                "seqn" => 1,
                 "store" => '0',
             ],
             $r->invoke($publish)
@@ -273,7 +273,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => 0,
+                "seqn" => 1,
                 "auth" => 'my_auth',
             ],
             $r->invoke($publish)
@@ -313,7 +313,7 @@ class PublishTest extends \PubNubTestCase
             [
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-                "seqn" => 0,
+                "seqn" => 1,
             ],
             $r->invoke($publish)
         );
