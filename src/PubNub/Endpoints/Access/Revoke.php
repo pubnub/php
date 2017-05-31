@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints\Access;
 
-use PubNub\Endpoints\Access\Grant;
 use PubNub\Exceptions\PubNubNotImplementException;
 use PubNub\Enums\PNOperationType;
 
