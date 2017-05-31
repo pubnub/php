@@ -34,9 +34,6 @@ class Publish extends Endpoint
     /** @var  int $ttl in storage (min ?)*/
     protected $ttl;
 
-    /** @var  int $sequenceCounter */
-    protected $sequenceCounter = 0;
-
     /** @var  bool */
     protected $replicate = true;
 
@@ -170,7 +167,7 @@ class Publish extends Endpoint
             $params['ttl'] = (string) $this->ttl;
         }
 
-        $params['seqn'] = $this->getSequenceId();
+        $params['seqn'] = $this->pubnub->getSequenceId();
 
         if (!$this->replicate) {
             $params['norep'] = 'true';
@@ -266,14 +263,6 @@ class Publish extends Endpoint
         $timetoken = floatval($json[2]);
 
         return new PNPublishResult($timetoken);
-    }
-
-    /**
-     * @return int unique sequence identifier
-     */
-    private function getSequenceId()
-    {
-        return $this->sequenceCounter++;
     }
 
     /**

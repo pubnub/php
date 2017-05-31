@@ -32,6 +32,8 @@ class PubNub
     const SDK_VERSION = "4.0.0-beta.3";
     const SDK_NAME = "PubNub-PHP";
 
+    public static $MAX_SEQUENCE = 65535;
+
     /** @var PNConfiguration */
     protected $configuration;
 
@@ -43,6 +45,9 @@ class PubNub
 
     /** @var  Logger */
     protected $logger;
+
+    /** @var  int $nextSequence */
+    protected $nextSequence = 0;
 
     /**
      * PNConfiguration constructor.
@@ -300,5 +305,19 @@ class PubNub
     public function setState()
     {
         return new SetState($this);
+    }
+
+    /**
+     * @return int unique sequence identifier
+     */
+    public function getSequenceId()
+    {
+        if (static::$MAX_SEQUENCE === $this->nextSequence) {
+            $this->nextSequence = 1;
+        } else {
+            $this->nextSequence += 1;
+        }
+
+        return $this->nextSequence;
     }
 }
