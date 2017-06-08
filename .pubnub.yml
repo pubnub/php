@@ -1,8 +1,12 @@
 name: php
-version: 4.0.0-beta.3
+version: 4.0.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.0.0
+    changes:
+      - type: feature
+        text: release final v4
   - version: 4.0.0-beta.3
     date:
     changes:

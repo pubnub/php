@@ -1,3 +1,7 @@
+## [v4.0.0](https://github.com/pubnub/php/tree/v4.0.0)
+
+- ⭐ release final SDK
+
 ## [v4.0.0-beta.3](https://github.com/pubnub/php/tree/v4.0.0-beta.3)
 
 - 🐛Fix special characters encoding
