@@ -3,6 +3,11 @@ version: 4.0.0-beta.3
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.0.0
+    date:
+    changes:
+      - type: bug
+        text: Fix publish sequence counter
   - version: 4.0.0-beta.3
     date:
     changes:
