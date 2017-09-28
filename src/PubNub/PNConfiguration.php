@@ -167,6 +167,15 @@ class PNConfiguration
     {
         return $this->origin;
     }
+    
+    /**
+     * @param string $origin
+     * @return string
+     */
+    public function setOrigin($origin)
+    {
+        return $this->origin = $origin;
+    }
 
     /**
      * @return string
