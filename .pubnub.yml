@@ -4,6 +4,7 @@ schema: 1
 scm: github.com/pubnub/php
 changelog:
   - version: 4.0.0
+    date:
     changes:
       - type: feature
         text: release final v4
