@@ -13,6 +13,7 @@ use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
+use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\SetState;
@@ -305,6 +306,14 @@ class PubNub
     public function setState()
     {
         return new SetState($this);
+    }
+
+    /**
+     * @return HistoryDelete
+     */
+    public function deleteMessages()
+    {
+        return new HistoryDelete($this);
     }
 
     /**
