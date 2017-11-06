@@ -113,13 +113,6 @@ class WhereNowTest extends PubNubTestCase
 
         $this->assertInternalType('array', $result->getChannels());
     }
-
-    public function superCallTest()
-    {
-        $this->pubnub_pam->whereNow()
-            ->uuid(static::SPECIAL_CHARACTERS)
-            ->sync();
-    }
 }
 
 

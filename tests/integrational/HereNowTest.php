@@ -294,10 +294,14 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->channels(["ch1", "ch2"])->includeState(true)->sync();
     }
 
-    public function superCallTest()
+    public function testSuperCallTest()
     {
-        $this->pubnub_pam->hereNow()
-            ->channels(static::SPECIAL_CHARACTERS)
+        // Not valid
+        // ,~/
+        $characters = "-._:?#[]@!$&'()*+;=`|";
+
+        $res = $this->pubnub_pam->hereNow()
+            ->channels($characters)
             ->sync();
     }
 }

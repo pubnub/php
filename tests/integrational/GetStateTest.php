@@ -236,10 +236,14 @@ class GetStateTest extends PubNubTestCase
         $getState->channels("testChannel")->sync();
     }
 
-    public function superCallTest()
+    public function testSuperCall()
     {
+        // Not valid
+        // ,~/
+        $characters = "-._:?#[]@!$&'()*+;=`|";
+
         $this->pubnub_pam->getState()
-            ->channels(static::SPECIAL_CHARACTERS)
+            ->channels($characters)
             ->sync();
     }
 }
