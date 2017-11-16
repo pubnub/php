@@ -5,7 +5,7 @@ namespace PubNub\Endpoints;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
-use PubNub\Models\Consumer\PNHistoryDeleteResult;
+use PubNub\Models\Consumer\History\PNHistoryDeleteResult;
 use PubNub\PubNubUtil;
 
 class HistoryDelete extends Endpoint
@@ -72,7 +72,7 @@ class HistoryDelete extends Endpoint
      */
     protected function createResponse($json)
     {
-        return null;
+        return new PNHistoryDeleteResult();
     }
 
     /**
@@ -162,6 +162,7 @@ class HistoryDelete extends Endpoint
 
     /**
      * @return PNHistoryDeleteResult
+     * @throws \PubNub\Exceptions\PubNubException
      */
     public function sync()
     {
