@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNub\Models\Consumer;
+namespace PubNub\Models\Consumer\History;
 
 
 class PNHistoryDeleteResult
