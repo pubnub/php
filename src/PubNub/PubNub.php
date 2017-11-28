@@ -26,6 +26,7 @@ use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
+use PubNub\Managers\TelemetryManager;
 
 
 class PubNub
@@ -44,6 +45,9 @@ class PubNub
     /** @var  SubscriptionManager */
     protected $subscriptionManager;
 
+    /** @var TelemetryManager */
+    protected $telemetryManager;
+
     /** @var  Logger */
     protected $logger;
 
@@ -60,6 +64,7 @@ class PubNub
         $this->configuration = $initialConfig;
         $this->basePathManager = new BasePathManager($initialConfig);
         $this->subscriptionManager = new SubscriptionManager($this);
+        $this->telemetryManager = new TelemetryManager();
         $this->logger = new Logger('PubNub');
     }
 
@@ -314,6 +319,14 @@ class PubNub
     public function deleteMessages()
     {
         return new HistoryDelete($this);
+    }
+
+    /**
+     * @return TelemetryManager
+     */
+    public function getTelemetryManager()
+    {
+        return $this->telemetryManager;
     }
 
     /**

@@ -36,13 +36,6 @@ class TestPubNubHistoryDelete extends \PubNubTestCase
 
         $historyDelete = new HistoryDeleteExposed($this->pubnub);
 
-        $historyDelete->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
-            ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
-            ])
-            ->setResponseBody(json_encode([]));
-
         $historyDelete->channel("")->sync();
     }
 

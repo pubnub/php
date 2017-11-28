@@ -34,5 +34,5 @@ class PNOperationType
     const PNAccessManagerAudit = 21;
     const PNAccessManagerGrant = 22;
     const PNAccessManagerRevoke = 23;
-    const PNHistoryDeleteResult = 24;
+    const PNHistoryDeleteOperation = 24;
 }
