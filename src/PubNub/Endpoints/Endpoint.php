@@ -203,6 +203,10 @@ abstract class Endpoint
             $params['auth'] = PubNubUtil::urlEncode($params['auth']);
         }
 
+        if (array_key_exists('channel', $params)) {
+            $params['channel'] = PubNubUtil::urlEncode($params['channel']);
+        }
+
         return $params;
     }
 
