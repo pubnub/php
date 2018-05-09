@@ -38,7 +38,6 @@ changelog:
         text: Fix json decoding error
       - type: improvement
         text: Add Push methods
-changelog:
   - version: 4.0.0-alpha
     date:
     changes:
