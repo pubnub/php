@@ -103,6 +103,8 @@ class GetState extends Endpoint
     {
         if (count($this->channels) === 1 && count($this->channelGroups) === 0) {
             $channels = [$this->channels[0] => $json['payload']];
+        } else if (count($this->channels) === 0 && count($this->channelGroups) === 1) {
+            $channels = [$this->channelGroups[0] => $json['payload']];
         } else {
             $channels = $json['payload']['channels'];
         }
