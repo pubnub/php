@@ -193,7 +193,7 @@ class SetState extends Endpoint
      */
     protected function getOperationType()
     {
-        return PNOperationType::PNGetState;
+        return PNOperationType::PNSetStateOperation;
     }
 
     /**
