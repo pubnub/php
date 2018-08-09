@@ -135,7 +135,7 @@ class SubscriptionManager
                 }
             }
 
-            $this->timetoken = (int) $result->getMetadata()->getTimetoken();
+            $this->timetoken = $result->getMetadata()->getTimetoken();
             $this->region = (int) $result->getMetadata()->getRegion();
         }
     }
