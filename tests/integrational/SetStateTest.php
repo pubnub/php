@@ -20,7 +20,7 @@ class SetStateTest extends \PubNubTestCase
 
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/myUUID/data")
             ->withQuery([
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
@@ -45,7 +45,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/someoneElseUUID/data")
             ->withQuery([
                 "uuid" => "someoneElseUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
@@ -69,7 +69,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel,testChannel2/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
@@ -93,7 +93,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/,/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
                 "channel-group" => "cg1"
             ])
@@ -118,7 +118,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/,/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
                 "channel-group" => "cg1,cg2"
             ])
@@ -143,7 +143,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
                 "channel-group" => "cg1,cg2"
             ])
@@ -170,7 +170,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
                 "channel-group" => "cg1,cg2"
             ])
@@ -209,7 +209,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
                 "auth" => "myKey"
             ])
@@ -235,7 +235,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
@@ -260,7 +260,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
@@ -285,7 +285,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
@@ -308,7 +308,7 @@ class SetStateTest extends \PubNubTestCase
         $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
-                "state" => "%7B%22age%22:20%7D",
+                "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"service\": \"Presence\"}");
@@ -318,12 +318,30 @@ class SetStateTest extends \PubNubTestCase
         $setState->channels("testChannel")->state($myState)->sync();
     }
 
-    public function superCallTest()
+    public function testSuperCallTest()
     {
+        // Not valid
+        // ,:[]*`|+;&
+        $groupCharacters = "-._~@!$'()=";
+
+        // Not valid
+        // ,~/
+        $channelCharacters = "-._:?#[]@!$&'()*+;=`|";
+
+        // Not valid
+        // ,~/#&+;
+        $getStateCharacters = "-._:?[]@!$'()*=`|";
+
+        // Not valid
+        // /?#[]`|
+        $uuidCharacters = "-.,_~:@!$&'()*+;=";
+
+        $this->pubnub_pam->getConfiguration()->setUuid($uuidCharacters);
+
         $this->pubnub_pam->setState()
-            ->state(['name' => static::SPECIAL_CHARACTERS])
-            ->channels(static::SPECIAL_CHARACTERS)
-            ->channelGroups(static::SPECIAL_CHARACTERS)
+            ->state(['name' => $getStateCharacters])
+            ->channels($channelCharacters)
+            ->channelGroups($groupCharacters)
             ->sync();
     }
 }

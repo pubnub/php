@@ -15,6 +15,7 @@ use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\Models\ResponseHelpers\ResponseInfo;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
+use PubNub\Managers\TelemetryManager;
 use Requests_Exception;
 
 
@@ -145,6 +146,12 @@ abstract class Endpoint
 
         if ($this->isAuthRequired() && $config->getAuthKey()) {
             $params['auth'] = $config->getAuthKey();
+        }
+
+        if (!!$this->pubnub->getTelemetryManager()) {
+            foreach ($this->pubnub->getTelemetryManager()->operationLatencies() as $queryName => $queryParam) {
+                $params[$queryName] = PubNubUtil::urlEncode($queryParam);
+            }
         }
 
         return $params;
@@ -303,6 +310,7 @@ abstract class Endpoint
         }
 
         $statusCategory = PNStatusCategory::PNUnknownCategory;
+        $requestTimeStart = microtime(true);
 
         try {
             $request = \Requests::request($url, $headers, $data, $method, $options);
@@ -367,6 +375,7 @@ abstract class Endpoint
         $uuid = null;
         $authKey = null;
 
+
         if (array_key_exists('uuid', $query) && strlen($query['uuid']) > 0) {
             $uuid = $query['uuid'];
         }
@@ -385,6 +394,16 @@ abstract class Endpoint
         );
 
         if ($request->status_code == 200) {
+            $requestTimeEnd = microtime(true);
+
+            if (!!$this->pubnub->getTelemetryManager()) {
+                $this->pubnub->getTelemetryManager()->cleanUpTelemetryData();
+                $this->pubnub->getTelemetryManager()->storeLatency(
+                    $requestTimeEnd - $requestTimeStart,
+                    $this->getOperationType()
+                );
+            }
+
             $this->pubnub->getLogger()->debug("Response body: " . $request->body,
                 ['method' => $this->getName(), 'statusCode' => $request->status_code]);
 
