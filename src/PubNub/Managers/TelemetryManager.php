@@ -17,15 +17,14 @@ class TelemetryManager
     public function operationLatencies()
     {
         $operationLatencies = [];
-        $l = $this->latencies;
 
         foreach ($this->latencies as $endpointName => $endpointLatencies) {
             $latencyKey = "l_".$endpointName;
 
-            $endpointAverageLatency = $this->averageLatencyFromData($this->latencies[$endpointName]);
+            $endpointAvgLatency = $this->averageLatencyFromData($endpointLatencies);
 
-            if ($endpointAverageLatency > 0) {
-                $operationLatencies[$latencyKey] = $endpointAverageLatency;
+            if ($endpointAvgLatency > 0) {
+                $operationLatencies[$latencyKey] = $endpointAvgLatency;
             }
         }
 
@@ -77,7 +76,7 @@ class TelemetryManager
     public static function averageLatencyFromData($endpointLatencies) {
         $totalLatency = 0;
 
-        foreach ($endpointLatencies as $key => $value) {
+        foreach ($endpointLatencies as $value) {
             $totalLatency += $value["l"];
         }
 

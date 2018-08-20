@@ -431,7 +431,7 @@ class TestPubNubHistory extends \PubNubTestCase
 
     public function testSuperCallTest()
     {
-        $res = $this->pubnub_pam->history()
+        $this->pubnub_pam->history()
             ->channel(static::SPECIAL_CHARACTERS)
             ->sync();
     }

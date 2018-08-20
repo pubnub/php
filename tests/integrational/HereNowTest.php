@@ -300,7 +300,7 @@ class HereNowTest extends \PubNubTestCase
         // ,~/
         $characters = "-._:?#[]@!$&'()*+;=`|";
 
-        $res = $this->pubnub_pam->hereNow()
+        $this->pubnub_pam->hereNow()
             ->channels($characters)
             ->sync();
     }

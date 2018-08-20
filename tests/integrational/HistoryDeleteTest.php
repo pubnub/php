@@ -41,11 +41,11 @@ class TestPubNubHistoryDelete extends \PubNubTestCase
 
     public function testNotPermitted()
     {
-        $ch = "history-delete-php-ch";
+        $channel = "history-delete-php-ch";
         $this->expectException(PubNubServerException::class);
 
         $this->pubnub_pam->getConfiguration()->setSecretKey(null);
-        $this->pubnub_pam->deleteMessages()->channel($ch)->start(123)->end(456)->sync();
+        $this->pubnub_pam->deleteMessages()->channel($channel)->start(123)->end(456)->sync();
     }
 
     public function testSuperCallTest()
