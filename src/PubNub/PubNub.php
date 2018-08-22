@@ -13,6 +13,7 @@ use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
+use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\SetState;
@@ -25,6 +26,7 @@ use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
+use PubNub\Managers\TelemetryManager;
 
 
 class PubNub
@@ -43,6 +45,9 @@ class PubNub
     /** @var  SubscriptionManager */
     protected $subscriptionManager;
 
+    /** @var TelemetryManager */
+    protected $telemetryManager;
+
     /** @var  Logger */
     protected $logger;
 
@@ -59,6 +64,7 @@ class PubNub
         $this->configuration = $initialConfig;
         $this->basePathManager = new BasePathManager($initialConfig);
         $this->subscriptionManager = new SubscriptionManager($this);
+        $this->telemetryManager = new TelemetryManager();
         $this->logger = new Logger('PubNub');
     }
 
@@ -305,6 +311,22 @@ class PubNub
     public function setState()
     {
         return new SetState($this);
+    }
+
+    /**
+     * @return HistoryDelete
+     */
+    public function deleteMessages()
+    {
+        return new HistoryDelete($this);
+    }
+
+    /**
+     * @return TelemetryManager
+     */
+    public function getTelemetryManager()
+    {
+        return $this->telemetryManager;
     }
 
     /**
