@@ -19,6 +19,7 @@ use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\SetState;
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Endpoints\PubSub\Publish;
+use PubNub\Endpoints\PubSub\Fire;
 use PubNub\Endpoints\Push\AddChannelsToPush;
 use PubNub\Endpoints\Push\ListPushProvisions;
 use PubNub\Endpoints\Push\RemoveChannelsFromPush;
@@ -99,6 +100,14 @@ class PubNub
     public function publish()
     {
         return new Publish($this);
+    }
+
+    /**
+     * @return Fire
+     */
+    public function Fire()
+    {
+        return new Fire($this);
     }
 
     /**
