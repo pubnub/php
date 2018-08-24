@@ -342,4 +342,12 @@ class PubNub
 
         return $this->nextSequence;
     }
+
+    /**
+     * @return Publish
+     */
+    public function fire()
+    {
+        return (new Publish($this))->shouldStore(false)->replicate(false);
+    }
 }
