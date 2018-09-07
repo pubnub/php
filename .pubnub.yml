@@ -1,8 +1,19 @@
 name: php
-version: 4.0.0
+version: 4.1.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.1.0
+    date: Sep 7, 2018
+    changes:
+      - type: feature
+        text: Add fire() method on PubNub instance
+      - type: bug
+        text: Change return value of SetState::getOperationType
+      - type: feature
+        text: Add history delete (deleteMessages) method on PubNub instance
+      - type: feature
+        text: Add Telemetry Manager
   - version: 4.0.0
     date: Jun 7, 2017
     changes:
@@ -43,7 +54,6 @@ changelog:
         text: Fix json decoding error
       - type: improvement
         text: Add Push methods
-changelog:
   - version: 4.0.0-alpha
     date: Apr 4, 2017
     changes:
@@ -68,6 +78,7 @@ features:
     - PUBLISH-RAW-JSON
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
+    - PUBLISH-FIRE
   push:
     - PUSH-ADD-DEVICE-TO-CHANNELS
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
