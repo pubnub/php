@@ -1,3 +1,11 @@
+## [v4.1.0](https://github.com/pubnub/php/tree/v4.1.0)
+ September-7-2018
+
+- 🐛Add fire() method on PubNub instance
+- 🐛Change return value of SetState::getOperationType
+- 🐛Add history delete (deleteMessages) method on PubNub instance
+- 🐛Add Telemetry Manager
+
 ## [v4.0.0](https://github.com/pubnub/php/tree/v4.0.0)
  June-8-2017
 
