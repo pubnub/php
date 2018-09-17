@@ -16,3 +16,5 @@ after_success:
 notifications:
     flowdock:
           secure: kOxa/6eB6+bQumvYSh7yf/uPNQ5xRastjSkRbUrqVbYEiMiguCuoe8xkmU5JJxmNMpvFjYL9yowPo9LELMceVsWVflNEEWFQE5sJe9qifZu/SpOD8RUWfHmZ2jZBELmnLSDSAIxaAjQMb1LEedkBHGMVJknbb+DRs4fT31ilMUM=
+addons:
+  srcclr: true
