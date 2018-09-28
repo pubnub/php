@@ -169,6 +169,17 @@ class PNConfiguration
     }
 
     /**
+     * @param string $origin
+     * @return $this
+     */
+    public function setOrigin($origin)
+    {
+        $this->origin = $origin;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getSubscribeKey()
