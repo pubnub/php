@@ -332,10 +332,13 @@ class PNConfiguration
 
     /**
      * @param int $connectTimeout
+     * @return $this
      */
     public function setConnectTimeout($connectTimeout)
     {
         $this->connectTimeout = $connectTimeout;
+
+        return $this;
     }
 
     /**
