@@ -169,6 +169,17 @@ class PNConfiguration
     }
 
     /**
+     * @param string $origin
+     * @return $this
+     */
+    public function setOrigin($origin)
+    {
+        $this->origin = $origin;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getSubscribeKey()
@@ -321,10 +332,13 @@ class PNConfiguration
 
     /**
      * @param int $connectTimeout
+     * @return $this
      */
     public function setConnectTimeout($connectTimeout)
     {
         $this->connectTimeout = $connectTimeout;
+
+        return $this;
     }
 
     /**
