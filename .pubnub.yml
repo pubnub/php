@@ -3,6 +3,19 @@ version: 4.1.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.1.1
+    date: Oct 2, 2018
+    changes:
+      - type: feature
+        text: Add setOrigin method
+      - type: improvement
+        text: Add .gitattributes file to save space when using composer
+      - type: bug
+        text: Fix urlencode issue with channel names
+      - type: bug
+        text: Fix channel name validation for Publish
+      - type: bug
+        text: Return class instance of PNConfiguration on setConnectTimeout method
   - version: 4.1.0
     date: Sep 7, 2018
     changes:
