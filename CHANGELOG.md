@@ -1,10 +1,19 @@
+## [v4.1.1](https://github.com/pubnub/php/tree/v4.1.1)
+ October-2-2018
+
+- ⭐Add setOrigin method
+- ⭐Add .gitattributes file to save space when using composer
+- 🐛Fix urlencode issue with channel names
+- 🐛Fix channel name validation for Publish
+- 🐛Return class instance of PNConfiguration on setConnectTimeout method
+
 ## [v4.1.0](https://github.com/pubnub/php/tree/v4.1.0)
  September-7-2018
 
-- 🐛Add fire() method on PubNub instance
+- ⭐Add fire() method on PubNub instance
 - 🐛Change return value of SetState::getOperationType
-- 🐛Add history delete (deleteMessages) method on PubNub instance
-- 🐛Add Telemetry Manager
+- ⭐Add history delete (deleteMessages) method on PubNub instance
+- ⭐Add Telemetry Manager
 
 ## [v4.0.0](https://github.com/pubnub/php/tree/v4.0.0)
  June-8-2017

@@ -136,7 +136,7 @@ class Publish extends Endpoint
             throw new PubNubValidationException("Message Missing");
         }
 
-        if (empty($this->channel)) {
+        if (!is_string($this->channel) || strlen($this->channel) === 0) {
             throw new PubNubValidationException("Channel Missing");
         }
 
