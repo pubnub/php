@@ -306,6 +306,9 @@ abstract class Endpoint
         if ($this->httpMethod() == PNHttpMethod::POST) {
             $method = \Requests::POST;
         }
+        else if ($this->httpMethod() == PNHttpMethod::DELETE) {
+            $method = \Requests::DELETE;
+        }
 
         $this->pubnub->getLogger()->debug($method . " " . $url, ['method' => $this->getName()]);
 
