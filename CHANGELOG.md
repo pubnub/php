@@ -1,3 +1,8 @@
+## [v4.1.2](https://github.com/pubnub/php/tree/v4.1.2)
+ October-23-2018
+
+- 🐛Fix issue with deleteMessages endpoint using GET HTTP method instead of DELETE
+
 ## [v4.1.1](https://github.com/pubnub/php/tree/v4.1.1)
  October-2-2018
 
