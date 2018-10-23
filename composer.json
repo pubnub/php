@@ -5,7 +5,7 @@
   "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
   "homepage": "http://www.pubnub.com/",
   "license": "MIT",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "authors": [
     {
       "name": "PubNub",
