@@ -1,8 +1,13 @@
 name: php
-version: 4.1.0
+version: 4.1.2
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.1.2
+    date: Oct 23, 2018
+    changes:
+      - type: bug
+        text: Fix issue with deleteMessages endpoint using GET HTTP method instead of DELETE
   - version: 4.1.1
     date: Oct 2, 2018
     changes:
