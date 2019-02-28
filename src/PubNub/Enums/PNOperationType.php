@@ -35,4 +35,5 @@ class PNOperationType
     const PNAccessManagerGrant = 22;
     const PNAccessManagerRevoke = 23;
     const PNHistoryDeleteOperation = 24;
+    const PNMessageCountOperation = 25;
 }
