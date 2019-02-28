@@ -14,6 +14,7 @@ use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
+use PubNub\Endpoints\MessageCount;
 use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\SetState;
@@ -319,6 +320,14 @@ class PubNub
     public function deleteMessages()
     {
         return new HistoryDelete($this);
+    }
+
+    /**
+     * @return MessageCount
+     */
+    public function messageCounts()
+    {
+        return new MessageCount($this);
     }
 
     /**
