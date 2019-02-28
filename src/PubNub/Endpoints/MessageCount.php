@@ -26,9 +26,9 @@ class MessageCount extends Endpoint
      * @param string|array $ch
      * @return $this
      */
-    public function channels($ch)
+    public function channels($channels)
     {
-        $this->channels = PubNubUtil::extendArray($this->channels, $ch);
+        $this->channels = PubNubUtil::extendArray($this->channels, $channels);
 
         return $this;
     }
@@ -141,17 +141,15 @@ class MessageCount extends Endpoint
     {
         $params = [];
 
-        if (count($this->channelsTimetoken) > 0) {
-            if(count($this->channelsTimetoken) > 1)
-                $params['channelsTimetoken'] = PubNubUtil::joinItems($this->channelsTimetoken);
-            else
-            {
-                $params['timetoken'] = $this->channelsTimetoken[0];
-            }
-
+        if (count($this->channelsTimetoken) > 1) {
+            $params['channelsTimetoken'] = PubNubUtil::joinItems($this->channelsTimetoken);
         }
-        else
+        else if(count($this->channelsTimetoken) === 1) {
+            $params['timetoken'] = $this->channelsTimetoken[0];
+        }
+        else {
             $params['timetoken'] = $this->timetoken;
+        }
 
         return $params;
     }
