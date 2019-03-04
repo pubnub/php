@@ -1,3 +1,8 @@
+## [v4.1.3](https://github.com/pubnub/php/tree/v4.1.3)
+ February-28-2019
+
+- ⭐Add messageCounts() method for retrieving unread message count
+
 ## [v4.1.2](https://github.com/pubnub/php/tree/v4.1.2)
  October-23-2018
 
