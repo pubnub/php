@@ -23,9 +23,9 @@ class MessageCount extends Endpoint
      * @param string|array $ch
      * @return $this
      */
-    public function channels($ch)
+    public function channels($channels)
     {
-        $this->channels = PubNubUtil::extendArray($this->channels, $ch);
+        $this->channels = PubNubUtil::extendArray($this->channels, $channels);
 
         return $this;
     }
