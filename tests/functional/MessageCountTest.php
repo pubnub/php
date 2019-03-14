@@ -39,7 +39,7 @@ class MessageCountTest extends \PubNubTestCase
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
         $messageCount->channels(["my_channel"])
-            ->timetoken("10000")->sync();
+            ->channelsTimetoken(["10000"])->sync();
 
     }
 
@@ -61,7 +61,7 @@ class MessageCountTest extends \PubNubTestCase
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
         $response = $messageCount->channels(["my_channel"])
-            ->timetoken("10000")->sync();
+            ->channelsTimetoken(["10000"])->sync();
 
         $this->assertEquals(count($response->getChannels()), 1);
         $this->assertFalse(isset($response->getChannels()["channel_dont_exist"]));
@@ -87,13 +87,36 @@ class MessageCountTest extends \PubNubTestCase
 
     public function testMultiChannel_withSingleTimestamp()
     {
-        $this->expectException(PubNubValidationException::class);
-        $this->expectExceptionMessage("The number of channels and the number of timetokens do not match");
-
         $messageCount = new MessageCountExposed($this->pubnub);
 
-        $messageCount->channels(["my_channel","new_channel"])
+        $payload = "{\"status\": 200, \"error\": false, \"error_message\": \"\", " .
+            "\"channels\": {\"my_channel\":19, \"new_channel\":5}}";
+
+        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel,new_channel")
+            ->withQuery([
+                "timetoken" => "10000",
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => "myUUID",
+            ])
+            ->setResponseBody($payload);
+
+        $this->pubnub->getConfiguration()->setUuid("myUUID");
+
+        $response = $messageCount->channels(["my_channel","new_channel"])
             ->channelsTimetoken(["10000"])->sync();
+
+        $this->assertEquals(count($response->getChannels()), 2);
+        $this->assertFalse(isset($response->getChannels()["channel_dont_exist"]));
+        $this->assertTrue(isset($response->getChannels()["my_channel"]));
+        $this->assertTrue(isset($response->getChannels()["new_channel"]));
+        foreach($response->getChannels() as $channel => $count) {
+            if ($channel === "my_channel") {
+                $this->assertEquals(19, $count);
+            }
+            else if ($channel === "new_channel") {
+                $this->assertEquals(5, $count);
+            }
+        }
 
     }
 
@@ -122,16 +145,15 @@ class MessageCountTest extends \PubNubTestCase
         $this->assertTrue(isset($response->getChannels()["my_channel"]));
         $this->assertTrue(isset($response->getChannels()["new_channel"]));
         foreach($response->getChannels() as $channel => $count) {
-            if($channel === "my_channel") {
+            if ($channel === "my_channel") {
                 $this->assertEquals(19, $count);
             }
-            elseif($channel === "new_channel") {
+            else if ($channel === "new_channel") {
                 $this->assertEquals(5, $count);
             }
         }
 
     }
-
 
     public function testWithoutTimeToken()
     {
@@ -151,7 +173,7 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount = new MessageCountExposed($this->pubnub);
 
-        $messageCount->timetoken("10000")->sync();
+        $messageCount->channelsTimetoken(["10000"])->sync();
 
     }
 
@@ -166,40 +188,6 @@ class MessageCountTest extends \PubNubTestCase
 
     }
 
-    public function testSingleChannel_SingleTimeTokenAndList()
-    {
-        $this->expectException(PubNubValidationException::class);
-        $this->expectExceptionMessage("timetoken and channelTimetokens are incompatible together");
-
-        $messageCount = new MessageCountExposed($this->pubnub);
-
-        $messageCount->channels(["my_channel"])
-            ->channelsTimetoken(["10000", "20000"])
-            ->timetoken("10000")->sync();
-
-    }
-
-    public function testChannel_withSingleEmptyToken()
-    {
-        $this->expectException(PubNubValidationException::class);
-        $this->expectExceptionMessage("Timetoken missing");
-
-        $messageCount = new MessageCountExposed($this->pubnub);
-
-        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel")
-            ->withQuery([
-                "timetoken" => null,
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => "myUUID",
-            ]);
-
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
-
-        $messageCount->channels(["my_channel"])
-            ->timetoken(null)->sync();
-
-    }
-
     public function testChannel_withMultiEmptyToken()
     {
         $this->expectException(PubNubValidationException::class);
@@ -209,7 +197,7 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel")
             ->withQuery([
-                "channelsToken" => [],
+                "channelsToken" => PubNubUtil::joinitems([]),
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",
             ]);
@@ -230,7 +218,7 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel")
             ->withQuery([
-                "channelsToken" => null,
+                "timetoken" => null,
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",
             ]);
