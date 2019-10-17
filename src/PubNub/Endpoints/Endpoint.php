@@ -27,6 +27,9 @@ abstract class Endpoint
     /** @var  PNEnvelope */
     protected $envelope;
 
+    /** @var array */
+    protected static $cachedTransports = [];
+
     public function __construct(PubNub $pubnubInstance)
     {
         $this->pubnub = $pubnubInstance;
@@ -283,6 +286,9 @@ abstract class Endpoint
         if ($transport) {
             $options['transport'] = $transport;
         }
+        else {
+            $options['transport'] = $this->getDefaultTransport();
+        }
 
         return $options;
     }
@@ -292,7 +298,7 @@ abstract class Endpoint
      */
     protected function invokeRequest()
     {
-        $headers = ['Accept' => 'application/json'];
+        $headers = ['Accept' => 'application/json', 'Connection' => 'Keep-Alive'];
 
         $url = PubNubUtil::buildUrl(
             $this->pubnub->getBasePath(),
@@ -507,6 +513,50 @@ abstract class Endpoint
     protected function getAffectedChannelGroups()
     {
         return null;
+    }
+
+    /**
+     * @return \Requests_Transport
+     * @throws \Exception
+     */
+    private function getDefaultTransport()
+    {
+        $need_ssl = (0 === stripos($this->pubnub->getBasePath(), 'https://'));
+        $capabilities = array('ssl' => $need_ssl);
+
+        $cap_string = serialize($capabilities);
+        $method = $this->httpMethod();
+
+        if(!isset(self::$cachedTransports[$method])) {
+            self::$cachedTransports[$method] = [];
+        }
+
+        if (isset(self::$cachedTransports[$method][$cap_string]) && self::$cachedTransports[$method][$cap_string] !== null) {
+            return self::$cachedTransports[$method][$cap_string];
+        }
+
+        $transports = array(
+            'Requests_Transport_cURL',
+            'Requests_Transport_fsockopen',
+        );
+
+        foreach ($transports as $class) {
+            if (!class_exists($class)) {
+                continue;
+            }
+
+            $result = call_user_func(array($class, 'test'), $capabilities);
+            if ($result) {
+                self::$cachedTransports[$method][$cap_string] = new $class();
+                break;
+            }
+        }
+
+        if(self::$cachedTransports[$method][$cap_string] === null) {
+            throw new \Exception('No working transports found');
+        }
+
+        return self::$cachedTransports[$method][$cap_string];
     }
 
     /**
