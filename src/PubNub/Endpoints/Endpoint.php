@@ -278,16 +278,14 @@ abstract class Endpoint
     protected function requestOptions() {
         $options = [
             'timeout' => $this->getRequestTimeout(),
-            'connect_timeout' => $this->getConnectTimeout()
+            'connect_timeout' => $this->getConnectTimeout(),
+            'transport' => $this->getDefaultTransport()
         ];
 
         $transport = $this->pubnub->getConfiguration()->getTransport();
 
         if ($transport) {
             $options['transport'] = $transport;
-        }
-        else {
-            $options['transport'] = $this->getDefaultTransport();
         }
 
         return $options;
