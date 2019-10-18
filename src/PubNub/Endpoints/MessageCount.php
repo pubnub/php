@@ -19,9 +19,6 @@ class MessageCount extends Endpoint
     /** @var array */
     protected $channelsTimetoken = [];
 
-    /** @var string */
-    protected $timetoken;
-
     /**
      * @param string|array $ch
      * @return $this
@@ -45,17 +42,6 @@ class MessageCount extends Endpoint
     }
 
     /**
-     * @param string $timetoken
-     * @return $this
-     */
-    public function timetoken($timetoken)
-    {
-        $this->timetoken = $timetoken;
-
-        return $this;
-    }
-
-    /**
      * @throws PubNubValidationException
      */
     protected function validateParams()
@@ -66,18 +52,12 @@ class MessageCount extends Endpoint
             throw new PubNubValidationException("Channel missing");
         }
 
-        if(count($this->channelsTimetoken) === 0 && $this->timetoken == "") {
+        if (count($this->channelsTimetoken) === 0) {
             throw new PubNubValidationException("Timetoken missing");
         }
 
-        if(count($this->channelsTimetoken) > 0) {
-            if ($this->timetoken !== null) {
-                throw new PubNubValidationException("timetoken and channelTimetokens are incompatible together");
-            }
-
-            if (count($this->channels) != count($this->channelsTimetoken)) {
-                throw new PubNubValidationException("The number of channels and the number of timetokens do not match");
-            }
+        if (count($this->channelsTimetoken) > 1 && count($this->channels) !== count($this->channelsTimetoken)) {
+            throw new PubNubValidationException("The number of channels and the number of timetokens do not match");
         }
 
     }
@@ -89,7 +69,7 @@ class MessageCount extends Endpoint
      */
     protected function createResponse($json)
     {
-        if(!isset($json['channels'])) {
+        if (!isset($json['channels'])) {
             $exception = (new PubNubServerException())
                 ->setRawBody(json_encode($json));
 
@@ -143,12 +123,8 @@ class MessageCount extends Endpoint
 
         if (count($this->channelsTimetoken) > 1) {
             $params['channelsTimetoken'] = PubNubUtil::joinItems($this->channelsTimetoken);
-        }
-        else if(count($this->channelsTimetoken) === 1) {
+        } else {
             $params['timetoken'] = $this->channelsTimetoken[0];
-        }
-        else {
-            $params['timetoken'] = $this->timetoken;
         }
 
         return $params;
