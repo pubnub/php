@@ -1,3 +1,9 @@
+## [v4.1.4](https://github.com/pubnub/php/tree/v4.1.4)
+ October-18-2019
+
+- 🐛Add support for request transport reusing to resolve slow publish issues when multiple messages are published consecutively.
+- 🐛Drop support for HHVM.
+
 ## [v4.1.3](https://github.com/pubnub/php/tree/v4.1.3)
  February-28-2019
 
