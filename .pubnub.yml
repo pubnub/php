@@ -1,8 +1,13 @@
 name: php
-version: 4.1.4
+version: 4.1.5
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: 4.1.5
+    date: Oct 22, 2019
+    changes:
+      - type: improvement
+        text: Update composer.json package version constraints.
   - version: 4.1.4
     date: Oct 18, 2019
     changes:

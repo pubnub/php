@@ -1,3 +1,8 @@
+## [v4.1.5](https://github.com/pubnub/php/tree/v4.1.5)
+ October-22-2019
+
+- ⭐Update composer.json package version constraints.
+
 ## [v4.1.4](https://github.com/pubnub/php/tree/v4.1.4)
  October-18-2019
 
