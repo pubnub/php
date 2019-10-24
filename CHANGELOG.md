@@ -1,7 +1,8 @@
 ## [v4.1.5](https://github.com/pubnub/php/tree/v4.1.5)
  October-22-2019
 
-- ⭐Update composer.json package version constraints.
+- ⭐Update composer.json package version constraints
+- ⭐Update .travis.yml to run tests for PHP versions 7.2 and 7.3
 
 ## [v4.1.4](https://github.com/pubnub/php/tree/v4.1.4)
  October-18-2019
