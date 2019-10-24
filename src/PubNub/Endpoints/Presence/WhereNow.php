@@ -8,6 +8,7 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNWhereNowResult;
 use PubNub\PubNub;
+use PubNub\PubNubUtil;
 
 
 class WhereNow extends Endpoint
@@ -73,7 +74,7 @@ class WhereNow extends Endpoint
     {
         return sprintf(WhereNow::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
-            $this->uuid
+            PubNubUtil::urlEncode($this->uuid)
         );
     }
 

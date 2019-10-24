@@ -2,6 +2,7 @@
 
 namespace Tests\Integrational;
 
+use Countable;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Exceptions\PubNubValidationException;
 use RawTransport;
@@ -129,7 +130,7 @@ class HereNowTest extends \PubNubTestCase
 
         $this->assertEquals($response->getChannels()[0]->getChannelName(), "game1");
         $this->assertEquals($response->getChannels()[0]->getOccupancy(), 1);
-        $this->assertEquals(count($response->getChannels()[0]->getOccupants()), null);
+        $this->assertEquals(is_array($response->getChannels()[0]->getOccupants()) , false);
     }
 
     /**
