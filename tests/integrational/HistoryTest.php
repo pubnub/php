@@ -151,7 +151,7 @@ class TestPubNubHistory extends \PubNubTestCase
 
         $this->assertEquals(count($response->getMessages()), 3);
 
-        $this->assertEquals(count($response->getMessages()[0]->getTimetoken()), null);
+        $this->assertEquals($response->getMessages()[0]->getTimetoken(), NULL);
         $this->assertEquals($response->getMessages()[0]->getEntry()[0], "m1");
         $this->assertEquals($response->getMessages()[0]->getEntry()[1], "m2");
         $this->assertEquals($response->getMessages()[0]->getEntry()[2], "m3");

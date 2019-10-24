@@ -32,7 +32,7 @@ use PubNub\Managers\TelemetryManager;
 
 class PubNub
 {
-    const SDK_VERSION = "4.1.4";
+    const SDK_VERSION = "4.1.5";
     const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
