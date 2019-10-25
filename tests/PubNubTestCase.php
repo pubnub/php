@@ -10,9 +10,9 @@ abstract class PubNubTestCase extends TestCase
     const PUBLISH_KEY = 'pub-c-139c0366-9b6a-4a3f-ac03-4f8d31c86df2';
     const SUBSCRIBE_KEY = 'sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe';
 
-    const PUBLISH_KEY_PAM = "pub-c-8fd20085-4084-4c0f-9097-a2e6645c5b2c";
-    const SUBSCRIBE_KEY_PAM = "sub-c-031868ac-8b32-11e8-85ee-866938e9174c";
-    const SECRET_KEY_PAM = "sec-c-OTFhMDAwNTAtYzkyMi00MTlhLTljZmEtYTFiZThhNjZiMDA0";
+    const PUBLISH_KEY_PAM = "pub-c-df8f851f-1c6a-48df-995a-5c99ba9e0310";
+    const SUBSCRIBE_KEY_PAM = "sub-c-42d8e04a-f718-11e9-b316-ee206fc45f5e";
+    const SECRET_KEY_PAM = "sec-c-OGE1ZTM1OTktZWI3Yy00ZWY1LTk1NzMtMjNiYmI0MGRjMjNl";
 
     const CIPHER_KEY = "enigma";
 
