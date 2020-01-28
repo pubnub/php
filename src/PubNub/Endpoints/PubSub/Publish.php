@@ -26,7 +26,7 @@ class Publish extends Endpoint
     protected $shouldStore;
 
     /** @var bool $usePost HTTP method instead of default GET  */
-    protected $usePost;
+    protected $usePost = true;
 
     /** @var  array $meta data */
     protected $meta;
