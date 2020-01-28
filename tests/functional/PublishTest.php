@@ -93,12 +93,12 @@ class PublishTest extends \PubNubTestCase
 
     private function assertGeneratesCorrectPathUsingGet($message, $channel, $sequenceNumber)
     {
-        $this->assertGeneratesCorrectPath($message, $channel, false, $sequenceNumber);
+        $this->assertGeneratesCorrectPath($message, $channel, true, $sequenceNumber);
     }
 
     private function assertGeneratesCorrectPathUsingPost($message, $channel, $sequenceNumber)
     {
-        $this->assertGeneratesCorrectPath($message, $channel, false, $sequenceNumber);
+        $this->assertGeneratesCorrectPath($message, $channel, true, $sequenceNumber);
     }
 
     public function testPublishGet()
@@ -137,7 +137,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                "/publish/%s/%s/0/%s/0/%s",
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -177,7 +177,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                "/publish/%s/%s/0/%s/0/%s",
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -217,7 +217,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                "/publish/%s/%s/0/%s/0/%s",
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -257,7 +257,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                "/publish/%s/%s/0/%s/0/%s",
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -295,7 +295,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                "/publish/%s/%s/0/%s/0/%s",
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
