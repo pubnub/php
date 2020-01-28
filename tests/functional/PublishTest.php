@@ -69,7 +69,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                $usePost ? Publish::POST_PATH : Publish::GET_PATH,
+                $usePost ? "/publish/%s/%s/0/%s/0" : "/publish/%s/%s/0/%s/0/%s",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -137,7 +137,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                Publish::POST_PATH,
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -177,7 +177,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                Publish::POST_PATH,
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -217,7 +217,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                Publish::POST_PATH,
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -257,7 +257,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                Publish::POST_PATH,
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
@@ -295,7 +295,7 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                Publish::POST_PATH,
+                "/publish/%s/%s/0/%s/0",
                 $this->pubnub->getConfiguration()->getPublishKey(),
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 $channel,
