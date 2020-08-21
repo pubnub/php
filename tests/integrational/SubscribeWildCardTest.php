@@ -42,7 +42,7 @@ class SubscribeWildCardTest extends PubNubTestCase
                 "uuid" => "myUUID"
             ])
             ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"t":{"t":"14921661962885137","r":12},"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c","p":{"t":"14921661962867845","r":12},"k":"sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe","c":"channels.one","u":{},"d":{"text":"hey"},"b":"channels.*"}]}');
+            ->setResponseBody('{"t":{"t":"14921661962885137","r":12},"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c","p":{"t":"14921661962867845","r":12},"k":"demo","c":"channels.one","u":{},"d":{"text":"hey"},"b":"channels.*"}]}');
 
         $callback = new MySubscribeCallbackToTestWildCard();
 

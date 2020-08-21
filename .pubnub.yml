@@ -1,8 +1,14 @@
 name: php
-version: 4.1.5
+version: 4.1.6
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: v4.1.6
+    date: Aug 20, 20
+    changes:
+      -
+        text: "Remove hard coded keys from tests."
+        type: improvement
   - version: 4.1.5
     date: Oct 22, 2019
     changes:

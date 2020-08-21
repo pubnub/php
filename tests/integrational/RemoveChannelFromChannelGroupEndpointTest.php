@@ -15,7 +15,7 @@ class RemoveChannelFromChannelGroupEndpointTest extends PubNubTestCase
     {
         $removeChannelFromChannelGroup = new RemoveChannelFromChannelGroupExposed($this->pubnub);
 
-        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",
@@ -37,7 +37,7 @@ class RemoveChannelFromChannelGroupEndpointTest extends PubNubTestCase
 
         $removeChannelFromChannelGroup = new RemoveChannelFromChannelGroupExposed($this->pubnub);
 
-        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -56,7 +56,7 @@ class RemoveChannelFromChannelGroupEndpointTest extends PubNubTestCase
 
         $removeChannelFromChannelGroup = new RemoveChannelFromChannelGroupExposed($this->pubnub);
 
-        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -72,7 +72,7 @@ class RemoveChannelFromChannelGroupEndpointTest extends PubNubTestCase
     {
         $removeChannelFromChannelGroup = new RemoveChannelFromChannelGroupExposed($this->pubnub);
 
-        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $removeChannelFromChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",

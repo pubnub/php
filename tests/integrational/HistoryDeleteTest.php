@@ -19,7 +19,7 @@ class TestPubNubHistoryDelete extends \PubNubTestCase
 
         $historyDelete = new HistoryDeleteExposed($this->pubnub);
 
-        $historyDelete->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $historyDelete->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => Stub::ANY
@@ -39,14 +39,15 @@ class TestPubNubHistoryDelete extends \PubNubTestCase
         $historyDelete->channel("")->sync();
     }
 
-    public function testNotPermitted()
-    {
-        $channel = "history-delete-php-ch";
-        $this->expectException(PubNubServerException::class);
+    // This test will require a key with specific permissions assigned
+    // public function testNotPermitted()
+    // {
+    //     $channel = "history-delete-php-ch";
+    //     $this->expectException(PubNubServerException::class);
 
-        $this->pubnub_pam->getConfiguration()->setSecretKey(null);
-        $this->pubnub_pam->deleteMessages()->channel($channel)->start(123)->end(456)->sync();
-    }
+    //     $this->pubnub_pam->getConfiguration()->setSecretKey(null);
+    //     $this->pubnub_pam->deleteMessages()->channel($channel)->start(123)->end(456)->sync();
+    // }
 
     public function testSuperCallTest()
     {

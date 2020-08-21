@@ -17,7 +17,7 @@ class GetStateTest extends PubNubTestCase
     {
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
@@ -36,7 +36,7 @@ class GetStateTest extends PubNubTestCase
     {
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/myUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/myUUID")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -57,7 +57,7 @@ class GetStateTest extends PubNubTestCase
 
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
             ])
@@ -72,7 +72,7 @@ class GetStateTest extends PubNubTestCase
     {
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1,ch2/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
@@ -94,7 +94,7 @@ class GetStateTest extends PubNubTestCase
     {
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/,/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/,/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName,
@@ -117,7 +117,7 @@ class GetStateTest extends PubNubTestCase
     {
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/,/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/,/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName,
@@ -140,7 +140,7 @@ class GetStateTest extends PubNubTestCase
     {
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName,
@@ -166,7 +166,7 @@ class GetStateTest extends PubNubTestCase
 
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
@@ -182,7 +182,7 @@ class GetStateTest extends PubNubTestCase
     {
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName,
@@ -203,7 +203,7 @@ class GetStateTest extends PubNubTestCase
 
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
@@ -223,7 +223,7 @@ class GetStateTest extends PubNubTestCase
 
         $getState = new GetStateExposed($this->pubnub);
 
-        $getState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/sampleUUID")
+        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName

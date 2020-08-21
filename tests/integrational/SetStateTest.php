@@ -18,7 +18,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/myUUID/data")
             ->withQuery([
                 "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
@@ -42,7 +42,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel/uuid/someoneElseUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/someoneElseUUID/data")
             ->withQuery([
                 "uuid" => "someoneElseUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -66,7 +66,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/testChannel,testChannel2/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/testChannel,testChannel2/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -90,7 +90,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/,/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/,/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -115,7 +115,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/,/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/,/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -140,7 +140,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -167,7 +167,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -185,7 +185,7 @@ class SetStateTest extends \PubNubTestCase
     {
         $setState = new SetStateExposed($this->pubnub);
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "pnsdk" => $this->encodedSdkName,
@@ -206,7 +206,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -232,7 +232,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -257,7 +257,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -282,7 +282,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
@@ -305,7 +305,7 @@ class SetStateTest extends \PubNubTestCase
             "age" => 20
         ];
 
-        $setState->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1/uuid/myUUID/data")
+        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUUID/data")
             ->withQuery([
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",

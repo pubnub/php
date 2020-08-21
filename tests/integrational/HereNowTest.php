@@ -19,7 +19,7 @@ class HereNowTest extends \PubNubTestCase
     public function testMultipleChannelState()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1,ch2")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,
@@ -54,7 +54,7 @@ class HereNowTest extends \PubNubTestCase
     public function testMultipleChannel()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1,ch2")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,
@@ -89,7 +89,7 @@ class HereNowTest extends \PubNubTestCase
     public function testMultipleChannelWithoutState()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/game1,game2")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1,game2")
             ->withQuery([
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => Stub::ANY
@@ -115,7 +115,7 @@ class HereNowTest extends \PubNubTestCase
     public function testMultipleChannelWithoutStateUUIDs()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/game1,game2")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1,game2")
             ->withQuery([
                 'disable-uuids' => '1',
                 'uuid' => Stub::ANY,
@@ -140,7 +140,7 @@ class HereNowTest extends \PubNubTestCase
     public function testSingularChannelWithoutStateUUIDs()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/game1")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'disable-uuids' => '1',
                 'uuid' => Stub::ANY,
@@ -161,7 +161,7 @@ class HereNowTest extends \PubNubTestCase
     public function testSingularChannelWithoutState()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/game1")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'uuid' => Stub::ANY,
                 'pnsdk' => $this->encodedSdkName
@@ -186,7 +186,7 @@ class HereNowTest extends \PubNubTestCase
     public function testSingularChannel()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/game1")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'state' => '1',
                 'uuid' => Stub::ANY,
@@ -212,7 +212,7 @@ class HereNowTest extends \PubNubTestCase
     public function testSingularChannelAndGroup()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/game1")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'channel-group' => 'grp1',
                 'state' => '1',
@@ -233,7 +233,7 @@ class HereNowTest extends \PubNubTestCase
     public function testIsAuthRequiredSuccess()
     {
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1,ch2")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,
@@ -257,7 +257,7 @@ class HereNowTest extends \PubNubTestCase
         $this->expectExceptionMessage("Subscribe Key not configured");
 
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1,ch2")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'channel-group' => 'grp1',
                 'state' => '1',
@@ -281,7 +281,7 @@ class HereNowTest extends \PubNubTestCase
         $this->expectExceptionMessage("Subscribe Key not configured");
 
         $hereNow = new HereNowExposed($this->pubnub);
-        $hereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/ch1,ch2")
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,

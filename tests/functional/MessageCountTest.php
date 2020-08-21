@@ -28,7 +28,7 @@ class MessageCountTest extends \PubNubTestCase
             "subscribe key.Login to your PubNub Dashboard Account and enable Storage & Playback.Contact support " .
             "@pubnub.com if you require further assistance.\",0,0]";
 
-        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel")
+        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
             ->withQuery([
                 "timetoken" => "10000",
                 "pnsdk" => $this->encodedSdkName,
@@ -50,7 +50,7 @@ class MessageCountTest extends \PubNubTestCase
         $payload = "{\"status\": 200, \"error\": false, \"error_message\": \"\", " .
             "\"channels\": {\"my_channel\":19}}";
 
-        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel")
+        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
             ->withQuery([
                 "timetoken" => "10000",
                 "pnsdk" => $this->encodedSdkName,
@@ -92,7 +92,7 @@ class MessageCountTest extends \PubNubTestCase
         $payload = "{\"status\": 200, \"error\": false, \"error_message\": \"\", " .
             "\"channels\": {\"my_channel\":19, \"new_channel\":5}}";
 
-        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel,new_channel")
+        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel,new_channel")
             ->withQuery([
                 "timetoken" => "10000",
                 "pnsdk" => $this->encodedSdkName,
@@ -127,7 +127,7 @@ class MessageCountTest extends \PubNubTestCase
         $payload = "{\"status\": 200, \"error\": false, \"error_message\": \"\", " .
     "\"channels\": {\"my_channel\":19, \"new_channel\":5}}";
 
-        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel,new_channel")
+        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel,new_channel")
             ->withQuery([
                 "channelsTimetoken" => PubNubUtil::joinitems(["10000", "20000"]),
                 "pnsdk" => $this->encodedSdkName,
@@ -195,7 +195,7 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount = new MessageCountExposed($this->pubnub);
 
-        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel")
+        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
             ->withQuery([
                 "channelsToken" => PubNubUtil::joinitems([]),
                 "pnsdk" => $this->encodedSdkName,
@@ -216,7 +216,7 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount = new MessageCountExposed($this->pubnub);
 
-        $messageCount->stubFor("/v3/history/sub-key/". parent::SUBSCRIBE_KEY . "/message-counts/my_channel")
+        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
             ->withQuery([
                 "timetoken" => null,
                 "pnsdk" => $this->encodedSdkName,

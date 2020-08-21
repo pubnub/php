@@ -19,7 +19,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($this->pubnub);
 
-        $listRemove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice/remove")
+        $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
                 "type" => "apns",
                 "pnsdk" => $this->encodedSdkName,
@@ -40,7 +40,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($this->pubnub);
 
-        $listRemove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice/remove")
+        $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
                 "type" => "gcm",
                 "pnsdk" => $this->encodedSdkName,
@@ -61,7 +61,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($this->pubnub);
 
-        $listRemove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice/remove")
+        $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
                 "type" => "mpns",
                 "pnsdk" => $this->encodedSdkName,
@@ -83,7 +83,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($this->pubnub);
 
-        $listRemove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice/remove")
+        $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
                 "auth" => "myKey",
                 "type" => "mpns",
@@ -175,7 +175,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listAdd = new AddChannelsToPushExposed($this->pubnub);
 
-        $listAdd->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
                 "type" => "apns",
@@ -198,7 +198,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listAdd = new AddChannelsToPushExposed($this->pubnub);
 
-        $listAdd->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
                 "type" => "gcm",
@@ -221,7 +221,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listAdd = new AddChannelsToPushExposed($this->pubnub);
 
-        $listAdd->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
                 "type" => "mpns",
@@ -245,7 +245,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listAdd = new AddChannelsToPushExposed($this->pubnub);
 
-        $listAdd->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
                 "auth" => "myKey",
@@ -358,7 +358,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $remove = new RemovePushNotificationsFromChannelsExposed($this->pubnub);
 
-        $remove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
                 "type" => "apns",
@@ -381,7 +381,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $remove = new RemovePushNotificationsFromChannelsExposed($this->pubnub);
 
-        $remove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
                 "type" => "gcm",
@@ -404,7 +404,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $remove = new RemovePushNotificationsFromChannelsExposed($this->pubnub);
 
-        $remove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
                 "type" => "mpns",
@@ -428,7 +428,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $remove = new RemovePushNotificationsFromChannelsExposed($this->pubnub);
 
-        $remove->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "auth" => "myKey",
                 "remove" => "ch1,ch2,ch3",

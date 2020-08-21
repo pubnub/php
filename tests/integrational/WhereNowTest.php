@@ -18,7 +18,7 @@ class WhereNowTest extends PubNubTestCase
 
         $whereNow = new WhereNowTestExposed($this->pubnub);
 
-        $whereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/uuid/where-now-uuid")
+        $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/where-now-uuid")
             ->withQuery([
                 'uuid' => $uuid,
                 'pnsdk' => $this->encodedSdkName
@@ -39,7 +39,7 @@ class WhereNowTest extends PubNubTestCase
 
         $whereNow = new WhereNowTestExposed($this->pubnub);
 
-        $whereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/uuid/custom-uuid")
+        $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/custom-uuid")
             ->withQuery([
                 'uuid' => $uuid,
                 'pnsdk' => $this->encodedSdkName
@@ -59,7 +59,7 @@ class WhereNowTest extends PubNubTestCase
         $this->pubnub->getConfiguration()->setUuid("myUUID");
         $whereNow = new WhereNowTestExposed($this->pubnub);
 
-        $whereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/uuid/myUUID")
+        $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
                 'uuid' => "myUUID",
                 'pnsdk' => $this->encodedSdkName
@@ -77,7 +77,7 @@ class WhereNowTest extends PubNubTestCase
         $this->pubnub->getConfiguration()->setUuid("myUUID");
         $whereNow = new WhereNowTestExposed($this->pubnub);
 
-        $whereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/uuid/myUUID")
+        $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
                 'uuid' => "myUUID",
                 'pnsdk' => $this->encodedSdkName
@@ -95,7 +95,7 @@ class WhereNowTest extends PubNubTestCase
         $this->pubnub->getConfiguration()->setUuid("myUUID");
         $whereNow = new WhereNowTestExposed($this->pubnub);
 
-        $whereNow->stubFor("/v2/presence/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/uuid/myUUID")
+        $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
                 'uuid' => "myUUID",
                 'pnsdk' => $this->encodedSdkName

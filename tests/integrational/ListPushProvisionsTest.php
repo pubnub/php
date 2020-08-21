@@ -17,7 +17,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list = new ListPushProvisionsExposed($this->pubnub);
 
-        $list->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "type" => "apns",
                 "pnsdk" => $this->encodedSdkName,
@@ -38,7 +38,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list = new ListPushProvisionsExposed($this->pubnub);
 
-        $list->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "type" => "gcm",
                 "pnsdk" => $this->encodedSdkName,
@@ -59,7 +59,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list = new ListPushProvisionsExposed($this->pubnub);
 
-        $list->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "type" => "mpns",
                 "pnsdk" => $this->encodedSdkName,
@@ -81,7 +81,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list = new ListPushProvisionsExposed($this->pubnub);
 
-        $list->stubFor("/v1/push/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/devices/coolDevice")
+        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "auth" => "myKey",
                 "type" => "mpns",

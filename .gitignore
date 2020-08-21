@@ -1,6 +1,7 @@
 **/*.php.temp
 **/*.txt
 **/*.iml
+!git_sync_excluded.txt
 
 # composer vendor dir
 /vendor

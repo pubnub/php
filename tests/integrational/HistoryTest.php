@@ -52,7 +52,7 @@ class TestPubNubHistory extends \PubNubTestCase
         $testArray[] = 1234;
         $testArray[] = 4321;
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "count" => "100",
                 "include_token" => "true",
@@ -110,7 +110,7 @@ class TestPubNubHistory extends \PubNubTestCase
         $testArray[] = 1234;
         $testArray[] = 4321;
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "count" => "100",
                 "include_token" => "true",
@@ -135,7 +135,7 @@ class TestPubNubHistory extends \PubNubTestCase
 
         $this->pubnub->getConfiguration()->setCipherKey("testCipher");
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "count" => "100",
                 "include_token" => "false",
@@ -171,7 +171,7 @@ class TestPubNubHistory extends \PubNubTestCase
 
         $this->pubnub->getConfiguration()->setCipherKey("hello");
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "count" => "100",
                 "include_token" => "false",
@@ -210,7 +210,7 @@ class TestPubNubHistory extends \PubNubTestCase
         $testArray[] = 1234;
         $testArray[] = 4321;
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "count" => "100",
                 "pnsdk" => $this->encodedSdkName,
@@ -241,7 +241,7 @@ class TestPubNubHistory extends \PubNubTestCase
 
         $history = new HistoryExposed($this->pubnub);
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => Stub::ANY
@@ -258,7 +258,7 @@ class TestPubNubHistory extends \PubNubTestCase
 
         $history = new HistoryExposed($this->pubnub);
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => Stub::ANY
@@ -299,7 +299,7 @@ class TestPubNubHistory extends \PubNubTestCase
         $testArray[] = 1234;
         $testArray[] = 4321;
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "start" => "1",
                 "end" => "2",
@@ -369,7 +369,7 @@ class TestPubNubHistory extends \PubNubTestCase
         $testArray[] = 1234;
         $testArray[] = 4321;
 
-        $history->stubFor("/v2/history/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel/niceChannel")
+        $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "start" => "1",
                 "end" => "2",
@@ -390,14 +390,15 @@ class TestPubNubHistory extends \PubNubTestCase
             ->sync();
     }
 
-    public function testNotPermitted()
-    {
-        $ch = "history-php-ch";
-        $this->expectException(PubNubServerException::class);
+    // This test will require a key with specific permissions assigned
+    // public function testNotPermitted()
+    // {
+    //     $ch = "history-php-ch";
+    //     $this->expectException(PubNubServerException::class);
 
-        $this->pubnub_pam->getConfiguration()->setSecretKey(null);
-        $this->pubnub_pam->history()->channel($ch)->count(static::COUNT)->sync();
-    }
+    //     $this->pubnub_pam->getConfiguration()->setSecretKey(null);
+    //     $this->pubnub_pam->history()->channel($ch)->count(static::COUNT)->sync();
+    // }
 
     // TODO: fix test
     public function xtestSuperCallWithChannelOnly()

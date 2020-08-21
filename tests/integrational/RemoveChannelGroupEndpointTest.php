@@ -15,7 +15,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
     {
         $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
 
-        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA/remove")
+        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA/remove")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -36,7 +36,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
 
         $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
 
-        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA/remove")
+        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA/remove")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -55,7 +55,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
 
         $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
 
-        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA/remove")
+        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA/remove")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -71,7 +71,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
     {
         $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
 
-        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA/remove")
+        $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA/remove")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",

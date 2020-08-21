@@ -16,7 +16,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
     {
         $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -37,7 +37,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 
         $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -56,7 +56,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 
         $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -75,7 +75,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 
         $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -93,7 +93,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 
         $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
@@ -109,7 +109,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
     {
         $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
-        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/sub-c-8f18abdc-a7d7-11e5-8231-02ee2ddab7fe/channel-group/groupA")
+        $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",

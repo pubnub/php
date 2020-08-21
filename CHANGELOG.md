@@ -1,3 +1,8 @@
+## [v4.1.6](https://github.com/pubnub/php/releases/tag/v4.1.6)
+August-20-2020
+
+- ⭐️️ Remove hard coded keys from tests. 
+
 ## [v4.1.5](https://github.com/pubnub/php/tree/v4.1.5)
  October-22-2019
 
