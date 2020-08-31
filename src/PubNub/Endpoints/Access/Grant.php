@@ -32,6 +32,9 @@ class Grant extends Endpoint
     /** @var  bool */
     protected $manage;
 
+    /** @var  bool */
+    protected $delete;
+
     /** @var  int */
     protected $ttl;
 
@@ -98,6 +101,17 @@ class Grant extends Endpoint
 
         return $this;
     }
+    
+    /**
+     * @param bool $flag
+     * @return $this
+     */
+    public function delete($flag)
+    {
+        $this->delete = $flag;
+
+        return $this;
+    }
 
     /**
      * Set time in minutes for which granted permissions are valid
@@ -148,6 +162,10 @@ class Grant extends Endpoint
 
         if ($this->manage !== null) {
             $params["m"] = ($this->manage) ? "1" : "0";
+        }
+
+        if ($this->delete !== null) {
+            $params["d"] = ($this->delete) ? "1" : "0";
         }
 
         if (count($this->authKeys) > 0) {
