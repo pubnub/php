@@ -1,8 +1,14 @@
 name: php
-version: 4.1.6
+version: 4.1.7
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: v4.1.7
+    date: Sep 14, 20
+    changes:
+      -
+        text: "Add delete permission support to grant call."
+        type: feature
   - version: v4.1.6
     date: Aug 20, 20
     changes:

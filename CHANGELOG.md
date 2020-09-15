@@ -1,3 +1,8 @@
+## [v4.1.7](https://github.com/pubnub/php/releases/tag/v4.1.7)
+September-14-2020
+
+- 🌟️ Add delete permission support to grant call. 
+
 ## [v4.1.6](https://github.com/pubnub/php/releases/tag/v4.1.6)
 August-20-2020
 
