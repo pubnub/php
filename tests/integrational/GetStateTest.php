@@ -6,6 +6,7 @@ use PubNub\Endpoints\Presence\GetState;
 use PubNub\Exceptions\PubNubException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
+use PubNub\PubNubUtil;
 use PubNubTestCase;
 use Tests\Helpers\Stub;
 use Tests\Helpers\StubTransport;
@@ -121,7 +122,7 @@ class GetStateTest extends PubNubTestCase
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => "cg1,cg2"
+                "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, \"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
@@ -144,7 +145,7 @@ class GetStateTest extends PubNubTestCase
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => "cg1,cg2"
+                "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, \"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 

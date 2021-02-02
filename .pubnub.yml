@@ -1,8 +1,23 @@
 name: php
-version: 4.1.7
+version: 4.2.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: v4.2.0
+    date: Feb 2, 21
+    changes:
+      -
+        text: "Add support for device channel registration with apns2."
+        type: feature
+      -
+        text: "Allows management of users and channels with metadata."
+        type: feature
+      -
+        text: "Implement v2 signatures required for push and objects."
+        type: feature
+      -
+        text: "Implement v2 grant endpoint with support for user level grant."
+        type: feature
   - version: v4.1.7
     date: Sep 14, 20
     changes:

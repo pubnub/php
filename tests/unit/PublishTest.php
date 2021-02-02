@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use PubNub\PubNub;
 
 
-class UtilsTest extends TestCase
+class PublishTest extends TestCase
 {
     /**
      * @group publish

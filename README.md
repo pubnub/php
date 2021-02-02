@@ -1,5 +1,5 @@
 # PubNub PHP SDK (V4)
-[![Build Status](https://travis-ci.org/pubnub/php.svg?branch=master)](https://travis-ci.org/pubnub/php)
+[![Build Status](https://travis-ci.com/pubnub/php.svg?branch=master)](https://travis-ci.com/pubnub/php)
 [![codecov](https://codecov.io/gh/pubnub/php/branch/master/graph/badge.svg)](https://codecov.io/gh/pubnub/php)
 [![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://www.pubnub.com/docs/php/pubnub-php-sdk)
 

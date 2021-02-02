@@ -33,6 +33,31 @@ abstract class PubNubTestCase extends TestCase
     /** @var  string */
     protected $encodedSdkName;
 
+    protected function fakeSignature($params, $httpMethod, $timestamp, $publishKey, $path, $secretKey) {
+    
+        $params['timestamp'] = (string) $timestamp;
+    
+        ksort($params);
+    
+        $signedInput = $httpMethod
+            . "\n"
+            . $publishKey
+            . "\n"
+            . $path
+            . "\n"
+            . PubNubUtil::preparePamParams($params)
+            . "\n";
+    
+        $signature = 'v2.' . PubNubUtil::signSha256(
+            $secretKey,
+            $signedInput
+        );
+        
+        $signature = preg_replace('/=+$/', '', $signature);
+    
+        return $signature;
+    }
+
     public function setUp()
     {
         $publishKey = getenv("PUBLISH_KEY");

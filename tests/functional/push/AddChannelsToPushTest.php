@@ -63,6 +63,35 @@ class AddChannelsToPushTest extends PubNubTestCase
         $this->assertEquals(["ch1","ch2"], $add->getChannels());
     }
 
+    public function testPushAddApns2()
+    {
+        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+
+        $add = new AddChannelsToPushExposed($this->pubnub);
+
+        $add->channels(["ch1", "ch2"])
+            ->pushType(PNPushType::APNS2)
+            ->deviceId("coolDevice")
+            ->topic("coolTopic")
+            ->environment("production");
+
+        $this->assertEquals(sprintf(
+            AddChannelsToPush::PATH_APNS2,
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
+            "coolDevice"
+        ), $add->buildPath());
+
+        $this->assertEquals([
+            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
+            "uuid" => $this->pubnub->getConfiguration()->getUuid(),
+            "add" => "ch1,ch2",
+            "topic" => "coolTopic",
+            "environment" => "production",
+        ], $add->buildParams());
+
+        $this->assertEquals(["ch1","ch2"], $add->getChannels());
+    }
+
     public function testPushAddGoogle()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");

@@ -134,10 +134,10 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
     {
         // Not valid
         // ,:[]*`|
-        $groupCharacters = "-._~@!$&'()+;=";
+        $groupCharacters = "-._~@!$&'()+;=,:[]*`|";
         // Not valid
         // :&*+;
-        $channelCharacters = "-.,_~[]@!$'()=`|";
+        $channelCharacters = "-.,_~[]@!$'()=`|:&*+;";
 
         $this->expectException(PubNubServerException::class);
 

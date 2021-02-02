@@ -5,6 +5,7 @@ namespace PubNub\Endpoints\Push;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Enums\PNPushType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Push\PNPushRemoveAllChannelsResult;
 
@@ -13,11 +14,19 @@ class RemoveDeviceFromPush extends Endpoint
 {
     const PATH = "/v1/push/sub-key/%s/devices/%s/remove";
 
+    const PATH_APNS2 = "/v2/push/sub-key/%s/devices-apns2/%s/remove";
+
     /** @var  string */
     protected $deviceId;
 
     /** @var  string */
     protected $pushType;
+
+    /** @var  string */
+    protected $environment;
+
+    /** @var  string */
+    protected $topic;
 
     /**
      * @param string $deviceId
@@ -42,6 +51,28 @@ class RemoveDeviceFromPush extends Endpoint
     }
 
     /**
+     * @param int $environment
+     * @return $this
+     */
+    public function environment($environment)
+    {
+        $this->environment = $environment;
+
+        return $this;
+    }
+
+    /**
+     * @param int $pushType
+     * @return $this
+     */
+    public function topic($topic)
+    {
+        $this->topic = $topic;
+
+        return $this;
+    }
+
+    /**
      * @throws PubNubValidationException
      */
     protected function validateParams()
@@ -55,6 +86,10 @@ class RemoveDeviceFromPush extends Endpoint
         if ($this->pushType === null || strlen($this->pushType) === 0) {
             throw new PubNubValidationException("Push Type is missing");
         }
+
+        if (($this->pushType == PNPushType::APNS2) && (!is_string($this->topic) || strlen($this->topic) === 0)) {
+            throw new PubNubValidationException("APNS2 topic is missing");
+        }
     }
 
     /**
@@ -62,9 +97,23 @@ class RemoveDeviceFromPush extends Endpoint
      */
     protected function customParams()
     {
-        return [
-            'type' => $this->pushType
-        ];
+        $params = [];
+
+        if ($this->pushType != PNPushType::APNS2) {
+            // v1 push -> add type
+            $params['type'] = $this->pushType;
+        } else {
+            // apns2 push -> add topic and environment
+            $params['topic'] = $this->topic;
+
+            if (is_string($this->environment) && strlen($this->environment) > 0) {
+                $params['environment'] = $this->environment;
+            } else {
+                $params['environment'] = 'development';
+            }
+        }
+
+        return $params;
     }
 
     /**
@@ -80,10 +129,13 @@ class RemoveDeviceFromPush extends Endpoint
      */
     protected function buildPath()
     {
+        $path = $this->pushType == PNPushType::APNS2 ? RemoveDeviceFromPush::PATH_APNS2 : RemoveDeviceFromPush::PATH;
+
         return sprintf(
-            RemoveDeviceFromPush::PATH,
+            $path,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
-            $this->deviceId);
+            $this->deviceId
+        );
     }
 
     /**

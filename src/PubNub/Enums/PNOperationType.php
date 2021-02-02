@@ -36,4 +36,24 @@ class PNOperationType
     const PNAccessManagerRevoke = 23;
     const PNHistoryDeleteOperation = 24;
     const PNMessageCountOperation = 25;
+
+      // Objects API v2
+    //   UUID
+    const PNGetAllUUIDMetadataOperation = 26;
+    const PNGetUUIDMetadataOperation = 27;
+    const PNSetUUIDMetadataOperation = 28;
+    const PNRemoveUUIDMetadataOperation = 29;
+    //   channel
+    const PNGetAllChannelMetadataOperation = 30;
+    const PNGetChannelMetadataOperation = 31;
+    const PNSetChannelMetadataOperation = 32;
+    const PNRemoveChannelMetadataOperation = 33;
+    //   member
+    const PNGetMembersOperation = 34;
+    const PNSetMembersOperation = 35;
+    const PNRemoveMembersOperation = 36;
+    //   membership
+    const PNGetMembershipsOperation = 37;
+    const PNSetMembershipsOperation = 38;
+    const PNRemoveMembershipsOperation = 39;
 }

@@ -99,7 +99,7 @@ class LeaveTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            "channel-group" => "gr1,gr2,gr3",
+            "channel-group" => PubNubUtil::urlEncode("gr1,gr2,gr3"),
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid()
         ], $this->leave->buildParams());
@@ -117,7 +117,7 @@ class LeaveTest extends \PubNubTestCase
         );
 
         $this->assertEquals([
-            "channel-group" => "gr1,gr2,gr3",
+            "channel-group" => PubNubUtil::urlEncode("gr1,gr2,gr3"),
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid()
         ], $this->leave->buildParams());
@@ -137,7 +137,7 @@ class LeaveTest extends \PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "channel-group" => "gr1,gr2"
+            "channel-group" => PubNubUtil::urlEncode("gr1,gr2")
         ], $this->leave->buildParams());
 
         $this->assertEquals(["gr1", "gr2"], $this->leave->getGroups());

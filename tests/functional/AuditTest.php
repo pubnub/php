@@ -3,6 +3,7 @@
 namespace Tests\Functional;
 
 use PubNub\Endpoints\Access\Audit;
+use PubNub\Enums\PNHttpMethod;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
@@ -31,14 +32,18 @@ class AuditTest extends \PubNubTestCase
             'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
             'timestamp' => '123',
             'channel' => 'ch',
-            'signature' => PubNubUtil::signSha256(
-                $this->config_pam->getSecretKey(),
-                $this->config_pam->getSubscribeKey() . "\n" . $this->config_pam->getPublishKey() . "\n" .
-                "audit\n" . PubNubUtil::preparePamParams([
-                    "timestamp" => "123",
-                    "channel" => "ch",
-                    "pnsdk" => PubNub::getSdkFullName(),
-                    "uuid" => $this->pubnub_pam->getConfiguration()->getUuid()])
+            'signature' => $this->fakeSignature(
+                [
+                    'pnsdk' => PubNub::getSdkFullName(),
+                    'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
+                    'timestamp' => '123',
+                    'channel' => 'ch',
+                ],
+                PNHttpMethod::GET,
+                '123',
+                $this->pubnub_pam->getConfiguration()->getPublishKey(),
+                $this->audit->buildPath(),
+                $this->config_pam->getSecretKey()
             )
         ], $this->audit->buildParams());
     }
@@ -53,15 +58,19 @@ class AuditTest extends \PubNubTestCase
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
             'timestamp' => '123',
-            'channel-group' => 'gr1,gr2',
-            'signature' => PubNubUtil::signSha256(
-                $this->config_pam->getSecretKey(),
-                $this->config_pam->getSubscribeKey() . "\n" . $this->config_pam->getPublishKey() . "\n" .
-                "audit\n" . PubNubUtil::preparePamParams([
-                    "timestamp" => "123",
-                    "channel-group" => "gr1,gr2",
-                    "pnsdk" => PubNub::getSdkFullName(),
-                    "uuid" => $this->pubnub_pam->getConfiguration()->getUuid()])
+            'channel-group' => PubNubUtil::urlEncode('gr1,gr2'),
+            'signature' => $this->fakeSignature(
+                [
+                    'pnsdk' => PubNub::getSdkFullName(),
+                    'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
+                    'timestamp' => '123',
+                    'channel-group' => 'gr1,gr2',
+                ],
+                PNHttpMethod::GET,
+                '123',
+                $this->pubnub_pam->getConfiguration()->getPublishKey(),
+                $this->audit->buildPath(),
+                $this->config_pam->getSecretKey()
             )
         ], $this->audit->buildParams());
     }

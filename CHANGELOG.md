@@ -1,3 +1,11 @@
+## [v4.2.0](https://github.com/pubnub/php/releases/tag/v4.2.0)
+February-2-2021
+
+- 🌟️ Add support for device channel registration with apns2. 
+- 🌟️ Allows management of users and channels with metadata. 
+- 🌟️ Implement v2 signatures required for push and objects. 
+- 🌟️ Implement v2 grant endpoint with support for user level grant. 
+
 ## [v4.1.7](https://github.com/pubnub/php/releases/tag/v4.1.7)
 September-14-2020
 

@@ -15,7 +15,6 @@ use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\Models\ResponseHelpers\ResponseInfo;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-use PubNub\Managers\TelemetryManager;
 use Requests_Exception;
 
 
@@ -166,31 +165,45 @@ abstract class Endpoint
      * @return array
      */
     protected function buildParams()
-    {
+    {   
         $params = array_merge($this->customParams(), $this->defaultParams());
         $config = $this->pubnub->getConfiguration();
 
         if ($config->getSecretKey()) {
-            $params['timestamp'] = (string) $this->pubnub->timestamp();
-            $signedInput = $config->getSubscribeKey() . "\n" . $config->getPublishKey() . "\n";
+            $httpMethod = $this->httpMethod();
 
-            if ($this->getOperationType() == PNOperationType::PNAccessManagerGrant ||
-                $this->getOperationType() == PNOperationType::PNAccessManagerRevoke) {
-                $signedInput .= "grant\n";
-            } else if ($this->getOperationType() === PNOperationType::PNAccessManagerAudit) {
-                $signedInput .= "audit\n";
-            } else {
-                $signedInput .= $this->buildPath() . "\n";
+            if ($this->getName() == "Publish") {
+                // This is because of a server-side bug, old publish using post should be deprecated
+                $httpMethod = PNHttpMethod::GET;
             }
 
-            $signedInput .= PubNubUtil::preparePamParams($params);
+            $params['timestamp'] = (string) $this->pubnub->timestamp();
 
-            $params['signature'] = PubNubUtil::signSha256(
+            ksort($params);
+
+            $signedInput = $httpMethod
+                . "\n"
+                . $config->getPublishKey()
+                . "\n"
+                . $this->buildPath()
+                . "\n"
+                . PubNubUtil::preparePamParams($params)
+                . "\n";
+
+            if (PNHttpMethod::POST == $this->httpMethod() || PNHttpMethod::PATCH == $this->httpMethod()) {
+                $signedInput .= $this->buildData();
+            }
+
+            $signature = 'v2.' . PubNubUtil::signSha256(
                 $this->pubnub->getConfiguration()->getSecretKey(),
                 $signedInput
             );
-        }
+            
+            $signature = preg_replace('/=+$/', '', $signature);
 
+            $params['signature'] = $signature;
+        }
+    
         if ($this->getOperationType() == PNOperationType::PNPublishOperation
             && array_key_exists('meta', $this->customParams())) {
             $params['meta'] = PubNubUtil::urlEncode($params['meta']);
@@ -215,6 +228,10 @@ abstract class Endpoint
 
         if (array_key_exists('channel', $params)) {
             $params['channel'] = PubNubUtil::urlEncode($params['channel']);
+        }
+
+        if (array_key_exists('channel-group', $params)) {
+            $params['channel-group'] = PubNubUtil::urlEncode($params['channel-group']);
         }
 
         return $params;
@@ -309,6 +326,9 @@ abstract class Endpoint
 
         if ($this->httpMethod() == PNHttpMethod::POST) {
             $method = \Requests::POST;
+        }
+        else if ($this->httpMethod() == PNHttpMethod::PATCH) {
+            $method = \Requests::PATCH;
         }
         else if ($this->httpMethod() == PNHttpMethod::DELETE) {
             $method = \Requests::DELETE;
@@ -499,6 +519,7 @@ abstract class Endpoint
         $pnStatus->setCategory($category);
         $pnStatus->setAffectedChannels($this->getAffectedChannels());
         $pnStatus->setAffectedChannelGroups($this->getAffectedChannelGroups());
+        $pnStatus->setAffectedUsers($this->getAffectedUsers());
 
         return $pnStatus;
     }
@@ -509,6 +530,11 @@ abstract class Endpoint
     }
 
     protected function getAffectedChannelGroups()
+    {
+        return null;
+    }
+
+    protected function getAffectedUsers()
     {
         return null;
     }

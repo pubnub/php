@@ -3,6 +3,7 @@
 namespace Tests\Functional;
 
 use PubNub\Endpoints\Access\Grant;
+use PubNub\Enums\PNHttpMethod;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
@@ -50,18 +51,22 @@ class GrantTest extends \PubNubTestCase
             'ttl' => '7',
             'timestamp' => '123',
             'channel' => 'ch',
-            'signature' => PubNubUtil::signSha256(
-                $this->config_pam->getSecretKey(),
-                $this->config_pam->getSubscribeKey() . "\n" . $this->config_pam->getPublishKey() . "\n" .
-                "grant\n" . PubNubUtil::preparePamParams([
-                    "r" => "1",
-                    "w" => "1",
-                    "ttl" => "7",
-                    "timestamp" => "123",
-                    "channel" => "ch",
-                    "pnsdk" => PubNub::getSdkFullName(),
-                    "uuid" => $this->pubnub_pam->getConfiguration()->getUuid()])
-                )
+            'signature' => $this->fakeSignature(
+                [
+                    'pnsdk' => PubNub::getSdkFullName(),
+                    'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
+                    'r' => '1',
+                    'w' => '1',
+                    'ttl' => '7',
+                    'timestamp' => '123',
+                    'channel' => 'ch',
+                ],
+                PNHttpMethod::GET,
+                '123',
+                $this->pubnub_pam->getConfiguration()->getPublishKey(),
+                $this->grant->buildPath(),
+                $this->config_pam->getSecretKey()
+            )
         ], $this->grant->buildParams());
     }
 
@@ -82,17 +87,21 @@ class GrantTest extends \PubNubTestCase
             'r' => '1',
             'w' => '0',
             'timestamp' => '123',
-            'channel-group' => 'gr1,gr2',
-            'signature' => PubNubUtil::signSha256(
-                $this->config_pam->getSecretKey(),
-                $this->config_pam->getSubscribeKey() . "\n" . $this->config_pam->getPublishKey() . "\n" .
-                "grant\n" . PubNubUtil::preparePamParams([
-                    "r" => "1",
-                    "w" => "0",
-                    "timestamp" => "123",
-                    "channel-group" => "gr1,gr2",
-                    "pnsdk" => PubNub::getSdkFullName(),
-                    "uuid" => $this->pubnub_pam->getConfiguration()->getUuid()])
+            'channel-group' => PubNubUtil::urlEncode('gr1,gr2'),
+            'signature' => $this->fakeSignature(
+                [
+                    'pnsdk' => PubNub::getSdkFullName(),
+                    'uuid' => $this->pubnub_pam->getConfiguration()->getUuid(),
+                    'r' => '1',
+                    'w' => '0',
+                    'timestamp' => '123',
+                    'channel-group' => 'gr1,gr2',
+                ],
+                PNHttpMethod::GET,
+                '123',
+                $this->pubnub_pam->getConfiguration()->getPublishKey(),
+                $this->grant->buildPath(),
+                $this->config_pam->getSecretKey()
             )
         ], $this->grant->buildParams());
     }

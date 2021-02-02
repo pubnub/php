@@ -22,6 +22,18 @@ abstract class PNPAMEntityData
     /** @var  bool */
     protected $manageEnabled;
 
+    /** @var  bool */
+    protected $deleteEnabled;
+
+    /** @var  bool */
+    protected $getEnabled;
+
+    /** @var  bool */
+    protected $updateEnabled;
+
+    /** @var  bool */
+    protected $joinEnabled;
+
     /** @var  int */
     protected $ttl;
 
@@ -32,21 +44,29 @@ abstract class PNPAMEntityData
      * @param bool $readEnabled
      * @param bool $writeEnabled
      * @param bool $manageEnabled
+     * @param bool $deletesEnabled
+     * @param bool $getEnabled
+     * @param bool $updateEnabled
+     * @param bool $joinEnabled
      * @param int $ttl
      */
-    public function __construct($name, array $authKeys, $readEnabled, $writeEnabled, $manageEnabled, $ttl)
+    public function __construct($name, array $authKeys, $readEnabled, $writeEnabled, $manageEnabled, $deleteEnabled, $getEnabled, $updateEnabled, $joinEnabled, $ttl)
     {
         $this->name = $name;
         $this->authKeys = $authKeys;
         $this->readEnabled = $readEnabled;
         $this->writeEnabled = $writeEnabled;
         $this->manageEnabled = $manageEnabled;
+        $this->deleteEnabled = $deleteEnabled;
+        $this->getEnabled = $manageEnabled;
+        $this->updateEnabled = $manageEnabled;
+        $this->joinEnabled = $manageEnabled;
         $this->ttl = $ttl;
     }
 
     public static function fromJson($name, $jsonInput)
     {
-        list($r, $w, $m, $ttl) = PubNubUtil::fetchPamPermissionsFrom($jsonInput);
+        list($r, $w, $m, $d, $g, $u, $j, $ttl) = PubNubUtil::fetchPamPermissionsFrom($jsonInput);
 
         $constructedAuthKeys = [];
 
@@ -56,7 +76,7 @@ abstract class PNPAMEntityData
             }
         }
 
-        return new static($name, $constructedAuthKeys, $r, $w, $m, $ttl);
+        return new static($name, $constructedAuthKeys, $r, $w, $m, $d, $g, $u, $j, $ttl);
     }
 
     /**
@@ -97,6 +117,38 @@ abstract class PNPAMEntityData
     public function isManageEnabled()
     {
         return $this->manageEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleteEnabled()
+    {
+        return $this->deleteEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGetEnabled()
+    {
+        return $this->getEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpdateEnabled()
+    {
+        return $this->updateEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJoinEnabled()
+    {
+        return $this->joinEnabled;
     }
 
     /**

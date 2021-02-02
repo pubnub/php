@@ -5,6 +5,7 @@ namespace Tests\Integrational;
 use PubNub\Endpoints\Presence\SetState;
 use PubNub\PubNub;
 use PubNub\Exceptions\PubNubException;
+use PubNub\PubNubUtil;
 use Tests\Helpers\StubTransport;
 
 
@@ -120,7 +121,7 @@ class SetStateTest extends \PubNubTestCase
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => "cg1,cg2"
+                "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
 
@@ -145,7 +146,7 @@ class SetStateTest extends \PubNubTestCase
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => "cg1,cg2"
+                "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
 
@@ -172,7 +173,7 @@ class SetStateTest extends \PubNubTestCase
                 "uuid" => "myUUID",
                 "state" => "%7B%22age%22%3A20%7D",
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => "cg1,cg2"
+                "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\" }, \"service\": \"Presence\"}");
 

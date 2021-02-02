@@ -15,6 +15,20 @@ use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
+use PubNub\Endpoints\Objects\Channel\SetChannelMetadata;
+use PubNub\Endpoints\Objects\Channel\GetChannelMetadata;
+use PubNub\Endpoints\Objects\Channel\GetAllChannelMetadata;
+use PubNub\Endpoints\Objects\Channel\RemoveChannelMetadata;
+use PubNub\Endpoints\Objects\UUID\SetUUIDMetadata;
+use PubNub\Endpoints\Objects\UUID\GetUUIDMetadata;
+use PubNub\Endpoints\Objects\UUID\GetAllUUIDMetadata;
+use PubNub\Endpoints\Objects\UUID\RemoveUUIDMetadata;
+use PubNub\Endpoints\Objects\Member\SetMembers;
+use PubNub\Endpoints\Objects\Member\GetMembers;
+use PubNub\Endpoints\Objects\Member\RemoveMembers;
+use PubNub\Endpoints\Objects\Membership\SetMemberships;
+use PubNub\Endpoints\Objects\Membership\GetMemberships;
+use PubNub\Endpoints\Objects\Membership\RemoveMemberships;
 use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\SetState;
@@ -32,7 +46,7 @@ use PubNub\Managers\TelemetryManager;
 
 class PubNub
 {
-    const SDK_VERSION = "4.1.7";
+    const SDK_VERSION = "4.2.0";
     const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
@@ -228,6 +242,118 @@ class PubNub
     public function listPushProvisions()
     {
         return new ListPushProvisions($this);
+    }
+
+    /**
+     * @return SetChannelMetadata
+     */
+    public function setChannelMetadata()
+    {
+        return new SetChannelMetadata($this);
+    }
+
+    /**
+     * @return GetChannelMetadata
+     */
+    public function getChannelMetadata()
+    {
+        return new GetChannelMetadata($this);
+    }
+
+    /**
+     * @return GetAllChannelMetadata
+     */
+    public function getAllChannelMetadata()
+    {
+        return new GetAllChannelMetadata($this);
+    }
+
+    /**
+     * @return RemoveChannelMetadata
+     */
+    public function removeChannelMetadata()
+    {
+        return new RemoveChannelMetadata($this);
+    }
+
+    /**
+     * @return SetUUIDMetadata
+     */
+    public function setUUIDMetadata()
+    {
+        return new SetUUIDMetadata($this);
+    }
+
+    /**
+     * @return GetUUIDMetadata
+     */
+    public function getUUIDMetadata()
+    {
+        return new GetUUIDMetadata($this);
+    }
+
+    /**
+     * @return GetAllUUIDMetadata
+     */
+    public function getAllUUIDMetadata()
+    {
+        return new GetAllUUIDMetadata($this);
+    }
+
+    /**
+     * @return RemoveUUIDMetadata
+     */
+    public function removeUUIDMetadata()
+    {
+        return new RemoveUUIDMetadata($this);
+    }
+
+    /**
+     * @return GetMembers
+     */
+    public function getMembers()
+    {
+        return new GetMembers($this);
+    }
+
+    /**
+     * @return SetMembers
+     */
+    public function setMembers()
+    {
+        return new SetMembers($this);
+    }
+
+    /**
+     * @return RemoveMembers
+     */
+    public function removeMembers()
+    {
+        return new RemoveMembers($this);
+    }
+
+    /**
+     * @return GetMemberships
+     */
+    public function getMemberships()
+    {
+        return new GetMemberships($this);
+    }
+
+    /**
+     * @return SetMemberships
+     */
+    public function setMemberships()
+    {
+        return new SetMemberships($this);
+    }
+
+    /**
+     * @return RemoveMemberships
+     */
+    public function removeMemberships()
+    {
+        return new RemoveMemberships($this);
     }
 
     /**

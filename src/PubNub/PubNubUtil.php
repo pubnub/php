@@ -121,8 +121,6 @@ class PubNubUtil
 
     public static function preparePamParams($params)
     {
-        ksort($params);
-
         $sortedParams = $params;
         $stringifiedArguments = "";
         $index = 0;
@@ -179,6 +177,10 @@ class PubNubUtil
         $r = null;
         $w = null;
         $m = null;
+        $d = null;
+        $g = null;
+        $u = null;
+        $j = null;
         $ttl = null;
 
         if (array_key_exists('r', $jsonInput)) {
@@ -193,11 +195,27 @@ class PubNubUtil
             $m = $jsonInput['m'] === 1;
         }
 
+        if (array_key_exists('d', $jsonInput)) {
+            $d = $jsonInput['d'] === 1;
+        }
+
+        if (array_key_exists('g', $jsonInput)) {
+            $g = $jsonInput['g'] === 1;
+        }
+
+        if (array_key_exists('u', $jsonInput)) {
+            $u = $jsonInput['u'] === 1;
+        }
+
+        if (array_key_exists('j', $jsonInput)) {
+            $j = $jsonInput['j'] === 1;
+        }
+
         if (array_key_exists('ttl', $jsonInput)) {
             $ttl = (int) $jsonInput['ttl'];
         }
 
-        return [$r, $w, $m, $ttl];
+        return [$r, $w, $m, $d, $g, $u, $j, $ttl];
     }
 
     public static function isAssoc($arr)

@@ -234,4 +234,81 @@ class PamTest extends \PubNubTestCase
         $this->assertFalse($response->getChannelGroups()[$gr1]->getAuthKeys()[$auth]->isManageEnabled());
         $this->assertFalse($response->getChannelGroups()[$gr2]->getAuthKeys()[$auth]->isManageEnabled());
     }
+
+    /**
+     * @group pam
+     * @group pam-integrational
+     */
+    public function testSingleUuid()
+    {
+        $targetUuid = "test-pam-uuid";
+        $auth = "test-pam-php-auth";
+
+        $this->pubnub->getConfiguration()->setUuid('my_uuid');
+
+        $response = $this->pubnub_pam
+            ->grant()
+            ->uuids([$targetUuid])
+            ->authKeys($auth)
+            ->write(true)
+            ->read(true)
+            ->delete(false)
+            ->get(true)
+            ->update(true)
+            ->join(true)
+            ->sync();
+
+        $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
+        $this->assertEquals("uuid", $response->getLevel());
+        $this->assertTrue($response->getUsers()[$targetUuid]->getAuthKeys()[$auth]->isReadEnabled());
+        $this->assertTrue($response->getUsers()[$targetUuid]->getAuthKeys()[$auth]->isWriteEnabled());
+        $this->assertFalse($response->getUsers()[$targetUuid]->getAuthKeys()[$auth]->isManageEnabled());
+        $this->assertFalse($response->getUsers()[$targetUuid]->getAuthKeys()[$auth]->isDeleteEnabled());
+        $this->assertTrue($response->getUsers()[$targetUuid]->getAuthKeys()[$auth]->isGetEnabled());
+        $this->assertTrue($response->getUsers()[$targetUuid]->getAuthKeys()[$auth]->isUpdateEnabled());
+        $this->assertTrue($response->getUsers()[$targetUuid]->getAuthKeys()[$auth]->isJoinEnabled());
+    }
+
+    /**
+     * @group pam
+     * @group pam-integrational
+     */
+    public function testMultipleUuid()
+    {
+        $targetUuid1 = "test-pam-uuid-1";
+        $targetUuid2 = "test-pam-uuid-2";
+        $auth = "test-pam-php-auth";
+
+        $this->pubnub->getConfiguration()->setUuid('my_uuid');
+
+        $response = $this->pubnub_pam
+            ->grant()
+            ->uuids([$targetUuid1, $targetUuid2])
+            ->authKeys($auth)
+            ->write(true)
+            ->read(true)
+            ->manage(true)
+            ->delete(true)
+            ->get(true)
+            ->update(true)
+            ->join(false)
+            ->sync();
+
+            $this->assertInstanceOf(PNAccessManagerGrantResult::class, $response);
+            $this->assertEquals("uuid", $response->getLevel());
+            $this->assertTrue($response->getUsers()[$targetUuid1]->getAuthKeys()[$auth]->isReadEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid2]->getAuthKeys()[$auth]->isReadEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid1]->getAuthKeys()[$auth]->isWriteEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid2]->getAuthKeys()[$auth]->isWriteEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid1]->getAuthKeys()[$auth]->isManageEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid2]->getAuthKeys()[$auth]->isManageEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid1]->getAuthKeys()[$auth]->isDeleteEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid2]->getAuthKeys()[$auth]->isDeleteEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid1]->getAuthKeys()[$auth]->isGetEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid2]->getAuthKeys()[$auth]->isGetEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid1]->getAuthKeys()[$auth]->isUpdateEnabled());
+            $this->assertTrue($response->getUsers()[$targetUuid2]->getAuthKeys()[$auth]->isUpdateEnabled());
+            $this->assertFalse($response->getUsers()[$targetUuid1]->getAuthKeys()[$auth]->isJoinEnabled());
+            $this->assertFalse($response->getUsers()[$targetUuid2]->getAuthKeys()[$auth]->isJoinEnabled());
+        }
 }

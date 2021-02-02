@@ -95,7 +95,7 @@ class SubscribeTest extends \PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid(),
-            'channel-group' => "cg1,cg2,cg3"
+            'channel-group' => PubNubUtil::urlEncode("cg1,cg2,cg3")
         ], $this->sub->buildParams());
 
         $this->assertEquals(["cg1", "cg2", "cg3"], $this->sub->getChannelGroups());
@@ -113,7 +113,7 @@ class SubscribeTest extends \PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid(),
-            'channel-group' => "cg1,cg2,cg3"
+            'channel-group' => PubNubUtil::urlEncode("cg1,cg2,cg3")
         ], $this->sub->buildParams());
 
         $this->assertEquals(["cg1", "cg2", "cg3"], $this->sub->getChannelGroups());
@@ -135,7 +135,7 @@ class SubscribeTest extends \PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid(),
-            'channel-group' => "cg1,cg2,cg3",
+            'channel-group' => PubNubUtil::urlEncode("cg1,cg2,cg3"),
             'tr' => 'us-east-1',
             'tt' => '123',
             'filter-expr' => 'blah'

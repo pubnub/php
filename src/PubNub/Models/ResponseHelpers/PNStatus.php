@@ -42,6 +42,9 @@ class PNStatus
     /** @var  null|array */
     private $affectedChannelGroups;
 
+    /** @var  null|array */
+    private $affectedUsers;
+
     /**
      * @return bool
      */
@@ -256,6 +259,25 @@ class PNStatus
     public function setAffectedChannelGroups($affectedChannelGroups)
     {
         $this->affectedChannelGroups = $affectedChannelGroups;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getAffectedUsers()
+    {
+        return $this->affectedUsers;
+    }
+
+    /**
+     * @param array|null $affectedUsers
+     * @return $this
+     */
+    public function setAffectedUsers($affectedUsers)
+    {
+        $this->affectedUsers = $affectedUsers;
 
         return $this;
     }

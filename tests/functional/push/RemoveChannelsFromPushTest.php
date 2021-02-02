@@ -6,9 +6,9 @@ use PubNub\Endpoints\Push\RemoveChannelsFromPush;
 use PubNub\Enums\PNPushType;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
+use PubNubTestCase;
 
-
-class RemoveChannelsFromPushTest extends \PubNubTestCase
+class RemoveChannelsFromPushTest extends PubNubTestCase
 {
     public function testPushRemoveSingleChannel()
     {

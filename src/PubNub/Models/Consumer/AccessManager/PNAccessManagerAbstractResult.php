@@ -22,6 +22,9 @@ class PNAccessManagerAbstractResult
     /** @var  array */
     protected $channelGroups;
 
+    /** @var  array */
+    protected $users;
+
     /** @var  bool */
     protected $readEnabled;
 
@@ -31,27 +34,49 @@ class PNAccessManagerAbstractResult
     /** @var  bool */
     protected $manageEnabled;
 
+    /** @var  bool */
+    protected $deleteEnabled;
+
+    /** @var  bool */
+    protected $getEnabled;
+
+    /** @var  bool */
+    protected $updateEnabled;
+
+    /** @var  bool */
+    protected $joinEnabled;
+
     /**
      * PNAccessManagerAbstractResult constructor.
      * @param string $level
      * @param string $subscribeKey
      * @param array $channels
      * @param array $channelGroups
+     * @param array $users
      * @param int $ttl
      * @param bool $r
      * @param bool $w
      * @param bool $m
+     * @param bool $d
+     * @param bool $g
+     * @param bool $u
+     * @param bool $j
      */
-    public function __construct($level, $subscribeKey, array $channels, array $channelGroups, $ttl, $r, $w, $m)
+    public function __construct($level, $subscribeKey, array $channels, array $channelGroups, array $users, $ttl, $r, $w, $m, $d, $g, $u, $j)
     {
         $this->level = $level;
         $this->subscribeKey = $subscribeKey;
         $this->channels = $channels;
         $this->channelGroups = $channelGroups;
+        $this->users = $users;
         $this->ttl = $ttl;
         $this->readEnabled = $r;
         $this->writeEnabled = $w;
         $this->manageEnabled = $m;
+        $this->deleteEnabled = $d;
+        $this->getEnabled = $g;
+        $this->updateEnabled = $u;
+        $this->joinEnabled = $j;
     }
 
     /**
@@ -62,7 +87,8 @@ class PNAccessManagerAbstractResult
     {
         $constructedChannels = [];
         $constructedGroups = [];
-        list($r, $w, $m, $ttl) = PubNubUtil::fetchPamPermissionsFrom($jsonInput);
+        $constructedUsers = [];
+        list($r, $w, $m, $d, $g, $u, $j, $ttl) = PubNubUtil::fetchPamPermissionsFrom($jsonInput);
 
         if (array_key_exists('channel', $jsonInput)) {
             $channelName = $jsonInput['channel'];
@@ -73,7 +99,7 @@ class PNAccessManagerAbstractResult
             }
 
             $constructedChannels[$channelName] = new PNAccessManagerChannelData(
-                $channelName, $constructedAuthKeys, null, null, null, $ttl);
+                $channelName, $constructedAuthKeys, null, null, null, null, null, null, null, $ttl);
         }
 
         if (array_key_exists('channel-group', $jsonInput)) {
@@ -88,6 +114,10 @@ class PNAccessManagerAbstractResult
                 $constructedGroups[$groupName] = new PNAccessManagerChannelGroupData(
                     $groupName,
                     $constructedAuthKeys,
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -117,6 +147,10 @@ class PNAccessManagerAbstractResult
                     null,
                     null,
                     null,
+                    null,
+                    null,
+                    null,
+                    null,
                     $ttl
                 );
             }
@@ -134,15 +168,26 @@ class PNAccessManagerAbstractResult
             }
         }
 
+        if (array_key_exists('uuids', $jsonInput)) {
+            foreach ($jsonInput['uuids'] as $userName => $value) {
+                $constructedUsers[$userName] = PNAccessManagerUserData::fromJson($userName, $value);
+            }
+        }
+
         return new static(
             $jsonInput['level'],
             $jsonInput['subscribe_key'],
             $constructedChannels,
             $constructedGroups,
+            $constructedUsers,
             $ttl,
             $r,
             $w,
-            $m
+            $m,
+            $d,
+            $g,
+            $u,
+            $j
         );
     }
 
@@ -187,6 +232,14 @@ class PNAccessManagerAbstractResult
     }
 
     /**
+     * @return PNAccessManagerChannelGroupData[]
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
      * @return bool
      */
     public function isReadEnabled()
@@ -208,5 +261,37 @@ class PNAccessManagerAbstractResult
     public function isManageEnabled()
     {
         return $this->manageEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleteEnabled()
+    {
+        return $this->deleteEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGetEnabled()
+    {
+        return $this->getEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpdateEnabled()
+    {
+        return $this->updateEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJoinEnabled()
+    {
+        return $this->joinEnabled;
     }
 }

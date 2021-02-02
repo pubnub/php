@@ -6,9 +6,9 @@ use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Enums\PNPushType;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
+use PubNubTestCase;
 
-
-class RemoveDeviceFromPushTest extends \PubNubTestCase
+class RemoveDeviceFromPushTest extends PubNubTestCase
 {
     public function testRemovePushAPNS()
     {
