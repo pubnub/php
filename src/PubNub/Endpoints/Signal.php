@@ -7,7 +7,6 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PNSignalResult;
-use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
 class Signal extends Endpoint
