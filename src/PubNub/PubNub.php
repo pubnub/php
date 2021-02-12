@@ -38,6 +38,7 @@ use PubNub\Endpoints\Push\AddChannelsToPush;
 use PubNub\Endpoints\Push\ListPushProvisions;
 use PubNub\Endpoints\Push\RemoveChannelsFromPush;
 use PubNub\Endpoints\Push\RemoveDeviceFromPush;
+use PubNub\Endpoints\Signal;
 use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
@@ -114,6 +115,22 @@ class PubNub
     public function publish()
     {
         return new Publish($this);
+    }
+
+    /**
+     * @return Publish
+     */
+    public function fire()
+    {
+        return (new Publish($this))->shouldStore(false)->replicate(false);
+    }
+
+    /**
+     * @return Signal
+     */
+    public function signal()
+    {
+        return new Signal($this);
     }
 
     /**
@@ -476,13 +493,5 @@ class PubNub
         }
 
         return $this->nextSequence;
-    }
-
-    /**
-     * @return Publish
-     */
-    public function fire()
-    {
-        return (new Publish($this))->shouldStore(false)->replicate(false);
     }
 }

@@ -56,4 +56,7 @@ class PNOperationType
     const PNGetMembershipsOperation = 37;
     const PNSetMembershipsOperation = 38;
     const PNRemoveMembershipsOperation = 39;
+
+    // signal
+    const PNSignalOperation = 40;
 }
