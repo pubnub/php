@@ -74,6 +74,12 @@ class Signal extends Endpoint
                 $stringifiedMessage
         );
     }
+    
+    
+    protected function buildData()
+    {
+        return [];
+    }
 
     protected function customParams()
     {
