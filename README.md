@@ -106,7 +106,7 @@ $pubnub->publish()
 
 ## Documentation
 
-* [API reference for PHP ](https://www.pubnub.com/docs/sdks/php/api-reference)
+* [API reference for PHP ](https://www.pubnub.com/docs/sdks/php)
 
 
 ## Support
