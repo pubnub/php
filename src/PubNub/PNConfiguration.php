@@ -11,6 +11,7 @@ class PNConfiguration
     const DEFAULT_NON_SUBSCRIBE_REQUEST_TIMEOUT = 10;
     const DEFAULT_SUBSCRIBE_TIMEOUT = 310;
     const DEFAULT_CONNECT_TIMEOUT = 10;
+    const DEFAULT_USE_RANDOM_IV = true;
 
     /** @var  string Subscribe key provided by PubNub */
     private $subscribeKey;
@@ -51,6 +52,9 @@ class PNConfiguration
     /** @var  Requests_Transport */
     protected $transport;
 
+    /** @var bool */
+    protected $useRandomIV;
+
     /**
      * PNConfiguration constructor.
      */
@@ -59,6 +63,7 @@ class PNConfiguration
         $this->nonSubscribeRequestTimeout = static::DEFAULT_NON_SUBSCRIBE_REQUEST_TIMEOUT;
         $this->connectTimeout = static::DEFAULT_CONNECT_TIMEOUT;
         $this->subscribeTimeout = static::DEFAULT_SUBSCRIBE_TIMEOUT;
+        $this->useRandomIV = static::DEFAULT_USE_RANDOM_IV;
     }
 
     /**
@@ -128,7 +133,7 @@ class PNConfiguration
     public function setCipherKey($cipherKey)
     {
         if ($this->crypto == null) {
-            $this->crypto = new PubNubCrypto($cipherKey);
+            $this->crypto = new PubNubCrypto($cipherKey, $this->getUseRandomIV());
         } else {
             $this->getCrypto()->setCipherKey($cipherKey);
         }
@@ -367,6 +372,29 @@ class PNConfiguration
     public function setTransport($transport)
     {
         $this->transport = $transport;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseRandomIV()
+    {
+        return $this->useRandomIV;
+    }
+
+    /**
+     * @param bool $useRandomIV
+     * @return $this
+     */
+    public function setUseRandomIV($useRandomIV)
+    {
+        $this->useRandomIV = $useRandomIV;
+        
+        if ($this->crypto != null) {
+            $this->crypto->setUseRandomIV($this->useRandomIV);
+        }
 
         return $this;
     }

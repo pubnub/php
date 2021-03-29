@@ -285,6 +285,7 @@ class PublishTest extends \PubNubTestCase
         $channel = 'ch';
         $message = ['hi', 'hi2', 'hi3'];
 
+        $this->pubnub->getConfiguration()->setUseRandomIV(false);
         $this->pubnub->getConfiguration()->setCipherKey("testCipher");
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
         $r->setAccessible(true);

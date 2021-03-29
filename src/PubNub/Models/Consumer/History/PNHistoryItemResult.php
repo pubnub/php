@@ -7,7 +7,7 @@ use PubNub\PubNubCryptoCore;
 
 class PNHistoryItemResult
 {
-    /** @var  string */
+    /** @var  any */
     private $entry;
 
     /** @var  PubNubCryptoCore */
@@ -40,7 +40,7 @@ class PNHistoryItemResult
     }
 
     /**
-     * @return string
+     * @return any
      */
     public function getEntry()
     {

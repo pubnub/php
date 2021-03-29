@@ -1,3 +1,8 @@
+## [v4.3.0](https://github.com/pubnub/php/releases/tag/v4.3.0)
+March-29-2021
+
+- 🌟️ Add support for random initialization vector. 
+
 ## [v4.2.0](https://github.com/pubnub/php/releases/tag/v4.2.0)
 February-2-2021
 

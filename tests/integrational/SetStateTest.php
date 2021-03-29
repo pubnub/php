@@ -5,6 +5,7 @@ namespace Tests\Integrational;
 use PubNub\Endpoints\Presence\SetState;
 use PubNub\PubNub;
 use PubNub\Exceptions\PubNubException;
+use PubNub\Exceptions\PubNubServerException;
 use PubNub\PubNubUtil;
 use Tests\Helpers\StubTransport;
 
@@ -338,6 +339,8 @@ class SetStateTest extends \PubNubTestCase
         $uuidCharacters = "-.,_~:@!$&'()*+;=";
 
         $this->pubnub_pam->getConfiguration()->setUuid($uuidCharacters);
+
+        $this->expectException(PubNubServerException::class);
 
         $this->pubnub_pam->setState()
             ->state(['name' => $getStateCharacters])

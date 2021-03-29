@@ -133,42 +133,37 @@ class TestPubNubHistory extends \PubNubTestCase
     {
         $history = new HistoryExposed($this->pubnub);
 
-        $this->pubnub->getConfiguration()->setCipherKey("testCipher");
+        $this->pubnub->getConfiguration()->setUseRandomIV(false);
+        $this->pubnub->getConfiguration()->setCipherKey("cipherKey");
 
         $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "count" => "100",
-                "include_token" => "false",
+                "include_token" => "true",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => Stub::ANY
             ])
-            ->setResponseBody("[[\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\",\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\",\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\"],14606134331557853,14606134485013970]");
+            ->setResponseBody("[[{\"message\":\"zFJeF9BVABL80GUiQEBjLg==\",\"timetoken\":\"14649369736959785\"},{\"message\":\"HIq4MTi9nk/KEYlHOKpMCaH78ZXppGynDHrgY9nAd3s=\",\"timetoken\":\"14649369766426772\"}],14649369736959785,14649369766426772]");
 
-        $response = $history->channel("niceChannel")->includeTimetoken(false)->sync();
+        $response = $history->channel("niceChannel")->includeTimetoken(true)->sync();
 
-        $this->assertTrue($response->getStartTimetoken() === 14606134331557853);
-        $this->assertTrue($response->getEndTimetoken() === 14606134485013970);
+        $this->assertTrue($response->getStartTimetoken() === 14649369736959785);
+        $this->assertTrue($response->getEndTimetoken() === 14649369766426772);
 
-        $this->assertEquals(count($response->getMessages()), 3);
+        $this->assertEquals(count($response->getMessages()), 2);
 
-        $this->assertEquals($response->getMessages()[0]->getTimetoken(), NULL);
-        $this->assertEquals($response->getMessages()[0]->getEntry()[0], "m1");
-        $this->assertEquals($response->getMessages()[0]->getEntry()[1], "m2");
-        $this->assertEquals($response->getMessages()[0]->getEntry()[2], "m3");
+        $this->assertEquals($response->getMessages()[0]->getTimetoken(), "14649369736959785");
+        $this->assertEquals($response->getMessages()[0]->getEntry()->text, "hey");
 
-        $this->assertEquals($response->getMessages()[1]->getEntry()[0], "m1");
-        $this->assertEquals($response->getMessages()[1]->getEntry()[1], "m2");
-        $this->assertEquals($response->getMessages()[1]->getEntry()[2], "m3");
-
-        $this->assertEquals($response->getMessages()[2]->getEntry()[0], "m1");
-        $this->assertEquals($response->getMessages()[2]->getEntry()[1], "m2");
-        $this->assertEquals($response->getMessages()[2]->getEntry()[2], "m3");
+        $this->assertEquals($response->getMessages()[1]->getTimetoken(), "14649369766426772");
+        $this->assertEquals($response->getMessages()[1]->getEntry()->text2, "hey2");
     }
 
     public function testEncryptedWithPNOtherSuccess()
     {
         $history = new HistoryExposed($this->pubnub);
 
+        $this->pubnub->getConfiguration()->setUseRandomIV(false);
         $this->pubnub->getConfiguration()->setCipherKey("hello");
 
         $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")

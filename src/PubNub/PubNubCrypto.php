@@ -13,7 +13,14 @@ class PubNubCrypto extends PubNubCryptoCore {
 
         $encrypted = openssl_encrypt($plainText, 'aes-256-cbc', $paddedCipherKey, OPENSSL_RAW_DATA,
             $this->initializationVector);
-        $encode = base64_encode($encrypted);
+
+        $encode = '';
+        
+        if ($this->useRandomIV) {
+            $encode = base64_encode($this->initializationVector . $encrypted);
+        } else {
+            $encode = base64_encode($encrypted);
+        }
 
         return $encode;
     }
@@ -50,8 +57,21 @@ class PubNubCrypto extends PubNubCryptoCore {
         $shaCipherKey = hash("sha256", $this->cipherKey);
         $paddedCipherKey = substr($shaCipherKey, 0, 32);
 
-        $decrypted = openssl_decrypt($cipherText, 'aes-256-cbc', $paddedCipherKey, 0,
-            $this->initializationVector);
+        $decoded = base64_decode($cipherText);
+
+        $data = '';
+        $initializationVector = '';
+
+        if ($this->useRandomIV) {
+            $initializationVector = substr($decoded, 0, 16);
+            $data = substr($decoded, 16);
+        } else {
+            $initializationVector = $this->initializationVector;
+            $data = $decoded;
+        }
+
+        $decrypted = openssl_decrypt($data, 'aes-256-cbc', $paddedCipherKey, OPENSSL_RAW_DATA,
+            $initializationVector);
 
         if ($decrypted === false) {
             $logError("Decryption error: " . openssl_error_string());
@@ -68,5 +88,4 @@ class PubNubCrypto extends PubNubCryptoCore {
             return $result;
         }
     }
-
 }

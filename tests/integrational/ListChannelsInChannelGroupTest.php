@@ -4,6 +4,7 @@ namespace Tests\Integrational;
 
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Exceptions\PubNubResponseParsingException;
+use PubNub\Exceptions\PubNubServerException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNubTestCase;
@@ -127,6 +128,8 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
         // Not valid
         // ,:[]*`|
         $characters = "-._~@!$&'()+;=";
+
+        $this->expectException(PubNubServerException::class);
 
         $this->pubnub_pam->listChannelsInChannelGroup()
             ->channelGroup($characters)

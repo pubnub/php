@@ -15,7 +15,7 @@ class CryptoTest extends TestCase
         $logger = new \Monolog\Logger('CryptoTest');
         $toDecode = "QfD1NCBJCmt1aPPGU2cshw==";
         $key = "testKey";
-        $crypto = new \PubNub\PubNubCrypto($key);
+        $crypto = new \PubNub\PubNubCrypto($key, false);
         $hey = "
 
         dfjn
@@ -34,6 +34,35 @@ class CryptoTest extends TestCase
     /**
      * @group crypto
      *
+     * @requires extension openssl
+     */
+    public function testOpenSSL_AES_RandomIV()
+    {
+        $logger = new \Monolog\Logger('CryptoTest');
+        $toDecode = "6y+vBnIds5znZOL8htyCJy0Wno4rKxs7ILwbWeF/AwamGqzTC+moces4/HOSVJyK";
+        $key = "testKey";
+        $crypto = new \PubNub\PubNubCrypto($key, true);
+        $hey = "
+
+        dfjn
+        t564
+
+        sdfhp\n
+        ";
+
+
+        $this->assertEquals($hey, $crypto->decrypt($crypto->encrypt($hey), $logger));
+
+        // NOTICE: The original encoded message is wrapped into quotes which are stripped out inside the decrypt method
+        $decrypted = $crypto->decrypt($toDecode, $logger);
+
+        $this->assertObjectHasAttribute("hi", $decrypted);
+        $this->assertEquals("hello world", $decrypted->hi);
+    }
+
+    /**
+     * @group crypto
+     *
      * @requires extension mcrypt
      */
     public function testMcrypt_AES()
@@ -41,7 +70,7 @@ class CryptoTest extends TestCase
         $logger = new \Monolog\Logger('CryptoTest');
         $toDecode = "QfD1NCBJCmt1aPPGU2cshw==";
         $key = "testKey";
-        $crypto = new \PubNub\PubNubCryptoLegacy($key);
+        $crypto = new \PubNub\PubNubCryptoLegacy($key, false);
         $hey = "
 
         dfjn

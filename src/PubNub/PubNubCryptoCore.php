@@ -5,17 +5,24 @@ namespace PubNub;
 
 use Monolog\Logger;
 
+
 abstract class PubNubCryptoCore{
+    const IV_LENGTH = 16;
+
     /** @var  string */
     protected $cipherKey;
 
     /** @var  string */
     protected $initializationVector;
 
-    public function __construct($key, $initializationVector = "0123456789012345")
+    /** @var  string */
+    protected $useRandomIV;
+
+    public function __construct($key, $useRandomIV, $initializationVector = "0123456789012345")
     {
         $this->cipherKey = $key;
-        $this->initializationVector = $initializationVector;
+        $this->useRandomIV = $useRandomIV;
+        $this->initializationVector = $this->useRandomIV ? $this->randomIV() : substr($initializationVector, 0, 16);
     }
 
     /**
@@ -32,6 +39,20 @@ abstract class PubNubCryptoCore{
     abstract function encrypt($plainText);
 
     /**
+     * @return mixed
+     */
+    public function randomIV() {
+        if (function_exists("random_bytes")) {
+            return random_bytes(static::IV_LENGTH);
+        } else {
+            // this is only used for initialization vector and is not necessary
+            // to be cryptographically secure so fallback to openssl_random_pseudo_bytes
+            // when random_bytes is not available
+            return openssl_random_pseudo_bytes(static::IV_LENGTH);
+        }
+    }
+
+    /**
      * @return string
      */
     public function getCipherKey()
@@ -45,6 +66,22 @@ abstract class PubNubCryptoCore{
     public function setCipherKey($cipherKey)
     {
         $this->cipherKey = $cipherKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUseRandomIV()
+    {
+        return $this->useRandomIV;
+    }
+
+    /**
+     * @param string $useRandomIV
+     */
+    public function setUseRandomIV($useRandomIV)
+    {
+        $this->useRandomIV = $useRandomIV;
     }
 
     public function pkcs5Pad($text, $blockSize) {

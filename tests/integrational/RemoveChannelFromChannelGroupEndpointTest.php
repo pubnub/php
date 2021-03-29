@@ -3,6 +3,7 @@
 namespace Tests\Integrational;
 
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
+use PubNub\Exceptions\PubNubServerException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNubTestCase;
@@ -94,6 +95,8 @@ class RemoveChannelFromChannelGroupEndpointTest extends PubNubTestCase
         // Not valid
         // :&*+;
         $channelCharacters = "-.,_~[]@!$'()=`|";
+
+        $this->expectException(PubNubServerException::class);
 
         $this->pubnub_pam->removeChannelFromChannelGroup()
             ->channels($channelCharacters)
