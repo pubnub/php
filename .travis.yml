@@ -34,9 +34,12 @@ jobs:
     - name: 'PHP 7.3'
       php: '7.3'
       script: vendor/bin/phpunit --verbose
+    - name: 'PHP 7.4'
+      php: '7.4'
+      script: vendor/bin/phpunit --verbose
     - stage: "code coverage"
       name: 'Test & Code coverage'
-      php: '7.3'
+      php: '7.4'
       script: vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
       after_success:
         - bash <(curl -s https://codecov.io/bash)
