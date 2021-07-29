@@ -1,16 +1,22 @@
 name: php
-version: 4.3.0
+version: 4.4.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: v4.4.0
+    date: Jul 29, 21
+    changes:
+      -
+        text: "Fix for wrong signature calculation mechanism added."
+        type: feature
   - version: v4.3.0
-    date: Mar 29, 21
+    date: 2021-03-21
     changes:
       -
         text: "Add support for random initialization vector."
         type: feature
   - version: v4.2.0
-    date: Feb 2, 21
+    date: 2021-02-02
     changes:
       -
         text: "Add support for device channel registration with apns2."
@@ -25,43 +31,43 @@ changelog:
         text: "Implement v2 grant endpoint with support for user level grant."
         type: feature
   - version: v4.1.7
-    date: Sep 14, 20
+    date: 2020-09-14
     changes:
       -
         text: "Add delete permission support to grant call."
         type: feature
   - version: v4.1.6
-    date: Aug 20, 20
+    date: 2020-08-20
     changes:
       -
         text: "Remove hard coded keys from tests."
         type: improvement
   - version: 4.1.5
-    date: Oct 22, 2019
+    date: 2019-10-22
     changes:
       - type: improvement
         text: Update composer.json package version constraints
       - type: improvement
         text: Update .travis.yml to run tests for PHP versions 7.2 and 7.3
   - version: 4.1.4
-    date: Oct 18, 2019
+    date: 2019-10-18
     changes:
       - type: bug
         text: Add support for request transport reusing to resolve slow publish issues when multiple messages are published consecutively.
       - type: bug
         text: Drop support for HHVM.
   - version: 4.1.3
-    date: Feb 28, 2019
+    date: 2019-02-28
     changes:
       - type: feature
         text: Add messageCounts() method for retrieving unread message count
   - version: 4.1.2
-    date: Oct 23, 2018
+    date: 2018-10-23
     changes:
       - type: bug
         text: Fix issue with deleteMessages endpoint using GET HTTP method instead of DELETE
   - version: 4.1.1
-    date: Oct 2, 2018
+    date: 2018-10-02
     changes:
       - type: feature
         text: Add setOrigin method
@@ -74,7 +80,7 @@ changelog:
       - type: bug
         text: Return class instance of PNConfiguration on setConnectTimeout method
   - version: 4.1.0
-    date: Sep 7, 2018
+    date: 2018-09-07
     changes:
       - type: feature
         text: Add fire() method on PubNub instance
@@ -85,7 +91,7 @@ changelog:
       - type: feature
         text: Add Telemetry Manager
   - version: 4.0.0
-    date: Jun 7, 2017
+    date: 2017-06-07
     changes:
       - type: feature
         text: release final v4
@@ -94,21 +100,21 @@ changelog:
       - type: bug
         text: Fix publish tests
   - version: 4.0.0-beta.3
-    date: May 5, 2017
+    date: 2017-05-05
     changes:
       - type: bug
         text: Fix special characters encoding
       - type: bug
         text: Remove set* prefix from publish setters
   - version: 4.0.0-beta.2
-    date: Apr 21, 2017
+    date: 2017-04-21
     changes:
       - type: bug
         text: Add missing methods on PubNub instance
       - type: bug
         text: Fix removeAllPushChannelsForDevice method case
   - version: 4.0.0-beta
-    date: Apr 18, 2017
+    date: 2017-04-18
     changes:
       - type: bug
         text: Fix windows compatibility
@@ -125,7 +131,7 @@ changelog:
       - type: improvement
         text: Add Push methods
   - version: 4.0.0-alpha
-    date: Apr 4, 2017
+    date: 2017-04-04
     changes:
       - type: improvement
         text: Alpha Release
@@ -180,7 +186,224 @@ supported-platforms:
       - Mac OS X 10.8 or later, amd64
       - Windows 7 or later, amd64, 386
     editors:
-      - php 5.6
-      - php 7.0
-      - php 7.1
-      - hhvm
+      - PHP 5.6
+      - PHP 7.0
+      - PHP 7.1
+      - PHP 7.2
+      - PHP 7.3
+sdks:
+  - full-name: PHP SDK
+    short-name: PHP
+    artifacts:
+      - artifact-type: api-client
+        language: PHP
+        tier: 2
+        tags:
+          - Server
+        source-repository: https://github.com/pubnub/php
+        documentation: https://www.pubnub.com/docs/sdks/php
+        distributions:
+          - distribution-type: source
+            distribution-repository: GitHub
+            package-name: PubNub PHP SDK
+            location: https://github.com/pubnub/php
+            requires:
+              - name: rmccue/requests
+                min-version: 1.0.0
+                max-version: 1.8.0
+                location: https://packagist.org/packages/rmccue/requests
+                license: ISC license
+                license-url: https://github.com/WordPress/Requests/blob/master/LICENSE
+                is-required: Required
+                notes: Will be installed along with SDK
+              - name: monolog/monolog
+                min-version: 1.0.0
+                max-version: 1.22.1
+                location: https://github.com/Seldaek/monolog
+                license: MIT License
+                license-url: https://github.com/Seldaek/monolog/blob/main/LICENSE
+                is-required: Required
+                notes: Will be installed along with SDK
+            supported-platforms:
+              supported-operating-systems:
+                macOS:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Mac OS X 10.8
+                  maximum-os-version:
+                    - macOS 11.2.3
+                  target-architecture:
+                    - arm64
+                    - x86-64
+                Windows:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Windows 7 Professional
+                    - Windows 7 Enterprise
+                    - Windows 7 Ultimate
+                  maximum-os-version:
+                    - Windows 10 Pro
+                    - Windows 10 Enterprise
+                  target-architecture:
+                    - x86
+                    - x86-64
+                Linux:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Ubuntu 16.04 LTS
+                  maximum-os-version:
+                    - Ubuntu 18.04 LTS
+                  target-architecture:
+                    - x86
+                    - x86-64
+          - distribution-type: package
+            distribution-repository: Packagist
+            package-name: pubnub/pubnub
+            location: https://packagist.org/packages/pubnub/pubnub
+            requires:
+              - name: rmccue/requests
+                min-version: 1.0.0
+                max-version: 1.8.0
+                location: https://packagist.org/packages/rmccue/requests
+                license: ISC license
+                license-url: https://github.com/WordPress/Requests/blob/master/LICENSE
+                is-required: Required
+                notes: Will be installed along with SDK
+              - name: monolog/monolog
+                min-version: 1.0.0
+                max-version: 1.22.1
+                location: https://github.com/Seldaek/monolog
+                license: MIT License
+                license-url: https://github.com/Seldaek/monolog/blob/main/LICENSE
+                is-required: Required
+                notes: Will be installed along with SDK
+            supported-platforms:
+              supported-operating-systems:
+                macOS:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Mac OS X 10.8
+                  maximum-os-version:
+                    - macOS 11.2.3
+                  target-architecture:
+                    - arm64
+                    - x86-64
+                Windows:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Windows 7 Professional
+                    - Windows 7 Enterprise
+                    - Windows 7 Ultimate
+                  maximum-os-version:
+                    - Windows 10 Pro
+                    - Windows 10 Enterprise
+                  target-architecture:
+                    - x86
+                    - x86-64
+                Linux:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Ubuntu 16.04 LTS
+                  maximum-os-version:
+                    - Ubuntu 18.04 LTS
+                  target-architecture:
+                    - x86
+                    - x86-64
+          - distribution-type: library
+            distribution-repository: GitHub release
+            package-name: php-4.3.0.zip
+            location: https://github.com/pubnub/php-private/releases/tag/v4.3.0
+            requires:
+              - name: rmccue/requests
+                min-version: 1.0.0
+                max-version: 1.8.0
+                location: https://packagist.org/packages/rmccue/requests
+                license: ISC license
+                license-url: https://github.com/WordPress/Requests/blob/master/LICENSE
+                is-required: Required
+                notes: Will be installed along with SDK
+              - name: monolog/monolog
+                min-version: 1.0.0
+                max-version: 1.22.1
+                location: https://github.com/Seldaek/monolog
+                license: MIT License
+                license-url: https://github.com/Seldaek/monolog/blob/main/LICENSE
+                is-required: Required
+                notes: Will be installed along with SDK
+            supported-platforms:
+              supported-operating-systems:
+                macOS:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Mac OS X 10.8
+                  maximum-os-version:
+                    - macOS 11.2.3
+                  target-architecture:
+                    - arm64
+                    - x86-64
+                Windows:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Windows 7 Professional
+                    - Windows 7 Enterprise
+                    - Windows 7 Ultimate
+                  maximum-os-version:
+                    - Windows 10 Pro
+                    - Windows 10 Enterprise
+                  target-architecture:
+                    - x86
+                    - x86-64
+                Linux:
+                  runtime-version:
+                    - PHP 5.6
+                    - PHP 7.0
+                    - PHP 7.1
+                    - PHP 7.2
+                    - PHP 7.3
+                  minimum-os-version:
+                    - Ubuntu 16.04 LTS
+                  maximum-os-version:
+                    - Ubuntu 18.04 LTS
+                  target-architecture:
+                    - x86
+                    - x86-64

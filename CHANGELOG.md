@@ -1,3 +1,8 @@
+## [v4.4.0](https://github.com/pubnub/php/releases/tag/v4.4.0)
+July-29-2021
+
+- 🌟️ Fix for wrong signature calculation mechanism added. 
+
 ## [v4.3.0](https://github.com/pubnub/php/releases/tag/v4.3.0)
 March-29-2021
 

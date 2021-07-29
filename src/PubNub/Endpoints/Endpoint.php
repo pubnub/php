@@ -190,7 +190,7 @@ abstract class Endpoint
                 . PubNubUtil::preparePamParams($params)
                 . "\n";
 
-            if (PNHttpMethod::POST == $this->httpMethod() || PNHttpMethod::PATCH == $this->httpMethod()) {
+            if (PNHttpMethod::POST == $httpMethod || PNHttpMethod::PATCH == $httpMethod) {
                 $signedInput .= $this->buildData();
             }
 
