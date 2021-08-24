@@ -7,6 +7,7 @@ use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Exceptions\PubNubUnsubscribeException;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
 use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
+use PubNub\Models\Consumer\PubSub\PNSignalMessageResult;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 
@@ -77,6 +78,16 @@ class ListenerManager
     {
         foreach ($this->listeners as $listener) {
             $listener->presence($this->pubnub, $presence);
+        }
+    }
+     /**
+     * @param PNSignalMessageResult $presence
+     * @throws PubNubUnsubscribeException
+     */
+    public function announceSignal(PNSignalMessageResult $signal)
+    {
+        foreach ($this->listeners as $listener) {
+            $listener->signal($this->pubnub, $signal);
         }
     }
 }

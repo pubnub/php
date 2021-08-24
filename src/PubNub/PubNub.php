@@ -34,6 +34,7 @@ use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\SetState;
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Endpoints\PubSub\Publish;
+use PubNub\Endpoints\PubSub\Signal;
 use PubNub\Endpoints\Push\AddChannelsToPush;
 use PubNub\Endpoints\Push\ListPushProvisions;
 use PubNub\Endpoints\Push\RemoveChannelsFromPush;
@@ -46,7 +47,7 @@ use PubNub\Managers\TelemetryManager;
 
 class PubNub
 {
-    const SDK_VERSION = "4.4.0";
+    const SDK_VERSION = "4.5.0";
     const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
@@ -114,6 +115,22 @@ class PubNub
     public function publish()
     {
         return new Publish($this);
+    }
+
+    /**
+     * @return Publish
+     */
+    public function fire()
+    {
+        return (new Publish($this))->shouldStore(false)->replicate(false);
+    }
+
+    /**
+     * @return Signal
+     */
+    public function signal()
+    {
+        return new Signal($this);
     }
 
     /**
@@ -476,13 +493,5 @@ class PubNub
         }
 
         return $this->nextSequence;
-    }
-
-    /**
-     * @return Publish
-     */
-    public function fire()
-    {
-        return (new Publish($this))->shouldStore(false)->replicate(false);
     }
 }

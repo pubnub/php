@@ -1,3 +1,8 @@
+## [v4.5.0](https://github.com/pubnub/php/releases/tag/v4.5.0)
+August-24-2021
+
+- 🌟️ Missing PNPresenceEventResult getters added, dependency update. 
+
 ## [v4.4.0](https://github.com/pubnub/php/releases/tag/v4.4.0)
 July-29-2021
 

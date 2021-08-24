@@ -76,6 +76,4 @@ class PNMessageResult
     {
         return $this->publisher;
     }
-
-
 }

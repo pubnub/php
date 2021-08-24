@@ -17,7 +17,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 
 ## Configure PubNub
 
-1. Integrate the Java SDK into your project:
+1. Integrate the PHP SDK into your project:
 
    * Without composer
 

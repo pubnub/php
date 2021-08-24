@@ -1,10 +1,16 @@
 name: php
-version: 4.4.0
+version: 4.5.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - version: v4.5.0
+    date: Aug 24, 21
+    changes:
+      -
+        text: "Missing PNPresenceEventResult getters added, dependency update."
+        type: feature
   - version: v4.4.0
-    date: Jul 29, 21
+    date: 2021-07-29
     changes:
       -
         text: "Fix for wrong signature calculation mechanism added."

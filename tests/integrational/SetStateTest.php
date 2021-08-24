@@ -319,35 +319,6 @@ class SetStateTest extends \PubNubTestCase
 
         $setState->channels("testChannel")->state($myState)->sync();
     }
-
-    public function testSuperCallTest()
-    {
-        // Not valid
-        // ,:[]*`|+;&
-        $groupCharacters = "-._~@!$'()=";
-
-        // Not valid
-        // ,~/
-        $channelCharacters = "-._:?#[]@!$&'()*+;=`|";
-
-        // Not valid
-        // ,~/#&+;
-        $getStateCharacters = "-._:?[]@!$'()*=`|";
-
-        // Not valid
-        // /?#[]`|
-        $uuidCharacters = "-.,_~:@!$&'()*+;=";
-
-        $this->pubnub_pam->getConfiguration()->setUuid($uuidCharacters);
-
-        $this->expectException(PubNubServerException::class);
-
-        $this->pubnub_pam->setState()
-            ->state(['name' => $getStateCharacters])
-            ->channels($channelCharacters)
-            ->channelGroups($groupCharacters)
-            ->sync();
-    }
 }
 
 

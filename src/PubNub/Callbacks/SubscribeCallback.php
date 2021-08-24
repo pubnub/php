@@ -19,4 +19,7 @@ abstract class SubscribeCallback
 
     // TODO: add annotation
     abstract function presence($pubnub, $presence);
+
+    // Not marked as abstract for backward compatibility reasons.
+    function signal($pubnub, $signal) {}
 }

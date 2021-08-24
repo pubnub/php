@@ -5,6 +5,16 @@ namespace PubNub\Models\Server;
 
 use PubNub\Models\Server\PublishMetadata;
 
+
+abstract class MessageType
+{
+    const MESSAGE = 0;
+    const SIGNAL = 1;
+    const OBJECT = 2;
+    const MESSAGE_ACTION = 3;
+    const FILE_MESSAGE = 4;
+}
+
 class SubscribeMessage
 {
     /** @var  string */
@@ -21,6 +31,9 @@ class SubscribeMessage
 
     /** @var  string */
     private $flags;
+
+    //** @var int */
+    private $type;
 
     /** @var  string */
     private $issuingClientId;
@@ -60,6 +73,10 @@ class SubscribeMessage
 
         if (array_key_exists('o', $jsonInput)) {
             $message->originationMetadata = $jsonInput['o'];
+        }
+
+        if (array_key_exists('e', $jsonInput)) {
+            $message->type = $jsonInput['e'];
         }
 
         $message->publishMetaData = PublishMetadata::fromJson($jsonInput['p']);
@@ -129,5 +146,13 @@ class SubscribeMessage
     public function getPublishMetaData()
     {
         return $this->publishMetaData;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMessageType()
+    {
+        return $this->type;
     }
 }

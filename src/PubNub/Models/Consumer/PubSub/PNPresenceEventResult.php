@@ -2,34 +2,28 @@
 
 namespace PubNub\Models\Consumer\PubSub;
 
-
 class PNPresenceEventResult
 {
-    /** @var  String */
     private $event;
-
-    /** @var  String */
     private $uuid;
-
-    /** @var  Int */
     private $timestamp;
-
-    /** @var  Int */
     private $occupancy;
-
-    /** @var  String */
     private $state;
-
     private $channel;
-
     private $subscription;
-
     private $timetoken;
-
     private $userMetadata;
 
-    function __construct($event, $uuid, $timestamp, $occupancy, $subscription, $channel, $timetoken, $state,
-                         $userMetadata = null)
+    function __construct(
+        $event,
+        $uuid,
+        $timestamp,
+        $occupancy,
+        $subscription,
+        $channel,
+        $timetoken,
+        $state,
+        $userMetadata = null)
     {
         $this->event = $event;
         $this->uuid = $uuid;
@@ -40,5 +34,50 @@ class PNPresenceEventResult
         $this->timetoken = $timetoken;
         $this->state = $state;
         $this->userMetadata = $userMetadata;
+    }
+
+    public function getEvent()
+    {
+        return $this->event;
+    }
+
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
+
+    public function getOccupancy()
+    {
+        return $this->occupancy;
+    }
+
+    public function getSubscription()
+    {
+        return $this->subscription;
+    }
+
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    public function getTimetoken()
+    {
+        return $this->timetoken;
+    }
+
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    public function getUserMetadata()
+    {
+        return $this->userMetadata;
     }
 }

@@ -86,23 +86,6 @@ class RemoveChannelFromChannelGroupEndpointTest extends PubNubTestCase
 
         $removeChannelFromChannelGroup->channelGroup("groupA")->channels(["ch1", "ch2"])->sync();
     }
-
-    public function testSuperCallTest()
-    {
-        // Not valid
-        // ,:[]*`|
-        $groupCharacters = "-._~@!$&'()+;=";
-        // Not valid
-        // :&*+;
-        $channelCharacters = "-.,_~[]@!$'()=`|";
-
-        $this->expectException(PubNubServerException::class);
-
-        $this->pubnub_pam->removeChannelFromChannelGroup()
-            ->channels($channelCharacters)
-            ->channelGroup($groupCharacters)
-            ->sync();
-    }
 }
 
 
