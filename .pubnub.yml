@@ -4,7 +4,7 @@ schema: 1
 scm: github.com/pubnub/php
 changelog:
   - version: v4.5.0
-    date: Aug 24, 21
+    date: 2021-08-24
     changes:
       -
         text: "Missing PNPresenceEventResult getters added, dependency update."
