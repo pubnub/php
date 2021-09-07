@@ -200,10 +200,10 @@ supported-platforms:
 sdks:
   - full-name: PHP SDK
     short-name: PHP
+    tier: 2
     artifacts:
       - artifact-type: api-client
         language: PHP
-        tier: 2
         tags:
           - Server
         source-repository: https://github.com/pubnub/php
