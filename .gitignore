@@ -11,3 +11,7 @@
 
 .DS_Store
 coverage.clover
+
+# GitHub Actions #
+##################
+.github/.release
