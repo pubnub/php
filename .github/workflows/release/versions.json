@@ -1,15 +1,15 @@
 {
   ".pubnub.yml": [
-    { "pattern": "\\s+package-name: php-((\\d+\\.?){2,}).zip$", "cleared": true },
+    { "pattern": "\\s+package-name: php-(v?(\\d+\\.?){2,}(-[a-zA-Z0-9]+(\\.\\d+)?)?).zip$", "cleared": false },
     { "pattern": "pubnub/php/releases/tag/(.*)$", "cleared": false }
   ],
   "README.md": [
-    { "pattern": "^\\s{2,}\"pubnub\/pubnub\": \"(.+)\"$", "cleared": true }
+    { "pattern": "^\\s{2,}\"pubnub\/pubnub\": \"(.+)\"$", "cleared": false }
   ],
   "composer.json": [
-    { "pattern": "^\\s{2,}\"version\": \"(.+)\",$", "cleared": true }
+    { "pattern": "^\\s{2,}\"version\": \"(.+)\",$", "cleared": false }
   ],
   "src/PubNub/PubNub.php": [
-    { "pattern": "^\\s{2,}const SDK_VERSION = \"(.+)\";$", "cleared": true }
+    { "pattern": "^\\s{2,}const SDK_VERSION = \"(.+)\";$", "cleared": false }
   ]
 }
