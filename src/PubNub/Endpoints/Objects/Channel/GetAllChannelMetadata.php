@@ -8,7 +8,6 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Objects\Channel\PNGetAllChannelMetadataResult;
 
-
 class GetAllChannelMetadata extends ObjectsCollectionEndpoint
 {
     const PATH = "/v2/objects/%s/channels";

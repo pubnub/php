@@ -58,4 +58,7 @@ class PNOperationType
     const PNRemoveMembershipsOperation = 39;
 
     const PNSignalOperation = 40;
+
+    // AccessManager v3
+    const PNAccessManagerGrantToken = 41;
 }
