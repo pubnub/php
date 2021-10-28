@@ -7,6 +7,7 @@ use PubNub\Builders\SubscribeBuilder;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Endpoints\Access\Audit;
 use PubNub\Endpoints\Access\Grant;
+use PubNub\Endpoints\Access\GrantToken;
 use PubNub\Endpoints\Access\Revoke;
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
@@ -43,11 +44,11 @@ use PubNub\Endpoints\Time;
 use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
 use PubNub\Managers\TelemetryManager;
-
+use PubNub\Managers\TokenManager;
 
 class PubNub
 {
-    const SDK_VERSION = "4.5.0";
+    const SDK_VERSION = "4.6.0";
     const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
@@ -63,6 +64,9 @@ class PubNub
 
     /** @var TelemetryManager */
     protected $telemetryManager;
+
+    /** @var TokenManager */
+    protected $tokenManager;
 
     /** @var  Logger */
     protected $logger;
@@ -81,6 +85,7 @@ class PubNub
         $this->basePathManager = new BasePathManager($initialConfig);
         $this->subscriptionManager = new SubscriptionManager($this);
         $this->telemetryManager = new TelemetryManager();
+        $this->tokenManager = new TokenManager();
         $this->logger = new Logger('PubNub');
     }
 
@@ -172,6 +177,24 @@ class PubNub
     {
         return new Grant($this);
     }
+
+    /**
+     * @return PNAccessManagerTokenResult
+     */
+    public function parseToken($token)
+    {
+        return (new GrantToken($this))->parseToken($token);
+    }
+
+    /**
+     * @return GrantToken
+     */
+    public function grantToken()
+    {
+        return new GrantToken($this);
+    }
+
+
 
     /**
      * @return Audit
@@ -493,5 +516,21 @@ class PubNub
         }
 
         return $this->nextSequence;
+    }
+
+    /**
+     * @return string Token previously set by $this->setToken
+     */
+    public function getToken()
+    {
+        return $this->tokenManager->getToken();
+    }
+
+    /**
+     * @param string $token Token obtained by GetToken
+     */
+    public function setToken($token)
+    {
+        return $this->tokenManager->setToken($token);
     }
 }

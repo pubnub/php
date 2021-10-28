@@ -2,7 +2,6 @@
 
 namespace PubNub\Exceptions;
 
-
 class PubNubServerException extends PubNubException
 {
     /** @var  int */
@@ -76,5 +75,32 @@ class PubNubServerException extends PubNubException
         }
 
         return $this;
+    }
+
+    public function getServerErrorMessage()
+    {
+        if (isset($this->body->error->message)) {
+            return $this->body->error->message;
+        } else {
+            return null;
+        }
+    }
+
+    public function getServerErrorSource()
+    {
+        if (isset($this->body->error->source)) {
+            return $this->body->error->source;
+        } else {
+            return null;
+        }
+    }
+
+    public function getServerErrorDetails()
+    {
+        if (isset($this->body->error->details[0])) {
+            return $this->body->error->details[0];
+        } else {
+            return null;
+        }
     }
 }

@@ -5,12 +5,14 @@ namespace PubNub\Endpoints\Access;
 use PubNub\Exceptions\PubNubNotImplementException;
 use PubNub\Enums\PNOperationType;
 
-
 class Revoke extends Grant
 {
     protected $read = false;
     protected $write = false;
     protected $manage = false;
+    protected $get = false;
+    protected $update = false;
+    protected $join = false;
 
     protected $sortParams = true;
 

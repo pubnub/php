@@ -1,3 +1,8 @@
+## [v4.6.0](https://github.com/pubnub/php/releases/tag/v4.6.0)
+October-26-2021
+
+- 🌟️ Add support for Access Manager v3 with example. 
+
 ## [v4.5.0](https://github.com/pubnub/php/releases/tag/v4.5.0)
 August-24-2021
 
