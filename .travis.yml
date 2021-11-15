@@ -1,6 +1,16 @@
 language: php
 dist: xenial
 os: linux
+
+env:
+  global:
+    - SOURCE_FOLDER_PATH="./"
+    - TARGET_FOLDER_PATH="./"
+
+before_install:
+  - ./.travis/bootstrap.sh
+  - ./.travis/scripts/key_decrypt.sh deployment_keys.tar deployment_keys $encrypted_2a5fd2384630_key $encrypted_2a5fd2384630_iv
+  - ./.travis/scripts/git_config.sh
   
 install:
   - composer self-update && composer --version
@@ -15,6 +25,21 @@ stages:
   - name: "code coverage"
     if: |
       type == pull_request
+  - name: "release candidate"
+    if: |
+      type != pull_request \
+      AND tag IS present \
+      AND tag =~ ^v\d+\.\d+\.\d+-rc\.\d+$
+  - name: "release"
+    if: |
+      type != pull_request \
+      AND tag IS present \
+      AND tag =~ ^v\d+\.\d+\.\d+$
+  - name: "synchronize"
+    if: |
+      type != pull_request \
+      AND tag IS present \
+      AND tag =~ ^v?\d+\.\d+\.\d+-nodeploy\.\d+$
 
 jobs:
   include:
@@ -40,3 +65,15 @@ jobs:
       script: vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
       after_success:
         - bash <(curl -s https://codecov.io/bash)
+    - stage: "release candidate"
+      name: "Deploy release candidate"
+      php: '7.3'
+      script: ./.travis/scripts/deploy.sh release-candidate pubnub/php
+    - stage: "release"
+      name: "Deploy release"
+      php: '7.3'
+      script: ./.travis/scripts/deploy.sh release pubnub/php
+    - stage: "synchronize"
+      name: "Not deployable synchronization"
+      php: '7.3'
+      script: ./.travis/scripts/synchronization.sh pubnub/php
