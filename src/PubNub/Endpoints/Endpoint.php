@@ -315,7 +315,8 @@ abstract class Endpoint
         $options = [
             'timeout' => $this->getRequestTimeout(),
             'connect_timeout' => $this->getConnectTimeout(),
-            'transport' => $this->getDefaultTransport()
+            'transport' => $this->getDefaultTransport(),
+            'useragent' => 'PHP/' . PHP_VERSION,
         ];
 
         $transport = $this->pubnub->getConfiguration()->getTransport();
