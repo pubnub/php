@@ -2,7 +2,6 @@
 
 namespace PubNub\Enums;
 
-
 class PNOperationType
 {
     const PNSubscribeOperation = 1;
@@ -61,4 +60,5 @@ class PNOperationType
 
     // AccessManager v3
     const PNAccessManagerGrantToken = 41;
+    const PNAccessManagerRevokeToken = 42;
 }
