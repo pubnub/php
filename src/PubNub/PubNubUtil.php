@@ -239,4 +239,9 @@ class PubNubUtil
         if ($suffix_len > $str_len) return false;
         return substr_compare($string, $suffix, $str_len - $suffix_len, $suffix_len) === 0;
     }
+
+    public static function tokenEncode($token)
+    {
+        return str_replace('+', '%20', urlencode($token));
+    }
 }

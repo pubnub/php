@@ -84,7 +84,10 @@ abstract class Endpoint
     /**
      * @return string
      */
-    abstract protected function getName();
+    protected function getName()
+    {
+        return substr(strrchr(get_class($this), '\\'), 1);
+    }
 
     /**
      * @throws PubNubValidationException
