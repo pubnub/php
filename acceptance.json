@@ -5,7 +5,7 @@
   "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
   "homepage": "http://www.pubnub.com/",
   "license": "MIT",
-  "version": "4.7.0",
+  "version": "4.6.0",
   "authors": [
     {
       "name": "PubNub",
@@ -18,14 +18,16 @@
   "require": {
     "php": ">=5.6.0",
     "rmccue/requests": "^1.0",
-    "monolog/monolog": "^1.1|^2.0"
+    "monolog/monolog": "^1.26"
   },
   "require-dev": {
-    "phpunit/phpunit": "^5.7"
+    "phpunit/phpunit": "^9.0",
+    "behat/behat": "^3.10"
   },
   "autoload": {
     "psr-0": {
-      "PubNub\\": "src/"
+      "PubNub\\": "src/",
+      "PubNubFeatures\\": "tests/features/"
     }
   },
   "autoload-dev": {

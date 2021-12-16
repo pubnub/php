@@ -296,14 +296,6 @@ class GrantToken extends Endpoint
      */
     public function getOperationType()
     {
-        return PNOperationType::PNAccessManagerGrant;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return substr(strrchr(get_class($this), '\\'), 1);
+        return PNOperationType::PNAccessManagerGrantToken;
     }
 }

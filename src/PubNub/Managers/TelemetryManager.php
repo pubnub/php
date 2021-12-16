@@ -119,6 +119,10 @@ class TelemetryManager
             case PNOperationType::PNAccessManagerGrant:
                 $endpoint = "pam";
                 break;
+            case PNOperationType::PNAccessManagerGrantToken:
+            case PNOperationType::PNAccessManagerRevokeToken:
+                $endpoint = "pamv3";
+                break;
             default:
                 $endpoint = "time";
                 break;

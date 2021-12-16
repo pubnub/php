@@ -9,6 +9,7 @@ use PubNub\Endpoints\Access\Audit;
 use PubNub\Endpoints\Access\Grant;
 use PubNub\Endpoints\Access\GrantToken;
 use PubNub\Endpoints\Access\Revoke;
+use PubNub\Endpoints\Access\RevokeToken;
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
@@ -48,7 +49,7 @@ use PubNub\Managers\TokenManager;
 
 class PubNub
 {
-    const SDK_VERSION = "4.6.0";
+    const SDK_VERSION = "4.7.0";
     const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
@@ -194,7 +195,13 @@ class PubNub
         return new GrantToken($this);
     }
 
-
+    /**
+     * @return RevokeToken
+     */
+    public function revokeToken()
+    {
+        return new RevokeToken($this);
+    }
 
     /**
      * @return Audit

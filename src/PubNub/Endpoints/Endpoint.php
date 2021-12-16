@@ -84,7 +84,10 @@ abstract class Endpoint
     /**
      * @return string
      */
-    abstract protected function getName();
+    protected function getName()
+    {
+        return substr(strrchr(get_class($this), '\\'), 1);
+    }
 
     /**
      * @throws PubNubValidationException
@@ -315,7 +318,8 @@ abstract class Endpoint
         $options = [
             'timeout' => $this->getRequestTimeout(),
             'connect_timeout' => $this->getConnectTimeout(),
-            'transport' => $this->getDefaultTransport()
+            'transport' => $this->getDefaultTransport(),
+            'useragent' => 'PHP/' . PHP_VERSION,
         ];
 
         $transport = $this->pubnub->getConfiguration()->getTransport();
