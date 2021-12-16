@@ -49,7 +49,7 @@ use PubNub\Managers\TokenManager;
 
 class PubNub
 {
-    const SDK_VERSION = "4.7.0";
+    const SDK_VERSION = "v4.7.0";
     const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;

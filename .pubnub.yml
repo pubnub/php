@@ -10,6 +10,13 @@ changelog:
         text: "RevokeToken method."
       - type: bug
         text: "Fixed error in Signal request."
+  - date: 2021-12-16
+    version: v4.7.0
+    changes:
+      - type: feature
+        text: "RevokeToken method."
+      - type: bug
+        text: "Fixed error in Signal request."
   - version: v4.6.0
     date: 2021-10-26
     changes:
@@ -360,7 +367,7 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-4.7.0.zip
+            package-name: php-v4.7.0.zip
             location: https://github.com/pubnub/php/releases/tag/v4.7.0
             requires:
               - name: rmccue/requests
