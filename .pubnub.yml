@@ -1,5 +1,5 @@
 name: php
-version: 4.6.0
+version: 4.7.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
