@@ -7,15 +7,6 @@ December 16 2021
 #### Fixed
 - Fixed error in Signal request.
 
-## v4.7.0
-December 16 2021
-
-#### Added
-- RevokeToken method.
-
-#### Fixed
-- Fixed error in Signal request.
-
 ## [v4.6.0](https://github.com/pubnub/php/releases/tag/v4.6.0)
 October-26-2021
 

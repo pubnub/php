@@ -9,13 +9,15 @@
     { "pattern": "pubnub/php/releases/tag/(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$", "cleared": false }
   ],
   "README.md": [
-    { "pattern": "^\\s{2,}\"pubnub\/pubnub\": \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\"$",
+    {
+      "pattern": "^\\s{2,}\"pubnub\/pubnub\": \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\"$",
       "clearedPrefix": true,
       "clearedSuffix": false
     }
   ],
   "composer.json": [
-    { "pattern": "^\\s{2,}\"version\": \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\",$",
+    {
+      "pattern": "^\\s{2,}\"version\": \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\",$",
       "clearedPrefix": true,
       "clearedSuffix": false
     }
