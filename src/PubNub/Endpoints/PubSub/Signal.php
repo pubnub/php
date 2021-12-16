@@ -65,7 +65,7 @@ class Signal extends Endpoint
      */
     protected function buildPath()
     {
-        $stringifiedMessage = PubNubUtil::writeValueAsString($this->message);
+        $stringifiedMessage = PubNubUtil::urlEncode(PubNubUtil::writeValueAsString($this->message));
 
         return sprintf(
                 static::SIGNAL_PATH,
