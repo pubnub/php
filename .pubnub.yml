@@ -360,7 +360,7 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-v4.7.0.zip
+            package-name: php-4.7.0.zip
             location: https://github.com/pubnub/php/releases/tag/v4.7.0
             requires:
               - name: rmccue/requests
