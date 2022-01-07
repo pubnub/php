@@ -232,10 +232,6 @@ class PNConfiguration
      */
     public function getUuid()
     {
-        if (empty($this->uuid)) {
-            $this->uuid = PubNubUtil::uuid();
-        }
-
         return $this->uuid;
     }
 
@@ -391,7 +387,7 @@ class PNConfiguration
     public function setUseRandomIV($useRandomIV)
     {
         $this->useRandomIV = $useRandomIV;
-        
+
         if ($this->crypto != null) {
             $this->crypto->setUseRandomIV($this->useRandomIV);
         }

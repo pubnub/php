@@ -42,6 +42,7 @@ use PubNub\Endpoints\Push\ListPushProvisions;
 use PubNub\Endpoints\Push\RemoveChannelsFromPush;
 use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Endpoints\Time;
+use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
 use PubNub\Managers\TelemetryManager;
@@ -82,6 +83,7 @@ class PubNub
      */
     public function __construct($initialConfig)
     {
+        $this->validateConfig($initialConfig);
         $this->configuration = $initialConfig;
         $this->basePathManager = new BasePathManager($initialConfig);
         $this->subscriptionManager = new SubscriptionManager($this);
@@ -97,6 +99,18 @@ class PubNub
     public static function demo()
     {
         return new static(PNConfiguration::demoKeys());
+    }
+
+    /**
+     * @param $configuration PNConfiguration
+     *
+     * @throws PubNubConfigurationException
+     */
+    private function validateConfig(PNConfiguration $configuration)
+    {
+        if (empty($configuration->getUuid())) {
+            throw new PubNubConfigurationException('UUID is not set');
+        }
     }
 
     /**

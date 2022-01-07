@@ -34,11 +34,11 @@ abstract class PubNubTestCase extends TestCase
     protected $encodedSdkName;
 
     protected function fakeSignature($params, $httpMethod, $timestamp, $publishKey, $path, $secretKey) {
-    
+
         $params['timestamp'] = (string) $timestamp;
-    
+
         ksort($params);
-    
+
         $signedInput = $httpMethod
             . "\n"
             . $publishKey
@@ -47,14 +47,14 @@ abstract class PubNubTestCase extends TestCase
             . "\n"
             . PubNubUtil::preparePamParams($params)
             . "\n";
-    
+
         $signature = 'v2.' . PubNubUtil::signSha256(
             $secretKey,
             $signedInput
         );
-        
+
         $signature = preg_replace('/=+$/', '', $signature);
-    
+
         return $signature;
     }
 
@@ -65,22 +65,26 @@ abstract class PubNubTestCase extends TestCase
         $publishKeyPam = getenv("PUBLISH_PAM_KEY");
         $subscribeKeyPam = getenv("SUBSCRIBE_PAM_KEY");
         $secretKeyPam = getenv("SECRET_PAM_KEY");
+        $uuidMock = getenv("UUID_MOCK");
 
         parent::setUp();
 
         $this->config = new PNConfiguration();
         $this->config->setSubscribeKey($subscribeKey);
         $this->config->setPublishKey($publishKey);
+        $this->config->setUuid($uuidMock);
 
         $this->config_enc = new PNConfiguration();
         $this->config_enc->setSubscribeKey($subscribeKey);
         $this->config_enc->setPublishKey($publishKey);
         $this->config_enc->setCipherKey(static::CIPHER_KEY);
+        $this->config_enc->setUuid($uuidMock);
 
         $this->config_pam = new PNConfiguration();
         $this->config_pam->setSubscribeKey($subscribeKeyPam);
         $this->config_pam->setPublishKey($publishKeyPam);
         $this->config_pam->setSecretKey($secretKeyPam);
+        $this->config_pam->setUuid($uuidMock);
 
         $this->pubnub = new PubNub($this->config);
         $this->pubnub_enc = new PubNub($this->config_enc);
