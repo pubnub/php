@@ -76,6 +76,7 @@ class PNConfiguration
         $config = new static();
         $config->setSubscribeKey("demo");
         $config->setPublishKey("demo");
+        $config->setUuid("demo");
 
         return $config;
     }

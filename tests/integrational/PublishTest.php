@@ -157,6 +157,7 @@ class PublishTest extends \PubNubTestCase
     {
         $pnconf = PNConfiguration::demoKeys();
         $pnconf->setPublishKey("fake");
+        $pnconf->setUuid('fake');
 
         $pubnub = new PubNub($pnconf);
 

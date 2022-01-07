@@ -17,7 +17,7 @@ class PublishTest extends \PubNubTestCase
 
     public function testValidatesMessageNotEmpty()
     {
-        $pubnub = new PubNub(new PNConfiguration());
+        $pubnub = new PubNub((new PNConfiguration())->setUuid('fake'));
         $publish = new Publish($pubnub);
 
         try {
@@ -30,7 +30,7 @@ class PublishTest extends \PubNubTestCase
 
     public function testValidatesChannelNotEmpty()
     {
-        $pubnub = new PubNub(new PNConfiguration());
+        $pubnub = new PubNub((new PNConfiguration())->setUuid('fake'));
         $publish = new Publish($pubnub);
 
         try {
