@@ -2,6 +2,7 @@
 
 namespace PubNub;
 
+use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Exceptions\PubNubValidationException;
 use Requests_Transport;
 
@@ -242,6 +243,9 @@ class PNConfiguration
      */
     public function setUuid($uuid)
     {
+        if (!$this->validateNotEmptyString($uuid)) {
+            throw new PubNubConfigurationException("UUID should not be empty");
+        }
         $this->uuid = $uuid;
 
         return $this;
@@ -396,4 +400,8 @@ class PNConfiguration
         return $this;
     }
 
+    private function validateNotEmptyString($value)
+    {
+        return (is_string($value) && strlen(trim($value)) > 0);
+    }
 }

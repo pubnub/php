@@ -109,7 +109,7 @@ class PubNub
     private function validateConfig(PNConfiguration $configuration)
     {
         if (empty($configuration->getUuid())) {
-            throw new PubNubConfigurationException('UUID is not set');
+            throw new PubNubConfigurationException('UUID should not be empty');
         }
     }
 

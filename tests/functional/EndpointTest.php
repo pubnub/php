@@ -14,18 +14,6 @@ class EndpointTest extends TestCase
 {
     protected static $channel = 'pubnub_php_test';
 
-    public function testValidateNoUuidSet()
-    {
-        $config = new PNConfiguration();
-        $config->setUuid('fake');
-
-        try {
-            new PubNub($config);
-        } catch (PubNubConfigurationException $exception) {
-            $this->assertEquals("UUID is not set", $exception->getMessage());
-        }
-    }
-
     public function testValidatesSubscribeKeyNotSet()
     {
         $pubnub = new PubNub((new PNConfiguration())->setUuid('fake'));
