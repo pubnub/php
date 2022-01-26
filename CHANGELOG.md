@@ -1,3 +1,9 @@
+## v5.0.0
+January 26 2022
+
+#### Modified
+- BREAKING CHANGES: Disable automated uuid generation and make it mandatory to specify before `PubNub` instance creation.
+
 ## v4.7.0
 December 16 2021
 

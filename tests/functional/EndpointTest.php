@@ -4,6 +4,7 @@ namespace Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
 use PubNub\Endpoints\Endpoint;
+use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
@@ -15,7 +16,7 @@ class EndpointTest extends TestCase
 
     public function testValidatesSubscribeKeyNotSet()
     {
-        $pubnub = new PubNub(new PNConfiguration());
+        $pubnub = new PubNub((new PNConfiguration())->setUuid('fake'));
         $endpoint = new EndpointImplementation($pubnub);
 
         try {
@@ -28,7 +29,7 @@ class EndpointTest extends TestCase
 
     public function testValidatesSubscribeKeyEmptyString()
     {
-        $pubnub = new PubNub((new PNConfiguration())->setSubscribeKey(""));
+        $pubnub = new PubNub((new PNConfiguration())->setUuid('fake')->setSubscribeKey(""));
         $endpoint = new EndpointImplementation($pubnub);
 
         try {
@@ -41,7 +42,7 @@ class EndpointTest extends TestCase
 
     public function testValidatesPublishKeyNull()
     {
-        $pubnub = new PubNub(new PNConfiguration());
+        $pubnub = new PubNub((new PNConfiguration())->setUuid('fake'));
         $endpoint = new EndpointImplementation($pubnub);
 
         try {
@@ -54,7 +55,7 @@ class EndpointTest extends TestCase
 
     public function testValidatesPublishKeyEmptyString()
     {
-        $pubnub = new PubNub((new PNConfiguration())->setPublishKey(""));
+        $pubnub = new PubNub((new PNConfiguration())->setUuid('fake')->setPublishKey(""));
         $endpoint = new EndpointImplementation($pubnub);
 
         try {

@@ -2,6 +2,7 @@
 
 namespace PubNub;
 
+use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Exceptions\PubNubValidationException;
 use Requests_Transport;
 
@@ -76,6 +77,7 @@ class PNConfiguration
         $config = new static();
         $config->setSubscribeKey("demo");
         $config->setPublishKey("demo");
+        $config->setUuid("demo");
 
         return $config;
     }
@@ -232,10 +234,6 @@ class PNConfiguration
      */
     public function getUuid()
     {
-        if (empty($this->uuid)) {
-            $this->uuid = PubNubUtil::uuid();
-        }
-
         return $this->uuid;
     }
 
@@ -245,6 +243,9 @@ class PNConfiguration
      */
     public function setUuid($uuid)
     {
+        if (!$this->validateNotEmptyString($uuid)) {
+            throw new PubNubConfigurationException("UUID should not be empty");
+        }
         $this->uuid = $uuid;
 
         return $this;
@@ -391,7 +392,7 @@ class PNConfiguration
     public function setUseRandomIV($useRandomIV)
     {
         $this->useRandomIV = $useRandomIV;
-        
+
         if ($this->crypto != null) {
             $this->crypto->setUseRandomIV($this->useRandomIV);
         }
@@ -399,4 +400,8 @@ class PNConfiguration
         return $this;
     }
 
+    private function validateNotEmptyString($value)
+    {
+        return (is_string($value) && strlen(trim($value)) > 0);
+    }
 }
