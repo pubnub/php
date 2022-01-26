@@ -3,10 +3,6 @@ version: 4.7.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
-  - date: 2022-01-26
-    version: v5.0.0
-    changes:
-
   - date: 2021-12-16
     version: v4.7.0
     changes:
@@ -364,8 +360,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-5.0.0.zip
-            location: https://github.com/pubnub/php/releases/tag/v5.0.0
+            package-name: php-4.7.0.zip
+            location: https://github.com/pubnub/php/releases/tag/v4.7.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
