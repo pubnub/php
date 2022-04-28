@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../src/autoloader.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 
 $pnconfig = \PubNub\PNConfiguration::demoKeys();

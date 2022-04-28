@@ -6,12 +6,22 @@
 # composer vendor dir
 /vendor
 
-# IDEA files
-/.idea
+# IDE files
+/.id
+/.vscode
 
 .DS_Store
 coverage.clover
 
-# GitHub Actions #
-##################
-.github/.release
+.travis/README.md
+.travis/scripts
+
+deployment_keys
+deployment_keys-private
+deployment_keys.tar
+
+.travis/github-labels-policy.json
+.travis/github-labels.json
+
+# BEHAT feature files
+/tests/features/
