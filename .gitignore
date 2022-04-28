@@ -6,8 +6,9 @@
 # composer vendor dir
 /vendor
 
-# IDEA files
-/.idea
+# IDE files
+/.id
+/.vscode
 
 .DS_Store
 coverage.clover
@@ -21,3 +22,6 @@ deployment_keys.tar
 
 .travis/github-labels-policy.json
 .travis/github-labels.json
+
+# BEHAT feature files
+/tests/features/
