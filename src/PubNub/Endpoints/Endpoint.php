@@ -15,7 +15,11 @@ use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\Models\ResponseHelpers\ResponseInfo;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-use Requests_Exception;
+use WpOrg\Requests\Requests;
+use WpOrg\Requests\Exception as RequestsException;
+use WpOrg\Requests\Exception\Transport\Curl as RequestsTransportCurlException;
+use WpOrg\Requests\Exception\Http\Unknown as ReuestsHttpUknkownException;
+use WpOrg\Requests\Exception\Http as RequestsHttpException;
 
 abstract class Endpoint
 {
@@ -344,16 +348,8 @@ abstract class Endpoint
             $this->buildParams()
         );
         $data = $this->buildData();
-        $method = \Requests::GET;
+        $method = $this->httpMethod();
         $options = $this->requestOptions();
-
-        if ($this->httpMethod() == PNHttpMethod::POST) {
-            $method = \Requests::POST;
-        } elseif ($this->httpMethod() == PNHttpMethod::PATCH) {
-            $method = \Requests::PATCH;
-        } elseif ($this->httpMethod() == PNHttpMethod::DELETE) {
-            $method = \Requests::DELETE;
-        }
 
         $this->pubnub->getLogger()->debug($method . " " . $url, ['method' => $this->getName()]);
 
@@ -365,8 +361,8 @@ abstract class Endpoint
         $requestTimeStart = microtime(true);
 
         try {
-            $request = \Requests::request($url, $headers, $data, $method, $options);
-        } catch (\Requests_Exception_HTTP_Unknown $e) {
+            $request = Requests::request($url, $headers, $data, $method, $options);
+        } catch (ReuestsHttpUknkownException $e) {
             $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
 
             return new PNEnvelope($e->getData(), $this->createStatus(
@@ -375,7 +371,7 @@ abstract class Endpoint
                 null,
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
-        } catch (\Requests_Exception_Transport_cURL  $e) {
+        } catch (RequestsTransportCurlException $e) {
             $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
 
             return new PNEnvelope($e->getData(), $this->createStatus(
@@ -384,7 +380,7 @@ abstract class Endpoint
                 null,
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
-        } catch (\Requests_Exception_HTTP $e) {
+        } catch (RequestsHttpException $e) {
             $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
 
             return new PNEnvelope($e->getData(), $this->createStatus(
@@ -393,7 +389,7 @@ abstract class Endpoint
                 null,
                 (new PubNubConnectionException())->setOriginalException($e)
             ));
-        } catch (Requests_Exception $e) {
+        } catch (RequestsException $e) {
             if ($e->getType() === 'curlerror' && strpos($e->getMessage(), "cURL error 28") === 0) {
                 $statusCategory = PNStatusCategory::PNTimeoutCategory;
             }
@@ -569,7 +565,7 @@ abstract class Endpoint
     }
 
     /**
-     * @return \Requests_Transport
+     * @return \WpOrg\Requests\Transport
      * @throws \Exception
      */
     private function getDefaultTransport()
@@ -589,8 +585,8 @@ abstract class Endpoint
         }
 
         $transports = array(
-            'Requests_Transport_cURL',
-            'Requests_Transport_fsockopen',
+            '\WpOrg\Requests\Transport\Curl',
+            '\WpOrg\Requests\Transport\Fsockopen',
         );
 
         foreach ($transports as $class) {

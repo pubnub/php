@@ -4,15 +4,14 @@ namespace PubNub;
 
 use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Exceptions\PubNubValidationException;
-use Requests_Transport;
-
+use WpOrg\Requests\Transport;
 
 class PNConfiguration
 {
-    const DEFAULT_NON_SUBSCRIBE_REQUEST_TIMEOUT = 10;
-    const DEFAULT_SUBSCRIBE_TIMEOUT = 310;
-    const DEFAULT_CONNECT_TIMEOUT = 10;
-    const DEFAULT_USE_RANDOM_IV = true;
+    private const DEFAULT_NON_SUBSCRIBE_REQUEST_TIMEOUT = 10;
+    private const DEFAULT_SUBSCRIBE_TIMEOUT = 310;
+    private const DEFAULT_CONNECT_TIMEOUT = 10;
+    private const DEFAULT_USE_RANDOM_IV = true;
 
     /** @var  string Subscribe key provided by PubNub */
     private $subscribeKey;
@@ -50,7 +49,7 @@ class PNConfiguration
     /** @var  int */
     protected $subscribeTimeout;
 
-    /** @var  Requests_Transport */
+    /** @var  Transport */
     protected $transport;
 
     /** @var bool */
@@ -391,7 +390,7 @@ class PNConfiguration
     }
 
     /**
-     * @return Requests_Transport
+     * @return Transport
      */
     public function getTransport()
     {
@@ -399,7 +398,7 @@ class PNConfiguration
     }
 
     /**
-     * @param Requests_Transport $transport
+     * @param Transport $transport
      * @return $this
      */
     public function setTransport($transport)

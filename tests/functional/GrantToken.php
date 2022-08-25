@@ -6,7 +6,7 @@ use PubNub\PubNub;
 
 class GrantTokenTest extends \PubNubTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->pubnub = new PubNub($this->config_pam);

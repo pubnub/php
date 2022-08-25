@@ -14,7 +14,7 @@ class GrantTest extends \PubNubTestCase
     /** @var  GrantExposed */
     protected $grant;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

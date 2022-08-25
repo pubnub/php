@@ -12,7 +12,7 @@ class HereNowTest extends PubNubTestCase
     /** @var  ExposedHereNow */
     protected $hereNow;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

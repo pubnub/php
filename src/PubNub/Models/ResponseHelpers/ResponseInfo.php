@@ -2,6 +2,7 @@
 
 namespace PubNub\Models\ResponseHelpers;
 
+use WpOrg\Requests\Response;
 
 class ResponseInfo
 {
@@ -33,7 +34,7 @@ class ResponseInfo
      * @param string $authKey
      * @param \Requests_Response $originalResponse
      */
-    public function __construct($statusCode, $tlsEnabled, $origin, $uuid, $authKey, \Requests_Response $originalResponse)
+    public function __construct($statusCode, $tlsEnabled, $origin, $uuid, $authKey, Response $originalResponse)
     {
         $this->statusCode = $statusCode;
         $this->tlsEnabled = $tlsEnabled;

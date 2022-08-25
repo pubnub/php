@@ -58,14 +58,14 @@ abstract class PubNubTestCase extends TestCase
         return $signature;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $publishKey = getenv("PUBLISH_KEY");
         $subscribeKey = getenv("SUBSCRIBE_KEY");
         $publishKeyPam = getenv("PUBLISH_PAM_KEY");
         $subscribeKeyPam = getenv("SUBSCRIBE_PAM_KEY");
         $secretKeyPam = getenv("SECRET_PAM_KEY");
-        $uuidMock = getenv("UUID_MOCK");
+        $uuidMock = getenv("UUID_MOCK") ? getenv("UUID_MOCK") : "UUID_MOCK";
 
         parent::setUp();
 

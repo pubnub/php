@@ -12,7 +12,7 @@ class WhereNowTest extends PubNubTestCase
     /** @var  ExposedWhereNow */
     protected $whereNow;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
