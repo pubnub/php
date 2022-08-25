@@ -6,10 +6,9 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Models\Consumer\PNTimeResult;
 
-
 class Time extends Endpoint
 {
-    const TIME_PATH = "/time/0";
+    private const TIME_PATH = "/time/0";
 
     protected function validateParams()
     {
@@ -40,7 +39,7 @@ class Time extends Endpoint
     /**
      * @return PNTimeResult
      */
-    public function sync()
+    public function sync(): PNTimeResult
     {
         return parent::sync();
     }

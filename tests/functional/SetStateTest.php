@@ -15,7 +15,7 @@ class testSetState extends \PubNubTestCase
     /** @var  string[]|string state */
     protected $state;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

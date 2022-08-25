@@ -2,8 +2,10 @@
 
 namespace Tests\Helpers;
 
+use WpOrg\Requests\Transport;
 
-class StubTransport implements \Requests_Transport {
+class StubTransport implements Transport
+{
     /** @var string  */
     protected $method = "GET";
 
@@ -12,7 +14,8 @@ class StubTransport implements \Requests_Transport {
 
     protected $requestsCountInt = 0;
 
-    public function request($url, $headers = array(), $data = array(), $options = array()) {
+    public function request($url, $headers = array(), $data = array(), $options = array())
+    {
         $this->requestsCountInt++;
 
         $parsedUrl = parse_url($url);
@@ -60,11 +63,13 @@ class StubTransport implements \Requests_Transport {
         return $stub;
     }
 
-    public function request_multiple($requests, $options) {
+    public function request_multiple($requests, $options)
+    {
         throw new \Exception("Not implemented");
     }
 
-    public static function test() {
+    public static function test($capabilities = [])
+    {
         return true;
     }
 }

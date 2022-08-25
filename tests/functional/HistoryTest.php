@@ -12,7 +12,7 @@ class HistoryTest extends PubNubTestCase
     /** @var HistoryExposed */
     private $history;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -12,7 +12,7 @@ class GetStateTest extends PubNubTestCase
     /** @var  ExposedGetState */
     protected $getState;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -130,6 +130,7 @@ class PubNubUtil
     public static function preparePamParams($params)
     {
         $sortedParams = $params;
+        ksort($sortedParams);
         $stringifiedArguments = "";
         $index = 0;
 

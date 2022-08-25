@@ -9,7 +9,7 @@ use PubNubTestCase;
 
 class HistoryDeleteTestTest extends PubNubTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

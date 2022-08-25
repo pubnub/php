@@ -13,7 +13,7 @@ class SubscribeTest extends \PubNubTestCase
     /** @var  ExposedSubscribe */
     protected $sub;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

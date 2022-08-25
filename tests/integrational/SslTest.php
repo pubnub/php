@@ -2,7 +2,6 @@
 
 namespace Tests\Integrational;
 
-
 class SslTest extends \PubNubTestCase
 {
     /**
@@ -13,7 +12,7 @@ class SslTest extends \PubNubTestCase
     {
         $transport = new CheckSslTransport();
         $this->pubnub->getConfiguration()->setTransport($transport);
-        $this->pubnub->time()->envelope();
+        $time = $this->pubnub->time()->sync();
 
         $this->assertTrue($transport->isRequestedSecureOrigin());
     }
@@ -27,14 +26,14 @@ class SslTest extends \PubNubTestCase
         $transport = new CheckSslTransport();
         $this->pubnub->getConfiguration()->setTransport($transport);
         $this->pubnub->getConfiguration()->setSecure(false);
-        $this->pubnub->time()->envelope();
+        $this->pubnub->time()->sync();
 
         $this->assertFalse($transport->isRequestedSecureOrigin());
     }
 }
 
-
-class CheckSslTransport implements \Requests_Transport {
+class CheckSslTransport implements \WpOrg\Requests\Transport
+{
     protected $requestedThroughHttps;
 
     public function isRequestedSecureOrigin()
@@ -46,14 +45,17 @@ class CheckSslTransport implements \Requests_Transport {
     {
         $this->requestedThroughHttps = substr($url, 0, 5) === 'https';
 
-        return "HTTP/1.1 OK Content-Type: text/plain\r\nConnection: close\r\n\r\n[123]";
+        return "HTTP/1.1 200 OK\r\n"
+            . "Content-Type: text/javascript; charset=\"UTF-8\"\r\n"
+            . "Connection: Closed\r\n\r\n"
+            . "[16614599133417872]";
     }
 
     public function request_multiple($requests, $options)
     {
     }
 
-    public static function test()
+    public static function test($capabilities = [])
     {
     }
 }

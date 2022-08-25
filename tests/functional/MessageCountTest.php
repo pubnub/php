@@ -11,7 +11,7 @@ use Tests\Helpers\StubTransport;
 
 class MessageCountTest extends \PubNubTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

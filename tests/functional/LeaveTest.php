@@ -12,7 +12,7 @@ class LeaveTest extends \PubNubTestCase
     /** @var  LeaveExposed */
     protected $leave;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

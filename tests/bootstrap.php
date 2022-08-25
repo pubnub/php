@@ -1,6 +1,7 @@
 <?php
+
 // Enable all errors
-error_reporting(-1);
+error_reporting(E_ALL);
 
 require_once(__DIR__ . '/PubNubTestCase.php');
 require_once(__DIR__ . '/helpers/Stub.php');

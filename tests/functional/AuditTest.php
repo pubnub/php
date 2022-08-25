@@ -13,7 +13,7 @@ class AuditTest extends \PubNubTestCase
     /** @var  AuditExposed */
     protected $audit;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
