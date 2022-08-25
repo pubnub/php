@@ -56,6 +56,8 @@ class PNConfiguration
     /** @var bool */
     protected $useRandomIV;
 
+    private $usingUserId = null;
+
     /**
      * PNConfiguration constructor.
      */
@@ -243,10 +245,40 @@ class PNConfiguration
      */
     public function setUuid($uuid)
     {
+        if (!is_null($this->usingUserId) && $this->usingUserId) {
+            throw new PubNubConfigurationException("Cannot use UserId and UUID simultaneously");
+        }
         if (!$this->validateNotEmptyString($uuid)) {
             throw new PubNubConfigurationException("UUID should not be empty");
         }
+        $this->usingUserId = false;
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserId()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $userId
+     * @return $this
+     */
+    public function setUserId($userId)
+    {
+        if (!is_null($this->usingUserId) && !$this->usingUserId) {
+            throw new PubNubConfigurationException("Cannot use UserId and UUID simultaneously");
+        }
+        if (!$this->validateNotEmptyString($userId)) {
+            throw new PubNubConfigurationException("UserID should not be empty");
+        }
+        $this->usingUserId = true;
+        $this->uuid = $userId;
 
         return $this;
     }
