@@ -41,7 +41,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
          {
              "require": {
                  <!-- include the latest version from the badge at the top -->
-                 "pubnub/pubnub": "5.0.0"
+                 "pubnub/pubnub": "5.1.0"
              }
          }
          ```
@@ -63,7 +63,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 
     $pnconf->setSubscribeKey("mySubscribeKey");
     $pnconf->setPublishKey("myPublishKey");
-    $pnconf->setUuid("ReplaceWithYourClientIdentifier");
+    $pnconf->setUserId("ReplaceWithYourClientIdentifier");
     ```
 
 ## Add event listeners

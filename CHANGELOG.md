@@ -1,3 +1,9 @@
+## v5.1.0
+August 30 2022
+
+#### Added
+- Add option to initialize PubNub with UserId.
+
 ## v5.0.0
 January 26 2022
 
