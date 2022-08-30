@@ -63,7 +63,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 
     $pnconf->setSubscribeKey("mySubscribeKey");
     $pnconf->setPublishKey("myPublishKey");
-    $pnconf->setUser("ReplaceWithYourClientIdentifier");
+    $pnconf->setUserId("ReplaceWithYourClientIdentifier");
     ```
 
 ## Add event listeners
