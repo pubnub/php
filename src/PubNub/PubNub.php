@@ -50,8 +50,8 @@ use PubNub\Managers\TokenManager;
 
 class PubNub
 {
-    private const SDK_VERSION = "5.0.0";
-    private const SDK_NAME = "PubNub-PHP";
+    protected const SDK_VERSION = "5.0.0";
+    protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
 
