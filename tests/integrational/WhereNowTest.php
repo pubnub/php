@@ -6,7 +6,7 @@ use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Exceptions\PubNubResponseParsingException;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
-
+use PHPUnit\Framework\Constraint\IsType;
 
 class WhereNowTest extends PubNubTestCase
 {
@@ -110,8 +110,7 @@ class WhereNowTest extends PubNubTestCase
         $uuid = 'test-where-now-php-uuid-.*|@#';
 
         $result = $this->pubnub_pam->whereNow()->uuid($uuid)->sync();
-
-        $this->assertInternalType('array', $result->getChannels());
+        static::assertThat($result->getChannels(), new IsType('array'), 'Response should be of type \'array\'');
     }
 }
 
