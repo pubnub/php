@@ -173,8 +173,8 @@ class PubNubUtil
     {
         $result = strtr(base64_encode(hash_hmac(
             'sha256',
-            utf8_encode($signInput),
-            utf8_encode($secret),
+            self::convertIso8859ToUtf8($signInput),
+            self::convertIso8859ToUtf8($secret),
             true
         )), '+/', '-_');
 
@@ -252,5 +252,21 @@ class PubNubUtil
     public static function tokenEncode($token)
     {
         return str_replace('+', '%20', urlencode($token));
+    }
+
+    private static function convertIso8859ToUtf8($s)
+    {
+        $s .= $s;
+        $len = strlen($s);
+
+        for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
+            switch (true) {
+                case $s[$i] < "\x80": $s[$j] = $s[$i]; break;
+                case $s[$i] < "\xC0": $s[$j] = "\xC2"; $s[++$j] = $s[$i]; break;
+                default: $s[$j] = "\xC3"; $s[++$j] = chr(ord($s[$i]) - 64); break;
+            }
+        }
+
+        return substr($s, 0, $j);
     }
 }
