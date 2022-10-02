@@ -33,6 +33,9 @@ class SubscriptionManager
     /** @var  ListenerManager */
     protected $listenerManager;
 
+    /** @var  StateManager */
+    protected $subscriptionState;
+
     /** @var  int */
     protected $timetoken;
 
