@@ -16,12 +16,12 @@
     "test": "./vendor/bin/phpunit tests/  --verbose --coverage-clover=coverage.clover"
   },
   "require": {
-    "php": ">=5.6.0",
-    "monolog/monolog": "^2.5",
+    "php": ">=8.0",
     "rmccue/requests": "^2.0",
-    "guzzlehttp/guzzle": "^7.0"
+    "psr/log": "^1.1"
   },
   "require-dev": {
+    "monolog/monolog": "^2.8",
     "phpunit/phpunit": "^9.5",
     "squizlabs/php_codesniffer": "^3.7",
     "phpstan/phpstan": "^1.8"
@@ -33,6 +33,7 @@
   },
   "autoload-dev": {
     "psr-4": {
+      "PubNubTests\\": "tests"
     }
   }
 }

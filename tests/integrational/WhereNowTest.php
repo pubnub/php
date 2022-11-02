@@ -14,9 +14,9 @@ class WhereNowTest extends PubNubTestCase
     {
         $uuid = "where-now-uuid";
 
-        $this->pubnub->getConfiguration()->setUuid($uuid);
+        $this->pubnub_demo->getConfiguration()->setUuid($uuid);
 
-        $whereNow = new WhereNowTestExposed($this->pubnub);
+        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/where-now-uuid")
             ->withQuery([
@@ -35,9 +35,9 @@ class WhereNowTest extends PubNubTestCase
         $uuid = "where-now-uuid";
         $customUuid = "custom-uuid";
 
-        $this->pubnub->getConfiguration()->setUuid($uuid);
+        $this->pubnub_demo->getConfiguration()->setUuid($uuid);
 
-        $whereNow = new WhereNowTestExposed($this->pubnub);
+        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/custom-uuid")
             ->withQuery([
@@ -56,8 +56,8 @@ class WhereNowTest extends PubNubTestCase
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Unable to parse server response: Syntax error");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
-        $whereNow = new WhereNowTestExposed($this->pubnub);
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
+        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
@@ -74,8 +74,8 @@ class WhereNowTest extends PubNubTestCase
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Unable to parse server response: Syntax error");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
-        $whereNow = new WhereNowTestExposed($this->pubnub);
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
+        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
@@ -92,8 +92,8 @@ class WhereNowTest extends PubNubTestCase
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Unable to parse server response: No payload found in response");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
-        $whereNow = new WhereNowTestExposed($this->pubnub);
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
+        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
@@ -109,7 +109,7 @@ class WhereNowTest extends PubNubTestCase
     {
         $uuid = 'test-where-now-php-uuid-.*|@#';
 
-        $result = $this->pubnub_pam->whereNow()->uuid($uuid)->sync();
+        $result = $this->pubnub_demo->whereNow()->uuid($uuid)->sync();
         static::assertThat($result->getChannels(), new IsType('array'), 'Response should be of type \'array\'');
     }
 }

@@ -47,16 +47,18 @@ use PubNub\Managers\BasePathManager;
 use PubNub\Managers\SubscriptionManager;
 use PubNub\Managers\TelemetryManager;
 use PubNub\Managers\TokenManager;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 
-class PubNub
+class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "5.0.0";
+    protected const SDK_VERSION = "5.1.0";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
 
     /** @var PNConfiguration */
-    protected $configuration;
+    protected PNConfiguration $configuration;
 
     /** @var  BasePathManager */
     protected $basePathManager;
@@ -70,8 +72,8 @@ class PubNub
     /** @var TokenManager */
     protected $tokenManager;
 
-    /** @var  Logger */
-    protected $logger;
+    /** @var  LoggerInterface */
+    protected LoggerInterface $logger;
 
     /** @var  int $nextSequence */
     protected $nextSequence = 0;
@@ -89,7 +91,7 @@ class PubNub
         $this->subscriptionManager = new SubscriptionManager($this);
         $this->telemetryManager = new TelemetryManager();
         $this->tokenManager = new TokenManager();
-        $this->logger = new Logger('PubNub');
+        $this->logger = new \Psr\Log\NullLogger();
     }
 
     /**
@@ -98,7 +100,7 @@ class PubNub
      */
     public static function demo()
     {
-        return new static(PNConfiguration::demoKeys());
+        return new PubNub(PNConfiguration::demoKeys());
     }
 
     /**
@@ -428,7 +430,7 @@ class PubNub
     /**
      * @return string
      */
-    static public function getSdkVersion()
+    public static function getSdkVersion()
     {
         return static::SDK_VERSION;
     }
@@ -436,7 +438,7 @@ class PubNub
     /**
      * @return string
      */
-    static public function getSdkName()
+    public static function getSdkName()
     {
         return static::SDK_NAME;
     }
@@ -444,7 +446,7 @@ class PubNub
     /**
      * @return string
      */
-    static public function getSdkFullName()
+    public static function getSdkFullName()
     {
         $fullName = static::SDK_NAME . "/" . static::SDK_VERSION;
 
@@ -478,9 +480,9 @@ class PubNub
     }
 
     /**
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }

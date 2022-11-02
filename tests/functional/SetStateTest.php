@@ -6,8 +6,7 @@ use PubNub\Endpoints\Presence\SetState;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
-
-class testSetState extends \PubNubTestCase
+class SetStateTest extends \PubNubTestCase
 {
     /** @var  SetStateExposed */
     protected $setState;

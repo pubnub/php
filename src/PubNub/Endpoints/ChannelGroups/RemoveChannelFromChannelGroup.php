@@ -53,7 +53,7 @@ class RemoveChannelFromChannelGroup extends Endpoint
             throw new PubNubValidationException("Channels missing");
         }
 
-        if (strlen($this->channelGroup) === 0) {
+        if (strlen((string)$this->channelGroup) === 0) {
             throw new PubNubValidationException("Channel group missing");
         }
     }
