@@ -18,6 +18,13 @@ jobs:
       fail-fast: true
       matrix:
         php: [5.6, 7.0, 7.1, 7.2, 7.3, 7.4]
+    env:
+      PUBLISH_KEY: ${{ secrets.PUBLISH_KEY }}
+      SUBSCRIBE_KEY: ${{ secrets.SUBSCRIBE_KEY }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      PUBLISH_PAM_KEY: ${{ secrets.PUBLISH_PAM_KEY }}
+      SUBSCRIBE_PAM_KEY: ${{ secrets.SUBSCRIBE_PAM_KEY }}
+      SECRET_PAM_KEY: ${{ secrets.SECRET_PAM_KEY }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
