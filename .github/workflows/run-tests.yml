@@ -1,0 +1,55 @@
+name: Tests
+
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  tests:
+    name: Integration and Unit tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [5.6, 7.0, 7.1, 7.2, 7.3, 7.4]
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Checkout actions
+        uses: actions/checkout@v3
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Determine composer cache directory
+        id: composer-cache-dir
+        run: echo "dir=$(composer config cache-dir)" >> $GITHUB_OUTPUT
+      - name: Cache Composer
+        uses: actions/cache@v3
+        with:
+          path: "${{ steps.composer-cache-dir.outputs.dir }}"
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+              ${{ runner.os }}-composer-
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: phpunit
+          coverage: none
+      - name: Setup dependencies
+        run: |
+          composer self-update && composer --version
+          composer install --prefer-dist
+      - name: Run unit tests
+        run: vendor/bin/phpunit --verbose
+      - name: Cancel workflow runs for commit on error
+        if: failure()
+        uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
