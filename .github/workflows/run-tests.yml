@@ -57,7 +57,7 @@ jobs:
       - name: Setup dependencies
         run: |
           composer self-update && composer --version
-          composer install --prefer-distgit
+          composer install --prefer-dist
       - name: Run unit tests
         run: vendor/bin/phpunit --verbose
       - name: Cancel workflow runs for commit on error
