@@ -42,7 +42,7 @@ class PNAccessManagerKeyData
      * @param bool $joinEnabled
      * @param int $ttl
      */
-    public function __construct($readEnabled, $writeEnabled, $manageEnabled, $deleteEnabled, $getEnabled, $updateEnabled, $joinEnabled, $ttl)
+    final public function __construct($readEnabled, $writeEnabled, $manageEnabled, $deleteEnabled, $getEnabled, $updateEnabled, $joinEnabled, $ttl)
     {
         $this->readEnabled = $readEnabled;
         $this->writeEnabled = $writeEnabled;

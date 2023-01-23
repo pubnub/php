@@ -18,7 +18,7 @@ use PubNub\PubNubUtil;
 use WpOrg\Requests\Requests;
 use WpOrg\Requests\Exception as RequestsException;
 use WpOrg\Requests\Exception\Transport\Curl as RequestsTransportCurlException;
-use WpOrg\Requests\Exception\Http\Unknown as ReuestsHttpUknkownException;
+use WpOrg\Requests\Exception\Http\StatusUnknown as ReuestsHttpStatusUnknownException;
 use WpOrg\Requests\Exception\Http as RequestsHttpException;
 
 abstract class Endpoint
@@ -362,7 +362,7 @@ abstract class Endpoint
 
         try {
             $request = Requests::request($url, $headers, $data, $method, $options);
-        } catch (ReuestsHttpUknkownException $e) {
+        } catch (ReuestsHttpStatusUnknownException $e) {
             $this->pubnub->getLogger()->error($e->getMessage(), ['method' => $this->getName()]);
 
             return new PNEnvelope($e->getData(), $this->createStatus(

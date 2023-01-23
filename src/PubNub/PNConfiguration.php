@@ -75,7 +75,7 @@ class PNConfiguration
      */
     public static function demoKeys()
     {
-        $config = new static();
+        $config = new self();
         $config->setSubscribeKey("demo");
         $config->setPublishKey("demo");
         $config->setUuid("demo");

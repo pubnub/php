@@ -174,7 +174,7 @@ class PNAccessManagerAbstractResult
             }
         }
 
-        return new static(
+        return new PNAccessManagerAbstractResult(
             $jsonInput['level'],
             $jsonInput['subscribe_key'],
             $constructedChannels,
