@@ -20,6 +20,10 @@ class Signal extends Endpoint
     /** @var  string $channel to send message on*/
     protected $channel;
 
+    protected $spaceId = null;
+
+    protected $messageType = null;
+
     /**
      * @param mixed $message
      * @return $this
@@ -38,6 +42,28 @@ class Signal extends Endpoint
     public function channel($channel)
     {
         $this->channel = $channel;
+
+        return $this;
+    }
+
+    /**
+     * @param string $spaceId
+     * @return $this
+     */
+    public function space($spaceId)
+    {
+        $this->spaceId = $spaceId;
+
+        return $this;
+    }
+
+    /**
+     * @param string $messageType
+     * @return $this
+     */
+    public function messageType($messageType)
+    {
+        $this->messageType = $messageType;
 
         return $this;
     }
@@ -68,11 +94,11 @@ class Signal extends Endpoint
         $stringifiedMessage = PubNubUtil::urlEncode(PubNubUtil::writeValueAsString($this->message));
 
         return sprintf(
-                static::SIGNAL_PATH,
-                $this->pubnub->getConfiguration()->getPublishKey(),
-                $this->pubnub->getConfiguration()->getSubscribeKey(),
-                PubNubUtil::urlEncode($this->channel),
-                $stringifiedMessage
+            static::SIGNAL_PATH,
+            $this->pubnub->getConfiguration()->getPublishKey(),
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
+            PubNubUtil::urlEncode($this->channel),
+            $stringifiedMessage
         );
     }
 
@@ -84,7 +110,17 @@ class Signal extends Endpoint
 
     protected function customParams()
     {
-        return [];
+        $params = [];
+
+        if ($this->spaceId) {
+            $params['space-id'] = $this->spaceId;
+        }
+
+        if ($this->messageType) {
+            $params['type'] = $this->messageType;
+        }
+
+        return $params;
     }
 
     /**
