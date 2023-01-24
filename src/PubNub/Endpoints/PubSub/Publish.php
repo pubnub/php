@@ -134,7 +134,7 @@ class Publish extends Endpoint
      * @param string $spaceId
      * @return $this
      */
-    public function space($spaceId)
+    public function spaceId($spaceId)
     {
         $this->spaceId = $spaceId;
 

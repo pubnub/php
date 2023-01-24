@@ -329,7 +329,7 @@ class PublishTest extends \PubNubTestCase
         $publish = $this->pubnub->publish();
         $publish->channel($channel);
         $publish->message($message);
-        $publish->space('HelloSpace');
+        $publish->spaceId('HelloSpace');
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
         $r->setAccessible(true);
