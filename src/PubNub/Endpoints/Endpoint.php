@@ -20,6 +20,8 @@ use WpOrg\Requests\Exception as RequestsException;
 use WpOrg\Requests\Exception\Transport\Curl as RequestsTransportCurlException;
 use WpOrg\Requests\Exception\Http\StatusUnknown as ReuestsHttpStatusUnknownException;
 use WpOrg\Requests\Exception\Http as RequestsHttpException;
+use WpOrg\Requests\Transport\Curl;
+use WpOrg\Requests\Transport\Fsockopen;
 
 abstract class Endpoint
 {
@@ -584,10 +586,7 @@ abstract class Endpoint
             return self::$cachedTransports[$method][$cap_string];
         }
 
-        $transports = array(
-            '\WpOrg\Requests\Transport\Curl',
-            '\WpOrg\Requests\Transport\Fsockopen',
-        );
+        $transports = array(Curl::class, Fsockopen::class);
 
         foreach ($transports as $class) {
             if (!class_exists($class)) {

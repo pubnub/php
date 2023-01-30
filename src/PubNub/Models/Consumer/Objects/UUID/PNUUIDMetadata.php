@@ -43,7 +43,7 @@ class PNUUIDMetadata implements JsonSerializable
         $this->custom = $custom;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         $vars = get_object_vars($this);
 

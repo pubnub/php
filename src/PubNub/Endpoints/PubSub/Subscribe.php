@@ -124,7 +124,7 @@ class Subscribe extends Endpoint
             $params['channel-group'] = PubNubUtil::joinChannels($this->channelGroups);
         }
 
-        if (!is_null($this->filterExpression) and strlen($this->filterExpression) > 0) {
+        if (!is_null($this->filterExpression) && strlen($this->filterExpression) > 0) {
             $params['filter-expr'] = PubNubUtil::urlEncode($this->filterExpression);
         }
 

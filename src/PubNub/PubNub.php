@@ -49,6 +49,7 @@ use PubNub\Managers\TelemetryManager;
 use PubNub\Managers\TokenManager;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\NullLogger;
 
 class PubNub implements LoggerAwareInterface
 {
@@ -91,7 +92,7 @@ class PubNub implements LoggerAwareInterface
         $this->subscriptionManager = new SubscriptionManager($this);
         $this->telemetryManager = new TelemetryManager();
         $this->tokenManager = new TokenManager();
-        $this->logger = new \Psr\Log\NullLogger();
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -482,7 +483,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }

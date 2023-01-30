@@ -42,7 +42,7 @@ class SubscriptionManager
     /** @var  bool */
     protected $subscriptionStatusAnnounced;
 
-    protected StateManager $subscriptionState;
+    public StateManager $subscriptionState;
 
     /**
      * SubscriptionManager constructor.
