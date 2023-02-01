@@ -9,7 +9,7 @@ This is the official PubNub PHP SDK repository.
 
 PubNub takes care of the infrastructure and APIs needed for the realtime communication layer of your application. Work on your app's logic and let PubNub handle sending and receiving data across the world in less than 100ms.
 
-The SDK supports PHP 5.6, 7.0, 7.1 and hhvm.
+The SDK supports PHP 7.4 and 8.x.
 
 ## Get keys
 
