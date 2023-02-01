@@ -1,3 +1,9 @@
+## v5.1.1
+February 01 2023
+
+#### Modified
+- BREAKING CHANGES: This SDK will now require PHP >= 7.4.
+
 ## v5.1.0
 August 30 2022
 
