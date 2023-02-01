@@ -101,7 +101,7 @@ class PubNubUtil
      */
     public static function splitItems($itemsString)
     {
-        if (strlen($itemsString) == 0) {
+        if (strlen((string)$itemsString) === 0) {
             return [];
         } else {
             return explode(",", $itemsString);
@@ -130,6 +130,7 @@ class PubNubUtil
     public static function preparePamParams($params)
     {
         $sortedParams = $params;
+        ksort($sortedParams);
         $stringifiedArguments = "";
         $index = 0;
 

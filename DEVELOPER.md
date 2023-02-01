@@ -1,10 +1,10 @@
-# Developers 
+# Developers
 ## Supported PHP versions
-We support PHP >= 5.6 + hhvm.
+We support PHP >= 8.0
 
 ## Supported platforms
 We maintain and test our SDK using Travis.CI and Ubuntu.
-Windows/MacOS/BSD platforms support was verified only once after SDK v4.0 release. We do not test the new releases with these platforms. 
+Windows/MacOS/BSD platforms support was verified only once after SDK v4.0 release. We do not test the new releases with these platforms.
 
 ## Subscription
 The important thing to notice is that the subscription loop in PHP SDK is synchronous.

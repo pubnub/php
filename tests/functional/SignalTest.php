@@ -5,8 +5,7 @@ namespace Tests\Functional;
 use PubNubTestCase;
 use PubNub\Exceptions\PubNubValidationException;
 
-
-class SignalEndpointTest extends PubNubTestCase
+class SignalTest extends PubNubTestCase
 {
     public function testSignalSuccess()
     {

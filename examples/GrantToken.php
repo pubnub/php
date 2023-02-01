@@ -1,11 +1,9 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use PubNub\Models\Access\Permissions;
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
-
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/autoloader.php';
-
 
 
 $pnconfig = new \PubNub\PNConfiguration();
@@ -34,8 +32,5 @@ try {
 }
 
 var_dump(
-    $pubnub->parseToken(
-        'qEF2AkF0GmFt5QxDdHRsGB5DcmVzpURjaGFuoWpteS1jaGFubmVsAUNncnCgQ3VzcqBDc3BjoER1dWlkoENwYXSlRGNoYW6gQ2dycKBDdXNyoE'
-        . 'NzcGOgRHV1aWSgRG1ldGGgRHV1aWRnbXktdXVpZENzaWdYICAa27C5EVKsWZDdGT8PP21discwdT8v7yfwmsp0VJ_E'
-    )->toArray()
+    $pubnub->parseToken($token)->toArray()
 ); die;

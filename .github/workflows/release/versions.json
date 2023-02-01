@@ -1,6 +1,6 @@
 {
   ".pubnub.yml": [
-    { "pattern": "^version: \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\"$", "cleared": true },
+    { "pattern": "^version: (v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)$", "cleared": true },
     {
       "pattern": "\\s+package-name: php-(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?).zip$",
       "clearedPrefix": true,
@@ -23,7 +23,7 @@
     }
   ],
   "src/PubNub/PubNub.php": [
-    { "pattern": "^\\s{2,}const SDK_VERSION = \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\";$",
+    { "pattern": "^\\s{2,}protected const SDK_VERSION = \"(v?(\\d+\\.?){2,}([a-zA-Z0-9-]+(\\.?\\d+)?)?)\";$",
       "clearedPrefix": true,
       "clearedSuffix": false
     }

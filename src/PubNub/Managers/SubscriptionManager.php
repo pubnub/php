@@ -42,6 +42,8 @@ class SubscriptionManager
     /** @var  bool */
     protected $subscriptionStatusAnnounced;
 
+    public StateManager $subscriptionState;
+
     /**
      * SubscriptionManager constructor.
      * @param PubNub $pubnub
@@ -56,7 +58,7 @@ class SubscriptionManager
 
     public function start()
     {
-        while (True) {
+        while (true) {
             $combinedChannels = $this->subscriptionState->prepareChannelList(true);
             $combinedChannelGroups = $this->subscriptionState->prepareChannelGroupList(true);
 

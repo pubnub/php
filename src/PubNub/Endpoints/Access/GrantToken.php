@@ -14,7 +14,7 @@ use PubNub\PubNubCborDecode;
 
 class GrantToken extends Endpoint
 {
-    const PATH = '/v3/pam/%s/grant';
+    private const PATH = '/v3/pam/%s/grant';
 
     /** @var  int */
     protected $ttl;
@@ -32,6 +32,12 @@ class GrantToken extends Endpoint
 
     /** @var bool */
     protected $sortParams = true;
+
+    private $channels = [];
+
+    private $groups = [];
+
+    private $uuids = [];
 
     /**
      * Set time in minutes for which granted permissions are valid

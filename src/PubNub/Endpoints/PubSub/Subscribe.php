@@ -12,10 +12,9 @@ use PubNub\Models\Consumer\PubSub\SubscribeEnvelope;
 use PubNub\PubNubException;
 use PubNub\PubNubUtil;
 
-
 class Subscribe extends Endpoint
 {
-    const PATH = "/v2/subscribe/%s/%s/0";
+    public const PATH = "/v2/subscribe/%s/%s/0";
 
     /** @var  string[] */
     protected $channels = [];
@@ -125,7 +124,7 @@ class Subscribe extends Endpoint
             $params['channel-group'] = PubNubUtil::joinChannels($this->channelGroups);
         }
 
-        if (strlen($this->filterExpression)) {
+        if (!is_null($this->filterExpression) && strlen($this->filterExpression) > 0) {
             $params['filter-expr'] = PubNubUtil::urlEncode($this->filterExpression);
         }
 

@@ -4,13 +4,15 @@ use PHPUnit\Framework\TestCase;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
+use Monolog\Logger;
+use Monolog\Handler\ErrorLogHandler;
 
 abstract class PubNubTestCase extends TestCase
 {
-    const CIPHER_KEY = "enigma";
+    protected const CIPHER_KEY = "enigma";
 
-    const SPECIAL_CHARACTERS = "-.,_~:/?#[]@!$&'()*+;=`|";
-    const SPECIAL_CHANNEL = "-._~:/?#[]@!$&'()*+;=`|";
+    protected const SPECIAL_CHARACTERS = "-.,_~:/?#[]@!$&'()*+;=`|";
+    protected const SPECIAL_CHANNEL = "-._~:/?#[]@!$&'()*+;=`|";
 
     /** @var Pubnub pubnub */
     protected $pubnub;
@@ -20,6 +22,9 @@ abstract class PubNubTestCase extends TestCase
 
     /** @var PubNub pubnub_pam */
     protected $pubnub_pam;
+
+    /** @var PubNub pubnub_demo */
+    protected $pubnub_demo;
 
     /** @var PNConfiguration config */
     protected $config;
@@ -58,14 +63,17 @@ abstract class PubNubTestCase extends TestCase
         return $signature;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $publishKey = getenv("PUBLISH_KEY");
         $subscribeKey = getenv("SUBSCRIBE_KEY");
         $publishKeyPam = getenv("PUBLISH_PAM_KEY");
         $subscribeKeyPam = getenv("SUBSCRIBE_PAM_KEY");
         $secretKeyPam = getenv("SECRET_PAM_KEY");
-        $uuidMock = getenv("UUID_MOCK");
+        $uuidMock = getenv("UUID_MOCK") ? getenv("UUID_MOCK") : "UUID_MOCK";
+
+        $logger = new Logger('PubNub');
+        $logger->pushHandler(new ErrorLogHandler());
 
         parent::setUp();
 
@@ -89,10 +97,12 @@ abstract class PubNubTestCase extends TestCase
         $this->pubnub = new PubNub($this->config);
         $this->pubnub_enc = new PubNub($this->config_enc);
         $this->pubnub_pam = new PubNub($this->config_pam);
+        $this->pubnub_demo = PubNub::demo();
 
-        $this->pubnub->getLogger()->pushHandler(new \Monolog\Handler\ErrorLogHandler());
-        $this->pubnub_enc->getLogger()->pushHandler(new \Monolog\Handler\ErrorLogHandler());
-        $this->pubnub_pam->getLogger()->pushHandler(new \Monolog\Handler\ErrorLogHandler());
+        $this->pubnub->setLogger($logger);
+        $this->pubnub_enc->setLogger($logger);
+        $this->pubnub_pam->setLogger($logger);
+        $this->pubnub_demo->setLogger($logger);
 
         $this->encodedSdkName = PubNubUtil::urlEncode($this->pubnub->getSdkFullName());
     }

@@ -53,7 +53,7 @@ class AddChannelToChannelGroup extends Endpoint
             throw new PubNubValidationException("Channels missing");
         }
 
-        if (strlen($this->group) === 0) {
+        if (strlen((string)$this->group) === 0) {
             throw new PubNubValidationException("Channel group missing");
         }
     }
