@@ -1,3 +1,9 @@
+## v6.0.0
+February 01 2023
+
+#### Modified
+- BREAKING CHANGES: This update is intended to bring compatibility with PHP 8.2 and newer versions of dependencies.
+
 ## v5.1.0
 August 30 2022
 
