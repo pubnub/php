@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNubFeatures\Access;
+namespace PubNubTests\Features\Context\AccessManager\Traits;
 
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\PubNub;

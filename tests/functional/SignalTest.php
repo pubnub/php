@@ -4,6 +4,7 @@ namespace Tests\Functional;
 
 use PubNubTestCase;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\PNMessageType;
 
 class SignalTest extends PubNubTestCase
 {
@@ -44,7 +45,7 @@ class SignalTest extends PubNubTestCase
         $response = $this->pubnub->Signal()
             ->channel("ch")
             ->message("test")
-            ->space('HelloSpace')
+            ->spaceId('HelloSpace')
             ->sync();
 
         $this->assertNotEmpty($response);
@@ -57,7 +58,7 @@ class SignalTest extends PubNubTestCase
         $response = $this->pubnub->Signal()
             ->channel("ch")
             ->message("test")
-            ->messageType('HelloMessageType')
+            ->messageType(new PNMessageType('HelloMessageType'))
             ->sync();
 
         $this->assertNotEmpty($response);

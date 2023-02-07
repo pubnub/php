@@ -12,8 +12,8 @@ use PubNub\PubNubUtil;
 
 class Publish extends Endpoint
 {
-    const GET_PATH = "/publish/%s/%s/0/%s/%s/%s";
-    const POST_PATH = "/publish/%s/%s/0/%s/%s";
+    protected const GET_PATH = "/publish/%s/%s/0/%s/%s/%s";
+    protected const POST_PATH = "/publish/%s/%s/0/%s/%s";
 
     /** @var  mixed $message to publish */
     protected $message;

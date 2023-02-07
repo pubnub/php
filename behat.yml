@@ -1,10 +1,20 @@
 default:
     autoload:
-        - "%paths.base%/tests/features/bootstrap/"
+        - "%paths.base%/tests/features/"
     suites:
         access:
-            paths:    [ "%paths.base%/tests/features/bootstrap/access" ]
-            contexts: [ AccessManagerContext ]
-        utilities:
-            paths:    [ "%paths.base%/tests/features/bootstrap/utilities" ]
-            contexts: [ TimeContext ]
+            paths:    [ "%paths.base%/tests/features/contracts/access/grant-token.feature" ]
+            contexts: [ PubNubTests\Features\Context\AccessManager\GrantTokenContext ]
+        publish-to-space:
+            paths: [
+                # "%paths.base%/tests/features/contracts/publish/publish.feature",
+                "%paths.base%/tests/features/contracts/publish/publish-to-space.feature"
+            ]
+            contexts: [PubNubTests\Features\Context\Publish\PublishContext]
+        signal-to-space:
+            paths: ["%paths.base%/tests/features/contracts/publish/signal-to-space.feature"]
+            contexts: [PubNubTests\Features\Context\Publish\SignalContext]
+        history:
+            paths: ["%paths.base%/tests/features/contracts/history/history.feature"]
+            contexts: [PubNubTests\Features\Context\History\HistoryContext]
+

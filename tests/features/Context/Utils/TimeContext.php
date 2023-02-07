@@ -1,7 +1,10 @@
 <?php
 
+namespace PubNubTests\Features\Context\Utils;
+
 use Behat\Behat\Context\Context;
-use PubNubFeatures\PubNubContext;
+use PubNubTests\Features\Context\PubNubContext;
+use PubNub\Models\Consumer\PNTimeResult;
 
 /**
  * Defines application features from the specific context.
@@ -26,6 +29,6 @@ class TimeContext extends PubNubContext implements Context
      */
     public function iReceiveSuccessfulResponse()
     {
-        return ('PubNub\Models\Consumer\PNTimeResult' === get_class($this->response));
+        return (PNTimeResult::class === get_class($this->response));
     }
 }

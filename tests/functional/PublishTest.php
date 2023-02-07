@@ -5,6 +5,7 @@ namespace Tests\Functional;
 use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\PNMessageType;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
@@ -350,10 +351,10 @@ class PublishTest extends \PubNubTestCase
         $channel = 'ch';
         $message = 'hi';
 
-        $publish = $this->pubnub->publish();
-        $publish->channel($channel);
-        $publish->message($message);
-        $publish->messageType('HelloMessageType');
+        $publish = $this->pubnub->publish()
+            ->channel($channel)
+            ->message($message)
+            ->messageType(new PNMessageType('HelloMessageType'));
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
         $r->setAccessible(true);

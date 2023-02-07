@@ -1,9 +1,9 @@
 <?php
 
-namespace PubNubFeatures\Access;
+namespace PubNubTests\Features\Context\AccessManager\Traits;
 
 use PubNub\PubNub;
-use PubNubFeatures\PNContextHelper;
+use PubNubTests\Features\Context\PNContextHelper;
 
 trait Given
 {
