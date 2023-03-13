@@ -4,39 +4,46 @@ namespace PubNub\Models\Consumer;
 
 final class PNMessageType
 {
-    private $internal = null;
-    private $custom = null;
+    private $pnMessageType = null;
+    private $messageType = null;
+    private $typeMapping = [
+        '0' => 'pn_message',
+        '1' => 'pn_signal',
+        '2' => 'pn_object',
+        '3' => 'pn_message_action',
+        '4' => 'pn_file',
+    ];
 
-    public function __construct($custom)
+    public function __construct($messageType)
     {
-        $this->custom = $custom;
+        $this->messageType = $messageType;
     }
 
-    public static function createWithInternal($custom, $internal)
+    public static function createWithPnMessageType($messageType, $pnMessageType)
     {
-        $messageType = new self($custom);
-        $messageType->setInternal($internal);
+        $messageType = new self($messageType);
+        $messageType->setPnMessageType($pnMessageType);
         return $messageType;
     }
 
-    private function setInternal($internal)
+    private function setPnMessageType($pnMessageType)
     {
-        $this->internal = $internal;
+        $this->pnMessageType = $pnMessageType;
         return $this;
     }
 
-    public function getInternal()
+    public function getPnMessageType()
     {
-        return $this->internal;
+        return $this->typeMapping[$this->pnMessageType ? $this->pnMessageType : '0'];
     }
 
     public function __toString()
     {
-        return $this->custom;
+        return $this->messageType ? $this->messageType : $this->getPnMessageType();
     }
 
-    public function getCustom()
+    public function getMessageType()
     {
-        return $this->custom;
+        return $this->messageType;
     }
 }

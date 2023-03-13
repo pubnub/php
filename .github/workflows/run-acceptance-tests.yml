@@ -18,11 +18,11 @@ jobs:
           uses: actions/checkout@v3
           with:
             repository: pubnub/client-engineering-deployment-tools
-            ref: github-actions
+            ref: v1
             token: ${{ secrets.GH_TOKEN }}
-            path: client-engineering-deployment-tools
+            path: .github/.release/actions
         - name: Run mock server action
-          uses: ./client-engineering-deployment-tools/actions/mock-server
+          uses: ./.github/.release/actions/actions/mock-server
           with:
             token: ${{ secrets.GH_TOKEN }}
         - name: Install Composer dev depenencies
