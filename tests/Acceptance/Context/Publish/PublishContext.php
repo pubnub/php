@@ -46,12 +46,4 @@ class PublishContext extends PubNubContext implements Context
     {
         assert($this->context instanceof PubNubServerException);
     }
-
-    /**
-     * @When I send a signal with :arg1 space id and :arg2 message type
-     */
-    public function iSendASignalWithSpaceIdAndMessageType($arg1, $arg2)
-    {
-        throw new PendingException();
-    }
 }

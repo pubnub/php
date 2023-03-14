@@ -2,9 +2,6 @@ default:
     autoload:
         - "%paths.base%/tests/Acceptance/"
     suites:
-        access:
-            paths:    [ "%paths.base%/tests/Acceptance/Contracts/Access/" ]
-            contexts: [ PubNubTests\Acceptance\Context\AccessManager\GrantTokenContext ]
         publish-to-space:
             paths: ["%paths.base%/tests/Acceptance/Contracts/Publish/"]
             contexts: [PubNubTests\Acceptance\Context\Publish\PublishContext]
