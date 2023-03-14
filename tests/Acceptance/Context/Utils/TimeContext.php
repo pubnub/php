@@ -1,9 +1,9 @@
 <?php
 
-namespace PubNubTests\Features\Context\Utils;
+namespace PubNubTests\Acceptance\Context\Utils;
 
 use Behat\Behat\Context\Context;
-use PubNubTests\Features\Context\PubNubContext;
+use PubNubTests\Acceptance\Context\PubNubContext;
 use PubNub\Models\Consumer\PNTimeResult;
 
 /**

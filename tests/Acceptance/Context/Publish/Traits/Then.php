@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNubTests\Features\Context\Publish\Traits;
+namespace PubNubTests\Acceptance\Context\Publish\Traits;
 
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\PNPublishResult;

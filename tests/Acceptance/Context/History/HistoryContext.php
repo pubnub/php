@@ -1,13 +1,13 @@
 <?php
 
-namespace PubNubTests\Features\Context\History;
+namespace PubNubTests\Acceptance\Context\History;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use PubNub\Models\Consumer\History\PNHistoryResult;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
-use PubNubTests\Features\Context\PubNubContext;
+use PubNubTests\Acceptance\Context\PubNubContext;
 
 class HistoryContext extends PubNubContext implements Context
 {

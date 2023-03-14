@@ -1,12 +1,13 @@
 <?php
 
-namespace PubNubTests\features\Context\Publish;
+namespace PubNubTests\Acceptance\Context\Publish;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\PNMessageType;
 use PubNub\Models\Consumer\PNPublishResult;
-use PubNubTests\Features\Context\PubNubContext;
+use PubNubTests\Acceptance\Context\PubNubContext;
 
 class PublishContext extends PubNubContext implements Context
 {
@@ -44,5 +45,13 @@ class PublishContext extends PubNubContext implements Context
     public function iReceiveAnErrorResponse()
     {
         assert($this->context instanceof PubNubServerException);
+    }
+
+    /**
+     * @When I send a signal with :arg1 space id and :arg2 message type
+     */
+    public function iSendASignalWithSpaceIdAndMessageType($arg1, $arg2)
+    {
+        throw new PendingException();
     }
 }

@@ -30,14 +30,19 @@ jobs:
             composer install --dev
         - name: Run acceptance tests
           run: |
-            mkdir -p tests/features/bootstrap/access/
-            mkdir -p tests/features/bootstrap/utilities/
-            mkdir -p tests/features/reports
-            cp sdk-specifications/features/access/grant-token.feature tests/features/bootstrap/access/grant-an-access-token.feature
-            cp sdk-specifications/features/utilities/time.feature tests/features/bootstrap/utilities/time.feature
-            vendor/bin/behat -f junit -o tests/features/reports/
+            mkdir -p tests/Acceptance/reports
+            mkdir -p tests/Acceptance/Contracts/Access
+            mkdir -p tests/Acceptance/Contracts/Publish
+            mkdir -p tests/Acceptance/Contracts/Signal
+            mkdir -p tests/Acceptance/Contracts/History
+
+            cp sdk-specifications/features/access/grant-token.feature tests/Acceptance/Contracts/Access/grant-token.feature
+            cp sdk-specifications/features/publish/publish-to-space.feature tests/Acceptance/Contracts/Publish/publish-to-space.feature
+            cp sdk-specifications/features/publish/signal-to-space.feature tests/Acceptance/Contracts/Signal/signal-to-space.feature
+            cp sdk-specifications/features/history/history.feature tests/Acceptance/Contracts/History/history.feature
+            vendor/bin/behat -f junit -o tests/Acceptance/reports/
         - name: Expose acceptance tests reports
           uses: actions/upload-artifact@v2
           with:
             name: acceptance-test-reports
-            path: ./tests/features/reports
+            path: ./tests/Acceptance/reports

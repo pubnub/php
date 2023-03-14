@@ -1,17 +1,26 @@
 <?php
 
-namespace PubNubTests\features\Context\Publish;
+namespace PubNubTests\Acceptance\Context\Signal;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\PNMessageType;
 use PubNub\Models\Consumer\PubSub\PNSignalResult;
-use PubNubTests\Features\Context\PubNubContext;
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+use PubNubTests\Acceptance\Context\PubNubContext;
 
 class SignalContext extends PubNubContext implements Context
 {
-    use Traits\Given;
-    use Traits\Then;
+    /**
+     * @Given the demo keyset
+     */
+    public function theDemoKeyset()
+    {
+        $this->pnConfig = PNConfiguration::demoKeys();
+        $this->pubnub = new PubNub($this->pnConfig);
+    }
 
     /**
      * @When I send a signal with :spaceId space id and :messageType message type
@@ -36,5 +45,13 @@ class SignalContext extends PubNubContext implements Context
     public function iReceiveASuccessfulResponse()
     {
         assert($this->context instanceof PNSignalResult);
+    }
+
+    /**
+     * @Then I receive an error response
+     */
+    public function iReceiveAnErrorResponse()
+    {
+        assert($this->context instanceof PubNubServerException);
     }
 }

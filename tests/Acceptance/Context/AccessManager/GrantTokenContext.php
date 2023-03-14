@@ -1,12 +1,11 @@
 <?php
 
-namespace PubNubTests\Features\Context\AccessManager;
+namespace PubNubTests\Acceptance\Context\AccessManager;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
-use PubNub\PNConfiguration;
-use PubNubTests\Features\Context\AccessManager\Traits;
-use PubNubTests\Features\Context\PubNubContext;
+use PubNubTests\Acceptance\Context\AccessManager\Traits;
+use PubNubTests\Acceptance\Context\PubNubContext;
 
 /**
  * Defines application features from the specific context.

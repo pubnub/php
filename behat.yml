@@ -1,20 +1,17 @@
 default:
     autoload:
-        - "%paths.base%/tests/features/"
+        - "%paths.base%/tests/Acceptance/"
     suites:
         access:
-            paths:    [ "%paths.base%/tests/features/contracts/access/grant-token.feature" ]
-            contexts: [ PubNubTests\Features\Context\AccessManager\GrantTokenContext ]
+            paths:    [ "%paths.base%/tests/Acceptance/Contracts/Access/" ]
+            contexts: [ PubNubTests\Acceptance\Context\AccessManager\GrantTokenContext ]
         publish-to-space:
-            paths: [
-                # "%paths.base%/tests/features/contracts/publish/publish.feature",
-                "%paths.base%/tests/features/contracts/publish/publish-to-space.feature"
-            ]
-            contexts: [PubNubTests\Features\Context\Publish\PublishContext]
+            paths: ["%paths.base%/tests/Acceptance/Contracts/Publish/"]
+            contexts: [PubNubTests\Acceptance\Context\Publish\PublishContext]
         signal-to-space:
-            paths: ["%paths.base%/tests/features/contracts/publish/signal-to-space.feature"]
-            contexts: [PubNubTests\Features\Context\Publish\SignalContext]
+            paths: ["%paths.base%/tests/Acceptance/Contracts/Signal/"]
+            contexts: [PubNubTests\Acceptance\Context\Signal\SignalContext]
         history:
-            paths: ["%paths.base%/tests/features/contracts/history/history.feature"]
-            contexts: [PubNubTests\Features\Context\History\HistoryContext]
+            paths: ["%paths.base%/tests/Acceptance/Contracts/History/"]
+            contexts: [PubNubTests\Acceptance\Context\History\HistoryContext]
 
