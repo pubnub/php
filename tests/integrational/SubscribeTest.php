@@ -50,7 +50,7 @@ class SubscribeTest extends \PubNubTestCase
         $this->pubnub->removeChannelFromChannelGroup()->channelGroup(GROUP)->channels(CHANNEL)->sync();
     }
 
-    public function xtestCGSubscribePublishUnsubscribe()
+    public function testCGSubscribePublishUnsubscribe()
     {
         $this->pubnub->addListener(new MySubscribePublishCallback($this->config));
         $this->pubnub->addChannelToChannelGroup()->channels(CHANNEL)->channelGroup(GROUP)->sync();

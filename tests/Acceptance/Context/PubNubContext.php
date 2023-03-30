@@ -1,12 +1,29 @@
 <?php
 
-namespace PubNubFeatures;
+namespace PubNubTests\Acceptance\Context;
 
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use PubNub\PNConfiguration;
 
 class PubNubContext
 {
+    protected $origin = 'localhost:8090';
+    protected $pnConfig;
+    protected $pubnub;
+    protected $context = [];
+
+    public function __construct()
+    {
+        $this->pnConfig = new PNConfiguration();
+        $this->pnConfig->setPublishKey('pub-c-mock-key');
+        $this->pnConfig->setSubscribeKey('sub-c-mock-key');
+        $this->pnConfig->setSecretKey('sec-c-mock-key');
+        $this->pnConfig->setOrigin($this->origin);
+        $this->pnConfig->setUserId('mock-user-id');
+        $this->pnConfig->setSecure(false);
+    }
+
     /** @BeforeScenario */
     public function before(BeforeScenarioScope $scope)
     {

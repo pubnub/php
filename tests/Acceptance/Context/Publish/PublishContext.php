@@ -1,0 +1,47 @@
+<?php
+
+namespace PubNubTests\Acceptance\Context\Publish;
+
+use Behat\Behat\Context\Context;
+use PubNub\Exceptions\PubNubServerException;
+use PubNub\Models\Consumer\PNPublishResult;
+use PubNubTests\Acceptance\Context\PubNubContext;
+
+class PublishContext extends PubNubContext implements Context
+{
+    use Traits\Given;
+    use Traits\Then;
+
+    /**
+     * @When I publish message with :spaceId space id and :type type
+     */
+    public function iPublishMessageWithSpaceIdAndType($spaceId, $type)
+    {
+        try {
+            $this->context = $this->pubnub->publish()
+                ->message('test')
+                ->channel('test')
+                ->spaceId($spaceId)
+                ->type($type)
+                ->sync();
+        } catch (PubNubServerException $exception) {
+            $this->context = $exception;
+        }
+    }
+
+    /**
+     * @Then I receive a successful response
+     */
+    public function iReceiveASuccessfulResponse()
+    {
+        assert($this->context instanceof PNPublishResult);
+    }
+
+    /**
+     * @Then I receive an error response
+     */
+    public function iReceiveAnErrorResponse()
+    {
+        assert($this->context instanceof PubNubServerException);
+    }
+}

@@ -38,4 +38,30 @@ class SignalTest extends PubNubTestCase
             ->channel("ch")
             ->sync();
     }
+
+    public function testSignalWithSpace()
+    {
+        $response = $this->pubnub->Signal()
+            ->channel("ch")
+            ->message("test")
+            ->spaceId('HelloSpace')
+            ->sync();
+
+        $this->assertNotEmpty($response);
+        $data = $response->getTimetoken();
+        $this->assertNotEmpty($data);
+    }
+
+    public function testSignalWithMessageType()
+    {
+        $response = $this->pubnub->Signal()
+            ->channel("ch")
+            ->message("test")
+            ->type('HelloMessageType')
+            ->sync();
+
+        $this->assertNotEmpty($response);
+        $data = $response->getTimetoken();
+        $this->assertNotEmpty($data);
+    }
 }

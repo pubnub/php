@@ -1,0 +1,46 @@
+
+name: AcceptanceTests
+
+on:
+  push:
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+jobs:
+  build:
+      name: Perform Acceptance BDD tests
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout project
+          uses: actions/checkout@v3
+        - name: Checkout mock-server action
+          uses: actions/checkout@v3
+          with:
+            repository: pubnub/client-engineering-deployment-tools
+            ref: v1
+            token: ${{ secrets.GH_TOKEN }}
+            path: .github/.release/actions
+        - name: Run mock server action
+          uses: ./.github/.release/actions/actions/mock-server
+          with:
+            token: ${{ secrets.GH_TOKEN }}
+        - name: Install Composer dev depenencies
+          run: |
+            composer install --dev
+        - name: Run acceptance tests
+          run: |
+            mkdir -p tests/Acceptance/reports
+            mkdir -p tests/Acceptance/Contracts/Publish
+            mkdir -p tests/Acceptance/Contracts/Signal
+            mkdir -p tests/Acceptance/Contracts/History
+
+            cp sdk-specifications/features/publish/publish-to-space.feature tests/Acceptance/Contracts/Publish/publish-to-space.feature
+            cp sdk-specifications/features/publish/signal-to-space.feature tests/Acceptance/Contracts/Signal/signal-to-space.feature
+            cp sdk-specifications/features/history/history.feature tests/Acceptance/Contracts/History/history.feature
+            vendor/bin/behat -f junit -o tests/Acceptance/reports/
+        - name: Expose acceptance tests reports
+          uses: actions/upload-artifact@v2
+          with:
+            name: acceptance-test-reports
+            path: ./tests/Acceptance/reports

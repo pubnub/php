@@ -10,7 +10,6 @@ use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use ReflectionMethod;
 
-
 class PublishTest extends \PubNubTestCase
 {
     protected static $channel = 'pubnub_php_test';
@@ -47,8 +46,10 @@ class PublishTest extends \PubNubTestCase
             $this->pubnub->publish()->message(["key" => "\xB1\x31"])->channel('ch')->sync();
             $this->fail("No exception was thrown");
         } catch (PubNubBuildRequestException $exception) {
-            $this->assertEquals("Value serialization error: Malformed UTF-8 characters, possibly incorrectly encoded",
-                $exception->getMessage());
+            $this->assertEquals(
+                "Value serialization error: Malformed UTF-8 characters, possibly incorrectly encoded",
+                $exception->getMessage()
+            );
         }
     }
 
@@ -107,7 +108,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertGeneratesCorrectPathUsingGet('hey', 'ch', 3);
         $this->assertGeneratesCorrectPathUsingGet(42.345, 34.534, 5);
         $this->assertGeneratesCorrectPathUsingGet(true, false, 7);
-        $this->assertGeneratesCorrectPathUsingGet(['hey'], 'ch',9);
+        $this->assertGeneratesCorrectPathUsingGet(['hey'], 'ch', 9);
     }
 
     public function testPublishPost()
@@ -315,6 +316,54 @@ class PublishTest extends \PubNubTestCase
                 "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
                 "uuid" => $this->pubnub->getConfiguration()->getUuid(),
                 "seqn" => 1,
+            ],
+            $r->invoke($publish)
+        );
+    }
+
+    public function testPublishWithSpace()
+    {
+        $channel = 'ch';
+        $message = 'hi';
+
+        $publish = $this->pubnub->publish();
+        $publish->channel($channel);
+        $publish->message($message);
+        $publish->spaceId('HelloSpace');
+
+        $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
+        $r->setAccessible(true);
+
+        $this->assertEquals(
+            [
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
+                "uuid" => $this->pubnub->getConfiguration()->getUuid(),
+                "seqn" => 1,
+                'space-id' => 'HelloSpace',
+            ],
+            $r->invoke($publish)
+        );
+    }
+
+    public function testPublishWithMessageType()
+    {
+        $channel = 'ch';
+        $message = 'hi';
+
+        $publish = $this->pubnub->publish()
+            ->channel($channel)
+            ->message($message)
+            ->type('HelloMessageType');
+
+        $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
+        $r->setAccessible(true);
+
+        $this->assertEquals(
+            [
+                "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
+                "uuid" => $this->pubnub->getConfiguration()->getUuid(),
+                "seqn" => 1,
+                'type' => 'HelloMessageType',
             ],
             $r->invoke($publish)
         );

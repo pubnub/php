@@ -1,10 +1,14 @@
 default:
     autoload:
-        - "%paths.base%/tests/features/bootstrap/"
+        - "%paths.base%/tests/Acceptance/"
     suites:
-        access:
-            paths:    [ "%paths.base%/tests/features/bootstrap/access" ]
-            contexts: [ AccessManagerContext ]
-        utilities:
-            paths:    [ "%paths.base%/tests/features/bootstrap/utilities" ]
-            contexts: [ TimeContext ]
+        publish-to-space:
+            paths: ["%paths.base%/tests/Acceptance/Contracts/Publish/"]
+            contexts: [PubNubTests\Acceptance\Context\Publish\PublishContext]
+        signal-to-space:
+            paths: ["%paths.base%/tests/Acceptance/Contracts/Signal/"]
+            contexts: [PubNubTests\Acceptance\Context\Signal\SignalContext]
+        history:
+            paths: ["%paths.base%/tests/Acceptance/Contracts/History/"]
+            contexts: [PubNubTests\Acceptance\Context\History\HistoryContext]
+

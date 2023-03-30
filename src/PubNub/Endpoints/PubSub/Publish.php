@@ -10,11 +10,10 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\PubNubUtil;
 
-
 class Publish extends Endpoint
 {
-    const GET_PATH = "/publish/%s/%s/0/%s/%s/%s";
-    const POST_PATH = "/publish/%s/%s/0/%s/%s";
+    protected const GET_PATH = "/publish/%s/%s/0/%s/%s/%s";
+    protected const POST_PATH = "/publish/%s/%s/0/%s/%s";
 
     /** @var  mixed $message to publish */
     protected $message;
@@ -39,6 +38,10 @@ class Publish extends Endpoint
 
     /** @var  bool */
     protected $serialize = true;
+
+    protected $spaceId = null;
+
+    protected ?string $type = null;
 
     /**
      * @param mixed $message
@@ -128,6 +131,28 @@ class Publish extends Endpoint
     }
 
     /**
+     * @param string $spaceId
+     * @return $this
+     */
+    public function spaceId($spaceId)
+    {
+        $this->spaceId = $spaceId;
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function type($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
      * @throws PubNubValidationException
      */
     protected function validateParams()
@@ -171,6 +196,14 @@ class Publish extends Endpoint
 
         if (!$this->replicate) {
             $params['norep'] = 'true';
+        }
+
+        if ($this->spaceId) {
+            $params['space-id'] = $this->spaceId;
+        }
+
+        if ($this->type) {
+            $params['type'] = $this->type;
         }
 
         return $params;

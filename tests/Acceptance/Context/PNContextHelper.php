@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNubFeatures;
+namespace PubNubTests\Acceptance\Context;
 
 class PNContextHelper
 {

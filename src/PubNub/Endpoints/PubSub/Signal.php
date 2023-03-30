@@ -12,13 +12,18 @@ use PubNub\PubNubUtil;
 
 class Signal extends Endpoint
 {
-    const SIGNAL_PATH = "/signal/%s/%s/0/%s/0/%s";
+    protected const SIGNAL_PATH = "/signal/%s/%s/0/%s/0/%s";
 
-    /** @var  mixed $message to send the signal */
+    /** @var mixed $message to send the signal */
     protected $message;
 
-    /** @var  string $channel to send message on*/
+    /** @var string $channel to send message on*/
     protected $channel;
+
+    /** @var string $spaceId  */
+    protected $spaceId = null;
+
+    protected ?string $type = null;
 
     /**
      * @param mixed $message
@@ -38,6 +43,28 @@ class Signal extends Endpoint
     public function channel($channel)
     {
         $this->channel = $channel;
+
+        return $this;
+    }
+
+    /**
+     * @param string $spaceId
+     * @return $this
+     */
+    public function spaceId($spaceId)
+    {
+        $this->spaceId = $spaceId;
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function type(string $type)
+    {
+        $this->type = $type;
 
         return $this;
     }
@@ -68,11 +95,11 @@ class Signal extends Endpoint
         $stringifiedMessage = PubNubUtil::urlEncode(PubNubUtil::writeValueAsString($this->message));
 
         return sprintf(
-                static::SIGNAL_PATH,
-                $this->pubnub->getConfiguration()->getPublishKey(),
-                $this->pubnub->getConfiguration()->getSubscribeKey(),
-                PubNubUtil::urlEncode($this->channel),
-                $stringifiedMessage
+            static::SIGNAL_PATH,
+            $this->pubnub->getConfiguration()->getPublishKey(),
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
+            PubNubUtil::urlEncode($this->channel),
+            $stringifiedMessage
         );
     }
 
@@ -84,7 +111,17 @@ class Signal extends Endpoint
 
     protected function customParams()
     {
-        return [];
+        $params = [];
+
+        if ($this->spaceId) {
+            $params['space-id'] = $this->spaceId;
+        }
+
+        if ($this->type) {
+            $params['type'] = $this->type;
+        }
+
+        return $params;
     }
 
     /**
