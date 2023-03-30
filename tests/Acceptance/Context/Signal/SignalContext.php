@@ -2,10 +2,8 @@
 
 namespace PubNubTests\Acceptance\Context\Signal;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use PubNub\Exceptions\PubNubServerException;
-use PubNub\Models\Consumer\PNMessageType;
 use PubNub\Models\Consumer\PubSub\PNSignalResult;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
@@ -23,16 +21,16 @@ class SignalContext extends PubNubContext implements Context
     }
 
     /**
-     * @When I send a signal with :spaceId space id and :messageType message type
+     * @When I send a signal with :spaceId space id and :type type
      */
-    public function iSendASignalWithSpaceIdAndMessageType($spaceId, $messageType)
+    public function iSendASignalWithSpaceIdAndType($spaceId, $type)
     {
         try {
             $this->context = $this->pubnub->signal()
                 ->message('test')
                 ->channel('test')
                 ->spaceId($spaceId)
-                ->messageType(new PNMessageType($messageType))
+                ->type($type)
                 ->sync();
         } catch (PubNubServerException $exception) {
             $this->context = $exception;

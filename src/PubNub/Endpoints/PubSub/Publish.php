@@ -41,7 +41,7 @@ class Publish extends Endpoint
 
     protected $spaceId = null;
 
-    protected $messageType = null;
+    protected ?string $type = null;
 
     /**
      * @param mixed $message
@@ -142,12 +142,12 @@ class Publish extends Endpoint
     }
 
     /**
-     * @param string $messageType
+     * @param string $type
      * @return $this
      */
-    public function messageType($messageType)
+    public function type($type)
     {
-        $this->messageType = $messageType;
+        $this->type = $type;
 
         return $this;
     }
@@ -202,8 +202,8 @@ class Publish extends Endpoint
             $params['space-id'] = $this->spaceId;
         }
 
-        if ($this->messageType) {
-            $params['type'] = $this->messageType;
+        if ($this->type) {
+            $params['type'] = $this->type;
         }
 
         return $params;

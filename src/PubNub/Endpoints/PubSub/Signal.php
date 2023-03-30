@@ -9,7 +9,6 @@ use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PubSub\PNSignalResult;
 use PubNub\PubNubUtil;
-use PubNub\Models\Consumer\PNMessageType;
 
 class Signal extends Endpoint
 {
@@ -24,8 +23,7 @@ class Signal extends Endpoint
     /** @var string $spaceId  */
     protected $spaceId = null;
 
-    /** @var PNMessageType $messageType */
-    protected $messageType = null;
+    protected ?string $type = null;
 
     /**
      * @param mixed $message
@@ -61,12 +59,12 @@ class Signal extends Endpoint
     }
 
     /**
-     * @param PNMessageType $messageType
+     * @param string $type
      * @return $this
      */
-    public function messageType(PNMessageType $messageType)
+    public function type(string $type)
     {
-        $this->messageType = $messageType;
+        $this->type = $type;
 
         return $this;
     }
@@ -119,8 +117,8 @@ class Signal extends Endpoint
             $params['space-id'] = $this->spaceId;
         }
 
-        if ($this->messageType) {
-            $params['type'] = $this->messageType;
+        if ($this->type) {
+            $params['type'] = $this->type;
         }
 
         return $params;

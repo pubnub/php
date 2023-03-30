@@ -2,10 +2,8 @@
 
 namespace PubNubTests\Acceptance\Context\Publish;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use PubNub\Exceptions\PubNubServerException;
-use PubNub\Models\Consumer\PNMessageType;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNubTests\Acceptance\Context\PubNubContext;
 
@@ -15,16 +13,16 @@ class PublishContext extends PubNubContext implements Context
     use Traits\Then;
 
     /**
-     * @When I publish message with :spaceId space id and :messageType message type
+     * @When I publish message with :spaceId space id and :type type
      */
-    public function iPublishMessageWithSpaceIdAndMessageType($spaceId, $messageType)
+    public function iPublishMessageWithSpaceIdAndType($spaceId, $type)
     {
         try {
             $this->context = $this->pubnub->publish()
                 ->message('test')
                 ->channel('test')
                 ->spaceId($spaceId)
-                ->messageType(new PNMessageType($messageType))
+                ->type($type)
                 ->sync();
         } catch (PubNubServerException $exception) {
             $this->context = $exception;
