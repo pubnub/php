@@ -21,7 +21,7 @@
     "psr/log": "^1.1|^2.0|^3.0"
   },
   "require-dev": {
-    "monolog/monolog": "^2.8",
+    "monolog/monolog": "^2.9 || ^3.0",
     "phpunit/phpunit": "^9.5",
     "squizlabs/php_codesniffer": "^3.7",
     "phpstan/phpstan": "^1.8"
