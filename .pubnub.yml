@@ -9,7 +9,7 @@ changelog:
       - type: bug
         text: "Support for Monolog/Monolog@^3.0."
       - type: bug
-        text: "Added Monolog ^3.0 to developer dependencies and updated developer.md Closes #79 Added replacement for deprecated utf8_decode method. Closes #78."
+        text: "Added replacement for deprecated utf8_decode method."
   - date: 2023-02-01
     version: v6.0.0
     changes:
