@@ -1,3 +1,10 @@
+## v6.0.1
+May 18 2023
+
+#### Fixed
+- Support for Monolog/Monolog@^3.0.
+- Added replacement for deprecated utf8_decode method.
+
 ## v6.0.0
 February 01 2023
 

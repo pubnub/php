@@ -173,8 +173,8 @@ class PubNubUtil
     {
         $result = strtr(base64_encode(hash_hmac(
             'sha256',
-            utf8_encode($signInput),
-            utf8_encode($secret),
+            self::convertIso8859ToUtf8($signInput),
+            self::convertIso8859ToUtf8($secret),
             true
         )), '+/', '-_');
 
@@ -229,9 +229,11 @@ class PubNubUtil
 
     public static function isAssoc($arr)
     {
-        if (!is_array($arr)) return false;
+        if (!is_array($arr)) {
+            return false;
+        }
 
-        return array_keys($arr) !== range(0, count($arr) -1 );
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     /**
@@ -245,12 +247,38 @@ class PubNubUtil
     {
         $str_len = strlen($string);
         $suffix_len = strlen($suffix);
-        if ($suffix_len > $str_len) return false;
+        if ($suffix_len > $str_len) {
+            return false;
+        }
         return substr_compare($string, $suffix, $str_len - $suffix_len, $suffix_len) === 0;
     }
 
     public static function tokenEncode($token)
     {
         return str_replace('+', '%20', urlencode($token));
+    }
+
+    public static function convertIso8859ToUtf8($iso_string)
+    {
+        $iso_string .= $iso_string;
+        $len = strlen($iso_string);
+
+        for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
+            switch (true) {
+                case $iso_string[$i] < "\x80":
+                    $iso_string[$j] = $iso_string[$i];
+                    break;
+                case $iso_string[$i] < "\xC0":
+                    $iso_string[$j] = "\xC2";
+                    $iso_string[++$j] = $iso_string[$i];
+                    break;
+                default:
+                    $iso_string[$j] = "\xC3";
+                    $iso_string[++$j] = chr(ord($iso_string[$i]) - 64);
+                    break;
+            }
+        }
+
+        return substr($iso_string, 0, $j);
     }
 }

@@ -15,7 +15,7 @@ You can find that PHP support threads and event loop libraries, but all of them 
 Requests library [https://github.com/rmccue/Requests] is a wrapper over raw cURL requests.
 
 ### Monolog (logging library)
-We should review Monolog usage and remove the dependency if possible. Developers who don't use composer encountering problems with manual installation, so the better solution is to get rid of this extra dependency and provide another logging solution.
+Monolog has been removed from `PubNub` instance and has been replaced by `Psr\Log\NullLogger`. Now any logger that implements `Psr\Log\LoggerInterface` can be used after setting it to existing `PubNub` instance through a `setLogger(LoggerInterface $logger)` method.
 
 ## Tests
 There are 3 type of tests:

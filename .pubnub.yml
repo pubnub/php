@@ -1,8 +1,15 @@
 name: php
-version: 6.0.0
+version: 6.0.1
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2023-05-18
+    version: v6.0.1
+    changes:
+      - type: bug
+        text: "Support for Monolog/Monolog@^3.0."
+      - type: bug
+        text: "Added replacement for deprecated utf8_decode method."
   - date: 2023-02-01
     version: v6.0.0
     changes:
@@ -378,8 +385,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-6.0.0.zip
-            location: https://github.com/pubnub/php/releases/tag/v6.0.0
+            package-name: php-6.0.1.zip
+            location: https://github.com/pubnub/php/releases/tag/v6.0.1
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
