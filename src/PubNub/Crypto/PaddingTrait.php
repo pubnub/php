@@ -4,8 +4,6 @@ namespace PubNub\Crypto;
 
 trait PaddingTrait
 {
-    public const BLOCK_SIZE = 16;
-
     /**
      * Pad $text to multiple of $blockSize lenght using PKCS5Padding schema
      *
@@ -13,7 +11,7 @@ trait PaddingTrait
      * @param int $blockSize
      * @return string
      */
-    public function pad(string $text, int $blockSize = self::BLOCK_SIZE)
+    public function pad(string $text, int $blockSize)
     {
         $pad = $blockSize - (strlen($text) % $blockSize);
         return $text . str_repeat(chr($pad), $pad);
@@ -26,7 +24,7 @@ trait PaddingTrait
      * @param int $blockSize
      * @return string
      */
-    public function depad($data, $blockSize = self::BLOCK_SIZE)
+    public function depad($data, $blockSize)
     {
         $length = strlen($data);
         if ($length == 0) {

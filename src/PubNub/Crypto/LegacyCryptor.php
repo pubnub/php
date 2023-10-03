@@ -42,7 +42,7 @@ class LegacyCryptor extends Cryptor
     {
         $iv = $this->getIV();
         $shaCipherKey = substr(hash("sha256", $this->cipherKey), 0, 32);
-        $padded = $this->pad($text);
+        $padded = $this->pad($text, self::BLOCK_SIZE);
         $encrypted = openssl_encrypt($text, self::CIPHER_ALGO, $shaCipherKey, OPENSSL_RAW_DATA, $iv);
         if ($this->useRandomIV) {
             $encryptedWithIV = $iv . $encrypted;
@@ -88,7 +88,7 @@ class LegacyCryptor extends Cryptor
             throw new PubNubResponseParsingException("Decryption error: " . openssl_error_string());
         }
 
-        $unPadded = $this->depad($decrypted);
+        $unPadded = $this->depad($decrypted, self::BLOCK_SIZE);
 
         $result = json_decode($unPadded);
 
