@@ -45,7 +45,7 @@ class AesCbcCryptor extends Cryptor
         return new CryptoPayload($encrypted, $iv, self::CRYPTOR_ID);
     }
 
-    public function decrypt(CryptoPayload $payload, ?string $cipherKey = null): string
+    public function decrypt(CryptoPayload $payload, ?string $cipherKey = null)
     {
         $text = $payload->getData();
         $secret = $this->getSecret($cipherKey);

@@ -48,7 +48,7 @@ class CryptoModule
         return $this;
     }
 
-    protected function stringify(mixed $data): string
+    protected function stringify($data): string
     {
         if (is_string($data)) {
             return $data;
@@ -57,7 +57,7 @@ class CryptoModule
         }
     }
 
-    public function encrypt(mixed $data, ?string $cryptorId = null): string
+    public function encrypt($data, ?string $cryptorId = null): string
     {
         if (($data) == '') {
             throw new PubNubResponseParsingException("Encryption error: message is empty");
@@ -70,12 +70,26 @@ class CryptoModule
         return base64_encode($header . $cryptoPayload->getData());
     }
 
-    public function decrypt(string $input)
+    public function decrypt($cipherText)
     {
-        if (strlen($input) == '') {
+        if (is_array($cipherText)) {
+            if (array_key_exists("pn_other", $cipherText)) {
+                $cipherText = $cipherText["pn_other"];
+            } else {
+                if (is_array($cipherText)) {
+                    throw new PubNubResponseParsingException("Decryption error: message is not a string");
+                } else {
+                    throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
+                }
+            }
+        } elseif (!is_string($cipherText)) {
+            throw new PubNubResponseParsingException("Decryption error: message is not a string or object");
+        }
+
+        if (strlen($cipherText) == '') {
             throw new PubNubResponseParsingException("Decryption error: message is empty");
         }
-        $data = base64_decode($input);
+        $data = base64_decode($cipherText);
         $header = $this->decodeHeader($data);
 
         if (!$this->cryptorMap[$header->getCryptorId()]) {
@@ -156,5 +170,11 @@ class CryptoModule
             ],
             aesCbcCryptor::CRYPTOR_ID
         );
+    }
+
+    // for backward compatibility
+    public function getCipherKey()
+    {
+        return $this->cryptorMap[$this->defaultCryptorId]->getCipherKey();
     }
 }

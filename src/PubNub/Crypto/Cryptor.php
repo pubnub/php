@@ -9,5 +9,5 @@ abstract class Cryptor
     public const CRYPTOR_ID = null;
 
     abstract public function encrypt(string $text, ?string $cipherKey = null): CryptoPayload;
-    abstract public function decrypt(CryptoPayload $payload, ?string $cipherKey = null): string;
+    abstract public function decrypt(CryptoPayload $payload, ?string $cipherKey = null);
 }

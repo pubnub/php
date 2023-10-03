@@ -52,7 +52,7 @@ class LegacyCryptor extends Cryptor
         return new Payload($encryptedWithIV, '', self::CRYPTOR_ID);
     }
 
-    public function decrypt(Payload $payload, ?string $cipherKey = null): string
+    public function decrypt(Payload $payload, ?string $cipherKey = null)
     {
         $text = $payload->getData();
         if (strlen($text) === 0) {
