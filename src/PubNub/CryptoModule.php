@@ -70,26 +70,10 @@ class CryptoModule
         return base64_encode($header . $cryptoPayload->getData());
     }
 
-    public function decrypt($cipherText)
+    public function decrypt(string | object $input): string | object
     {
-        if (is_array($cipherText)) {
-            if (array_key_exists("pn_other", $cipherText)) {
-                $cipherText = $cipherText["pn_other"];
-            } else {
-                if (is_array($cipherText)) {
-                    throw new PubNubResponseParsingException("Decryption error: message is not a string");
-                } else {
-                    throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
-                }
-            }
-        } elseif (!is_string($cipherText)) {
-            throw new PubNubResponseParsingException("Decryption error: message is not a string or object");
-        }
-
-        if (strlen($cipherText) == '') {
-            throw new PubNubResponseParsingException("Decryption error: message is empty");
-        }
-        $data = base64_decode($cipherText);
+        $input = $this->parseInput($input);
+        $data = base64_decode($input);
         $header = $this->decodeHeader($data);
 
         if (!$this->cryptorMap[$header->getCryptorId()]) {
@@ -176,5 +160,27 @@ class CryptoModule
     public function getCipherKey()
     {
         return $this->cryptorMap[$this->defaultCryptorId]->getCipherKey();
+    }
+
+    public function parseInput(string | object $input): string
+    {
+        if (is_array($input)) {
+            if (array_key_exists("pn_other", $input)) {
+                $input = $input["pn_other"];
+            } else {
+                if (is_array($input)) {
+                    throw new PubNubResponseParsingException("Decryption error: message is not a string");
+                } else {
+                    throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
+                }
+            }
+        } elseif (!is_string($input)) {
+            throw new PubNubResponseParsingException("Decryption error: message is not a string or object");
+        }
+
+        if (strlen($input) == '') {
+            throw new PubNubResponseParsingException("Decryption error: message is empty");
+        }
+        return $input;
     }
 }
