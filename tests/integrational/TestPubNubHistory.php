@@ -330,7 +330,6 @@ class TestPubNubHistory extends \PubNubTestCase
 
     public function testProcessMessageError()
     {
-        $this->markTestSkipped('must be revisited.');
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Decryption error: message is not a string");
 

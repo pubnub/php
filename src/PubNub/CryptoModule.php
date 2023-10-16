@@ -168,11 +168,7 @@ class CryptoModule
             if (array_key_exists("pn_other", $input)) {
                 $input = $input["pn_other"];
             } else {
-                if (is_array($input)) {
-                    throw new PubNubResponseParsingException("Decryption error: message is not a string");
-                } else {
-                    throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
-                }
+                throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
             }
         } elseif (!is_string($input)) {
             throw new PubNubResponseParsingException("Decryption error: message is not a string or object");
