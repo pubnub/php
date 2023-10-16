@@ -53,7 +53,7 @@ use Psr\Log\NullLogger;
 
 class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "6.0.1";
+    protected const SDK_VERSION = "6.1.0";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
