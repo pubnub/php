@@ -5,6 +5,7 @@ namespace PubNub;
 use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Exceptions\PubNubValidationException;
 use WpOrg\Requests\Transport;
+use PubNub\CryptoModule;
 
 class PNConfiguration
 {
@@ -136,7 +137,7 @@ class PNConfiguration
     public function setCipherKey($cipherKey)
     {
         if ($this->crypto == null) {
-            $this->crypto = new PubNubCrypto($cipherKey, $this->getUseRandomIV());
+            $this->crypto = CryptoModule::legacyCryptor($cipherKey, $this->getUseRandomIV());
         } else {
             $this->getCrypto()->setCipherKey($cipherKey);
         }

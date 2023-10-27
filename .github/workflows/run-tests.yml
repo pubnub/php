@@ -20,7 +20,7 @@ jobs:
       max-parallel: 1
       fail-fast: true
       matrix:
-        php: [7.4, 8.0, 8.1, 8.2]
+        php: [8.0, 8.1, 8.2]
     env:
       PUBLISH_KEY: ${{ secrets.PUBLISH_KEY }}
       SUBSCRIBE_KEY: ${{ secrets.SUBSCRIBE_KEY }}

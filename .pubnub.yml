@@ -1,8 +1,15 @@
 name: php
-version: 6.0.1
+version: 6.1.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2023-10-16
+    version: v6.1.0
+    changes:
+      - type: feature
+        text: "Add crypto module that allows configure SDK to encrypt and decrypt messages."
+      - type: bug
+        text: "Improved security of crypto implementation by adding enhanced AES-CBC cryptor."
   - date: 2023-05-18
     version: v6.0.1
     changes:
@@ -385,8 +392,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-6.0.1.zip
-            location: https://github.com/pubnub/php/releases/tag/v6.0.1
+            package-name: php-6.1.0.zip
+            location: https://github.com/pubnub/php/releases/tag/v6.1.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0

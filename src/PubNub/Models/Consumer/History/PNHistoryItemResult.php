@@ -36,7 +36,11 @@ class PNHistoryItemResult
 
     public function decrypt()
     {
-        $this->entry = $this->crypto->decrypt($this->entry);
+        if (is_string($this->entry)) {
+            $this->entry = $this->crypto->decrypt($this->entry);
+        } elseif (is_array($this->entry) and key_exists('pn_other', $this->entry)) {
+            $this->entry['pn_other'] = $this->crypto->decrypt($this->entry['pn_other']);
+        }
     }
 
     /**
