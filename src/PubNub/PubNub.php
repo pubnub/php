@@ -79,6 +79,8 @@ class PubNub implements LoggerAwareInterface
     /** @var  int $nextSequence */
     protected $nextSequence = 0;
 
+    protected ?CryptoModule $cryptoModule = null;
+
     /**
      * PNConfiguration constructor.
      *
@@ -556,5 +558,19 @@ class PubNub implements LoggerAwareInterface
     public function setToken($token)
     {
         return $this->tokenManager->setToken($token);
+    }
+
+    public function getCrypto(): CryptoModule
+    {
+        if ($this->cryptoModule) {
+            return $this->cryptoModule;
+        } else {
+            return $this->configuration->getCrypto();
+        }
+    }
+
+    public function setCrypto(CryptoModule $cryptoModule)
+    {
+        $this->cryptoModule = $cryptoModule;
     }
 }
