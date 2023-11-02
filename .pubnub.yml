@@ -7,7 +7,7 @@ changelog:
     version: v6.1.2
     changes:
       - type: improvement
-        text: "Fix version info in composer.json" 
+        text: "Fix license info in composer.json" 
   - date: 2023-10-30
     version: v6.1.1
     changes:
