@@ -1,3 +1,9 @@
+## v6.1.2
+November 02 2023
+
+#### Modified
+- Update invalid license info in composer.json.
+
 ## v6.1.1
 October 30 2023
 
