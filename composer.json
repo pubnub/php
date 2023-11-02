@@ -4,8 +4,7 @@
   "description": "This is the official PubNub PHP SDK repository.",
   "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
   "homepage": "http://www.pubnub.com/",
-  "license": "PubNub Software Development Kit License",
-  "version": "6.1.0",
+  "license": "proprietary",
   "authors": [
     {
       "name": "PubNub",
