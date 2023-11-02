@@ -1,3 +1,9 @@
+## v6.1.1
+October 30 2023
+
+#### Fixed
+- Changed license type from MIT to PubNub Software Development Kit License.
+
 ## v6.1.0
 October 16 2023
 

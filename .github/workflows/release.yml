@@ -2,9 +2,8 @@ name: Automated product release
 
 on:
   pull_request:
-    branches: [ master ]
-    types: [ closed ]
-
+    branches: [master]
+    types: [closed]
 
 jobs:
   check-release:
@@ -56,4 +55,3 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           jira-api-key: ${{ secrets.JIRA_API_KEY }}
           last-service: true
-
