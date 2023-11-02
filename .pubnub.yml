@@ -4,10 +4,6 @@ schema: 1
 scm: github.com/pubnub/php
 changelog:
   - date: 2023-11-02
-    version: 6.1.2
-    changes:
-
-  - date: 2023-11-02
     version: v6.1.2
     changes:
       - type: improvement
