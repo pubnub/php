@@ -403,7 +403,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: php-6.1.2.zip
-            location: https://github.com/pubnub/php/releases/tag/6.1.2
+            location: https://github.com/pubnub/php/releases/tag/v6.1.2
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
