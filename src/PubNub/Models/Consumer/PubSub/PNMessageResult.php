@@ -2,7 +2,6 @@
 
 namespace PubNub\Models\Consumer\PubSub;
 
-
 class PNMessageResult
 {
     /** @var  array */
@@ -20,6 +19,8 @@ class PNMessageResult
     /** @var  string */
     private $publisher;
 
+    private $error;
+
     /**
      * PNMessageResult constructor.
      * @param array $message
@@ -28,13 +29,14 @@ class PNMessageResult
      * @param int $timetoken
      * @param string $publisher
      */
-    public function __construct($message, $channel, $subscription, $timetoken, $publisher)
+    public function __construct($message, $channel, $subscription, $timetoken, $publisher, $error = null)
     {
         $this->message = $message;
         $this->channel = $channel;
         $this->subscription = $subscription;
         $this->timetoken = $timetoken;
         $this->publisher = $publisher;
+        $this->error = $error;
     }
 
     /**
@@ -75,5 +77,15 @@ class PNMessageResult
     public function getPublisher()
     {
         return $this->publisher;
+    }
+
+    public function isError(): bool
+    {
+        return !is_null($this->error);
+    }
+
+    public function getError()
+    {
+        return $this->error;
     }
 }
