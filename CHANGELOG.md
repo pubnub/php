@@ -1,3 +1,9 @@
+## v6.1.3
+November 27 2023
+
+#### Fixed
+- Gracefully handle decrypting an unencrypted method. If decryption error occurs when trying to decrypt a plain text the plain text message will be returned and error field will be set in the response. This works both for history and subscription messages.
+
 ## v6.1.2
 November 02 2023
 
