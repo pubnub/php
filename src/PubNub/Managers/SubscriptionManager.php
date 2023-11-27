@@ -2,7 +2,6 @@
 
 namespace PubNub\Managers;
 
-
 use PubNub\Exceptions\PubNubResponseParsingException;
 use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Builders\DTO\SubscribeOperation;
@@ -23,7 +22,6 @@ use PubNub\Models\Consumer\PubSub\SubscribeEnvelope;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-
 
 class SubscriptionManager
 {
@@ -251,9 +249,14 @@ class SubscriptionManager
             );
 
             $this->listenerManager->announcePresence($pnPresenceResult);
-
         } else {
-            $extractedMessage = $this->processMessage($message->getPayload());
+            $messageError = null;
+            try {
+                $extractedMessage = $this->processMessage($message->getPayload());
+            } catch (PubNubResponseParsingException $exception) {
+                $extractedMessage = $message->getPayload();
+                $messageError = $exception;
+            }
             $publisher = $message->getIssuingClientId();
 
             if ($extractedMessage === null) {
@@ -261,7 +264,6 @@ class SubscriptionManager
             }
 
             if (MessageType::SIGNAL == $message->getMessageType()) {
-
                 $pnSignalResult = new PNSignalMessageResult(
                     $extractedMessage,
                     $channel,
@@ -272,13 +274,13 @@ class SubscriptionManager
 
                 $this->listenerManager->announceSignal($pnSignalResult);
             } else {
-
                 $pnMessageResult = new PNMessageResult(
                     $extractedMessage,
                     $channel,
                     $subscriptionMatch,
                     $publishMetadata->getPublishTimetoken(),
-                    $publisher
+                    $publisher,
+                    $messageError
                 );
 
                 $this->listenerManager->announceMessage($pnMessageResult);
