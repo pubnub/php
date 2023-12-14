@@ -247,11 +247,9 @@ supported-platforms:
       - Mac OS X 10.8 or later, amd64
       - Windows 7 or later, amd64, 386
     editors:
-      - PHP 5.6
-      - PHP 7.0
-      - PHP 7.1
-      - PHP 7.2
-      - PHP 7.3
+      - PHP 8.1
+      - PHP 8.2
+      - PHP 8.3
 sdks:
   - full-name: PHP SDK
     short-name: PHP
@@ -289,11 +287,9 @@ sdks:
               supported-operating-systems:
                 macOS:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
@@ -303,11 +299,9 @@ sdks:
                     - x86-64
                 Windows:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -320,11 +314,9 @@ sdks:
                     - x86-64
                 Linux:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Ubuntu 16.04 LTS
                   maximum-os-version:
@@ -357,11 +349,9 @@ sdks:
               supported-operating-systems:
                 macOS:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
@@ -371,11 +361,9 @@ sdks:
                     - x86-64
                 Windows:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -388,11 +376,9 @@ sdks:
                     - x86-64
                 Linux:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Ubuntu 16.04 LTS
                   maximum-os-version:
@@ -425,11 +411,9 @@ sdks:
               supported-operating-systems:
                 macOS:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
@@ -439,11 +423,9 @@ sdks:
                     - x86-64
                 Windows:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -456,11 +438,9 @@ sdks:
                     - x86-64
                 Linux:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Ubuntu 16.04 LTS
                   maximum-os-version:
