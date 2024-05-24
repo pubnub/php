@@ -133,7 +133,7 @@ class FetchMessages extends Endpoint
     {
         $params = [];
         foreach ($this->customParamMapping as $customParam => $requestParam) {
-            if (isset($this->$customParam)) {
+            if (isset($this->$customParam) && !empty($this->$customParam)) {
                 $params[$requestParam] = $this->$customParam;
             }
         }
