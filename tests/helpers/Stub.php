@@ -2,7 +2,6 @@
 
 namespace Tests\Helpers;
 
-
 class Stub
 {
     const ANY = 'any value';
@@ -116,9 +115,16 @@ class Stub
         return $this;
     }
 
+    private function stripKeys($path)
+    {
+        $patterns = ['/sub-key\/(demo|sub-c-[a-z0-9-]{36})\//'];
+        $replaces = ["sub-key/{SUB_KEY}/"];
+        return preg_replace($patterns, $replaces, $path);
+    }
+
     public function isPathMatch($path)
     {
-        return $this->path === $path;
+        return $this->stripKeys($this->path) === $this->stripKeys($path);
     }
 
     public function isQueryMatch($actualQueryString)
