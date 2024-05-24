@@ -33,8 +33,6 @@ class FetchMessages extends Endpoint
     protected bool $includeUuid = false;
     protected bool $includeMessageType = false;
     protected bool $includeMessageActions = false;
-    protected bool $includeType = false;
-    protected bool $includeSpaceId = false;
 
     protected array $customParamMapping = [
         'start' => 'start',
@@ -43,8 +41,6 @@ class FetchMessages extends Endpoint
         'includeMeta' => 'include_meta',
         'includeUuid' => 'include_uuid',
         'includeMessageType' => 'include_message_type',
-        'includeType' => 'include_type',
-        'includeSpaceId' => 'include_space_id',
     ];
 
     public function channels(...$channel)
@@ -101,18 +97,6 @@ class FetchMessages extends Endpoint
         return $this;
     }
 
-    public function includeType($includeType)
-    {
-        $this->includeType = $includeType;
-        return $this;
-    }
-
-    public function includeSpaceId($includeSpaceId)
-    {
-        $this->includeSpaceId = $includeSpaceId;
-        return $this;
-    }
-
     /**
      * @throws PubNubValidationException
      */
@@ -133,7 +117,7 @@ class FetchMessages extends Endpoint
     {
         $params = [];
         foreach ($this->customParamMapping as $customParam => $requestParam) {
-            if (isset($this->$customParam)) {
+            if (isset($this->$customParam) && !empty($this->$customParam)) {
                 $params[$requestParam] = $this->$customParam;
             }
         }

@@ -2,8 +2,11 @@
 
 namespace Tests\Integrational;
 
+use PubNub\Endpoints\MessagePersistance\FetchMessages;
 use PubNub\Models\Consumer\MessagePersistence\PNFetchMessagesResult;
+use PubNub\PubNub;
 use PubNubTestCase;
+use Tests\Helpers\StubTransport;
 
 class FetchMessagesTest extends PubNubTestCase
 {
@@ -17,114 +20,150 @@ class FetchMessagesTest extends PubNubTestCase
     protected $middleTimetoken = null;
     protected $endTimetoken = null;
 
-    public function setup(): void
+    public function testFetchWithDefaults()
     {
-        parent::setUp();
+        $fetchMessages = new FetchMessagesExposed($this->pubnub);
 
-        $firstMessage = $this->pubnub->publish()
-            ->channel(self::CHANNEL_NAME)
-            ->message('hello ' . self::CHANNEL_NAME . ' channel. First message')
-            ->meta(['FIRST_MESSAGE' => true])
-            ->sync();
+        $fetchMessages
+            ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
+            ->withQuery([
+                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName
+            ])
+            ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
+                {"TheMessageHistoryChannelHD":[
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 1","timetoken":"17165627034260904"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 2","timetoken":"17165627036256425"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 3","timetoken":"17165627038256616"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 4","timetoken":"17165627040258555"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 5","timetoken":"17165627042258446"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 6","timetoken":"17165627044259064"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 7","timetoken":"17165627046254982"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 8","timetoken":"17165627048260069"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 9","timetoken":"17165627050260263"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 10","timetoken":"17165627052255699"}
+                ]}}');
 
-        $this->startTimetoken = $firstMessage->getTimetoken();
-        $middleMessage = round(self::MESSAGE_COUNT / 2);
-
-        for ($i = 2; $i <= self::MESSAGE_COUNT; $i++) {
-            $messageResult = $this->pubnub->publish()
-                ->channel(self::CHANNEL_NAME)
-                ->message('hello ' . self::CHANNEL_NAME . ' channel. Message: ' . $i)
-                ->sync();
-
-            if ($i == $middleMessage) {
-                $this->middleTimetoken = $messageResult->getTimetoken();
-            }
-
-            $this->endTimetoken = $messageResult->getTimetoken();
-        };
-
-        $this->pubnub_enc->publish()
-            ->channel(self::ENCRYPTED_CHANNEL_NAME)
-            ->message('Hey. This one is a secret ;-)')
-            ->sync();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        $this->pubnub->deleteMessages()
-            ->channel(self::CHANNEL_NAME)
-            ->sync();
-        $this->pubnub->deleteMessages()
-            ->channel(self::ENCRYPTED_CHANNEL_NAME)
-            ->sync();
-    }
-
-    public function testFetchMessages()
-    {
-        $this->caseFetchWithDefaults();
-        $this->caseFetchWithCount();
-        $this->caseFetchWithStartEnd();
-        $this->caseFetchEncrypted();
-    }
-
-    protected function caseFetchWithDefaults()
-    {
-        $messages = $this->pubnub->fetchMessages()
-            ->channels(self::CHANNEL_NAME)
-            ->count(100)
-            ->sync();
-
-        $this->assertInstanceOf(PNFetchMessagesResult::class, $messages);
+        $response = $fetchMessages->channels(self::CHANNEL_NAME)->sync();
+        $this->assertInstanceOf(PNFetchMessagesResult::class, $response);
 
         $this->assertEquals(
             self::MESSAGE_COUNT,
-            count($messages->getChannels()[self::CHANNEL_NAME])
+            count($response->getChannels()[self::CHANNEL_NAME])
         );
     }
 
-    protected function caseFetchWithCount()
+    public function testFetchWithCount()
     {
-        $messages = $this->pubnub->fetchMessages()
-            ->channels(self::CHANNEL_NAME)
+        $fetchMessages = new FetchMessagesExposed($this->pubnub);
+
+        $fetchMessages
+            ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
+            ->withQuery([
+                "max" => "5",
+                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName
+            ])
+            ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
+                {"TheMessageHistoryChannelHD":[
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 6","timetoken":"17165627044259064"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 7","timetoken":"17165627046254982"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 8","timetoken":"17165627048260069"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 9","timetoken":"17165627050260263"},
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 10","timetoken":"17165627052255699"}
+                ]}}');
+
+        $response = $fetchMessages->channels(self::CHANNEL_NAME)
             ->count(5)
             ->sync();
 
-        $this->assertInstanceOf(PNFetchMessagesResult::class, $messages);
+        $this->assertInstanceOf(PNFetchMessagesResult::class, $response);
 
-        $this->assertEquals(5, count($messages->getChannels()[self::CHANNEL_NAME]));
+        $this->assertEquals(5, count($response->getChannels()[self::CHANNEL_NAME]));
     }
 
-    protected function caseFetchWithStartEnd()
+    public function testFetchWithStartEnd()
     {
-        $messages = $this->pubnub->fetchMessages()
-            ->channels(self::CHANNEL_NAME)
-            ->start($this->middleTimetoken - 100)
-            ->end($this->middleTimetoken + 100)
+        $fetchMessages = new FetchMessagesExposed($this->pubnub);
+
+        $fetchMessages
+            ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
+            ->withQuery([
+                "start" => "17165627042258346",
+                "end" => "17165627042258546",
+                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName
+            ])
+            ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
+                {"TheMessageHistoryChannelHD":[
+                    {"message":"hello TheMessageHistoryChannelHD channel. Message: 5","timetoken":"17165627042258446"}
+                ]}}');
+
+        $response = $fetchMessages->channels(self::CHANNEL_NAME)
+            ->start(17165627042258346)
+            ->end(17165627042258546)
             ->sync();
 
-        $this->assertInstanceOf(PNFetchMessagesResult::class, $messages);
-        $middleMessage = round(self::MESSAGE_COUNT / 2);
-        $this->assertEquals(1, count($messages->getChannels()[self::CHANNEL_NAME]));
+        $this->assertInstanceOf(PNFetchMessagesResult::class, $response);
+        $this->assertEquals(1, count($response->getChannels()[self::CHANNEL_NAME]));
         $this->assertEquals(
-            'hello ' . self::CHANNEL_NAME . ' channel. Message: ' . $middleMessage,
-            $messages->getChannels()[self::CHANNEL_NAME][0]->getMessage()
+            'hello ' . self::CHANNEL_NAME . ' channel. Message: 5',
+            $response->getChannels()[self::CHANNEL_NAME][0]->getMessage()
         );
     }
 
-    protected function caseFetchEncrypted()
+    public function testFetchEncrypted()
     {
+        $fetchMessages = new FetchMessagesExposed($this->pubnub_enc);
 
-        $messages = $this->pubnub_enc->fetchMessages()
-            ->channels(self::ENCRYPTED_CHANNEL_NAME)
+        $fetchMessages
+            ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD-ENCRYPTED")
+            ->withQuery([
+                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName
+            ])
+
+            ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels": {
+                "TheMessageHistoryChannelHD-ENCRYPTED":[
+                    {"message":"CRD1ctIrZLGyFa4qqQcQVfvSOWeSNkPdxCs9CEsA/eE3Et3mfZaTDV3ANv1l/pc/",
+                        "timetoken":"17165627054255980"
+                    }
+                ]}}');
+
+        $response = $fetchMessages->channels(self::ENCRYPTED_CHANNEL_NAME)
             ->sync();
 
-        $this->assertInstanceOf(PNFetchMessagesResult::class, $messages);
-        $this->assertEquals(1, count($messages->getChannels()[self::ENCRYPTED_CHANNEL_NAME]));
+        $this->assertInstanceOf(PNFetchMessagesResult::class, $response);
+        $this->assertEquals(1, count($response->getChannels()[self::ENCRYPTED_CHANNEL_NAME]));
 
         $this->assertEquals(
             'Hey. This one is a secret ;-)',
-            $messages->getChannels()[self::ENCRYPTED_CHANNEL_NAME][0]->getMessage()
+            $response->getChannels()[self::ENCRYPTED_CHANNEL_NAME][0]->getMessage()
         );
+    }
+}
+
+// phpcs:ignore PSR1.Classes.ClassDeclaration
+class FetchMessagesExposed extends FetchMessages
+{
+    protected $transport;
+
+    public function __construct(PubNub $pubnubInstance)
+    {
+        parent::__construct($pubnubInstance);
+
+        $this->transport = new StubTransport();
+    }
+
+    public function stubFor($url)
+    {
+        return $this->transport->stubFor($url);
+    }
+
+    public function requestOptions()
+    {
+        return [
+            'transport' => $this->transport
+        ];
     }
 }
