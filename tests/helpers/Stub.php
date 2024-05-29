@@ -176,6 +176,7 @@ class Stub
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class StubException extends \Exception
 {
 }

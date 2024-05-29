@@ -17,6 +17,7 @@ use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
+use PubNub\Endpoints\MessagePersistance\FetchMessages;
 use PubNub\Endpoints\Objects\Channel\SetChannelMetadata;
 use PubNub\Endpoints\Objects\Channel\GetChannelMetadata;
 use PubNub\Endpoints\Objects\Channel\GetAllChannelMetadata;
@@ -37,6 +38,7 @@ use PubNub\Endpoints\Presence\SetState;
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Endpoints\PubSub\Publish;
 use PubNub\Endpoints\PubSub\Signal;
+use PubNub\Endpoints\PubSub\Fire;
 use PubNub\Endpoints\Push\AddChannelsToPush;
 use PubNub\Endpoints\Push\ListPushProvisions;
 use PubNub\Endpoints\Push\RemoveChannelsFromPush;
@@ -143,11 +145,11 @@ class PubNub implements LoggerAwareInterface
     }
 
     /**
-     * @return Publish
+     * @return Fire
      */
     public function fire()
     {
-        return (new Publish($this))->shouldStore(false)->replicate(false);
+        return new Fire($this);
     }
 
     /**
@@ -560,17 +562,22 @@ class PubNub implements LoggerAwareInterface
         return $this->tokenManager->setToken($token);
     }
 
-    public function getCrypto(): CryptoModule
+    public function getCrypto(): CryptoModule | null
     {
         if ($this->cryptoModule) {
             return $this->cryptoModule;
         } else {
-            return $this->configuration->getCrypto();
+            return $this->configuration->getCryptoSafe();
         }
     }
 
     public function setCrypto(CryptoModule $cryptoModule)
     {
         $this->cryptoModule = $cryptoModule;
+    }
+
+    public function fetchMessages(): FetchMessages
+    {
+        return new FetchMessages($this);
     }
 }
