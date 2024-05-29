@@ -13,25 +13,26 @@ defaults:
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Default
     strategy:
       max-parallel: 1
       fail-fast: true
       matrix:
         php: [8.0, 8.1, 8.2]
     env:
-      PUBLISH_KEY: ${{ secrets.PUBLISH_KEY }}
-      SUBSCRIBE_KEY: ${{ secrets.SUBSCRIBE_KEY }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      PUBLISH_PAM_KEY: ${{ secrets.PUBLISH_PAM_KEY }}
-      SUBSCRIBE_PAM_KEY: ${{ secrets.SUBSCRIBE_PAM_KEY }}
-      SECRET_PAM_KEY: ${{ secrets.SECRET_PAM_KEY }}
+      PUBLISH_KEY: ${{ secrets.SDK_PUB_KEY }}
+      SUBSCRIBE_KEY: ${{ secrets.SDK_SUB_KEY }}
+      SECRET_KEY: ${{ secrets.SDK_SEC_KEY }}
+      PUBLISH_PAM_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
+      SUBSCRIBE_PAM_KEY: ${{ secrets.SDK_PAM_SUB_KEY }}
+      SECRET_PAM_KEY: ${{ secrets.SDK_PAM_SEC_KEY }}
       UUID_MOCK: "test-user"
     steps:
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -41,7 +42,7 @@ jobs:
         id: composer-cache-dir
         run: echo "dir=$(composer config cache-dir)" >> $GITHUB_OUTPUT
       - name: Cache Composer
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             "${{ steps.composer-cache-dir.outputs.dir }}"
@@ -66,8 +67,9 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   all-tests:
     name: Tests
-    runs-on: ubuntu-latest
     needs: [tests]
+    runs-on:
+      group: Default
     steps:
       - name: Tests summary
         run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"
