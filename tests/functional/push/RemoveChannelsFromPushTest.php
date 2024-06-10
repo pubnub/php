@@ -58,14 +58,14 @@ class RemoveChannelsFromPushTest extends PubNubTestCase
         ], $remove->buildParams());
     }
 
-    public function testPushRemoveGoogle()
+    public function testPushRemoveFCM()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
         $remove = new RemoveChannelsFromPushExposed($this->pubnub);
 
         $remove->channels(['ch1', 'ch2', 'ch3'])
-            ->pushType(PNPushType::GCM)
+            ->pushType(PNPushType::FCM)
             ->deviceId('coolDevice');
 
         $this->assertEquals(sprintf(
@@ -77,13 +77,13 @@ class RemoveChannelsFromPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm",
+            "type" => "fcm",
             "remove" => "ch1,ch2,ch3"
         ], $remove->buildParams());
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveChannelsFromPushExposed extends RemoveChannelsFromPush
 {
     public function buildParams()

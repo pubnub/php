@@ -8,7 +8,6 @@ use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
 
-
 class AddChannelsToPushTest extends PubNubTestCase
 {
     public function testPushAddSingleChannel()
@@ -92,14 +91,14 @@ class AddChannelsToPushTest extends PubNubTestCase
         $this->assertEquals(["ch1","ch2"], $add->getChannels());
     }
 
-    public function testPushAddGoogle()
+    public function testPushAddFCM()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
         $add = new AddChannelsToPushExposed($this->pubnub);
 
         $add->channels(["ch1", "ch2", "ch3"])
-            ->pushType(PNPushType::GCM)
+            ->pushType(PNPushType::FCM)
             ->deviceId("coolDevice");
 
         $this->assertEquals(sprintf(
@@ -111,7 +110,7 @@ class AddChannelsToPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm",
+            "type" => "fcm",
             "add" => "ch1,ch2,ch3"
         ], $add->buildParams());
 
@@ -119,7 +118,7 @@ class AddChannelsToPushTest extends PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class AddChannelsToPushExposed extends AddChannelsToPush
 {
     public function buildParams()
