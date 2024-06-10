@@ -9,4 +9,5 @@ class PNPushType
     const APNS2 = "apns2";
     const MPNS = "mpns";
     const GCM = "gcm";
+    const FCM = "fcm";
 }

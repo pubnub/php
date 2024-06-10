@@ -45,6 +45,12 @@ class RemoveDeviceFromPush extends Endpoint
      */
     public function pushType($pushType)
     {
+        // FCM is new, GCM is still used internally
+        if( $pushType == PNPushType::FCM )
+        {
+            $pushType = PNPushType::GCM;
+        }
+
         $this->pushType = $pushType;
 
         return $this;
