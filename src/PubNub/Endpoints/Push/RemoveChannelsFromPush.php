@@ -34,21 +34,16 @@ class RemoveChannelsFromPush extends PushEndpoint
     protected function validateParams()
     {
         $this->validateSubscribeKey();
+        $this->validateChannel();
+        $this->validateDeviceId();
+        $this->validatePushType();
+        $this->validateTopic();
+    }
 
+    protected function validateChannel()
+    {
         if (!is_array($this->channels) || count($this->channels) === 0) {
             throw new PubNubValidationException("Channel missing");
-        }
-
-        if (!is_string($this->deviceId) || strlen($this->deviceId) === 0) {
-            throw new PubNubValidationException("Device ID is missing for push operation");
-        }
-
-        if ($this->pushType === null || strlen($this->pushType) === 0) {
-            throw new PubNubValidationException("Push Type is missing");
-        }
-
-        if (($this->pushType == PNPushType::APNS2) && (!is_string($this->topic) || strlen($this->topic) === 0)) {
-            throw new PubNubValidationException("APNS2 topic is missing");
         }
     }
 

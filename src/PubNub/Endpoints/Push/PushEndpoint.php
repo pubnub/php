@@ -58,20 +58,15 @@ abstract class PushEndpoint extends Endpoint
 
     protected function validatePushType()
     {
-        if (!isset($this->pushType) || $this->pushType === null || strlen($this->pushType) === 0) {
-            throw new PubNubValidationException("Push type missing");
+        if (!isset($this->pushType) || empty($this->pushType)) {
+            throw new PubNubValidationException("Push Type is missing");
         }
 
         if ($this->pushType === PNPushType::GCM) {
             trigger_error("GCM is deprecated. Please use FCM instead.", E_USER_DEPRECATED);
         }
 
-        if (
-            !in_array(
-                $this->pushType,
-                [PNPushType::APNS, PNPushType::APNS2, PNPushType::MPNS, PNPushType::GCM, PNPushType::FCM]
-            )
-        ) {
+        if (!in_array($this->pushType, PNPushType::all())) {
             throw new PubNubValidationException("Invalid push type");
         }
     }
@@ -81,14 +76,14 @@ abstract class PushEndpoint extends Endpoint
      */
     protected function validateDeviceId()
     {
-        if (!is_string($this->deviceId) || strlen($this->deviceId) === 0) {
+        if (!isset($this->deviceId) || empty($this->deviceId)) {
             throw new PubNubValidationException("Device ID is missing for push operation");
         }
     }
 
     protected function validateTopic()
     {
-        if (($this->pushType == PNPushType::APNS2) && (!is_string($this->topic) || strlen($this->topic) === 0)) {
+        if (($this->pushType == PNPushType::APNS2) && (!isset($this->topic) || empty($this->topic))) {
             throw new PubNubValidationException("APNS2 topic is missing");
         }
     }

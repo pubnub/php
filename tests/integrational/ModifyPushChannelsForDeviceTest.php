@@ -347,7 +347,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $listAdd = new AddChannelsToPushExposed($this->pubnub);
 
         $listAdd->pushType(PNPushType::MPNS)
-            ->deviceId("")
+            ->deviceId("Example")
             ->sync();
     }
 
