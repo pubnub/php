@@ -88,7 +88,7 @@ class RemoveChannelsFromPushEndpointTest extends \PubNubTestCase
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
-                "type" => "fcm",
+                "type" => "gcm",
                 "uuid" => "sampleUUID",
                 "remove" => "ch1,ch2,ch3"
             ])

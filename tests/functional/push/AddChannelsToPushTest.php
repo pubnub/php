@@ -110,7 +110,7 @@ class AddChannelsToPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "fcm",
+            "type" => "gcm",
             "add" => "ch1,ch2,ch3"
         ], $add->buildParams());
 

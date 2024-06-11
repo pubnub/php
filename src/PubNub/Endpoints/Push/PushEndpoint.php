@@ -146,4 +146,9 @@ abstract class PushEndpoint extends Endpoint
     {
         return static::OPERATION_NAME;
     }
+
+    protected function getPushType(): string
+    {
+        return $this->pushType == PNPushType::FCM ? 'gcm' : $this->pushType;
+    }
 }

@@ -48,8 +48,7 @@ class AddChannelsToPush extends PushEndpoint
         ];
 
         if ($this->pushType != PNPushType::APNS2) {
-            // v1 push -> add type
-            $params['type'] = $this->pushType;
+            $params['type'] = $this->getPushType();
         } else {
             // apns2 push -> add topic and environment
             $params['topic'] = $this->topic;
