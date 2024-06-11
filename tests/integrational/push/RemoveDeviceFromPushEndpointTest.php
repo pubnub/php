@@ -75,8 +75,35 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
         $this->assertNotEmpty($result);
     }
 
-    public function testRemovePushGCM()
+    public function testRemovePushFCM()
     {
+        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+
+        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub);
+
+        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
+            ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
+                "type" => "fcm",
+                "uuid" => "sampleUUID",
+            ])
+            ->setResponseBody('[1, "Modified Channels"]');
+
+        $result = $remove->pushType(PNPushType::FCM)
+            ->deviceId('coolDevice')
+            ->sync();
+
+        $this->assertNotEmpty($result);
+    }
+
+    public function testWarningWhenUsingDeprecatedGCMType()
+    {
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
         $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub);
@@ -97,7 +124,7 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveDeviceFromPushEndpointExposed extends RemoveDeviceFromPush
 {
     protected $transport;

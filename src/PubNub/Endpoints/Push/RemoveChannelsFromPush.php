@@ -67,12 +67,7 @@ class RemoveChannelsFromPush extends PushEndpoint
         } else {
             // apns2 push -> add topic and environment
             $params['topic'] = $this->topic;
-
-            if (is_string($this->environment) && strlen($this->environment) > 0) {
-                $params['environment'] = $this->environment;
-            } else {
-                $params['environment'] = 'development';
-            }
+            $params['environment'] = $this->environment ?? 'development';
         }
         return $params;
     }

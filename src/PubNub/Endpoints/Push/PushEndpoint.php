@@ -4,7 +4,6 @@ namespace PubNub\Endpoints\Push;
 
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
-use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNPushType;
 use PubNub\Exceptions\PubNubValidationException;
 
@@ -14,7 +13,7 @@ abstract class PushEndpoint extends Endpoint
     protected const OPERATION_NAME = null;
     protected string $deviceId;
     protected string $pushType;
-    protected string $environment;
+    protected string $environment = 'development';
     protected string $topic;
 
     /**
@@ -59,7 +58,7 @@ abstract class PushEndpoint extends Endpoint
 
     protected function validatePushType()
     {
-        if ($this->pushType === null || strlen($this->pushType) === 0) {
+        if (!isset($this->pushType) || $this->pushType === null || strlen($this->pushType) === 0) {
             throw new PubNubValidationException("Push type missing");
         }
 

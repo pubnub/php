@@ -82,8 +82,38 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
         $this->assertNotEmpty($result);
     }
 
-    public function testPushAddGoogle()
+    public function testPushAddFCM()
     {
+        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+
+        $add = new AddChannelsToPushEndpointExposed($this->pubnub);
+
+        $add->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+            ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
+                "add" => "ch1,ch2,ch3",
+                "type" => "fcm",
+                "uuid" => "sampleUUID",
+            ])
+            ->setResponseBody('[1, "Modified Channels"]');
+
+        $result = $add->channels(["ch1", "ch2", "ch3"])
+            ->pushType(PNPushType::FCM)
+            ->deviceId("coolDevice")
+            ->sync();
+
+        $this->assertNotEmpty($result);
+    }
+
+    public function testWarningWhenUsingDeprecatedGCMType()
+    {
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
+
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
         $add = new AddChannelsToPushEndpointExposed($this->pubnub);
@@ -99,13 +129,14 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
 
         $result = $add->channels(["ch1", "ch2", "ch3"])
             ->pushType(PNPushType::GCM)
-            ->deviceId("coolDevice");
+            ->deviceId("coolDevice")
+            ->sync();
 
         $this->assertNotEmpty($result);
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class AddChannelsToPushEndpointExposed extends AddChannelsToPush
 {
     protected $transport;
