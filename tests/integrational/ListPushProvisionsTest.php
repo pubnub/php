@@ -39,7 +39,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
-                "type" => "fcm",
+                "type" => "gcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])

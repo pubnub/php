@@ -5,7 +5,6 @@ namespace PubNub\Endpoints\Push;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNPushType;
-use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Push\PNPushListProvisionsResult;
 
 class ListPushProvisions extends PushEndpoint
@@ -23,8 +22,7 @@ class ListPushProvisions extends PushEndpoint
         $params = [];
 
         if ($this->pushType != PNPushType::APNS2) {
-            // v1 push -> add type
-            $params['type'] = $this->pushType;
+            $params['type'] = $this->getPushType();
         } else {
             // apns2 push -> add topic and environment
             $params['topic'] = $this->topic;

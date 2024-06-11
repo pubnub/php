@@ -41,7 +41,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "type" => "fcm",
+                "type" => "gcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
@@ -200,7 +200,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
-                "type" => "fcm",
+                "type" => "gcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
@@ -383,7 +383,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
-                "type" => "fcm",
+                "type" => "gcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])

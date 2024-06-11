@@ -72,7 +72,7 @@ class RemoveDeviceFromPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "fcm",
+            "type" => "gcm",
         ], $remove->buildParams());
     }
 }

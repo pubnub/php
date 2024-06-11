@@ -77,7 +77,7 @@ class RemoveChannelsFromPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "fcm",
+            "type" => "gcm",
             "remove" => "ch1,ch2,ch3"
         ], $remove->buildParams());
     }

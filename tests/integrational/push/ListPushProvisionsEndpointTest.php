@@ -64,7 +64,7 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
-                "type" => "fcm",
+                "type" => "gcm",
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
