@@ -1,3 +1,9 @@
+## v6.2.1
+June 11 2024
+
+#### Fixed
+- Fix value for FCM push type provisioning key.
+
 ## v6.2.0
 June 11 2024
 
