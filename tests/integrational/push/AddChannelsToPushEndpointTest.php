@@ -92,7 +92,7 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "add" => "ch1,ch2,ch3",
-                "type" => "fcm",
+                "type" => "gcm",
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
