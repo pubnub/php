@@ -8,7 +8,6 @@ use PubNub\PubNub;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
 
-
 class ListPushProvisionsEndpointTest extends PubNubTestCase
 {
     public function testListChannelGroupAPNS()
@@ -31,7 +30,7 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
 
         $this->assertNotEmpty($result);
     }
-    
+
     public function testListChannelGroupAPNS2()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
@@ -56,7 +55,7 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
         $this->assertNotEmpty($result);
     }
 
-    public function testListChannelGroupGCM()
+    public function testListChannelGroupFCM()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -65,12 +64,12 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
-                "type" => "gcm",
+                "type" => "fcm",
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
 
-        $result = $list->pushType(PNPushType::GCM)
+        $result = $list->pushType(PNPushType::FCM)
             ->deviceId("coolDevice")
             ->sync();
 
@@ -97,9 +96,37 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
 
         $this->assertNotEmpty($result);
     }
+
+    public function testWarningWhenUsingDeprecatedGCMType()
+    {
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
+
+        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+
+        $list = new ListPushProvisionsEndpointExposed($this->pubnub);
+
+        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+            ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
+                "type" => "gcm",
+                "uuid" => "sampleUUID",
+            ])
+            ->setResponseBody('[1, "Modified Channels"]');
+
+        $result = $list->pushType(PNPushType::GCM)
+            ->deviceId("coolDevice")
+            ->sync();
+
+        $this->assertNotEmpty($result);
+    }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListPushProvisionsEndpointExposed extends ListPushProvisions
 {
     protected $transport;
@@ -133,3 +160,4 @@ class ListPushProvisionsEndpointExposed extends ListPushProvisions
         ];
     }
 }
+// phpcs:ignore PSR1.Classes.ClassDeclaration

@@ -8,7 +8,6 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use Tests\Helpers\StubTransport;
 
-
 class ListPushProvisionsTest extends \PubNubTestCase
 {
     public function testAppleSuccess()
@@ -32,7 +31,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushListProvisionsResult::class, $response);
     }
 
-    public function testGoogleSuccess()
+    public function testFCMSuccess()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -40,14 +39,14 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
             ->setResponseBody("[\"ch1\", \"ch2\", \"ch3\"]");
 
         $response = $list->deviceId("coolDevice")
-            ->pushType(PNPushType::GCM)
+            ->pushType(PNPushType::FCM)
             ->sync();
 
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushListProvisionsResult::class, $response);
@@ -176,7 +175,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListPushProvisionsExposed extends ListPushProvisions
 {
     protected $transport;

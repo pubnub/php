@@ -10,7 +10,6 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use Tests\Helpers\StubTransport;
 
-
 class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 {
     public function testListChannelGroupAPNS()
@@ -34,7 +33,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushRemoveAllChannelsResult::class, $response);
     }
 
-    public function testGoogleSuccessRemoveAll()
+    public function testFCMSuccessRemoveAll()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -42,13 +41,13 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
-        $response = $listRemove->pushType(PNPushType::GCM)
+        $response = $listRemove->pushType(PNPushType::FCM)
             ->deviceId("coolDevice")
             ->sync();
 
@@ -192,7 +191,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushAddChannelResult::class, $response);
     }
 
-    public function testAddGoogleSuccessSync()
+    public function testAddFCMSuccessSync()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -201,13 +200,13 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
-        $response = $listAdd->pushType(PNPushType::GCM)
+        $response = $listAdd->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -348,7 +347,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $listAdd = new AddChannelsToPushExposed($this->pubnub);
 
         $listAdd->pushType(PNPushType::MPNS)
-            ->deviceId("")
+            ->deviceId("Example")
             ->sync();
     }
 
@@ -375,7 +374,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushRemoveChannelResult::class, $response);
     }
 
-    public function testGoogleSuccessRemove()
+    public function testFCMSuccessRemove()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -384,13 +383,13 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
-        $response = $remove->pushType(PNPushType::GCM)
+        $response = $remove->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -544,7 +543,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveChannelsFromPushTestExposed extends RemoveDeviceFromPush
 {
     protected $transport;
@@ -579,7 +578,7 @@ class RemoveChannelsFromPushTestExposed extends RemoveDeviceFromPush
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class AddChannelsToPushExposed extends AddChannelsToPush
 {
     protected $transport;
@@ -614,7 +613,7 @@ class AddChannelsToPushExposed extends AddChannelsToPush
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemovePushNotificationsFromChannelsExposed extends RemoveChannelsFromPush
 {
     protected $transport;

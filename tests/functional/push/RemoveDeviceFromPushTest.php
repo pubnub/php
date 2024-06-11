@@ -54,13 +54,13 @@ class RemoveDeviceFromPushTest extends PubNubTestCase
         ], $remove->buildParams());
     }
 
-    public function testRemovePushGCM()
+    public function testRemovePushFCM()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
         $remove = new RemoveDeviceFromPushExposed($this->pubnub);
 
-        $remove->pushType(PNPushType::GCM)
+        $remove->pushType(PNPushType::FCM)
             ->deviceId('coolDevice');
 
         $this->assertEquals(sprintf(
@@ -72,12 +72,12 @@ class RemoveDeviceFromPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm",
+            "type" => "fcm",
         ], $remove->buildParams());
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveDeviceFromPushExposed extends RemoveDeviceFromPush
 {
     public function buildParams()

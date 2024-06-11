@@ -9,7 +9,6 @@ use PubNub\PubNubUtil;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
 
-
 class ListPushProvisionsTest extends PubNubTestCase
 {
     public function testListChannelGroupAPNS()
@@ -59,13 +58,13 @@ class ListPushProvisionsTest extends PubNubTestCase
         ], $list->buildParams());
     }
 
-    public function testListChannelGroupGCM()
+    public function testListChannelGroupFCM()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
         $list = new ListPushProvisionsExposed($this->pubnub);
 
-        $list->pushType(PNPushType::GCM)
+        $list->pushType(PNPushType::FCM)
             ->deviceId("coolDevice");
 
         $this->assertEquals(sprintf(
@@ -77,7 +76,7 @@ class ListPushProvisionsTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm"
+            "type" => "fcm"
         ], $list->buildParams());
     }
 
@@ -104,7 +103,7 @@ class ListPushProvisionsTest extends PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListPushProvisionsExposed extends ListPushProvisions
 {
     protected $transport;

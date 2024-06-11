@@ -1,3 +1,9 @@
+## v6.2.0
+June 11 2024
+
+#### Added
+- Replacing GCM with FCM. This is not a breaking change, but using GCM will result in throwing `E_USER_DEPRECATED` warning.
+
 ## v6.1.3
 November 27 2023
 
