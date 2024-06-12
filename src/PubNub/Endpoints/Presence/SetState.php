@@ -127,15 +127,15 @@ class SetState extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNSetStateResult|array
      */
-    public function createResponse($json)
+    public function createResponse($result)
     {
-        if (array_key_exists('status', $json) && $json['status'] === 200) {
-            return new PNSetStateResult($json['payload']);
+        if (array_key_exists('status', $result) && $result['status'] === 200) {
+            return new PNSetStateResult($result['payload']);
         } else {
-            return $json;
+            return $result;
         }
     }
 

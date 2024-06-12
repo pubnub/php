@@ -94,12 +94,12 @@ class Audit extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNAccessManagerAuditResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNAccessManagerAuditResult::fromJson($json['payload']);
+        return PNAccessManagerAuditResult::fromJson($result['payload']);
     }
 
     /**

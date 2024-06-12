@@ -6,6 +6,8 @@ use Exception;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
+use PubNub\Exceptions\PubNubValidationException;
+use WpOrg\Requests\Requests;
 
 class SendFile extends Endpoint
 {
@@ -18,10 +20,9 @@ class SendFile extends Endpoint
     protected mixed $fileContent;
     protected mixed $fileHandle;
     protected mixed $fileUploadEnvelope;
+    protected bool $shouldCompress = false;
 
-    protected array $customParamMapping = [
-
-    ];
+    protected array $customParamMapping = [];
 
     public function channel($channel)
     {
@@ -71,22 +72,36 @@ class SendFile extends Endpoint
         return $this;
     }
 
+    public function requestTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+    }
+
+    protected function connectTimeout()
+    {
+        return $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
     /**
      * @throws PubNubValidationException
      */
     protected function validateParams()
     {
-        throw new Exception('Not implemented');
         $this->validateSubscribeKey();
-        $this->validatePublishKey();
+        $this->validateChannel();
     }
 
+    protected function validateChannel(): void
+    {
+        if (!$this->channel) {
+            throw new PubNubValidationException("Channel missing");
+        }
+    }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNPublishResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         throw new Exception('Not implemented');
     }
@@ -125,7 +140,7 @@ class SendFile extends Endpoint
      */
     protected function httpMethod()
     {
-        return PNHttpMethod::GET;
+        return PNHttpMethod::POST;
     }
 
     /**
@@ -133,7 +148,7 @@ class SendFile extends Endpoint
      */
     protected function getOperationType()
     {
-        return PNOperationType::PNFetchMessagesOperation;
+        return PNOperationType::PNSendFileAction;
     }
 
     /**
@@ -141,7 +156,7 @@ class SendFile extends Endpoint
      */
     protected function getName()
     {
-        return "Fetch Messages";
+        return "Send File";
     }
 
 
@@ -166,22 +181,84 @@ class SendFile extends Endpoint
      */
     protected function buildPath()
     {
-        return $this->fileUploadEnvelope->data["url"];
+        print("\n" . __FILE__ . ":" . __LINE__ . " \n----PATH----\n{$this->fileUploadEnvelope->getUrl()}:\n");
+        var_dump(parse_url($this->fileUploadEnvelope->getUrl(), PHP_URL_PATH));
+        return parse_url($this->fileUploadEnvelope->getUrl(), PHP_URL_PATH);
+    }
+
+    protected function encryptPayload()
+    {
+        $crypto = $this->pubnub->getCryptoSafe();
+
+        if ($this->fileHandle) {
+            $fileContent = fread($this->fileHandle, filesize($this->fileHandle));
+        } else {
+            $fileContent = $this->fileContent;
+        }
+
+        if ($crypto) {
+            return $crypto->encrypt($fileContent);
+        }
+
+        return $fileContent;
+    }
+
+    protected function uploadFile()
+    {
+        $response = Requests::POST($this->fileUploadEnvelope->getUrl(), [], $this->fileUploadEnvelope->getFormFields());
+        var_dump($response);
     }
 
     public function buildFileUploadRequest()
     {
-        /*
+        $encryptPayload = $this->encryptPayload();
+        $multipartBody = [];
+        foreach ($this->fileUploadEnvelope->data["form_fields"] as $formField) {
+            $multipartBody[$formField["key"]] = [null, $formField["value"]];
+        }
+        $multipartBody["file"] = [$this->fileName, $encryptPayload, null];
+        return $multipartBody;
+    }
 
-    def build_file_upload_request(self):
-        file = self.encrypt_payload()
-        multipart_body = {}
-        for form_field in self._file_upload_envelope.result.data["form_fields"]:
-            multipart_body[form_field["key"]] = (None, form_field["value"])
+    public function sync()
+    {
+        $this->fileUploadEnvelope = (new FetchFileUploadS3Data($this->pubnub))
+            ->channel($this->channel)
+            ->fileName($this->fileName)
+            ->sync();
 
-        multipart_body["file"] = (self._file_name, file, None)
+        $this->customHost = parse_url($this->fileUploadEnvelope->getUrl(), PHP_URL_HOST);
 
-        return multipart_body
-        */
+        $envelope = $this->invokeRequestAndCacheIt();
+
+        if ($envelope->isError()) {
+            throw $envelope->getStatus()->getException();
+        }
+
+        var_dump($envelope->getResult());
+        print("\n" . __FILE__ . ":" . __LINE__ . " fileUploadData:\n");
+        var_dump($this->fileUploadEnvelope);
+
+        $publishRequest = new PublishFileMessage($this->pubnub);
+        $publishRequest->channel($this->channel)
+            ->fileId($this->fileUploadEnvelope->getFileId())
+            ->fileName($this->fileName);
+
+        if (isset($this->meta)) {
+            $publishRequest->meta($this->meta);
+        }
+        if (isset($this->meta)) {
+            $publishRequest->message($this->message);
+        }
+        if (isset($this->meta)) {
+            $publishRequest->shouldStore($this->shouldStore);
+        }
+        if (isset($this->meta)) {
+            $publishRequest->ttl($this->ttl);
+        }
+
+        $publishResponse = $publishRequest->sync();
+
+        return $publishResponse;
     }
 }

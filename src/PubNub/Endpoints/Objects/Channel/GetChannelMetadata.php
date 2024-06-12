@@ -61,12 +61,12 @@ class GetChannelMetadata extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNGetChannelMetadataResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNGetChannelMetadataResult::fromPayload($json);
+        return PNGetChannelMetadataResult::fromPayload($result);
     }
 
     /**

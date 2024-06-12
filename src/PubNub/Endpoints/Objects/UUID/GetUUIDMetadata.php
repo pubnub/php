@@ -61,12 +61,12 @@ class GetUUIDMetadata extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNGetUUIDMetadataResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNGetUUIDMetadataResult::fromPayload($json);
+        return PNGetUUIDMetadataResult::fromPayload($result);
     }
 
     /**

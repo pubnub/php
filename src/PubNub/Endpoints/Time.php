@@ -45,12 +45,12 @@ class Time extends Endpoint
     }
 
     /**
-     * @param array $json
+     * @param array $result
      * @return PNTimeResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        $timetoken = floatval($json[0]);
+        $timetoken = floatval($result[0]);
 
         $response = new PNTimeResult($timetoken);
 

@@ -75,12 +75,12 @@ class GetMembers extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNMembersResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNMembersResult::fromPayload($json);
+        return PNMembersResult::fromPayload($result);
     }
 
     /**

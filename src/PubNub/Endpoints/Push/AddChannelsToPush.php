@@ -86,10 +86,10 @@ class AddChannelsToPush extends PushEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNPushAddChannelResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         return new PNPushAddChannelResult();
     }

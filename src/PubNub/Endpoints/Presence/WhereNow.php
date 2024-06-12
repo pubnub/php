@@ -87,12 +87,12 @@ class WhereNow extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNWhereNowResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNWhereNowResult::fromPayload(static::fetchPayload($json));
+        return PNWhereNowResult::fromPayload(static::fetchPayload($result));
     }
 
     /**

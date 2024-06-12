@@ -80,12 +80,12 @@ class SetChannelMetadata extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNSetChannelMetadataResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNSetChannelMetadataResult::fromPayload($json);
+        return PNSetChannelMetadataResult::fromPayload($result);
     }
 
     /**

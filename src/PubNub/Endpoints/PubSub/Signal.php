@@ -96,12 +96,12 @@ class Signal extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNPublishResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        $timetoken = floatval($json[2]);
+        $timetoken = floatval($result[2]);
 
         return new PNSignalResult($timetoken);
     }

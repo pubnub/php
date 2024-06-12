@@ -78,12 +78,12 @@ class ListChannelsInChannelGroup extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNChannelGroupsListChannelsResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNChannelGroupsListChannelsResult::fromPayload(static::fetchPayload($json));
+        return PNChannelGroupsListChannelsResult::fromPayload(static::fetchPayload($result));
     }
 
     /**

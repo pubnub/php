@@ -89,10 +89,10 @@ class RemoveChannelsFromPush extends PushEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNPushRemoveChannelResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         return new PNPushRemoveChannelResult();
     }

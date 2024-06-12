@@ -99,10 +99,10 @@ class RemoveChannelFromChannelGroup extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNChannelGroupsRemoveChannelResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         return new PNChannelGroupsRemoveChannelResult();
     }

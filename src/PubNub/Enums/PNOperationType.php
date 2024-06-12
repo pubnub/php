@@ -61,4 +61,12 @@ class PNOperationType
     // AccessManager v3
     const PNAccessManagerGrantToken = 41;
     const PNAccessManagerRevokeToken = 42;
+
+    const PNGetFilesAction = 46;
+    const PNDeleteFileOperation = 47;
+    const PNGetFileDownloadURLAction = 48;
+    const PNFetchFileUploadS3DataAction = 49;
+    const PNDownloadFileAction = 50;
+    const PNSendFileAction = 51;
+    const PNSendFileNotification = 52;
 }

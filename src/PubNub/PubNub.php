@@ -52,6 +52,7 @@ use PubNub\Managers\TokenManager;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
+use PubNub\Endpoints\FileSharing\{SendFile, DeleteFile, DownloadFile, GetFileDownloadUrl, ListFiles};
 
 class PubNub implements LoggerAwareInterface
 {
@@ -471,9 +472,9 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return string Base path
      */
-    public function getBasePath()
+    public function getBasePath($customHost = null)
     {
-        return $this->basePathManager->getBasePath();
+        return $this->basePathManager->getBasePath($customHost);
     }
 
     /**
@@ -571,6 +572,20 @@ class PubNub implements LoggerAwareInterface
         }
     }
 
+    public function getCryptoSafe(): CryptoModule|null
+    {
+        if ($this->cryptoModule) {
+            return $this->cryptoModule;
+        } else {
+            return $this->configuration->getCryptoSafe();
+        }
+    }
+
+    public function isCryptoEnabled(): bool
+    {
+        return !empty($this->cryptoModule) || !empty($this->configuration->getCryptoSafe());
+    }
+
     public function setCrypto(CryptoModule $cryptoModule)
     {
         $this->cryptoModule = $cryptoModule;
@@ -579,5 +594,30 @@ class PubNub implements LoggerAwareInterface
     public function fetchMessages(): FetchMessages
     {
         return new FetchMessages($this);
+    }
+
+    public function sendFile()
+    {
+        return new SendFile($this);
+    }
+
+    public function deleteFile()
+    {
+        return new DeleteFile($this);
+    }
+
+    public function downloadFile()
+    {
+        return new DownloadFile($this);
+    }
+
+    public function listFiles()
+    {
+        return new ListFiles($this);
+    }
+
+    public function getFileDownloadUrl()
+    {
+        return new GetFileDownloadUrl($this);
     }
 }
