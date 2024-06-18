@@ -266,13 +266,13 @@ class SendFile extends Endpoint
         if (isset($this->meta)) {
             $publishRequest->meta($this->meta);
         }
-        if (isset($this->meta)) {
+        if (isset($this->message)) {
             $publishRequest->message($this->message);
         }
-        if (isset($this->meta)) {
+        if (isset($this->shouldStore)) {
             $publishRequest->shouldStore($this->shouldStore);
         }
-        if (isset($this->meta)) {
+        if (isset($this->ttl)) {
             $publishRequest->ttl($this->ttl);
         }
 

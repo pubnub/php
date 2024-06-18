@@ -16,20 +16,21 @@ $config->setUserId('example');
 $pubnub = new PubNub($config);
 
 // Sending file
-// $fileHandle = fopen(__DIR__ . DIRECTORY_SEPARATOR . $fileName, "r");
-// $sendFileResult = $pubnub->sendFile()
-//     ->channel($channelName)
-//     ->fileName($fileName)
-//     ->message("Hello from PHP SDK")
-//     ->fileHandle($fileHandle)
-//     ->sync();
+$fileHandle = fopen(__DIR__ . DIRECTORY_SEPARATOR . $fileName, "r");
+$sendFileResult = $pubnub->sendFile()
+    ->channel($channelName)
+    ->fileName($fileName)
+    ->message("Hello from PHP SDK")
+    ->fileHandle($fileHandle)
+    ->sync();
 
-// fclose($fileHandle);
+fclose($fileHandle);
 
 // Listing files in the channel
 $channelFiles = $pubnub->listFiles()->channel($channelName)->sync();
-if ($channelFiles->getCount() > 0) {
-    print("There are {$channelFiles->getCount()} files in the channel {$channelName}\n");
+$fileCount = $channelFiles->getCount();
+if ($fileCount > 0) {
+    print("There are {$fileCount} files in the channel {$channelName}\n");
     foreach ($channelFiles->getFiles() as $idx => $file) {
         print("File[{$idx}]: {$file->getName()} with ID: {$file->getId()},"
             . "size {$file->getSize()}, created at: {$file->getCreationTime()}\n");

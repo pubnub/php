@@ -56,16 +56,16 @@ class PublishFileMessage extends FileSharingEndpoint
     public function encryptMessage($message)
     {
         $crypto = $this->pubnub->getCryptoSafe();
-        $message = PubNubUtil::writeValueAsString($message);
+        $messageString = PubNubUtil::writeValueAsString($message);
         if ($crypto) {
-            return $crypto->encrypt($message);
+            return $crypto->encrypt($messageString);
         }
-        return $message;
+        return $messageString;
     }
 
     protected function buildMessage()
     {
-        $message = [
+        $messageData = [
             "message" => $this->message,
             "file" => [
                 "id" => $this->fileId,
@@ -73,7 +73,7 @@ class PublishFileMessage extends FileSharingEndpoint
             ]
         ];
 
-        return $this->encryptMessage($message);
+        return $this->encryptMessage($messageData);
     }
 
     protected function customParams()
