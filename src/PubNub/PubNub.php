@@ -56,7 +56,7 @@ use PubNub\Endpoints\FileSharing\{SendFile, DeleteFile, DownloadFile, GetFileDow
 
 class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "6.2.1";
+    protected const SDK_VERSION = "6.3.0";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
