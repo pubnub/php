@@ -7,7 +7,7 @@ use PubNubTestCase;
 class FilesTest extends PubNubTestCase
 {
     protected string $channel = "files-test";
-    protected string $textFilePath = __DIR__ . '/assets/spam.txt';
+    protected string $textFilePath = __DIR__ . '/assets/spam.spam';
     protected string $binaryFilePath = __DIR__ . '/assets/pn.gif';
     protected ?string $textFileId;
     protected ?string $binaryFileId;
