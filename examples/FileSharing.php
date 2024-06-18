@@ -2,13 +2,11 @@
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
-use PubNub\Endpoints\FileSharing\FetchFileUploadS3Data;
-
 use PubNub\PubNub;
 use PubNub\PNConfiguration;
 
 $channelName = "file-channel";
-$fileName = "example.txt";
+$fileName = "pn.gif";
 
 $config = new PNConfiguration();
 $config->setSubscribeKey(getenv('SUBSCRIBE_KEY', 'demo'));
@@ -17,8 +15,8 @@ $config->setUserId('example');
 
 $pubnub = new PubNub($config);
 
+// Sending file
 // $fileHandle = fopen(__DIR__ . DIRECTORY_SEPARATOR . $fileName, "r");
-
 // $sendFileResult = $pubnub->sendFile()
 //     ->channel($channelName)
 //     ->fileName($fileName)
@@ -26,11 +24,7 @@ $pubnub = new PubNub($config);
 //     ->fileHandle($fileHandle)
 //     ->sync();
 
-// var_dump($sendFileResult);
-
 // fclose($fileHandle);
-
-// exit();
 
 // Listing files in the channel
 $channelFiles = $pubnub->listFiles()->channel($channelName)->sync();
@@ -53,26 +47,26 @@ $downloadUrl = $pubnub->getFileDownloadUrl()
     ->fileName($file->getName())
     ->sync();
 
-var_dump($downloadUrl);
+printf("To download the file use the following URL: %s\n", $downloadUrl->getFileUrl());
 
-// print("Downloading file...");
-// $downloadFile = $pubnub->downloadFile()
-//     ->channel($channelName)
-//     ->fileId($file->getId())
-//     ->fileName($file->getName())
-//     ->sync();
-// file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . $file->getName(), $downloadFile->getFileContent());
-// print("done. File saved as: {$file->getName()}\n");
+print("Downloading file...");
+$downloadFile = $pubnub->downloadFile()
+    ->channel($channelName)
+    ->fileId($file->getId())
+    ->fileName($file->getName())
+    ->sync();
+file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . $file->getName(), $downloadFile->getFileContent());
+print("done. File saved as: {$file->getName()}\n");
 
-// // deleting file
-// $deleteFile = $pubnub->deleteFile()
-//     ->channel($channelName)
-//     ->fileId($file->getId())
-//     ->fileName($file->getName())
-//     ->sync();
+// deleting file
+$deleteFile = $pubnub->deleteFile()
+    ->channel($channelName)
+    ->fileId($file->getId())
+    ->fileName($file->getName())
+    ->sync();
 
-// if ($deleteFile->getStatus() === 200) {
-//     print("File deleted successfully\n");
-// } else {
-//     print("Failed to delete file\n");
-// }
+if ($deleteFile->getStatus() === 200) {
+    print("File deleted successfully\n");
+} else {
+    print("Failed to delete file\n");
+}

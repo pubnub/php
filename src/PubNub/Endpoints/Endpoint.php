@@ -327,21 +327,18 @@ abstract class Endpoint
      */
     protected function requestOptions()
     {
-        $options = [
+        return [
             'timeout' => $this->getRequestTimeout(),
             'connect_timeout' => $this->getConnectTimeout(),
-            'transport' => $this->getDefaultTransport(),
+            'transport' => $this->getTransport(),
             'useragent' => 'PHP/' . PHP_VERSION,
             'follow_redirects' => $this->followRedirects,
         ];
+    }
 
-        $transport = $this->pubnub->getConfiguration()->getTransport();
-
-        if ($transport) {
-            $options['transport'] = $transport;
-        }
-
-        return $options;
+    protected function getTransport()
+    {
+        return $this->pubnub->getConfiguration()->getTransport() ?? $this->getDefaultTransport();
     }
 
     /**

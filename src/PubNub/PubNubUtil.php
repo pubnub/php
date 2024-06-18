@@ -4,7 +4,6 @@ namespace PubNub;
 
 use PubNub\Exceptions\PubNubBuildRequestException;
 
-
 class PubNubUtil
 {
     /**

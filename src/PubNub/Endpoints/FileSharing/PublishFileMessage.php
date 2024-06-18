@@ -78,8 +78,6 @@ class PublishFileMessage extends FileSharingEndpoint
 
     protected function customParams()
     {
-        $params = parent::customParams();
-
         $params['meta'] = json_encode($this->meta);
         $params['ttl'] = $this->ttl;
         $params['store'] = $this->shouldStore ? 1 : 0;

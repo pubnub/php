@@ -7,6 +7,7 @@ use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\PubNubUtil;
 use WpOrg\Requests\Requests;
 
 class SendFile extends Endpoint
@@ -21,6 +22,7 @@ class SendFile extends Endpoint
     protected mixed $fileHandle;
     protected mixed $fileUploadEnvelope;
     protected bool $shouldCompress = false;
+    protected string $boundary;
 
     protected array $customParamMapping = [];
 
@@ -181,17 +183,14 @@ class SendFile extends Endpoint
      */
     protected function buildPath()
     {
-        print("\n" . __FILE__ . ":" . __LINE__ . " \n----PATH----\n{$this->fileUploadEnvelope->getUrl()}:\n");
-        var_dump(parse_url($this->fileUploadEnvelope->getUrl(), PHP_URL_PATH));
         return parse_url($this->fileUploadEnvelope->getUrl(), PHP_URL_PATH);
     }
 
     protected function encryptPayload()
     {
         $crypto = $this->pubnub->getCryptoSafe();
-
         if ($this->fileHandle) {
-            $fileContent = fread($this->fileHandle, filesize($this->fileHandle));
+            $fileContent = stream_get_contents($this->fileHandle);
         } else {
             $fileContent = $this->fileContent;
         }
@@ -199,25 +198,51 @@ class SendFile extends Endpoint
         if ($crypto) {
             return $crypto->encrypt($fileContent);
         }
-
         return $fileContent;
+    }
+
+    protected function getBoundary()
+    {
+        if (!isset($this->boundary)) {
+            $this->boundary = '---' . PubNubUtil::uuid() . '---';
+        }
+        return $this->boundary;
+    }
+
+    protected function buildPayload($data, $fileName, $fileContent)
+    {
+        $boundary = $this->getBoundary();
+
+        $payload = '';
+
+        foreach ($data as $element) {
+            $payload .= "--$boundary\r\n";
+            $payload .= "Content-Disposition: form-data; name=\"{$element['key']}\"\r\n\r\n";
+            $payload .= "{$element['value']}\r\n";
+        }
+
+        $payload .= "--$boundary\r\n";
+        $payload .= "Content-Disposition: form-data; name=\"file\"; filename=\"{$fileName}\"\r\n\r\n";
+        $payload .= "{$fileContent}\r\n";
+
+        $payload .= "--$boundary--\r\n";
+
+        return $payload;
     }
 
     protected function uploadFile()
     {
-        $response = Requests::POST($this->fileUploadEnvelope->getUrl(), [], $this->fileUploadEnvelope->getFormFields());
-        var_dump($response);
-    }
 
-    public function buildFileUploadRequest()
-    {
-        $encryptPayload = $this->encryptPayload();
-        $multipartBody = [];
-        foreach ($this->fileUploadEnvelope->data["form_fields"] as $formField) {
-            $multipartBody[$formField["key"]] = [null, $formField["value"]];
-        }
-        $multipartBody["file"] = [$this->fileName, $encryptPayload, null];
-        return $multipartBody;
+        $response = Requests::POST(
+            $this->fileUploadEnvelope->getUrl(),
+            ['Content-Type' => 'multipart/form-data; boundary=' . $this->getBoundary()],
+            $this->buildPayload(
+                $this->fileUploadEnvelope->getFormFields(),
+                $this->fileName,
+                $this->encryptPayload()
+            )
+        );
+        return $response;
     }
 
     public function sync()
@@ -227,17 +252,11 @@ class SendFile extends Endpoint
             ->fileName($this->fileName)
             ->sync();
 
-        $this->customHost = parse_url($this->fileUploadEnvelope->getUrl(), PHP_URL_HOST);
-
-        $envelope = $this->invokeRequestAndCacheIt();
-
-        if ($envelope->isError()) {
-            throw $envelope->getStatus()->getException();
+        try {
+            $this->uploadFile();
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        var_dump($envelope->getResult());
-        print("\n" . __FILE__ . ":" . __LINE__ . " fileUploadData:\n");
-        var_dump($this->fileUploadEnvelope);
 
         $publishRequest = new PublishFileMessage($this->pubnub);
         $publishRequest->channel($this->channel)

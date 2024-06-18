@@ -61,4 +61,9 @@ class GetFileDownloadUrl extends FileSharingEndpoint
     {
         return null;
     }
+
+    public function sync(): PNGetFileDownloadURLResult
+    {
+        return parent::sync();
+    }
 }
