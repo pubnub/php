@@ -117,8 +117,8 @@ class Stub
 
     private function stripKeys($path)
     {
-        $patterns = ['/sub-key\/(demo|sub-c-[a-z0-9-]{36})\//'];
-        $replaces = ["sub-key/{SUB_KEY}/"];
+        $patterns = ['#\/(demo|sub-c-[a-z0-9-]{36})\/#'];
+        $replaces = ["/{SUB_KEY}/"];
         return preg_replace($patterns, $replaces, $path);
     }
 
