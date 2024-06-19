@@ -7,7 +7,7 @@ changelog:
     version: v6.3.0
     changes:
       - type: feature
-        text: "Added support for file sharing operations ."
+        text: "Added support for file sharing operations."
   - date: 2024-06-11
     version: v6.2.1
     changes:
