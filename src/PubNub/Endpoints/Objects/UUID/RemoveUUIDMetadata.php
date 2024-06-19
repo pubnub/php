@@ -60,12 +60,12 @@ class RemoveUUIDMetadata extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return bool
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return array_key_exists("data", $json);
+        return array_key_exists("data", $result);
     }
 
     /**

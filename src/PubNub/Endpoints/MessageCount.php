@@ -63,20 +63,20 @@ class MessageCount extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNMessageCountResult
      * @throws PubNubServerException
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        if (!isset($json['channels'])) {
+        if (!isset($result['channels'])) {
             $exception = (new PubNubServerException())
-                ->setRawBody(json_encode($json));
+                ->setRawBody(json_encode($result));
 
             throw $exception;
         }
 
-        return new PNMessageCountResult($json['channels']);
+        return new PNMessageCountResult($result['channels']);
     }
 
     /**

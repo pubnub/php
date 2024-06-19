@@ -61,10 +61,10 @@ class RemoveDeviceFromPush extends PushEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNPushRemoveAllChannelsResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         return new PNPushRemoveAllChannelsResult();
     }

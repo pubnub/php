@@ -25,14 +25,20 @@ use WpOrg\Requests\Transport\Fsockopen;
 
 abstract class Endpoint
 {
+    protected const RESPONSE_IS_JSON = true;
+
     /** @var  PubNub */
     protected $pubnub;
 
     /** @var  PNEnvelope */
     protected $envelope;
 
+    protected $customHost = null;
+
     /** @var array */
     protected static $cachedTransports = [];
+
+    protected $followRedirects = true;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -42,10 +48,10 @@ abstract class Endpoint
     abstract protected function validateParams();
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return mixed
      */
-    abstract protected function createResponse($json);
+    abstract protected function createResponse($result);
 
     /**
      * @return int
@@ -321,20 +327,18 @@ abstract class Endpoint
      */
     protected function requestOptions()
     {
-        $options = [
+        return [
             'timeout' => $this->getRequestTimeout(),
             'connect_timeout' => $this->getConnectTimeout(),
-            'transport' => $this->getDefaultTransport(),
+            'transport' => $this->getTransport(),
             'useragent' => 'PHP/' . PHP_VERSION,
+            'follow_redirects' => $this->followRedirects,
         ];
+    }
 
-        $transport = $this->pubnub->getConfiguration()->getTransport();
-
-        if ($transport) {
-            $options['transport'] = $transport;
-        }
-
-        return $options;
+    protected function getTransport()
+    {
+        return $this->pubnub->getConfiguration()->getTransport() ?? $this->getDefaultTransport();
     }
 
     /**
@@ -345,7 +349,7 @@ abstract class Endpoint
         $headers = array_merge($this->defaultHeaders(), $this->customHeaders());
 
         $url = PubNubUtil::buildUrl(
-            $this->pubnub->getBasePath(),
+            $this->pubnub->getBasePath($this->customHost),
             $this->buildPath(),
             $this->buildParams()
         );
@@ -459,28 +463,40 @@ abstract class Endpoint
                 ['method' => $this->getName(), 'statusCode' => $request->status_code]
             );
 
-            // NOTICE: 1 == JSON_OBJECT_AS_ARRAY (hhvm doesn't support this constant)
-            $parsedJSON = json_decode($request->body, true, 512, 1);
-            $errorMessage = json_last_error_msg();
+            if (static::RESPONSE_IS_JSON) {
+                // NOTICE: 1 == JSON_OBJECT_AS_ARRAY (hhvm doesn't support this constant)
+                $parsedJSON = json_decode($request->body, true, 512, 1);
+                $errorMessage = json_last_error_msg();
 
-            if (json_last_error()) {
-                $this->pubnub->getLogger()->error(
-                    "Unable to decode JSON body: " . $request->body,
-                    ['method' => $this->getName()]
+                if (json_last_error()) {
+                    $this->pubnub->getLogger()->error(
+                        "Unable to decode JSON body: " . $request->body,
+                        ['method' => $this->getName()]
+                    );
+
+                    return new PNEnvelope(null, $this->createStatus(
+                        $statusCategory,
+                        $request->body,
+                        $responseInfo,
+                        (new PubNubResponseParsingException())
+                            ->setResponseString($request->body)
+                            ->setDescription($errorMessage)
+                    ));
+                }
+
+                return new PNEnvelope(
+                    $this->createResponse($parsedJSON),
+                    $this->createStatus($statusCategory, $request->body, $responseInfo, null)
                 );
-
-                return new PNEnvelope(null, $this->createStatus(
-                    $statusCategory,
-                    $request->body,
-                    $responseInfo,
-                    (new PubNubResponseParsingException())
-                        ->setResponseString($request->body)
-                        ->setDescription($errorMessage)
-                ));
+            } else {
+                return new PNEnvelope(
+                    $this->createResponse($request->body),
+                    $this->createStatus($statusCategory, $request->body, $responseInfo, null)
+                );
             }
-
+        } elseif ($request->status_code === 307 && !$this->followRedirects) {
             return new PNEnvelope(
-                $this->createResponse($parsedJSON),
+                $this->createResponse($request),
                 $this->createStatus($statusCategory, $request->body, $responseInfo, null)
             );
         } else {
@@ -572,7 +588,7 @@ abstract class Endpoint
      */
     private function getDefaultTransport()
     {
-        $need_ssl = (0 === stripos($this->pubnub->getBasePath(), 'https://'));
+        $need_ssl = (0 === stripos($this->pubnub->getBasePath($this->customHost), 'https://'));
         $capabilities = array('ssl' => $need_ssl);
 
         $cap_string = serialize($capabilities);

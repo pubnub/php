@@ -80,12 +80,12 @@ class SetUUIDMetadata extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNSetUUIDMetadataResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNSetUUIDMetadataResult::fromPayload($json);
+        return PNSetUUIDMetadataResult::fromPayload($result);
     }
 
     /**

@@ -2,16 +2,15 @@
 
 namespace PubNub\Managers;
 
-
 use PubNub\PNConfiguration;
 
 class BasePathManager
 {
     /** default subdomain used if cache busting is disabled. */
-    const DEFAULT_SUBDOMAIN = "ps";
+    protected const DEFAULT_SUBDOMAIN = "ps";
 
     /** Default base path if a custom one is not provided.*/
-    const DEFAULT_BASE_PATH = "pndsn.com";
+    protected const DEFAULT_BASE_PATH = "pndsn.com";
 
     /** @var  PNConfiguration */
     private $config;
@@ -31,7 +30,7 @@ class BasePathManager
      *
      * @return string
      */
-    public function getBasePath()
+    public function getBasePath($customHost = null)
     {
         $constructedUrl = "http";
 
@@ -41,7 +40,9 @@ class BasePathManager
 
         $constructedUrl .= "://";
 
-        if ($this->config->getOrigin() != null) {
+        if ($customHost != null) {
+            $constructedUrl .= $customHost;
+        } elseif ($this->config->getOrigin() != null) {
             $constructedUrl .= $this->config->getOrigin();
         } else {
             $constructedUrl .= static::DEFAULT_SUBDOMAIN . "." . static::DEFAULT_BASE_PATH;

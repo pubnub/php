@@ -96,15 +96,15 @@ class GetState extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNGetStateResult
      */
-    public function createResponse($json)
+    public function createResponse($result)
     {
         if (count($this->channels) === 1 && count($this->channelGroups) === 0) {
-            $channels = [$this->channels[0] => $json['payload']];
+            $channels = [$this->channels[0] => $result['payload']];
         } else {
-            $channels = $json['payload']['channels'];
+            $channels = $result['payload']['channels'];
         }
 
         return new PNGetStateResult($channels);

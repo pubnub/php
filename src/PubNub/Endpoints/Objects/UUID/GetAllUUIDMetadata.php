@@ -70,12 +70,12 @@ class GetAllUUIDMetadata extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNGetAllUUIDMetadataResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNGetAllUUIDMetadataResult::fromPayload($json);
+        return PNGetAllUUIDMetadataResult::fromPayload($result);
     }
 
     /**

@@ -63,6 +63,7 @@ class StubTransport implements Transport
         return $stub;
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName
     public function request_multiple($requests, $options)
     {
         throw new \Exception("Not implemented");

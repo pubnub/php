@@ -133,12 +133,12 @@ class HereNow extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNHereNowResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNHereNowResult::fromJson($json, $this->channels);
+        return PNHereNowResult::fromJson($result, $this->channels);
     }
 
     /**

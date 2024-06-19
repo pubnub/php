@@ -87,12 +87,12 @@ class Leave extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return array
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return $json;
+        return $result;
     }
 
     /**

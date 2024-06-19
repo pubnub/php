@@ -70,15 +70,15 @@ class GetUUIDMetadataExposed extends GetUUIDMetadata
     {
         return parent::buildParams();
     }
-    
+
     public function buildPath()
     {
         return parent::buildPath();
     }
 
-    public function createResponse($json)
+    public function createResponse($result)
     {
-        return parent::createResponse($json);
+        return parent::createResponse($result);
     }
 
 }

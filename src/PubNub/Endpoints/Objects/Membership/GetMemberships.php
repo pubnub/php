@@ -75,12 +75,12 @@ class GetMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNMembershipsResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNMembershipsResult::fromPayload($json);
+        return PNMembershipsResult::fromPayload($result);
     }
 
     /**

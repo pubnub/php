@@ -285,12 +285,12 @@ class Grant extends Endpoint
     }
 
     /**
-     * @param array $json
+     * @param array $result
      * @return PNAccessManagerGrantResult
      */
-    public function createResponse($json)
+    public function createResponse($result)
     {
-        return PNAccessManagerGrantResult::fromJson($json['payload']);
+        return PNAccessManagerGrantResult::fromJson($result['payload']);
     }
 
     /**

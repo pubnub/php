@@ -60,13 +60,13 @@ class ListPushProvisions extends PushEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return mixed
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        if ($json !== null || is_array($json)) {
-            return PNPushListProvisionsResult::fromJson($json);
+        if ($result !== null || is_array($result)) {
+            return PNPushListProvisionsResult::fromJson($result);
         } else {
             return new PNPushListProvisionsResult([]);
         }

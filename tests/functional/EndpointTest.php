@@ -86,10 +86,10 @@ class EndpointImplementation extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return mixed
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         return null;
     }

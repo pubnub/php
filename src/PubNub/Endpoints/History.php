@@ -170,21 +170,21 @@ class History extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNHistoryResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         try {
             return PNHistoryResult::fromJson(
-                $json,
+                $result,
                 $this->pubnub->getConfiguration()->getCryptoSafe(),
                 $this->includeTimetoken,
                 $this->pubnub->getConfiguration()->getCipherKey()
             );
         } catch (PubNubValidationException $e) {
             return PNHistoryResult::fromJson(
-                $json,
+                $result,
                 null,
                 $this->includeTimetoken,
                 null

@@ -79,10 +79,10 @@ class AddChannelToChannelGroup extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNChannelGroupsAddChannelResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
         return new PNChannelGroupsAddChannelResult();
     }

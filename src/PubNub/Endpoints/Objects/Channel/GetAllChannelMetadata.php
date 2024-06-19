@@ -69,12 +69,12 @@ class GetAllChannelMetadata extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $json Decoded json
+     * @param array $result Decoded json
      * @return PNGetAllChannelMetadataResult
      */
-    protected function createResponse($json)
+    protected function createResponse($result)
     {
-        return PNGetAllChannelMetadataResult::fromPayload($json);
+        return PNGetAllChannelMetadataResult::fromPayload($result);
     }
 
     /**
