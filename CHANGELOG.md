@@ -2,7 +2,7 @@
 June 18 2024
 
 #### Added
-- Added support for file sharing operations .
+- Added support for file sharing operations.
 
 ## v6.2.1
 June 11 2024
