@@ -2,6 +2,8 @@
 
 namespace Tests\Integrational;
 
+use PubNub\PubNub;
+
 class SslTest extends \PubNubTestCase
 {
     /**
@@ -11,8 +13,11 @@ class SslTest extends \PubNubTestCase
     public function testSslIsSetByDefault()
     {
         $transport = new CheckSslTransport();
-        $this->pubnub->getConfiguration()->setTransport($transport);
-        $time = $this->pubnub->time()->sync();
+        $config = $this->config->clone();
+        $config->setTransport($transport);
+        $pubnub = new PubNub($config);
+
+        $pubnub->time()->sync();
 
         $this->assertTrue($transport->isRequestedSecureOrigin());
     }
@@ -24,14 +29,17 @@ class SslTest extends \PubNubTestCase
     public function testSslCanBeDisabled()
     {
         $transport = new CheckSslTransport();
-        $this->pubnub->getConfiguration()->setTransport($transport);
-        $this->pubnub->getConfiguration()->setSecure(false);
-        $this->pubnub->time()->sync();
+        $config = $this->config->clone();
+        $config->setTransport($transport);
+        $config->setSecure(false);
+        $pubnub = new PubNub($config);
+        $pubnub->time()->sync();
 
         $this->assertFalse($transport->isRequestedSecureOrigin());
     }
 }
 
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class CheckSslTransport implements \WpOrg\Requests\Transport
 {
     protected $requestedThroughHttps;
@@ -51,6 +59,7 @@ class CheckSslTransport implements \WpOrg\Requests\Transport
             . "[16614599133417872]";
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName
     public function request_multiple($requests, $options)
     {
     }

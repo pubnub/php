@@ -6,10 +6,9 @@ use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubUnsubscribeException;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
-use PubNub\Models\ResponseHelpers\PNStatus;
-use PubNub\Models\Server\SubscribeMessage;
 use PubNub\PubNub;
 use PubNubTestCase;
+use PHPUnit\Framework\AssertionFailedError;
 use Tests\Helpers\StubTransport;
 
 class SubscribeWildCardTest extends PubNubTestCase
@@ -42,12 +41,17 @@ class SubscribeWildCardTest extends PubNubTestCase
                 "uuid" => "myUUID"
             ])
             ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"t":{"t":"14921661962885137","r":12},"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c","p":{"t":"14921661962867845","r":12},"k":"demo","c":"channels.one","u":{},"d":{"text":"hey"},"b":"channels.*"}]}');
+            ->setResponseBody('{"t":{"t":"14921661962885137","r":12},'
+                . '"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c",'
+                . '"p":{"t":"14921661962867845","r":12},"k":"demo","c":"channels.one","u":{},'
+                . '"d":{"text":"hey"},"b":"channels.*"}]}');
 
         $callback = new MySubscribeCallbackToTestWildCard();
 
-        $pubnub = PubNub::demo();
-        $pubnub->getConfiguration()->setTransport($transport)->setUuid("myUUID");
+        $config = $this->config->clone();
+        $config->setTransport($transport);
+        $config->setUuid("myUUID");
+        $pubnub = new PubNub($config);
 
         $pubnub->addListener($callback);
         $pubnub->subscribe()->channel("channels.*")->execute();
@@ -57,7 +61,7 @@ class SubscribeWildCardTest extends PubNubTestCase
     }
 }
 
-
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class MySubscribeCallbackToTestWildCard extends SubscribeCallback
 {
     protected $connectedInvoked = false;
@@ -68,12 +72,11 @@ class MySubscribeCallbackToTestWildCard extends SubscribeCallback
         return $this->connectedInvoked && $this->disconnectedInvoked;
     }
 
-    function status($pubnub, $status)
+    public function status($pubnub, $status)
     {
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
             $this->connectedInvoked = true;
-
-        } else if ($status->getCategory() === PNStatusCategory::PNDisconnectedCategory) {
+        } elseif ($status->getCategory() === PNStatusCategory::PNDisconnectedCategory) {
             $this->disconnectedInvoked = true;
         } else {
             if ($status->getException() !== null) {
@@ -89,24 +92,27 @@ class MySubscribeCallbackToTestWildCard extends SubscribeCallback
      * @param PNMessageResult $message
      * @throws PubNubUnsubscribeException
      */
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
         if ($message->getChannel() !== 'channels.one') {
-            throw new \PHPUnit_Framework_AssertionFailedError("Actual channel " . $message->getChannel() . " doesn't match expected channels.one" );
+            throw new AssertionFailedError("Actual channel " . $message->getChannel()
+            . " doesn't match expected channels.one");
         }
 
         if ($message->getSubscription() !== 'channels.*') {
-            throw new \PHPUnit_Framework_AssertionFailedError("Actual subscription " . $message->getChannel() . " doesn't match expected channels.one" );
+            throw new AssertionFailedError("Actual subscription " . $message->getChannel()
+            . " doesn't match expected channels.one");
         }
 
         if ($message->getPublisher() !== 'eda482a8-9de3-4891-b328-b2c1d14f210c') {
-            throw new \PHPUnit_Framework_AssertionFailedError("Actual uuid " . $message->getPublisher() . " doesn't match expected eda482a8-9de3-4891-b328-b2c1d14f210c");
+            throw new AssertionFailedError("Actual uuid " . $message->getPublisher()
+            . " doesn't match expected eda482a8-9de3-4891-b328-b2c1d14f210c");
         }
 
         throw new PubNubUnsubscribeException();
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
     }
 }

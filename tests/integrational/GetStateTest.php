@@ -8,9 +8,7 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-use Tests\Helpers\Stub;
 use Tests\Helpers\StubTransport;
-
 
 class GetStateTest extends PubNubTestCase
 {
@@ -23,7 +21,8 @@ class GetStateTest extends PubNubTestCase
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . " \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -42,7 +41,8 @@ class GetStateTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -62,7 +62,8 @@ class GetStateTest extends PubNubTestCase
             ->withQuery([
                 "uuid" => "sampleUUID",
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -78,7 +79,9 @@ class GetStateTest extends PubNubTestCase
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"channels\": { \"ch1\": { \"age\" : 20, \"status\" : \"online\"}, \"ch2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"channels\": { \"ch1\": { \"age\" : 20, \"status\" : \"online\"}, "
+                . "\"ch2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -101,7 +104,9 @@ class GetStateTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "channel-group" => "cg1"
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, \"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, "
+                . "\"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -124,7 +129,9 @@ class GetStateTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, \"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, "
+                . "\"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -147,7 +154,9 @@ class GetStateTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, \"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, "
+                . "\"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -172,7 +181,8 @@ class GetStateTest extends PubNubTestCase
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
@@ -181,7 +191,12 @@ class GetStateTest extends PubNubTestCase
 
     public function testIsAuthRequiredSuccess()
     {
-        $getState = new GetStateExposed($this->pubnub);
+        $config = $this->config->clone();
+        $config->setAuthKey("myKey");
+        $config->setUuid("sampleUUID");
+
+        $pubnub = new PubNub($config);
+        $getState = new GetStateExposed($pubnub);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
@@ -189,50 +204,53 @@ class GetStateTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "auth" => "myKey"
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
-
-        $this->pubnub->getConfiguration()->setAuthKey("myKey");
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
         $getState->channels("testChannel")->sync();
     }
 
     public function testNullSubKey()
     {
-        $this->expectException(PubNubException::class);
-        $this->expectExceptionMessage("Subscribe Key not configured");
+        $this->expectException(\TypeError::class);
 
-        $getState = new GetStateExposed($this->pubnub);
+        $config = $this->config->clone();
+        $config ->setSubscribeKey(null);
+        $config->setUuid("sampleUUID");
+        $pubnub = new PubNub($config);
+        $getState = new GetStateExposed($pubnub);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
-
-        $this->pubnub->getConfiguration()->setSubscribeKey(null);
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
         $getState->channels("testChannel")->sync();
     }
 
     public function testEmptySubKeySync()
     {
+
+
         $this->expectException(PubNubException::class);
         $this->expectExceptionMessage("Subscribe Key not configured");
 
-        $getState = new GetStateExposed($this->pubnub);
+        $config = $this->config->clone();
+        $config ->setSubscribeKey("");
+        $config->setUuid("sampleUUID");
+        $pubnub = new PubNub($config);
+        $getState = new GetStateExposed($pubnub);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
                 "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName
             ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
-
-        $this->pubnub->getConfiguration()->setSubscribeKey("");
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
+                . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
         $getState->channels("testChannel")->sync();
     }
@@ -249,7 +267,7 @@ class GetStateTest extends PubNubTestCase
     }
 }
 
-
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class GetStateExposed extends GetState
 {
     protected $transport;

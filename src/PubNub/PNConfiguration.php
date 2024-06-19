@@ -217,6 +217,9 @@ class PNConfiguration
      */
     public function getSubscribeKey(): string
     {
+        if (!isset($this->subscribeKey)) {
+            throw new PubNubValidationException("Subscribe Key not configured");
+        }
         return $this->subscribeKey;
     }
 
@@ -261,6 +264,9 @@ class PNConfiguration
      */
     public function getUuid(): string
     {
+        if (!isset($this->userId)) {
+            throw new PubNubConfigurationException('UUID should not be empty');
+        }
         return $this->userId;
     }
 
@@ -287,6 +293,9 @@ class PNConfiguration
      */
     public function getUserId(): string
     {
+        if (!isset($this->userId)) {
+            throw new PubNubConfigurationException('UUID should not be empty');
+        }
         return $this->userId;
     }
 

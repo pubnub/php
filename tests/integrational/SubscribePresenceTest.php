@@ -10,7 +10,6 @@ use PubNub\PubNub;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
 
-
 /**
  * Class SubscribePresenceTest
  *
@@ -19,7 +18,8 @@ use Tests\Helpers\StubTransport;
  */
 class SubscribePresenceTest extends PubNubTestCase
 {
-    public function testMessageOnPresenceCallback() {
+    public function testMessageOnPresenceCallback()
+    {
         $transport = new StubTransport();
 
         $transport->stubFor("/v2/presence/sub-key/demo/channel/blah/leave")
@@ -46,12 +46,17 @@ class SubscribePresenceTest extends PubNubTestCase
                 "tr" => "12"
             ])
             ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"t":{"t":"14818963588185526","r":12},"m":[{"a":"2","f":0,"p":{"t":"14818963587725382","r":2},"k":"demo","c":"blah-pnpres","d":{"action": "join", "timestamp": 1481896358, "uuid": "test-subscribe-listener", "occupancy": 1},"b":"blah-pnpres"}]}');
+            ->setResponseBody('{"t":{"t":"14818963588185526","r":12},"m":[{"a":"2","f":0,'
+                . '"p":{"t":"14818963587725382","r":2},"k":"demo","c":"blah-pnpres",'
+                . '"d":{"action": "join", "timestamp": 1481896358, "uuid": "test-subscribe-listener", "occupancy": 1},'
+                . '"b":"blah-pnpres"}]}');
 
         $callback = new MySubscribeCallbackToTestPresence();
 
-        $pubnub = PubNub::demo();
-        $pubnub->getConfiguration()->setTransport($transport)->setUuid("myUUID");
+        $config = $this->config->clone();
+        $config->setTransport($transport);
+        $config->setUuid("myUUID");
+        $pubnub = new PubNub($config);
 
         $pubnub->addListener($callback);
         $pubnub->subscribe()->channel("blah")->withPresence()->execute();
@@ -61,7 +66,7 @@ class SubscribePresenceTest extends PubNubTestCase
     }
 }
 
-
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class MySubscribeCallbackToTestPresence extends SubscribeCallback
 {
     protected $connectedInvoked = false;
@@ -72,11 +77,11 @@ class MySubscribeCallbackToTestPresence extends SubscribeCallback
         return $this->connectedInvoked && $this->disconnectedInvoked;
     }
 
-    function status($pubnub, $status)
+    public function status($pubnub, $status)
     {
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
             $this->connectedInvoked = true;
-        } else if ($status->getCategory() === PNStatusCategory::PNDisconnectedCategory) {
+        } elseif ($status->getCategory() === PNStatusCategory::PNDisconnectedCategory) {
             $this->disconnectedInvoked = true;
         } else {
             if ($status->getException() !== null) {
@@ -92,11 +97,11 @@ class MySubscribeCallbackToTestPresence extends SubscribeCallback
      * @param PNMessageResult $message
      * @throws PubNubUnsubscribeException
      */
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
         throw new PubNubUnsubscribeException();
     }

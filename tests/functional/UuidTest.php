@@ -12,8 +12,7 @@ class UuidTest extends PubNubTestCase
 {
     public function testValidateOnSet()
     {
-        $this->expectException(PubNubConfigurationException::class);
-        $this->expectExceptionMessage("UUID should not be empty");
+        $this->expectException(\TypeError::class);
         $config = new PNConfiguration();
         $config->setPublishKey('fake')
             ->setSubscribeKey('fake')
