@@ -92,6 +92,7 @@ class PubNub implements LoggerAwareInterface
     public function __construct($initialConfig)
     {
         $this->validateConfig($initialConfig);
+        $initialConfig->lock();
         $this->configuration = $initialConfig;
         $this->basePathManager = new BasePathManager($initialConfig);
         $this->subscriptionManager = new SubscriptionManager($this);

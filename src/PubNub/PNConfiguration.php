@@ -14,49 +14,52 @@ class PNConfiguration
     private const DEFAULT_CONNECT_TIMEOUT = 10;
     private const DEFAULT_USE_RANDOM_IV = true;
 
+    private bool $disableImmutableCheck = false;
+    private bool $isLocked = false;
+
     /** @var  string Subscribe key provided by PubNub */
-    private $subscribeKey;
+    private string $subscribeKey;
 
     /** @var  string Publish key provided by PubNub */
-    private $publishKey;
+    private ?string $publishKey = null;
 
     /** @var  string Secret key provided by PubNub */
-    private $secretKey;
+    private ?string $secretKey = null;
 
     /** @var  string */
-    private $authKey;
+    private ?string $authKey = null;
 
     /** @var  string */
-    private $uuid;
+    private string $userId;
 
     /** @var  string */
-    private $origin;
+    private ?string $origin = null;
 
     /** @var  bool Set to true to switch the client to HTTPS:// based communications. */
-    private $secure = true;
+    private bool $secure = true;
 
-    /** @var  PubNubCryptoCore */
-    private $crypto;
+    /** @var  CryptoModule */
+    private ?CryptoModule $crypto = null;
 
     /** @var  string */
-    private $filterExpression;
+    private ?string $filterExpression = null;
 
     /** @var int */
-    protected $nonSubscribeRequestTimeout;
+    protected int $nonSubscribeRequestTimeout;
 
     /** @var int */
-    protected $connectTimeout;
+    protected int $connectTimeout;
 
     /** @var  int */
-    protected $subscribeTimeout;
+    protected int $subscribeTimeout;
 
     /** @var  Transport */
-    protected $transport;
+    protected ?Transport $transport = null;
 
     /** @var bool */
-    protected $useRandomIV;
+    protected bool $useRandomIV;
 
-    private $usingUserId = null;
+    private ?bool $usingUserId = null;
 
     /**
      * PNConfiguration constructor.
@@ -74,7 +77,7 @@ class PNConfiguration
      *
      * @return PNConfiguration config
      */
-    public static function demoKeys()
+    public static function demoKeys(): PNConfiguration
     {
         $config = new self();
         $config->setSubscribeKey("demo");
@@ -84,12 +87,29 @@ class PNConfiguration
         return $config;
     }
 
+
+    /**
+     * Returns a unlocked clone of the current configuration.
+     * This is useful when you want to create a new configuration based on an existing one.
+     *
+     * @return PNConfiguration
+     */
+    public function clone(): PNConfiguration
+    {
+        $lockState = $this->isLocked;
+        $this->isLocked = false;
+        $result = clone $this;
+        $this->isLocked = $lockState;
+        return $result;
+    }
+
     /**
      * @param string $subscribeKey
      * @return $this
      */
-    public function setSubscribeKey($subscribeKey)
+    public function setSubscribeKey(string $subscribeKey): self
     {
+        $this->checkLock();
         $this->subscribeKey = $subscribeKey;
 
         return $this;
@@ -99,8 +119,9 @@ class PNConfiguration
      * @param string $publishKey
      * @return $this
      */
-    public function setPublishKey($publishKey)
+    public function setPublishKey(string $publishKey): self
     {
+        $this->checkLock();
         $this->publishKey = $publishKey;
 
         return $this;
@@ -110,8 +131,9 @@ class PNConfiguration
      * @param string $secretKey
      * @return $this
      */
-    public function setSecretKey($secretKey)
+    public function setSecretKey(string $secretKey): self
     {
+        $this->checkLock();
         $this->secretKey = $secretKey;
 
         return $this;
@@ -120,12 +142,12 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getCipherKey()
+    public function getCipherKey(): string
     {
         return $this->getCrypto()->getCipherKey();
     }
 
-    public function isAesEnabled()
+    public function isAesEnabled(): bool
     {
         return !!$this->crypto;
     }
@@ -134,9 +156,10 @@ class PNConfiguration
      * @param string $cipherKey
      * @return $this
      */
-    public function setCipherKey($cipherKey)
+    public function setCipherKey(string $cipherKey): self
     {
-        if ($this->crypto == null) {
+        $this->checkLock();
+        if (!isset($this->crypto)) {
             $this->crypto = CryptoModule::legacyCryptor($cipherKey, $this->getUseRandomIV());
         } else {
             $this->getCrypto()->setCipherKey($cipherKey);
@@ -148,7 +171,7 @@ class PNConfiguration
     /**
      * @return int
      */
-    public function getNonSubscribeRequestTimeout()
+    public function getNonSubscribeRequestTimeout(): int
     {
         return $this->nonSubscribeRequestTimeout;
     }
@@ -156,7 +179,7 @@ class PNConfiguration
     /**
      * @return int
      */
-    public function getSubscribeTimeout()
+    public function getSubscribeTimeout(): int
     {
         return $this->subscribeTimeout;
     }
@@ -164,7 +187,7 @@ class PNConfiguration
     /**
      * @return int
      */
-    public function getConnectTimeout()
+    public function getConnectTimeout(): int
     {
         return $this->connectTimeout;
     }
@@ -172,7 +195,7 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getOrigin()
+    public function getOrigin(): ?string
     {
         return $this->origin;
     }
@@ -181,8 +204,9 @@ class PNConfiguration
      * @param string $origin
      * @return $this
      */
-    public function setOrigin($origin)
+    public function setOrigin($origin): self
     {
+        $this->checkLock();
         $this->origin = $origin;
 
         return $this;
@@ -191,7 +215,7 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getSubscribeKey()
+    public function getSubscribeKey(): string
     {
         return $this->subscribeKey;
     }
@@ -199,7 +223,7 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getPublishKey()
+    public function getPublishKey(): string | null
     {
         return $this->publishKey;
     }
@@ -207,7 +231,7 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getSecretKey()
+    public function getSecretKey(): string | null
     {
         return $this->secretKey;
     }
@@ -215,18 +239,19 @@ class PNConfiguration
     /**
      * @return bool
      */
-    public function isSecure()
+    public function isSecure(): bool
     {
         return $this->secure;
     }
 
     /**
-     * @param $ssl
+     * @param $secure
      * @return $this
      */
-    public function setSecure($ssl)
+    public function setSecure(bool $secure = true): self
     {
-        $this->secure = $ssl;
+        $this->checkLock();
+        $this->secure = $secure;
 
         return $this;
     }
@@ -234,25 +259,25 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getUuid()
+    public function getUuid(): string
     {
-        return $this->uuid;
+        return $this->userId;
     }
 
     /**
      * @param string $uuid
      * @return $this
      */
-    public function setUuid($uuid)
+    public function setUuid(string $uuid): self
     {
         if (!is_null($this->usingUserId) && $this->usingUserId) {
             throw new PubNubConfigurationException("Cannot use UserId and UUID simultaneously");
         }
-        if (!$this->validateNotEmptyString($uuid)) {
+        if (!$this->isNotEmptyString($uuid)) {
             throw new PubNubConfigurationException("UUID should not be empty");
         }
         $this->usingUserId = false;
-        $this->uuid = $uuid;
+        $this->userId = $uuid;
 
         return $this;
     }
@@ -260,25 +285,26 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getUserId()
+    public function getUserId(): string
     {
-        return $this->uuid;
+        return $this->userId;
     }
 
     /**
      * @param string $userId
      * @return $this
      */
-    public function setUserId($userId)
+    public function setUserId(string $userId): self
     {
+        $this->checkLock();
         if (!is_null($this->usingUserId) && !$this->usingUserId) {
             throw new PubNubConfigurationException("Cannot use UserId and UUID simultaneously");
         }
-        if (!$this->validateNotEmptyString($userId)) {
+        if (!$this->isNotEmptyString($userId)) {
             throw new PubNubConfigurationException("UserID should not be empty");
         }
         $this->usingUserId = true;
-        $this->uuid = $userId;
+        $this->userId = $userId;
 
         return $this;
     }
@@ -286,7 +312,7 @@ class PNConfiguration
     /**
      * @return string|null authKey
      */
-    public function getAuthKey()
+    public function getAuthKey(): ?string
     {
         return $this->authKey;
     }
@@ -295,7 +321,7 @@ class PNConfiguration
      * @param string|null $authKey
      * @return $this
      */
-    public function setAuthKey($authKey)
+    public function setAuthKey(string $authKey): self
     {
         $this->authKey = $authKey;
 
@@ -303,10 +329,10 @@ class PNConfiguration
     }
 
     /**
-     * @return PubNubCryptoCore
+     * @return CryptoModule
      * @throws \Exception
      */
-    public function getCrypto()
+    public function getCrypto(): CryptoModule
     {
         if (!$this->crypto) {
             throw new PubNubValidationException("You should set up either a cipher key or a crypto instance before");
@@ -316,9 +342,9 @@ class PNConfiguration
     }
 
     /**
-     * @return null|PubNubCryptoCore
+     * @return null | CryptoModule
      */
-    public function getCryptoSafe()
+    public function getCryptoSafe(): CryptoModule | null
     {
         try {
             return $this->getCrypto();
@@ -331,8 +357,9 @@ class PNConfiguration
      * @param PubNubCryptoCore $crypto
      * @return $this
      */
-    public function setCrypto($crypto)
+    public function setCrypto(PubNubCryptoCore $crypto): self
     {
+        $this->checkLock();
         $this->crypto = $crypto;
 
         return $this;
@@ -341,7 +368,7 @@ class PNConfiguration
     /**
      * @return string
      */
-    public function getFilterExpression()
+    public function getFilterExpression(): string | null
     {
         return $this->filterExpression;
     }
@@ -350,8 +377,9 @@ class PNConfiguration
      * @param string $filterExpression
      * @return $this
      */
-    public function setFilterExpression($filterExpression)
+    public function setFilterExpression(string $filterExpression): self
     {
+        $this->checkLock();
         $this->filterExpression = $filterExpression;
 
         return $this;
@@ -361,8 +389,9 @@ class PNConfiguration
      * @param int $nonSubscribeRequestTimeout
      * @return $this
      */
-    public function setNonSubscribeRequestTimeout($nonSubscribeRequestTimeout)
+    public function setNonSubscribeRequestTimeout(int $nonSubscribeRequestTimeout): self
     {
+        $this->checkLock();
         $this->nonSubscribeRequestTimeout = $nonSubscribeRequestTimeout;
 
         return $this;
@@ -372,8 +401,9 @@ class PNConfiguration
      * @param int $connectTimeout
      * @return $this
      */
-    public function setConnectTimeout($connectTimeout)
+    public function setConnectTimeout(int $connectTimeout): self
     {
+        $this->checkLock();
         $this->connectTimeout = $connectTimeout;
 
         return $this;
@@ -383,8 +413,9 @@ class PNConfiguration
      * @param int $subscribeTimeout
      * @return $this
      */
-    public function setSubscribeTimeout($subscribeTimeout)
+    public function setSubscribeTimeout(int $subscribeTimeout): self
     {
+        $this->checkLock();
         $this->subscribeTimeout = $subscribeTimeout;
 
         return $this;
@@ -393,7 +424,7 @@ class PNConfiguration
     /**
      * @return Transport
      */
-    public function getTransport()
+    public function getTransport(): Transport | null
     {
         return $this->transport;
     }
@@ -404,6 +435,7 @@ class PNConfiguration
      */
     public function setTransport($transport)
     {
+        $this->checkLock();
         $this->transport = $transport;
 
         return $this;
@@ -412,7 +444,7 @@ class PNConfiguration
     /**
      * @return bool
      */
-    public function getUseRandomIV()
+    public function getUseRandomIV(): bool
     {
         return $this->useRandomIV;
     }
@@ -421,8 +453,9 @@ class PNConfiguration
      * @param bool $useRandomIV
      * @return $this
      */
-    public function setUseRandomIV($useRandomIV)
+    public function setUseRandomIV($useRandomIV): self
     {
+        $this->checkLock();
         $this->useRandomIV = $useRandomIV;
 
         if ($this->crypto != null) {
@@ -432,8 +465,27 @@ class PNConfiguration
         return $this;
     }
 
-    private function validateNotEmptyString($value)
+    private function isNotEmptyString($value): bool
     {
         return (is_string($value) && strlen(trim($value)) > 0);
+    }
+
+    public function disableImmutableCheck(): self
+    {
+        $this->checkLock();
+        $this->disableImmutableCheck = true;
+        return $this;
+    }
+
+    public function lock()
+    {
+        $this->isLocked = true;
+    }
+
+    protected function checkLock()
+    {
+        if ($this->isLocked && !$this->disableImmutableCheck) {
+            throw new PubNubConfigurationException("This configuration is locked and cannot be changed anymore.");
+        }
     }
 }
