@@ -20,43 +20,56 @@ class PNConfiguration
     /** @var  string Subscribe key provided by PubNub */
     private string $subscribeKey;
 
-    /** @var  string Publish key provided by PubNub */
+    /** @var  string Publish key provided by PubNub (only required if publishing) */
     private ?string $publishKey = null;
 
-    /** @var  string Secret key provided by PubNub */
+    /** @var  string Secret key provided by PubNub (only required for modifying/revealing access permissions) */
     private ?string $secretKey = null;
 
-    /** @var  string */
+    /** @var  string If Access Manager is utilized, client will use this authKey in all restricted requests. */
     private ?string $authKey = null;
 
-    /** @var  string */
+    /**
+     * @var  string
+     * You should set a unique UUID to identify the user or the device that connects to PubNub.
+     * It's a UTF-8 encoded string of up to 92 alphanumeric characters.
+     * If you don't set the UUID, you won't be able to connect to PubNub.
+     */
     private string $userId;
 
-    /** @var  string */
+    /** @var  string Custom origin if needed. */
     private ?string $origin = null;
 
     /** @var  bool Set to true to switch the client to HTTPS:// based communications. */
     private bool $secure = true;
 
-    /** @var  CryptoModule */
+    /**
+     *  @var  CryptoModule
+     * The cryptography module used for encryption and decryption of messages and files.
+     * Takes the cipherKey and useRandomIV parameters as arguments.
+     */
     private ?CryptoModule $crypto = null;
 
-    /** @var  string */
+    /** @var  string On non subscribe operations, how long to wait for server response.The value is in seconds. */
     private ?string $filterExpression = null;
 
     /** @var int */
     protected int $nonSubscribeRequestTimeout;
 
-    /** @var int */
+    /** @var int How long to wait before giving up connection to client. The value is in seconds. */
     protected int $connectTimeout;
 
-    /** @var  int */
+    /** @var  int How long to keep the subscribe request running before disconnect. The value is in seconds.*/
     protected int $subscribeTimeout;
 
-    /** @var  Transport */
+    /** @var  Transport Custom transport implementation. */
     protected ?Transport $transport = null;
 
-    /** @var bool */
+    /**
+     * @var bool
+     * When true the initialization vector (IV) is random for all requests (not just for file upload).
+     * When false the IV is hard-coded for all requests except for file upload.
+     */
     protected bool $useRandomIV;
 
     private ?bool $usingUserId = null;
