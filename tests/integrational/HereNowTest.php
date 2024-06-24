@@ -249,6 +249,7 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testIsAuthRequiredSuccess()
     {
+        $this->expectNotToPerformAssertions();
         $hereNow = new HereNowExposed($this->pubnub);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
@@ -324,6 +325,7 @@ class HereNowTest extends \PubNubTestCase
 
     public function testSuperCallTest()
     {
+        $this->expectNotToPerformAssertions();
         // Not valid
         // ,~/
         $characters = "-._:?#[]@!$&'()*+;=`|";

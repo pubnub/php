@@ -191,6 +191,7 @@ class GetStateTest extends PubNubTestCase
 
     public function testIsAuthRequiredSuccess()
     {
+        $this->expectNotToPerformAssertions();
         $config = $this->config->clone();
         $config->setAuthKey("myKey");
         $config->setUuid("sampleUUID");
@@ -257,6 +258,7 @@ class GetStateTest extends PubNubTestCase
 
     public function testSuperCall()
     {
+        $this->expectNotToPerformAssertions();
         // Not valid
         // ,~/
         $characters = "-._:?#[]@!$&'()*+;=`|";

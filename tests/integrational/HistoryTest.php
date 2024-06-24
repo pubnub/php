@@ -435,6 +435,7 @@ class HistoryTest extends \PubNubTestCase
 
     public function testSuperCallTest()
     {
+        $this->expectNotToPerformAssertions();
         $this->pubnub_pam->history()
             ->channel(static::SPECIAL_CHARACTERS)
             ->sync();
