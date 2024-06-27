@@ -29,12 +29,18 @@ class SubscribeSignalTest extends PubNubTestCase
                 "uuid" => "myUUID"
             ])
             ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"t":{"t":"14921661962885137","r":12},"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c","p":{"t":"14921661962867845","r":12},"k":"demo","e":1,"c":"test","u":{},"d":{"text":"hey"},"b":"test"}]}');
+            ->setResponseBody('{"t":{"t":"14921661962885137","r":12},'
+                . '"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c",'
+                . '"p":{"t":"14921661962867845","r":12},"k":"demo","e":1,"c":"test","u":{},'
+                . '"d":{"text":"hey"},"b":"test"}]}');
 
         $callback = new MySubscribeCallbackToTestSignal();
 
-        $pubnub = PubNub::demo();
-        $pubnub->getConfiguration()->setTransport($transport)->setUuid("myUUID");
+        $config = $this->config->clone();
+        $config->setTransport($transport);
+        $config->setUuid("myUUID");
+
+        $pubnub = new PubNub($config);
 
         $pubnub->addListener($callback);
         $pubnub->subscribe()->channel("test")->execute();
@@ -43,24 +49,24 @@ class SubscribeSignalTest extends PubNubTestCase
     }
 }
 
-
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class MySubscribeCallbackToTestSignal extends SubscribeCallback
 {
     public $signalInvoked = false;
 
-    function status($pubnub, $status)
+    public function status($pubnub, $status)
     {
     }
 
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
     }
 
-    function signal($pubnub, $signal)
+    public function signal($pubnub, $signal)
     {
         $this->signalInvoked = true;
     }

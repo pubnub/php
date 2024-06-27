@@ -11,12 +11,8 @@ use PubNub\Exceptions\PubNubValidationException;
 use Tests\Helpers\Stub;
 use Tests\Helpers\StubTransport;
 
-
-class TestPubNubHistory extends \PubNubTestCase
+class HistoryTest extends \PubNubTestCase
 {
-    const COUNT = 5;
-    const TOTAL = 7;
-
     /**
      * @group history
      * @group history-integrational
@@ -131,10 +127,11 @@ class TestPubNubHistory extends \PubNubTestCase
      */
     public function testEncryptedSuccess()
     {
-        $history = new HistoryExposed($this->pubnub);
-
-        $this->pubnub->getConfiguration()->setUseRandomIV(false);
-        $this->pubnub->getConfiguration()->setCipherKey("cipherKey");
+        $config = $this->config->clone();
+        $config->setUseRandomIV(false);
+        $config->setCipherKey("cipherKey");
+        $pubnub = new PubNub($config);
+        $history = new HistoryExposed($pubnub);
 
         $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
@@ -143,7 +140,11 @@ class TestPubNubHistory extends \PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => Stub::ANY
             ])
-            ->setResponseBody("[[{\"message\":\"zFJeF9BVABL80GUiQEBjLg==\",\"timetoken\":\"14649369736959785\"},{\"message\":\"HIq4MTi9nk/KEYlHOKpMCaH78ZXppGynDHrgY9nAd3s=\",\"timetoken\":\"14649369766426772\"}],14649369736959785,14649369766426772]");
+            ->setResponseBody("[[{\"message\":\"zFJeF9BVABL80GUiQEBjLg==\","
+                . "\"timetoken\":\"14649369736959785\"},"
+                . "{\"message\":\"HIq4MTi9nk/KEYlHOKpMCaH78ZXppGynDHrgY9nAd3s=\","
+                . "\"timetoken\":\"14649369766426772\"}],"
+                . " 14649369736959785,14649369766426772]");
 
         $response = $history->channel("niceChannel")->includeTimetoken(true)->sync();
 
@@ -161,10 +162,11 @@ class TestPubNubHistory extends \PubNubTestCase
 
     public function testEncryptedWithPNOtherSuccess()
     {
-        $history = new HistoryExposed($this->pubnub);
-
-        $this->pubnub->getConfiguration()->setUseRandomIV(false);
-        $this->pubnub->getConfiguration()->setCipherKey("hello");
+        $config = $this->config->clone();
+        $config->setUseRandomIV(false);
+        $config->setCipherKey("hello");
+        $pubnub = new PubNub($config);
+        $history = new HistoryExposed($pubnub);
 
         $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
@@ -401,9 +403,12 @@ class TestPubNubHistory extends \PubNubTestCase
     {
         $ch = "history-php-ch-.*|@#";
 
-        $this->pubnub_pam->getConfiguration()->setUuid("history-php-uuid-.*|@#");
+        $config = $this->config_pam->clone();
+        $config->setUuid("history-php-uuid-.*|@#");
 
-        $result = $this->pubnub_pam->history()->channel($ch)->sync();
+        $pubnub_pam = new PubNub($config);
+
+        $result = $pubnub_pam->history()->channel($ch)->sync();
 
         $this->assertInstanceOf(PNHistoryResult::class, $result);
     }
@@ -411,10 +416,12 @@ class TestPubNubHistory extends \PubNubTestCase
     public function testSuperCallWithAllParams()
     {
         $ch = "history-php-ch";
+        $config = $this->config_pam->clone();
+        $config->setUuid("history-php-uuid");
 
-        $this->pubnub_pam->getConfiguration()->setUuid("history-php-uuid");
+        $pubnub_pam = new PubNub($config);
 
-        $result = $this->pubnub_pam->history()
+        $result = $pubnub_pam->history()
             ->channel($ch)
             ->count(2)
             ->includeTimetoken(true)
@@ -428,12 +435,14 @@ class TestPubNubHistory extends \PubNubTestCase
 
     public function testSuperCallTest()
     {
+        $this->expectNotToPerformAssertions();
         $this->pubnub_pam->history()
             ->channel(static::SPECIAL_CHARACTERS)
             ->sync();
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryExposed extends History
 {
     protected $transport;

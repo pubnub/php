@@ -12,15 +12,13 @@ class ListPushProvisionsTest extends \PubNubTestCase
 {
     public function testAppleSuccess()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
         $list = new ListPushProvisionsExposed($this->pubnub);
 
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "type" => "apns",
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
+                "uuid" => getenv("UUID_MOCK")
             ])
             ->setResponseBody("[\"ch1\", \"ch2\", \"ch3\"]");
 
@@ -33,15 +31,13 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
     public function testFCMSuccess()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
         $list = new ListPushProvisionsExposed($this->pubnub);
 
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "type" => "gcm",
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
+                "uuid" => getenv("UUID_MOCK")
             ])
             ->setResponseBody("[\"ch1\", \"ch2\", \"ch3\"]");
 
@@ -54,15 +50,13 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
     public function testMicrosoftSuccess()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
         $list = new ListPushProvisionsExposed($this->pubnub);
 
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "type" => "mpns",
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
+                "uuid" => getenv("UUID_MOCK")
             ])
             ->setResponseBody("[\"ch1\", \"ch2\", \"ch3\"]");
 
@@ -75,17 +69,17 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
     public function testIsAuthRequiredSuccess()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-        $this->pubnub->getConfiguration()->setAuthKey("myKey");
-
-        $list = new ListPushProvisionsExposed($this->pubnub);
+        $config = $this->config->clone();
+        $config->setAuthKey("myKey");
+        $pubnub = new PubNub($config);
+        $list = new ListPushProvisionsExposed($pubnub);
 
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "auth" => "myKey",
                 "type" => "mpns",
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
+                "uuid" => getenv("UUID_MOCK")
             ])
             ->setResponseBody("[\"ch1\", \"ch2\", \"ch3\"]");
 
@@ -98,13 +92,11 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
     public function testNullSubscribeKey()
     {
-        $this->expectException(PubNubValidationException::class);
-        $this->expectExceptionMessage("Subscribe Key not configured");
-
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-        $this->pubnub->getConfiguration()->setSubscribeKey(null);
-
-        $list = new ListPushProvisionsExposed($this->pubnub);
+        $this->expectException(\TypeError::class);
+        $config = $this->config->clone();
+        $config->setSubscribeKey(null);
+        $pubnub = new PubNub($config);
+        $list = new ListPushProvisionsExposed($pubnub);
 
         $list->deviceId("coolDevice")
             ->pushType(PNPushType::MPNS)
@@ -116,10 +108,10 @@ class ListPushProvisionsTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Subscribe Key not configured");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-        $this->pubnub->getConfiguration()->setSubscribeKey("");
-
-        $list = new ListPushProvisionsExposed($this->pubnub);
+        $config = $this->config->clone();
+        $config->setSubscribeKey('');
+        $pubnub = new PubNub($config);
+        $list = new ListPushProvisionsExposed($pubnub);
 
         $list->deviceId("coolDevice")
             ->pushType(PNPushType::MPNS)
@@ -131,8 +123,6 @@ class ListPushProvisionsTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Push Type is missing");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
         $list = new ListPushProvisionsExposed($this->pubnub);
 
         $list->deviceId("coolDevice")
@@ -142,10 +132,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
     public function testNullDeviceId()
     {
         $this->expectException(PubNubValidationException::class);
-        $this->expectExceptionMessage("Subscribe Key not configured");
-
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-        $this->pubnub->getConfiguration()->setSubscribeKey("");
+        $this->expectExceptionMessage("Device ID is missing for push operation");
 
         $list = new ListPushProvisionsExposed($this->pubnub);
 
@@ -157,8 +144,6 @@ class ListPushProvisionsTest extends \PubNubTestCase
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Device ID is missing for push operation");
-
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
 
         $list = new ListPushProvisionsExposed($this->pubnub);
 

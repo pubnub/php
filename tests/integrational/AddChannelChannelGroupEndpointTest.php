@@ -9,7 +9,6 @@ use PubNub\PubNub;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
 
-
 class AddChannelChannelGroupEndpointTest extends PubNubTestCase
 {
     public function testSuccess()
@@ -22,7 +21,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
                 "uuid" => "myUUID",
                 "add" => "c%7Ch1,ch2s"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\":\"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -44,7 +43,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
                 "uuid" => "myUUID",
                 "add" => "c%7Ch1,ch2s"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\":\"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -64,7 +63,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
                 "uuid" => "myUUID",
                 "add" => "c%7Ch1,ch2s"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\":\"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -83,7 +82,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\":\"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -92,6 +91,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
 
     public function testIsAuthRequiredSuccess()
     {
+        $this->expectNotToPerformAssertions();
         $addChannelChannelGroup = new AddChannelChannelGroupExposed($this->pubnub);
 
         $addChannelChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
@@ -101,7 +101,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
                 "auth" => "myKey",
                 "add" => "ch1,ch2"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\":\"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID")->setAuthKey("myKey");
 
@@ -123,7 +123,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
                 "add" => "ch1,ch2"
             ])
             ->setResponseStatus("HTTP/1.0 403 Forbidden")
-            ->setResponseBody("{\"status\": 403, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 403, \"message\": \"OK\", \"payload\": {},\"service\":\"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID")->setAuthKey("myKey");
 
@@ -148,7 +148,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class AddChannelChannelGroupExposed extends AddChannelToChannelGroup
 {
     protected $transport;

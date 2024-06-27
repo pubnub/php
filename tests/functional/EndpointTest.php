@@ -4,11 +4,9 @@ namespace Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
 use PubNub\Endpoints\Endpoint;
-use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
-
 
 class EndpointTest extends TestCase
 {
@@ -67,10 +65,9 @@ class EndpointTest extends TestCase
     }
 }
 
-
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class EndpointImplementation extends Endpoint
 {
-
     public function validateSubscribeKey()
     {
         parent::validateSubscribeKey();

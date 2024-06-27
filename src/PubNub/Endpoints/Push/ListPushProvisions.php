@@ -2,7 +2,7 @@
 
 namespace PubNub\Endpoints\Push;
 
-use PubNub\Enums\PNHttpMethod;
+use PubNub\Endpoints\Push\PushEndpoint;
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNPushType;
 use PubNub\Models\Consumer\Push\PNPushListProvisionsResult;

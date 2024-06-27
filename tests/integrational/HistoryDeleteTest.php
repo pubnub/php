@@ -9,7 +9,6 @@ use PubNub\Exceptions\PubNubValidationException;
 use Tests\Helpers\Stub;
 use Tests\Helpers\StubTransport;
 
-
 class TestPubNubHistoryDelete extends \PubNubTestCase
 {
     public function testMissingChannelException()
@@ -51,12 +50,14 @@ class TestPubNubHistoryDelete extends \PubNubTestCase
 
     public function testSuperCallTest()
     {
+        $this->expectNotToPerformAssertions();
         $this->pubnub_pam->deleteMessages()
             ->channel(static::SPECIAL_CHARACTERS)
             ->sync();
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryDeleteExposed extends HistoryDelete
 {
     protected $transport;

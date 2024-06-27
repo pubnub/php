@@ -4,12 +4,10 @@ namespace Tests\Integrational;
 
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
 use PubNub\Exceptions\PubNubResponseParsingException;
-use PubNub\Exceptions\PubNubServerException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
-
 
 class ListChannelsInChannelGroupTest extends PubNubTestCase
 {
@@ -22,7 +20,8 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
+                . "\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -43,7 +42,8 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
+                . "\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -62,7 +62,8 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
+                . "\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -108,6 +109,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 
     public function testIsAuthRequiredSuccess()
     {
+        $this->expectNotToPerformAssertions();
         $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
 
         $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
@@ -116,7 +118,8 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
                 "uuid" => "myUUID",
                 "auth" => "myKey"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
+                . "\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID")->setAuthKey("myKey");
 
@@ -124,7 +127,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListChannelsInChannelGroupExposed extends ListChannelsInChannelGroup
 {
     protected $transport;

@@ -10,7 +10,6 @@ use PubNub\Models\ResponseHelpers\PNEnvelope;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 
-
 class PublishTest extends \PubNubTestCase
 {
     /**
@@ -61,7 +60,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishGet($this->pubnub->publish(), 3.14);
         $this->assertSuccessPublishGet($this->pubnub->publish(), false);
         $this->assertSuccessPublishGet($this->pubnub->publish(), ['hey', 'hey2', 'hey3']);
-        $this->assertSuccessPublishGet($this->pubnub->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
+        $this->assertSuccessPublishGet($this->pubnub->publish(), ['hey' => 31, 'hey2' => true, 'hey3' => ['ok']]);
     }
 
     public function testPublishMixedViaPost()
@@ -71,7 +70,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishPost($this->pubnub->publish(), 3.14);
         $this->assertSuccessPublishPost($this->pubnub->publish(), false);
         $this->assertSuccessPublishPost($this->pubnub->publish(), ['hey', 'hey2', 'hey3']);
-        $this->assertSuccessPublishPost($this->pubnub->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
+        $this->assertSuccessPublishPost($this->pubnub->publish(), ['hey' => 31, 'hey2' => true, 'hey3' => ['ok']]);
     }
 
     public function testPublishMixedViaGetEncrypted()
@@ -81,7 +80,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishGet($this->pubnub_enc->publish(), 3.14);
         $this->assertSuccessPublishGet($this->pubnub_enc->publish(), false);
         $this->assertSuccessPublishGet($this->pubnub_enc->publish(), ['hey', 'hey2', 'hey3']);
-        $this->assertSuccessPublishGet($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
+        $this->assertSuccessPublishGet($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' => ['ok']]);
     }
 
     public function testPublishMixedViaPostEncrypted()
@@ -91,7 +90,7 @@ class PublishTest extends \PubNubTestCase
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), 3.14);
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), false);
         $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey', 'hey2', 'hey3']);
-        $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' =>['ok']]);
+        $this->assertSuccessPublishPost($this->pubnub_enc->publish(), ['hey' => 31, 'hey2' => true, 'hey3' => ['ok']]);
     }
 
     public function testPublishDoNotSerialize()
@@ -112,7 +111,12 @@ class PublishTest extends \PubNubTestCase
 
     public function testPublishDoNotSerializePost()
     {
-        $response = $this->pubnub->publish()->usePost(true)->doNotSerialize()->channel("ch1")->message("{\"message\": 2}")->sync();
+        $response = $this->pubnub->publish()
+            ->usePost(true)
+            ->doNotSerialize()
+            ->channel("ch1")
+            ->message("{\"message\": 2}")
+            ->sync();
 
         $this->assertGreaterThan(0, $response->getTimetoken());
     }
@@ -179,6 +183,7 @@ class PublishTest extends \PubNubTestCase
 
     public function testSuperCall()
     {
+        $this->expectNotToPerformAssertions();
         $this->pubnub_pam->getConfiguration()->setUuid(static::SPECIAL_CHARACTERS);
         $this->pubnub_pam->getConfiguration()->setAuthKey(static::SPECIAL_CHANNEL);
 
