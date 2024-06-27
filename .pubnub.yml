@@ -18,6 +18,8 @@ changelog:
     changes:
       - type: feature
         text: "Replacing GCM with FCM. This is not a breaking change, but using GCM will result in throwing `E_USER_DEPRECATED` warning."
+      - type: feature
+        text: "Added support for fetching messages"
   - date: 2023-11-27
     version: v6.1.3
     changes:
@@ -27,7 +29,7 @@ changelog:
     version: v6.1.2
     changes:
       - type: improvement
-        text: "Fix license info in composer.json" 
+        text: "Fix license info in composer.json"
   - date: 2023-10-30
     version: v6.1.1
     changes:

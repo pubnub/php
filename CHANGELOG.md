@@ -15,6 +15,7 @@ June 11 2024
 
 #### Added
 - Replacing GCM with FCM. This is not a breaking change, but using GCM will result in throwing `E_USER_DEPRECATED` warning.
+- Added support to fetching messages endpoint
 
 ## v6.1.3
 November 27 2023
@@ -80,40 +81,40 @@ December 16 2021
 ## [v4.6.0](https://github.com/pubnub/php/releases/tag/v4.6.0)
 October-26-2021
 
-- 🌟️ Add support for Access Manager v3 with example. 
+- 🌟️ Add support for Access Manager v3 with example.
 
 ## [v4.5.0](https://github.com/pubnub/php/releases/tag/v4.5.0)
 August-24-2021
 
-- 🌟️ Missing PNPresenceEventResult getters added, dependency update. 
+- 🌟️ Missing PNPresenceEventResult getters added, dependency update.
 
 ## [v4.4.0](https://github.com/pubnub/php/releases/tag/v4.4.0)
 July-29-2021
 
-- 🌟️ Fix for wrong signature calculation mechanism added. 
+- 🌟️ Fix for wrong signature calculation mechanism added.
 
 ## [v4.3.0](https://github.com/pubnub/php/releases/tag/v4.3.0)
 March-29-2021
 
-- 🌟️ Add support for random initialization vector. 
+- 🌟️ Add support for random initialization vector.
 
 ## [v4.2.0](https://github.com/pubnub/php/releases/tag/v4.2.0)
 February-2-2021
 
-- 🌟️ Add support for device channel registration with apns2. 
-- 🌟️ Allows management of users and channels with metadata. 
-- 🌟️ Implement v2 signatures required for push and objects. 
-- 🌟️ Implement v2 grant endpoint with support for user level grant. 
+- 🌟️ Add support for device channel registration with apns2.
+- 🌟️ Allows management of users and channels with metadata.
+- 🌟️ Implement v2 signatures required for push and objects.
+- 🌟️ Implement v2 grant endpoint with support for user level grant.
 
 ## [v4.1.7](https://github.com/pubnub/php/releases/tag/v4.1.7)
 September-14-2020
 
-- 🌟️ Add delete permission support to grant call. 
+- 🌟️ Add delete permission support to grant call.
 
 ## [v4.1.6](https://github.com/pubnub/php/releases/tag/v4.1.6)
 August-20-2020
 
-- ⭐️️ Remove hard coded keys from tests. 
+- ⭐️️ Remove hard coded keys from tests.
 
 ## [v4.1.5](https://github.com/pubnub/php/tree/v4.1.5)
  October-22-2019
