@@ -1,3 +1,9 @@
+## 7.0.0
+June 27 2024
+
+#### Added
+- When passed to the `PubNub` constructor, the `PNConfiguration` instance becomes immutable. You can disable this behavior by calling `PnConfiguration::disableImmutableCheck()` before passing it to the constructor although it is not recommended. Disabling immutability may result in unpredictable behavior if `PNConfiguration` is modified after instantiating `PubNub`.
+
 ## v6.3.0
 June 18 2024
 
