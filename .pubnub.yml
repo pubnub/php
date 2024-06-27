@@ -1,8 +1,13 @@
 name: php
-version: 6.3.0
+version: 7.0.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2024-06-27
+    version: 7.0.0
+    changes:
+      - type: feature
+        text: "When passed to the `PubNub` constructor, the `PNConfiguration` instance becomes immutable. You can disable this behavior by calling `PnConfiguration::disableImmutableCheck()` before passing it to the constructor although it is not recommended. Disabling immutability may result in unpredictable behavior if `PNConfiguration` is modified after instantiating `PubNub`."
   - date: 2024-06-18
     version: v6.3.0
     changes:
@@ -18,6 +23,8 @@ changelog:
     changes:
       - type: feature
         text: "Replacing GCM with FCM. This is not a breaking change, but using GCM will result in throwing `E_USER_DEPRECATED` warning."
+      - type: feature
+        text: "Added support for fetching messages"
   - date: 2023-11-27
     version: v6.1.3
     changes:
@@ -27,7 +34,7 @@ changelog:
     version: v6.1.2
     changes:
       - type: improvement
-        text: "Fix license info in composer.json" 
+        text: "Fix license info in composer.json"
   - date: 2023-10-30
     version: v6.1.1
     changes:
@@ -422,8 +429,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-6.3.0.zip
-            location: https://github.com/pubnub/php/releases/tag/v6.3.0
+            package-name: php-7.0.0.zip
+            location: https://github.com/pubnub/php/releases/tag/7.0.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
