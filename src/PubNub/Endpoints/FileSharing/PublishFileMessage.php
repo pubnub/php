@@ -55,7 +55,7 @@ class PublishFileMessage extends FileSharingEndpoint
 
     public function encryptMessage($message)
     {
-        $crypto = $this->pubnub->getCryptoSafe();
+        $crypto = $this->pubnub->getCrypto();
         $messageString = PubNubUtil::writeValueAsString($message);
         if ($crypto) {
             return $crypto->encrypt($messageString);

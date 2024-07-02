@@ -9,10 +9,9 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Objects\Channel\PNSetChannelMetadataResult;
 use PubNub\PubNubUtil;
 
-
 class SetChannelMetadata extends Endpoint
 {
-    const PATH = "/v2/objects/%s/channels/%s";
+    protected const PATH = "/v2/objects/%s/channels/%s";
 
     /** @var string */
     protected $channel;
@@ -83,9 +82,14 @@ class SetChannelMetadata extends Endpoint
      * @param array $result Decoded json
      * @return PNSetChannelMetadataResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNSetChannelMetadataResult
     {
         return PNSetChannelMetadataResult::fromPayload($result);
+    }
+
+    public function sync(): PNSetChannelMetadataResult
+    {
+        return parent::sync();
     }
 
     /**
@@ -105,7 +109,7 @@ class SetChannelMetadata extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

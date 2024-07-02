@@ -8,23 +8,22 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\History\PNHistoryResult;
 use PubNub\PubNubUtil;
 
-
 class History extends Endpoint
 {
-    const PATH = "/v2/history/sub-key/%s/channel/%s";
-    const MAX_COUNT = 100;
+    protected const PATH = "/v2/history/sub-key/%s/channel/%s";
+    protected const MAX_COUNT = 100;
 
     /** @var string */
-    protected $channel;
+    protected string $channel;
 
     /** @var int */
-    protected $start;
+    protected ?int $start;
 
     /** @var int */
-    protected $end;
+    protected ?int $end;
 
     /** @var bool */
-    protected $reverse;
+    protected bool $reverse = false;
 
     /** @var int */
     protected $count;
@@ -156,7 +155,8 @@ class History extends Endpoint
     protected function buildPath()
     {
         return sprintf(
-            static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
+            static::PATH,
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
             PubNubUtil::urlEncode($this->channel)
         );
     }
@@ -164,7 +164,7 @@ class History extends Endpoint
     /**
      * @return PNHistoryResult
      */
-    public function sync()
+    public function sync(): PNHistoryResult
     {
         return parent::sync();
     }
@@ -173,7 +173,7 @@ class History extends Endpoint
      * @param array $result Decoded json
      * @return PNHistoryResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNHistoryResult
     {
         try {
             return PNHistoryResult::fromJson(
