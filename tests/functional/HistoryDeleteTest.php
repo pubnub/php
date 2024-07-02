@@ -1,11 +1,11 @@
 <?php
+
 namespace Tests\Functional;
 
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-
 
 class HistoryDeleteTest extends PubNubTestCase
 {
@@ -22,9 +22,9 @@ class HistoryDeleteTest extends PubNubTestCase
         $historyDelete->channel('ch');
 
         $this->assertEquals(
-            sprintf(
-                HistoryDelete::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
-            $historyDelete->buildPath());
+            sprintf(HistoryDeleteExposed::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
+            $historyDelete->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -41,7 +41,7 @@ class HistoryDeleteTest extends PubNubTestCase
             ->end(200000);
 
         $this->assertEquals(
-            sprintf(HistoryDelete::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
+            sprintf(HistoryDeleteExposed::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
             $historyDelete->buildPath()
         );
 
@@ -54,8 +54,10 @@ class HistoryDeleteTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryDeleteExposed extends HistoryDelete
 {
+    public const PATH = parent::PATH;
     public function buildPath()
     {
         return parent::buildPath();

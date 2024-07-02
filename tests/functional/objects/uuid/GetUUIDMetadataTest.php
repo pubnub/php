@@ -3,6 +3,7 @@
 namespace Tests\Functional\Objects\UUID;
 
 use PubNub\Endpoints\Objects\UUID\GetUUIDMetadata;
+use PubNub\Models\Consumer\Objects\UUID\PNGetUUIDMetadataResult;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
@@ -22,7 +23,7 @@ class GetUUIDMetadataTest extends PubNubTestCase
             ->uuid("uuid");
 
         $this->assertEquals(sprintf(
-            GetUUIDMetadata::PATH,
+            GetUUIDMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "uuid"
         ), $getMetadata->buildPath());
@@ -64,8 +65,10 @@ class GetUUIDMetadataTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class GetUUIDMetadataExposed extends GetUUIDMetadata
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();
@@ -76,9 +79,8 @@ class GetUUIDMetadataExposed extends GetUUIDMetadata
         return parent::buildPath();
     }
 
-    public function createResponse($result)
+    public function createResponse($result): PNGetUUIDMetadataResult
     {
         return parent::createResponse($result);
     }
-
 }

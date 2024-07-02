@@ -1,11 +1,11 @@
 <?php
+
 namespace Tests\Functional;
 
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-
 
 class WhereNowTest extends PubNubTestCase
 {
@@ -25,8 +25,9 @@ class WhereNowTest extends PubNubTestCase
         $this->whereNow->uuid("person_uuid");
 
         $this->assertEquals(
-            sprintf(WhereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "person_uuid"),
-            $this->whereNow->buildPath());
+            sprintf(ExposedWhereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "person_uuid"),
+            $this->whereNow->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -37,8 +38,11 @@ class WhereNowTest extends PubNubTestCase
     public function testWhereNowNoUuid()
     {
         $this->assertEquals(
-            sprintf(WhereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
-                $this->pubnub->getConfiguration()->getUuid()),
+            sprintf(
+                ExposedWhereNow::PATH,
+                $this->pubnub->getConfiguration()->getSubscribeKey(),
+                $this->pubnub->getConfiguration()->getUuid()
+            ),
             $this->whereNow->buildPath()
         );
 
@@ -49,8 +53,10 @@ class WhereNowTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class ExposedWhereNow extends WhereNow
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();

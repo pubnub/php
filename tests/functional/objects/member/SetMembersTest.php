@@ -21,7 +21,7 @@ class SetMembersTest extends PubNubTestCase
             ->custom(["a" => "aa", "b" => "bb"]);
 
         $this->assertEquals(sprintf(
-            SetMembers::PATH,
+            SetMembersExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "ch"
         ), $setMembers->buildPath());
@@ -34,7 +34,7 @@ class SetMembersTest extends PubNubTestCase
         $data = $setMembers->buildData();
 
         $decoded_data = json_decode($data);
-        
+
         $this->assertNotEmpty($decoded_data->set);
         $this->assertEquals(3, count($decoded_data->set));
 
@@ -61,8 +61,10 @@ class SetMembersTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class SetMembersExposed extends SetMembers
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();
@@ -72,10 +74,9 @@ class SetMembersExposed extends SetMembers
     {
         return parent::buildData();
     }
-    
+
     public function buildPath()
     {
         return parent::buildPath();
     }
-
 }

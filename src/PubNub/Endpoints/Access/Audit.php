@@ -9,10 +9,9 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerAuditResult;
 use PubNub\PubNubUtil;
 
-
 class Audit extends Endpoint
 {
-    const PATH = "/v1/auth/audit/sub-key/%s";
+    protected const PATH = "/v1/auth/audit/sub-key/%s";
 
     /** @var string[] */
     protected $authKeys = [];
@@ -88,7 +87,7 @@ class Audit extends Endpoint
     /**
      * @return PNAccessManagerAuditResult
      */
-    public function sync()
+    public function sync(): PNAccessManagerAuditResult
     {
         return parent::sync();
     }
@@ -97,7 +96,7 @@ class Audit extends Endpoint
      * @param array $result Decoded json
      * @return PNAccessManagerAuditResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNAccessManagerAuditResult
     {
         return PNAccessManagerAuditResult::fromJson($result['payload']);
     }

@@ -76,6 +76,7 @@ class HistoryTest extends \PubNubTestCase
      */
     public function testAuthSuccess()
     {
+        $this->expectNotToPerformAssertions();
         $this->pubnub->getConfiguration()->setAuthKey("blah");
         $history = new HistoryExposed($this->pubnub);
 

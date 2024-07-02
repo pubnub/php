@@ -34,7 +34,7 @@ class SetUUIDMetadataTest extends PubNubTestCase
             ->meta($metadata);
 
         $this->assertEquals(sprintf(
-            SetUUIDMetadata::PATH,
+            SetUUIDMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "uuid"
         ), $setMetadata->buildPath());
@@ -84,7 +84,7 @@ class SetUUIDMetadataTest extends PubNubTestCase
             ->meta($metadata);
 
         $this->assertEquals(sprintf(
-            SetUUIDMetadata::PATH,
+            SetUUIDMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "uuid"
         ), $setMetadata->buildPath());
@@ -121,7 +121,7 @@ class SetUUIDMetadataTest extends PubNubTestCase
         $setMetadata = new SetUUIDMetadataExposed($this->pubnub);
 
         $metadata = new stdClass();
-        
+
         $metadata->id = "uuid";
         $metadata->name = "uuid_name";
         $metadata->externalId = "uuid_external_id";
@@ -137,7 +137,7 @@ class SetUUIDMetadataTest extends PubNubTestCase
             ->meta($metadata);
 
         $this->assertEquals(sprintf(
-            SetUUIDMetadata::PATH,
+            SetUUIDMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "uuid"
         ), $setMetadata->buildPath());
@@ -165,8 +165,10 @@ class SetUUIDMetadataTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class SetUUIDMetadataExposed extends SetUUIDMetadata
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();
@@ -176,10 +178,9 @@ class SetUUIDMetadataExposed extends SetUUIDMetadata
     {
         return parent::buildData();
     }
-    
+
     public function buildPath()
     {
         return parent::buildPath();
     }
-
 }

@@ -3,6 +3,7 @@
 namespace Tests\Functional\Objects\Membership;
 
 use PubNub\Endpoints\Objects\Membership\GetMemberships;
+use PubNub\Models\Consumer\Objects\Membership\PNMembershipsResult;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
@@ -17,10 +18,15 @@ class GetMembershipsTest extends PubNubTestCase
 
         $getMemberships
             ->uuid("uuid")
-            ->includeFields([ "totalCount" => true, "customFields" => true, "customChannelFields" => true, "channelFields" => true ]);
+            ->includeFields([
+                "totalCount" => true,
+                "customFields" => true,
+                "customChannelFields" => true,
+                "channelFields" => true
+            ]);
 
         $this->assertEquals(sprintf(
-            GetMemberships::PATH,
+            GetMembershipsExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "uuid"
         ), $getMemberships->buildPath());
@@ -87,8 +93,11 @@ class GetMembershipsTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class GetMembershipsExposed extends GetMemberships
 {
+    public const PATH = parent::PATH;
+
     public function buildParams()
     {
         return parent::buildParams();
@@ -99,9 +108,8 @@ class GetMembershipsExposed extends GetMemberships
         return parent::buildPath();
     }
 
-    public function createResponse($result)
+    public function createResponse($result): PNMembershipsResult
     {
         return parent::createResponse($result);
     }
-
 }

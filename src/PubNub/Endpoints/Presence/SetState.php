@@ -9,10 +9,9 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNSetStateResult;
 use PubNub\PubNubUtil;
 
-
 class SetState extends Endpoint
 {
-    const PATH = "/v2/presence/sub-key/%s/channel/%s/uuid/%s/data";
+    protected const PATH = "/v2/presence/sub-key/%s/channel/%s/uuid/%s/data";
 
     /** @var array */
     protected $state = [];
@@ -121,7 +120,7 @@ class SetState extends Endpoint
     /**
      * @return PNSetStateResult
      */
-    public function sync()
+    public function sync(): PNSetStateResult
     {
         return parent::sync();
     }
@@ -130,7 +129,7 @@ class SetState extends Endpoint
      * @param array $result Decoded json
      * @return PNSetStateResult|array
      */
-    public function createResponse($result)
+    public function createResponse($result): PNSetStateResult
     {
         if (array_key_exists('status', $result) && $result['status'] === 200) {
             return new PNSetStateResult($result['payload']);

@@ -9,11 +9,10 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNHereNowResult;
 use PubNub\PubNubUtil;
 
-
 class HereNow extends Endpoint
 {
-    const PATH = "/v2/presence/sub-key/%s/channel/%s";
-    const GLOBAL_PATH = "/v2/presence/sub-key/%s";
+    protected const PATH = "/v2/presence/sub-key/%s/channel/%s";
+    protected const GLOBAL_PATH = "/v2/presence/sub-key/%s";
 
     /**  @var string[] */
     protected $channels = [];
@@ -117,7 +116,8 @@ class HereNow extends Endpoint
         if (count($this->channels) === 0 && count($this->groups) === 0) {
             return sprintf(HereNow::GLOBAL_PATH, $this->pubnub->getConfiguration()->getSubscribeKey());
         } else {
-            return sprintf(HereNow::PATH,
+            return sprintf(
+                HereNow::PATH,
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 PubNubUtil::joinChannels($this->channels)
             );
@@ -127,7 +127,7 @@ class HereNow extends Endpoint
     /**
      * @return PNHereNowResult
      */
-    public function sync()
+    public function sync(): PNHereNowResult
     {
         return parent::sync();
     }
@@ -136,7 +136,7 @@ class HereNow extends Endpoint
      * @param array $result Decoded json
      * @return PNHereNowResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNHereNowResult
     {
         return PNHereNowResult::fromJson($result, $this->channels);
     }

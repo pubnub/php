@@ -8,10 +8,9 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsListChannelsResult;
 
-
 class ListChannelsInChannelGroup extends Endpoint
 {
-    const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s";
+    protected const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s";
 
     /** @var  string */
     protected $channelGroup;
@@ -72,7 +71,7 @@ class ListChannelsInChannelGroup extends Endpoint
     /**
      * @return PNChannelGroupsListChannelsResult
      */
-    public function sync()
+    public function sync(): PNChannelGroupsListChannelsResult
     {
         return parent::sync();
     }
@@ -81,7 +80,7 @@ class ListChannelsInChannelGroup extends Endpoint
      * @param array $result Decoded json
      * @return PNChannelGroupsListChannelsResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNChannelGroupsListChannelsResult
     {
         return PNChannelGroupsListChannelsResult::fromPayload(static::fetchPayload($result));
     }
@@ -91,7 +90,7 @@ class ListChannelsInChannelGroup extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

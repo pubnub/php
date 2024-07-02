@@ -8,29 +8,28 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\History\PNHistoryResult;
 use PubNub\PubNubUtil;
 
-
 class History extends Endpoint
 {
-    const PATH = "/v2/history/sub-key/%s/channel/%s";
-    const MAX_COUNT = 100;
+    protected const PATH = "/v2/history/sub-key/%s/channel/%s";
+    protected const MAX_COUNT = 100;
 
     /** @var string */
-    protected $channel;
+    protected string $channel;
 
     /** @var int */
-    protected $start;
+    protected ?int $start;
 
     /** @var int */
-    protected $end;
+    protected ?int $end;
 
     /** @var bool */
-    protected $reverse;
+    protected ?bool $reverse;
 
     /** @var int */
-    protected $count;
+    protected ?int $count;
 
     /** @var bool */
-    protected $includeTimetoken;
+    protected ?bool $includeTimetoken;
 
     /**
      * @param string $channel
@@ -105,7 +104,7 @@ class History extends Endpoint
     {
         $this->validateSubscribeKey();
 
-        if ($this->channel === null || strlen($this->channel) === 0) {
+        if (!isset($this->channel) || strlen($this->channel) === 0) {
             throw new PubNubValidationException("Channel missing");
         }
     }
@@ -117,25 +116,25 @@ class History extends Endpoint
     {
         $params = [];
 
-        if ($this->start !== null) {
+        if (isset($this->start)) {
             $params['start'] = (string) $this->start;
         }
 
-        if ($this->end !== null) {
+        if (isset($this->end)) {
             $params['end'] = (string) $this->end;
         }
 
-        if ($this->count !== null && $this->count > 0 && $this->count <= static::MAX_COUNT) {
+        if (isset($this->count) && $this->count > 0 && $this->count <= static::MAX_COUNT) {
             $params['count'] = (string) $this->count;
         } else {
             $params['count'] = '100';
         }
 
-        if ($this->reverse !== null) {
+        if (isset($this->reverse)) {
             $this->reverse ? $params['reverse'] = "true" : $params['reverse'] = "false";
         }
 
-        if ($this->includeTimetoken !== null) {
+        if (isset($this->includeTimetoken)) {
             $this->includeTimetoken ? $params['include_token'] = "true" : $params['include_token'] = "false";
         }
 
@@ -156,7 +155,8 @@ class History extends Endpoint
     protected function buildPath()
     {
         return sprintf(
-            static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
+            static::PATH,
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
             PubNubUtil::urlEncode($this->channel)
         );
     }
@@ -164,7 +164,7 @@ class History extends Endpoint
     /**
      * @return PNHistoryResult
      */
-    public function sync()
+    public function sync(): PNHistoryResult
     {
         return parent::sync();
     }
@@ -173,20 +173,21 @@ class History extends Endpoint
      * @param array $result Decoded json
      * @return PNHistoryResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNHistoryResult
     {
+        $includeTimetoken = isset($this->includeTimetoken) ? $this->includeTimetoken : null;
         try {
             return PNHistoryResult::fromJson(
                 $result,
                 $this->pubnub->getConfiguration()->getCryptoSafe(),
-                $this->includeTimetoken,
+                $includeTimetoken,
                 $this->pubnub->getConfiguration()->getCipherKey()
             );
         } catch (PubNubValidationException $e) {
             return PNHistoryResult::fromJson(
                 $result,
                 null,
-                $this->includeTimetoken,
+                $includeTimetoken,
                 null
             );
         }

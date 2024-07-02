@@ -14,7 +14,7 @@ use PubNub\PubNubCborDecode;
 
 class GrantToken extends Endpoint
 {
-    private const PATH = '/v3/pam/%s/grant';
+    protected const PATH = '/v3/pam/%s/grant';
 
     /** @var  int */
     protected $ttl;
@@ -239,16 +239,16 @@ class GrantToken extends Endpoint
     /**
      * @return PNAccessManagerGrantResult
      */
-    public function sync()
+    public function sync(): PNAccessManagerGrantResult
     {
         return parent::sync();
     }
 
     /**
      * @param string $token
-     * @return PNAccessManagerGrantResult
+     * @return : PNAccessManagerGrantResult
      */
-    public function createResponse($response)
+    public function createResponse($response): PNAccessManagerGrantResult
     {
         return $response['data']['token'];
     }

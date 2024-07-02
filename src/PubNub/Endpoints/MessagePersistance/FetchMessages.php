@@ -153,7 +153,7 @@ class FetchMessages extends Endpoint
      * @param array $json Decoded json
      * @return PNPublishResult
      */
-    protected function createResponse($json)
+    protected function createResponse($json): PNFetchMessagesResult
     {
         return PNFetchMessagesResult::fromJson(
             $json,

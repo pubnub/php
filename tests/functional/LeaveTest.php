@@ -6,7 +6,6 @@ use PubNub\PubNub;
 use PubNub\Endpoints\Presence\Leave;
 use PubNub\PubNubUtil;
 
-
 class LeaveTest extends \PubNubTestCase
 {
     /** @var  LeaveExposed */
@@ -42,7 +41,7 @@ class LeaveTest extends \PubNubTestCase
         $this->leave->channels("ch1,ch2,ch3");
 
         $this->assertEquals(
-            sprintf(Leave::PATH, $this->config->getSubscribeKey(), "ch1,ch2,ch3"),
+            sprintf(LeaveExposed::PATH, $this->config->getSubscribeKey(), "ch1,ch2,ch3"),
             $this->leave->buildPath()
         );
 
@@ -59,7 +58,7 @@ class LeaveTest extends \PubNubTestCase
         $this->leave->channels(["ch1","ch2","ch3"]);
 
         $this->assertEquals(
-            sprintf(Leave::PATH, $this->config->getSubscribeKey(), "ch1,ch2,ch3"),
+            sprintf(LeaveExposed::PATH, $this->config->getSubscribeKey(), "ch1,ch2,ch3"),
             $this->leave->buildPath()
         );
 
@@ -76,7 +75,7 @@ class LeaveTest extends \PubNubTestCase
         $this->leave->channelGroups("gr");
 
         $this->assertEquals(
-            sprintf(Leave::PATH, $this->config->getSubscribeKey(), ","),
+            sprintf(LeaveExposed::PATH, $this->config->getSubscribeKey(), ","),
             $this->leave->buildPath()
         );
 
@@ -94,7 +93,7 @@ class LeaveTest extends \PubNubTestCase
         $this->leave->channelGroups("gr1,gr2,gr3");
 
         $this->assertEquals(
-            sprintf(Leave::PATH, $this->config->getSubscribeKey(), ","),
+            sprintf(LeaveExposed::PATH, $this->config->getSubscribeKey(), ","),
             $this->leave->buildPath()
         );
 
@@ -112,7 +111,7 @@ class LeaveTest extends \PubNubTestCase
         $this->leave->channelGroups(["gr1","gr2","gr3"]);
 
         $this->assertEquals(
-            sprintf(Leave::PATH, $this->config->getSubscribeKey(), ","),
+            sprintf(LeaveExposed::PATH, $this->config->getSubscribeKey(), ","),
             $this->leave->buildPath()
         );
 
@@ -130,7 +129,7 @@ class LeaveTest extends \PubNubTestCase
         $this->leave->channels("ch1,ch2")->channelGroups(["gr1", "gr2"]);
 
         $this->assertEquals(
-            sprintf(Leave::PATH, $this->config->getSubscribeKey(), "ch1,ch2"),
+            sprintf(LeaveExposed::PATH, $this->config->getSubscribeKey(), "ch1,ch2"),
             $this->leave->buildPath()
         );
 
@@ -145,9 +144,10 @@ class LeaveTest extends \PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class LeaveExposed extends Leave
 {
+    public const PATH = parent::PATH;
     public function buildPath()
     {
         return parent::buildPath();

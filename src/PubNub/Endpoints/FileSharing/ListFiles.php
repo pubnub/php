@@ -74,6 +74,11 @@ class ListFiles extends Endpoint
         return true;
     }
 
+    public function sync(): PNGetFilesResult
+    {
+        return parent::sync();
+    }
+
     protected function createResponse($result): PNGetFilesResult
     {
         return new PNGetFilesResult($result);

@@ -39,7 +39,12 @@ class DownloadFile extends FileSharingEndpoint
         return false;
     }
 
-    protected function createResponse($result)
+    public function sync(): PNDownloadFileResult
+    {
+        return parent::sync();
+    }
+
+    protected function createResponse($result): PNDownloadFileResult
     {
         if ($this->pubnub->isCryptoEnabled()) {
             return new PNDownloadFileResult($this->pubnub->getCrypto()->decrypt((string)$result));

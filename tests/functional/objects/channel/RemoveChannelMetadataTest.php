@@ -19,7 +19,7 @@ class RemoveChannelMetadataTest extends PubNubTestCase
             ->channel("ch");
 
         $this->assertEquals(sprintf(
-            RemoveChannelMetadata::PATH,
+            RemoveChannelMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "ch"
         ), $removeMetadata->buildPath());
@@ -39,8 +39,11 @@ class RemoveChannelMetadataTest extends PubNubTestCase
     }
 }
 
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveChannelMetadataExposed extends RemoveChannelMetadata
 {
+    public const PATH = parent::PATH;
+
     public function buildParams()
     {
         return parent::buildParams();
@@ -51,9 +54,8 @@ class RemoveChannelMetadataExposed extends RemoveChannelMetadata
         return parent::buildPath();
     }
 
-    public function createResponse($result)
+    public function createResponse($result): bool
     {
         return parent::createResponse($result);
     }
-
 }

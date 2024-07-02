@@ -8,10 +8,9 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNubUtil;
 
-
 class Leave extends Endpoint
 {
-    const PATH = "/v2/presence/sub-key/%s/channel/%s/leave";
+    protected const PATH = "/v2/presence/sub-key/%s/channel/%s/leave";
 
     /** @var string[] */
     protected $channels = [];
@@ -83,16 +82,22 @@ class Leave extends Endpoint
         return sprintf(
             Leave::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
-            PubNubUtil::joinChannels($this->channels));
+            PubNubUtil::joinChannels($this->channels)
+        );
     }
 
     /**
      * @param array $result Decoded json
      * @return array
      */
-    protected function createResponse($result)
+    protected function createResponse($result): array
     {
         return $result;
+    }
+
+    public function sync(): array
+    {
+        return parent::sync();
     }
 
     /**
@@ -142,5 +147,4 @@ class Leave extends Endpoint
     {
         return "Leave";
     }
-
 }

@@ -9,10 +9,9 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Objects\Member\PNMembersResult;
 use PubNub\PubNubUtil;
 
-
 class RemoveMembers extends ObjectsCollectionEndpoint
 {
-    const PATH = "/v2/objects/%s/channels/%s/uuids";
+    protected const PATH = "/v2/objects/%s/channels/%s/uuids";
 
     /** @var string */
     protected $channel;
@@ -80,8 +79,7 @@ class RemoveMembers extends ObjectsCollectionEndpoint
     {
         $entries = [];
 
-        foreach($this->uuids as $value)
-        {
+        foreach ($this->uuids as $value) {
             $entry = [
                 "uuid" => [
                     "id" => $value,
@@ -112,9 +110,14 @@ class RemoveMembers extends ObjectsCollectionEndpoint
      * @param array $result Decoded json
      * @return PNMembersResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNMembersResult
     {
         return PNMembersResult::fromPayload($result);
+    }
+
+    public function sync(): PNMembersResult
+    {
+        return parent::sync();
     }
 
     /**
@@ -127,18 +130,15 @@ class RemoveMembers extends ObjectsCollectionEndpoint
         if (count($this->include) > 0) {
             $includes = [];
 
-            if (array_key_exists("customFields", $this->include))
-            {
+            if (array_key_exists("customFields", $this->include)) {
                 array_push($includes, 'custom');
             }
 
-            if (array_key_exists("customUUIDFields", $this->include))
-            {
+            if (array_key_exists("customUUIDFields", $this->include)) {
                 array_push($includes, 'uuid.custom');
             }
 
-            if (array_key_exists("UUIDFields", $this->include))
-            {
+            if (array_key_exists("UUIDFields", $this->include)) {
                 array_push($includes, 'uuid');
             }
 
@@ -149,45 +149,38 @@ class RemoveMembers extends ObjectsCollectionEndpoint
             }
         }
 
-        if (array_key_exists("totalCount", $this->include))
-        {
+        if (array_key_exists("totalCount", $this->include)) {
             $params['count'] = "true";
         }
 
-        if (array_key_exists("next", $this->page))
-        {
+        if (array_key_exists("next", $this->page)) {
             $params['start'] = $this->page["next"];
         }
 
-        if (array_key_exists("prev", $this->page))
-        {
+        if (array_key_exists("prev", $this->page)) {
             $params['end'] = $this->page["prev"];
         }
 
-        if (!empty($this->filter))
-        {
+        if (!empty($this->filter)) {
             $params['filter'] = $this->filter;
         }
 
-        if (!empty($this->limit))
-        {
+        if (!empty($this->limit)) {
             $params['limit'] = $this->limit;
         }
 
-        if (!empty($this->sort))
-        {
-          $sortEntries = [];
+        if (!empty($this->sort)) {
+            $sortEntries = [];
 
-          foreach ($this->sort as $key => $value)
-          {
-            if ($value === 'asc' || $value === 'desc') {
-              array_push($sortEntries, "$key:$value");
-            } else {
-                array_push($sortEntries, $key);
+            foreach ($this->sort as $key => $value) {
+                if ($value === 'asc' || $value === 'desc') {
+                    array_push($sortEntries, "$key:$value");
+                } else {
+                    array_push($sortEntries, $key);
+                }
             }
-          }
 
-          $params['sort'] = $sortEntries;
+            $params['sort'] = $sortEntries;
         }
 
         return $params;
@@ -198,7 +191,7 @@ class RemoveMembers extends ObjectsCollectionEndpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

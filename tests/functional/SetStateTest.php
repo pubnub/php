@@ -32,23 +32,28 @@ class SetStateTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                SetState::PATH,
+                SetStateExposed::PATH,
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 "ch",
                 $this->pubnub->getConfiguration()->getUuid()
-            ), $this->setState->buildPath());
+            ),
+            $this->setState->buildPath()
+        );
 
         $params = $this->setState->buildParams();
 
         $this->assertEquals(
             PubNubUtil::urlEncode(PubNub::getSdkFullName()),
-            $params['pnsdk']);
+            $params['pnsdk']
+        );
         $this->assertEquals(
             $this->pubnub->getConfiguration()->getUuid(),
-            $params['uuid']);
+            $params['uuid']
+        );
         $this->assertEquals(
             json_decode("%7B%22count%22%3A%205%2C%20%22name%22%3A%20%22Alex%22%7D"),
-            json_decode($params['state']));
+            json_decode($params['state'])
+        );
 
         $this->assertEquals(['ch'], $this->setState->getChannels());
     }
@@ -59,11 +64,13 @@ class SetStateTest extends \PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                SetState::PATH,
+                SetStateExposed::PATH,
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 ",",
                 $this->pubnub->getConfiguration()->getUuid()
-            ), $this->setState->buildPath());
+            ),
+            $this->setState->buildPath()
+        );
 
         $params = $this->setState->buildParams();
 
@@ -72,14 +79,17 @@ class SetStateTest extends \PubNubTestCase
         $this->assertEquals($params['channel-group'], 'gr');
         $this->assertEquals(
             json_decode("%7B%22count%22%3A%205%2C%20%22name%22%3A%20%22Alex%22%7D"),
-            json_decode($params['state']));
+            json_decode($params['state'])
+        );
         $this->assertEquals(0, count($this->setState->getChannels()));
         $this->assertEquals(['gr'], $this->setState->getGroups());
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class SetStateExposed extends SetState
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();

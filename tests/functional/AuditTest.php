@@ -7,7 +7,6 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
-
 class AuditTest extends \PubNubTestCase
 {
     /** @var  AuditExposed */
@@ -25,7 +24,10 @@ class AuditTest extends \PubNubTestCase
     {
         $this->audit->channels('ch');
 
-        $this->assertEquals(sprintf(Audit::PATH, $this->config_pam->getSubscribeKey()), $this->audit->buildPath());
+        $this->assertEquals(
+            sprintf(AuditExposed::PATH, $this->config_pam->getSubscribeKey()),
+            $this->audit->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -52,7 +54,10 @@ class AuditTest extends \PubNubTestCase
     {
         $this->audit->channelGroups(['gr1', 'gr2']);
 
-        $this->assertEquals(sprintf(Audit::PATH, $this->config_pam->getSubscribeKey()), $this->audit->buildPath());
+        $this->assertEquals(
+            sprintf(AuditExposed::PATH, $this->config_pam->getSubscribeKey()),
+            $this->audit->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -76,16 +81,19 @@ class AuditTest extends \PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class PubNubStubbedAudit extends PubNub
 {
-    public function timestamp()
+    public function timestamp(): int
     {
         return 123;
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class AuditExposed extends Audit
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();

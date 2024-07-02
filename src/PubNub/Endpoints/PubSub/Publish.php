@@ -10,20 +10,19 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\PNPublishResult;
 use PubNub\PubNubUtil;
 
-
-class Publish extends Endpoint
+final class Publish extends Endpoint
 {
-    const GET_PATH = "/publish/%s/%s/0/%s/%s/%s";
-    const POST_PATH = "/publish/%s/%s/0/%s/%s";
+    private const GET_PATH = "/publish/%s/%s/0/%s/%s/%s";
+    private const POST_PATH = "/publish/%s/%s/0/%s/%s";
 
     /** @var  mixed $message to publish */
-    protected $message;
+    protected mixed $message;
 
-    /** @var  string $channel to send message on*/
-    protected $channel;
+    /** @var  string $channel to send message to */
+    protected string $channel;
 
     /** @var  bool $shouldStore in history */
-    protected $shouldStore;
+    protected ?bool $shouldStore;
 
     /** @var bool $usePost HTTP method instead of default GET  */
     protected $usePost;
@@ -132,11 +131,11 @@ class Publish extends Endpoint
      */
     protected function validateParams()
     {
-        if ($this->message === null) {
+        if (!isset($this->message)) {
             throw new PubNubValidationException("Message Missing");
         }
 
-        if (!is_string($this->channel) || strlen($this->channel) === 0) {
+        if (!isset($this->channel) || !is_string($this->channel) || strlen($this->channel) === 0) {
             throw new PubNubValidationException("Channel Missing");
         }
 
@@ -151,11 +150,11 @@ class Publish extends Endpoint
     {
         $params = [];
 
-        if ($this->meta !== null) {
+        if (isset($this->meta)) {
             $params['meta'] = PubNubUtil::writeValueAsString($this->meta);
         }
 
-        if ($this->shouldStore !== null) {
+        if (isset($this->shouldStore)) {
             if ($this->shouldStore) {
                 $params['store'] = "1";
             } else {
@@ -163,7 +162,7 @@ class Publish extends Endpoint
             }
         }
 
-        if ($this->ttl !== null) {
+        if (isset($this->ttl)) {
             $params['ttl'] = (string) $this->ttl;
         }
 
@@ -249,7 +248,7 @@ class Publish extends Endpoint
     /**
      * @return PNPublishResult
      */
-    public function sync()
+    public function sync(): PNPublishResult
     {
         return parent::sync();
     }
@@ -258,7 +257,7 @@ class Publish extends Endpoint
      * @param array $result Decoded json
      * @return PNPublishResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNPublishResult
     {
         $timetoken = floatval($result[2]);
 

@@ -3,6 +3,7 @@
 namespace Tests\Functional\Objects\Channel;
 
 use PubNub\Endpoints\Objects\Channel\GetAllChannelMetadata;
+use PubNub\Models\Consumer\Objects\Channel\PNGetAllChannelMetadataResult;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
@@ -19,7 +20,7 @@ class GetAllChannelMetadataTest extends PubNubTestCase
             ->includeFields([ "totalCount" => true, "customFields" => true ]);
 
         $this->assertEquals(sprintf(
-            GetAllChannelMetadata::PATH,
+            GetAllChannelMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey()
         ), $getAllMetadata->buildPath());
 
@@ -70,8 +71,10 @@ class GetAllChannelMetadataTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class GetAllChannelMetadataExposed extends GetAllChannelMetadata
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();
@@ -82,9 +85,8 @@ class GetAllChannelMetadataExposed extends GetAllChannelMetadata
         return parent::buildPath();
     }
 
-    public function createResponse($result)
+    public function createResponse($result): PNGetAllChannelMetadataResult
     {
         return parent::createResponse($result);
     }
-
 }

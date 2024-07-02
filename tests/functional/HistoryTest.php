@@ -1,11 +1,11 @@
 <?php
+
 namespace Tests\Functional;
 
 use PubNub\Endpoints\History;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-
 
 class HistoryTest extends PubNubTestCase
 {
@@ -25,9 +25,9 @@ class HistoryTest extends PubNubTestCase
         $this->history->channel('ch');
 
         $this->assertEquals(
-            sprintf(
-                History::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
-                $this->history->buildPath());
+            sprintf(HistoryExposed::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
+            $this->history->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -47,7 +47,7 @@ class HistoryTest extends PubNubTestCase
             ->includeTimetoken(true);
 
         $this->assertEquals(
-            sprintf(History::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
+            sprintf(HistoryExposed::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), 'ch'),
             $this->history->buildPath()
         );
 
@@ -63,9 +63,12 @@ class HistoryTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryExposed extends History
 {
-     public function buildPath()
+    public const PATH = parent::PATH;
+
+    public function buildPath()
     {
         return parent::buildPath();
     }

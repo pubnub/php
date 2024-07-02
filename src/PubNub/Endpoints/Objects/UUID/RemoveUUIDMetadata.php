@@ -7,10 +7,9 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 
-
 class RemoveUUIDMetadata extends Endpoint
 {
-    const PATH = "/v2/objects/%s/uuids/%s";
+    protected const PATH = "/v2/objects/%s/uuids/%s";
 
     /** @var string */
     protected $uuid;
@@ -59,11 +58,16 @@ class RemoveUUIDMetadata extends Endpoint
         );
     }
 
+    public function sync(): bool
+    {
+        return parent::sync();
+    }
+
     /**
      * @param array $result Decoded json
      * @return bool
      */
-    protected function createResponse($result)
+    protected function createResponse($result): bool
     {
         return array_key_exists("data", $result);
     }
@@ -83,7 +87,7 @@ class RemoveUUIDMetadata extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

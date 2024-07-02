@@ -11,7 +11,7 @@ use PubNub\PubNubUtil;
 
 class MessageCount extends Endpoint
 {
-    const PATH = "/v3/history/sub-key/%s/message-counts/%s";
+    protected const PATH = "/v3/history/sub-key/%s/message-counts/%s";
 
     /** @var array */
     protected $channels = [];
@@ -59,7 +59,6 @@ class MessageCount extends Endpoint
         if (count($this->channelsTimetoken) > 1 && count($this->channels) !== count($this->channelsTimetoken)) {
             throw new PubNubValidationException("The number of channels and the number of timetokens do not match");
         }
-
     }
 
     /**
@@ -67,7 +66,7 @@ class MessageCount extends Endpoint
      * @return PNMessageCountResult
      * @throws PubNubServerException
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNMessageCountResult
     {
         if (!isset($result['channels'])) {
             $exception = (new PubNubServerException())
@@ -109,7 +108,8 @@ class MessageCount extends Endpoint
     protected function buildPath()
     {
         return sprintf(
-            static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
+            static::PATH,
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
             PubNubUtil::joinChannels($this->channels)
         );
     }
@@ -166,7 +166,7 @@ class MessageCount extends Endpoint
      * @return PNMessageCountResult
      * @throws \PubNub\Exceptions\PubNubException
      */
-    public function sync()
+    public function sync(): PNMessageCountResult
     {
         return parent::sync();
     }

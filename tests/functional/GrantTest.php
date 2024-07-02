@@ -8,7 +8,6 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
-
 class GrantTest extends \PubNubTestCase
 {
     /** @var  GrantExposed */
@@ -39,8 +38,8 @@ class GrantTest extends \PubNubTestCase
         $this->grant->channels('ch')->read(true)->write(true)->ttl(7);
 
         $this->assertEquals(
-                sprintf(Grant::PATH, $this->config_pam->getSubscribeKey()),
-                $this->grant->buildPath()
+            sprintf(GrantExposed::PATH, $this->config_pam->getSubscribeKey()),
+            $this->grant->buildPath()
         );
 
         $this->assertEquals([
@@ -77,7 +76,7 @@ class GrantTest extends \PubNubTestCase
             ->write(false);
 
         $this->assertEquals(
-            sprintf(Grant::PATH, $this->config_pam->getSubscribeKey()),
+            sprintf(GrantExposed::PATH, $this->config_pam->getSubscribeKey()),
             $this->grant->buildPath()
         );
 
@@ -107,17 +106,19 @@ class GrantTest extends \PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class PubNubStubbed extends PubNub
 {
-    public function timestamp()
+    public function timestamp(): int
     {
         return 123;
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class GrantExposed extends Grant
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();

@@ -4,15 +4,14 @@ namespace PubNub\Endpoints\Access;
 
 use PubNub\Endpoints\Endpoint;
 use PubNub\Exceptions\PubNubValidationException;
-use PubNub\Models\Consumer\AccessManager\PNAccessManagerGrantResult;
 use PubNub\PubNubUtil;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
-
+use PubNub\Models\Consumer\AccessManager\PNAccessManagerAbstractResult;
 
 class Grant extends Endpoint
 {
-    const PATH = "/v2/auth/grant/sub-key/%s";
+    protected const PATH = "/v2/auth/grant/sub-key/%s";
 
     /** @var string[] */
     protected $authKeys = [];
@@ -195,7 +194,10 @@ class Grant extends Endpoint
         $this->validateSubscribeKey();
         $this->validateSecretKey();
 
-        if ($this->write === null && $this->read === null && $this->manage === null && $this->get === null && $this->update === null && $this->join === null) {
+        if (
+            $this->write === null && $this->read === null && $this->manage === null && $this->get === null
+            && $this->update === null && $this->join === null
+        ) {
             throw new PubNubValidationException("At least one flag should be specified");
         }
     }
@@ -277,20 +279,20 @@ class Grant extends Endpoint
     }
 
     /**
-     * @return PNAccessManagerGrantResult
+     * @return PNAccessManagerAbstractResult
      */
-    public function sync()
+    public function sync(): PNAccessManagerAbstractResult
     {
         return parent::sync();
     }
 
     /**
      * @param array $result
-     * @return PNAccessManagerGrantResult
+     * @return PNAccessManagerAbstractResult
      */
-    public function createResponse($result)
+    public function createResponse($result): PNAccessManagerAbstractResult
     {
-        return PNAccessManagerGrantResult::fromJson($result['payload']);
+        return PNAccessManagerAbstractResult::fromJson($result['payload']);
     }
 
     /**
@@ -365,4 +367,3 @@ class Grant extends Endpoint
         return "Grant";
     }
 }
-

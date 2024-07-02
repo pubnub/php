@@ -1,11 +1,11 @@
 <?php
+
 namespace Tests\Functional;
 
 use PubNub\PubNub;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-
 
 class HereNowTest extends PubNubTestCase
 {
@@ -24,9 +24,10 @@ class HereNowTest extends PubNubTestCase
     {
         $this->hereNow->channels("ch1");
 
-        $this->assertEquals(sprintf(HereNow::PATH,
-            $this->pubnub->getConfiguration()->getSubscribeKey(),
-            "ch1"), $this->hereNow->buildPath());
+        $this->assertEquals(
+            sprintf(ExposedHereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "ch1"),
+            $this->hereNow->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -39,7 +40,7 @@ class HereNowTest extends PubNubTestCase
         $this->hereNow->channelGroups("gr1");
 
         $this->assertEquals(
-            sprintf(HereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), ","),
+            sprintf(ExposedHereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), ","),
             $this->hereNow->buildPath()
         );
 
@@ -59,7 +60,7 @@ class HereNowTest extends PubNubTestCase
             ->includeUuids(false);
 
         $this->assertEquals(
-            sprintf(HereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "ch1"),
+            sprintf(ExposedHereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "ch1"),
             $this->hereNow->buildPath()
         );
 
@@ -73,8 +74,11 @@ class HereNowTest extends PubNubTestCase
     }
 }
 
+
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class ExposedHereNow extends HereNow
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();

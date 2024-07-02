@@ -173,7 +173,7 @@ class Subscribe extends Endpoint
      * @param array $result Decoded json
      * @return SubscribeEnvelope
      */
-    protected function createResponse($result)
+    protected function createResponse($result): SubscribeEnvelope
     {
         return SubscribeEnvelope::fromJson($result);
     }
