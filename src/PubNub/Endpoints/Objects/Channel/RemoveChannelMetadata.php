@@ -7,10 +7,9 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 
-
 class RemoveChannelMetadata extends Endpoint
 {
-    const PATH = "/v2/objects/%s/channels/%s";
+    protected const PATH = "/v2/objects/%s/channels/%s";
 
     /** @var string */
     protected $channel;
@@ -63,9 +62,14 @@ class RemoveChannelMetadata extends Endpoint
      * @param array $result Decoded json
      * @return bool
      */
-    protected function createResponse($result)
+    protected function createResponse($result): bool
     {
         return array_key_exists("data", $result);
+    }
+
+    public function sync(): bool
+    {
+        return parent::sync();
     }
 
     /**
@@ -83,7 +87,7 @@ class RemoveChannelMetadata extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

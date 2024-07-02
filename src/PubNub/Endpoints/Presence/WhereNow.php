@@ -10,10 +10,9 @@ use PubNub\Models\Consumer\Presence\PNWhereNowResult;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
-
 class WhereNow extends Endpoint
 {
-    const PATH = "/v2/presence/sub-key/%s/uuid/%s";
+    protected const PATH = "/v2/presence/sub-key/%s/uuid/%s";
 
     /** @var string */
     protected $uuid;
@@ -72,7 +71,8 @@ class WhereNow extends Endpoint
      */
     public function buildPath()
     {
-        return sprintf(WhereNow::PATH,
+        return sprintf(
+            WhereNow::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             PubNubUtil::urlEncode($this->uuid)
         );
@@ -81,7 +81,7 @@ class WhereNow extends Endpoint
     /**
      * @return PNWhereNowResult
      */
-    public function sync()
+    public function sync(): PNWhereNowResult
     {
         return parent::sync();
     }
@@ -90,7 +90,7 @@ class WhereNow extends Endpoint
      * @param array $result Decoded json
      * @return PNWhereNowResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNWhereNowResult
     {
         return PNWhereNowResult::fromPayload(static::fetchPayload($result));
     }

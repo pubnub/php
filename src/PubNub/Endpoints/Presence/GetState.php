@@ -9,10 +9,9 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Presence\PNGetStateResult;
 use PubNub\PubNubUtil;
 
-
 class GetState extends Endpoint
 {
-    const PATH = "/v2/presence/sub-key/%s/channel/%s/uuid/%s";
+    protected const PATH = "/v2/presence/sub-key/%s/channel/%s/uuid/%s";
 
     /** @var array  */
     protected $channels = [];
@@ -90,7 +89,7 @@ class GetState extends Endpoint
     /**
      * @return PNGetStateResult
      */
-    public function sync()
+    public function sync(): PNGetStateResult
     {
         return parent::sync();
     }
@@ -99,7 +98,7 @@ class GetState extends Endpoint
      * @param array $result Decoded json
      * @return PNGetStateResult
      */
-    public function createResponse($result)
+    public function createResponse($result): PNGetStateResult
     {
         if (count($this->channels) === 1 && count($this->channelGroups) === 0) {
             $channels = [$this->channels[0] => $result['payload']];

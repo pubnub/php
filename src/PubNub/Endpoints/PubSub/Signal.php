@@ -12,7 +12,7 @@ use PubNub\PubNubUtil;
 
 class Signal extends Endpoint
 {
-    const SIGNAL_PATH = "/signal/%s/%s/0/%s/0/%s";
+    protected const SIGNAL_PATH = "/signal/%s/%s/0/%s/0/%s";
 
     /** @var  mixed $message to send the signal */
     protected $message;
@@ -68,11 +68,11 @@ class Signal extends Endpoint
         $stringifiedMessage = PubNubUtil::urlEncode(PubNubUtil::writeValueAsString($this->message));
 
         return sprintf(
-                static::SIGNAL_PATH,
-                $this->pubnub->getConfiguration()->getPublishKey(),
-                $this->pubnub->getConfiguration()->getSubscribeKey(),
-                PubNubUtil::urlEncode($this->channel),
-                $stringifiedMessage
+            static::SIGNAL_PATH,
+            $this->pubnub->getConfiguration()->getPublishKey(),
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
+            PubNubUtil::urlEncode($this->channel),
+            $stringifiedMessage
         );
     }
 
@@ -88,18 +88,18 @@ class Signal extends Endpoint
     }
 
     /**
-     * @return PNPublishResult
+     * @return PNSignalResult
      */
-    public function sync()
+    public function sync(): PNSignalResult
     {
         return parent::sync();
     }
 
     /**
      * @param array $result Decoded json
-     * @return PNPublishResult
+     * @return PNSignalResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNSignalResult
     {
         $timetoken = floatval($result[2]);
 

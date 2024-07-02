@@ -10,7 +10,7 @@ use PubNub\PubNubUtil;
 
 class HistoryDelete extends Endpoint
 {
-    const PATH = "/v3/history/sub-key/%s/channel/%s";
+    protected const PATH = "/v3/history/sub-key/%s/channel/%s";
 
     /** @var string */
     protected $channel;
@@ -70,7 +70,7 @@ class HistoryDelete extends Endpoint
      * @param array $result Decoded json
      * @return mixed
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNHistoryDeleteResult
     {
         return new PNHistoryDeleteResult();
     }
@@ -105,7 +105,8 @@ class HistoryDelete extends Endpoint
     protected function buildPath()
     {
         return sprintf(
-            static::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(),
+            static::PATH,
+            $this->pubnub->getConfiguration()->getSubscribeKey(),
             PubNubUtil::urlEncode($this->channel)
         );
     }
@@ -164,7 +165,7 @@ class HistoryDelete extends Endpoint
      * @return PNHistoryDeleteResult
      * @throws \PubNub\Exceptions\PubNubException
      */
-    public function sync()
+    public function sync(): PNHistoryDeleteResult
     {
         return parent::sync();
     }

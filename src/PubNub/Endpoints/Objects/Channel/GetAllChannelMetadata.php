@@ -10,7 +10,7 @@ use PubNub\Models\Consumer\Objects\Channel\PNGetAllChannelMetadataResult;
 
 class GetAllChannelMetadata extends ObjectsCollectionEndpoint
 {
-    const PATH = "/v2/objects/%s/channels";
+    protected const PATH = "/v2/objects/%s/channels";
 
     /** @var string */
     protected $channel;
@@ -72,9 +72,14 @@ class GetAllChannelMetadata extends ObjectsCollectionEndpoint
      * @param array $result Decoded json
      * @return PNGetAllChannelMetadataResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNGetAllChannelMetadataResult
     {
         return PNGetAllChannelMetadataResult::fromPayload($result);
+    }
+
+    public function sync(): PNGetAllChannelMetadataResult
+    {
+        return parent::sync();
     }
 
     /**
@@ -84,50 +89,42 @@ class GetAllChannelMetadata extends ObjectsCollectionEndpoint
     {
         $params = $this->defaultParams();
 
-        if (array_key_exists("customFields", $this->include))
-        {
+        if (array_key_exists("customFields", $this->include)) {
             $params['include'] = 'custom';
         }
 
-        if (array_key_exists("totalCount", $this->include))
-        {
+        if (array_key_exists("totalCount", $this->include)) {
             $params['count'] = "true";
         }
 
-        if (array_key_exists("next", $this->page))
-        {
+        if (array_key_exists("next", $this->page)) {
             $params['start'] = $this->page["next"];
         }
 
-        if (array_key_exists("prev", $this->page))
-        {
+        if (array_key_exists("prev", $this->page)) {
             $params['end'] = $this->page["prev"];
         }
 
-        if (!empty($this->filter))
-        {
+        if (!empty($this->filter)) {
             $params['filter'] = $this->filter;
         }
 
-        if (!empty($this->limit))
-        {
+        if (!empty($this->limit)) {
             $params['limit'] = $this->limit;
         }
 
-        if (!empty($this->sort))
-        {
-          $sortEntries = [];
+        if (!empty($this->sort)) {
+            $sortEntries = [];
 
-          foreach ($this->sort as $key => $value)
-          {
-            if ($value === 'asc' || $value === 'desc') {
-              array_push($sortEntries, "$key:$value");
-            } else {
-                array_push($sortEntries, $key);
+            foreach ($this->sort as $key => $value) {
+                if ($value === 'asc' || $value === 'desc') {
+                    array_push($sortEntries, "$key:$value");
+                } else {
+                    array_push($sortEntries, $key);
+                }
             }
-          }
 
-          $params['sort'] = $sortEntries;
+            $params['sort'] = $sortEntries;
         }
 
         return $params;
@@ -138,7 +135,7 @@ class GetAllChannelMetadata extends ObjectsCollectionEndpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**
