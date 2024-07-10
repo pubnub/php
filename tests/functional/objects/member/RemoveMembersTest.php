@@ -20,7 +20,7 @@ class RemoveMembersTest extends PubNubTestCase
             ->uuids(["uuid", "uuid1", "uuid2"]);
 
         $this->assertEquals(sprintf(
-            RemoveMembers::PATH,
+            RemoveMembersExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "ch"
         ), $removeMembers->buildPath());
@@ -33,7 +33,7 @@ class RemoveMembersTest extends PubNubTestCase
         $data = $removeMembers->buildData();
 
         $decoded_data = json_decode($data);
-        
+
         $this->assertNotEmpty($decoded_data->delete);
         $this->assertEquals(3, count($decoded_data->delete));
         $this->assertNotEmpty($decoded_data->delete[0]->uuid);
@@ -45,8 +45,10 @@ class RemoveMembersTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveMembersExposed extends RemoveMembers
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();
@@ -56,10 +58,9 @@ class RemoveMembersExposed extends RemoveMembers
     {
         return parent::buildData();
     }
-    
+
     public function buildPath()
     {
         return parent::buildPath();
     }
-
 }

@@ -3,6 +3,7 @@
 namespace Tests\Functional\Objects\UUID;
 
 use PubNub\Endpoints\Objects\UUID\GetAllUUIDMetadata;
+use PubNub\Models\Consumer\Objects\UUID\PNGetAllUUIDMetadataResult;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
@@ -16,10 +17,10 @@ class GetAllUUIDMetadataTest extends PubNubTestCase
         $getAllMetadata = new GetAllUUIDMetadataExposed($this->pubnub);
 
         $getAllMetadata
-            ->includeFields([ "totalCount" => true, "customFields" => true ]);
+            ->includeFields(["totalCount" => true, "customFields" => true]);
 
         $this->assertEquals(sprintf(
-            GetAllUUIDMetadata::PATH,
+            GetAllUUIDMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey()
         ), $getAllMetadata->buildPath());
 
@@ -74,8 +75,11 @@ class GetAllUUIDMetadataTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class GetAllUUIDMetadataExposed extends GetAllUUIDMetadata
 {
+    public const PATH = parent::PATH;
+
     public function buildParams()
     {
         return parent::buildParams();
@@ -86,9 +90,8 @@ class GetAllUUIDMetadataExposed extends GetAllUUIDMetadata
         return parent::buildPath();
     }
 
-    public function createResponse($result)
+    public function createResponse($result): PNGetAllUUIDMetadataResult
     {
         return parent::createResponse($result);
     }
-
 }

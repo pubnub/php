@@ -82,7 +82,12 @@ class FetchFileUploadS3Data extends Endpoint
         return PNHttpMethod::POST;
     }
 
-    public function createResponse($result)
+    public function sync(): PNFetchFileUploadS3DataResult
+    {
+        return parent::sync();
+    }
+
+    public function createResponse($result): PNFetchFileUploadS3DataResult
     {
         return new PNFetchFileUploadS3DataResult($result);
     }

@@ -48,7 +48,7 @@ class Time extends Endpoint
      * @param array $result
      * @return PNTimeResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNTimeResult
     {
         $timetoken = floatval($result[0]);
 

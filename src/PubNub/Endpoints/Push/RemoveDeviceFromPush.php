@@ -64,8 +64,13 @@ class RemoveDeviceFromPush extends PushEndpoint
      * @param array $result Decoded json
      * @return PNPushRemoveAllChannelsResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNPushRemoveAllChannelsResult
     {
         return new PNPushRemoveAllChannelsResult();
+    }
+
+    public function sync(): PNPushRemoveAllChannelsResult
+    {
+        return parent::sync();
     }
 }

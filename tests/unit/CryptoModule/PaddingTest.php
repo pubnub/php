@@ -26,7 +26,7 @@ class PaddingTest extends TestCase
      */
     public function testPad(string $plain, string $padded): void
     {
-        $this->assertEquals($this->cryptor->pad($plain), $padded);
+        $this->assertEquals($this->cryptor->pad($plain, 16), $padded);
     }
 
     /**
@@ -39,7 +39,7 @@ class PaddingTest extends TestCase
      */
     public function testDepad(string $padded, string $expected): void
     {
-        $this->assertEquals($this->cryptor->depad($padded), $expected);
+        $this->assertEquals($this->cryptor->depad($padded, 16), $expected);
     }
 
     public function padProvider(): Generator

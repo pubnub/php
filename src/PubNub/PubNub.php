@@ -53,48 +53,42 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
 use PubNub\Endpoints\FileSharing\{SendFile, DeleteFile, DownloadFile, GetFileDownloadUrl, ListFiles};
+use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
 
 class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "7.0.0";
+    protected const SDK_VERSION = "7.0.1";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
 
-    /** @var PNConfiguration */
     protected PNConfiguration $configuration;
 
-    /** @var  BasePathManager */
-    protected $basePathManager;
+    protected BasePathManager $basePathManager;
 
-    /** @var  SubscriptionManager */
-    protected $subscriptionManager;
+    protected SubscriptionManager $subscriptionManager;
 
-    /** @var TelemetryManager */
-    protected $telemetryManager;
+    protected TelemetryManager $telemetryManager;
 
-    /** @var TokenManager */
-    protected $tokenManager;
+    protected TokenManager $tokenManager;
 
-    /** @var  LoggerInterface */
     protected LoggerInterface $logger;
 
-    /** @var  int $nextSequence */
-    protected $nextSequence = 0;
+    protected int $nextSequence = 0;
 
     protected ?CryptoModule $cryptoModule = null;
 
     /**
      * PNConfiguration constructor.
      *
-     * @param $initialConfig PNConfiguration
+     * @param $config PNConfiguration
      */
-    public function __construct($initialConfig)
+    public function __construct(PNConfiguration $config)
     {
-        $this->validateConfig($initialConfig);
-        $initialConfig->lock();
-        $this->configuration = $initialConfig;
-        $this->basePathManager = new BasePathManager($initialConfig);
+        $this->validateConfig($config);
+        $config->lock();
+        $this->configuration = $config;
+        $this->basePathManager = new BasePathManager($config);
         $this->subscriptionManager = new SubscriptionManager($this);
         $this->telemetryManager = new TelemetryManager();
         $this->tokenManager = new TokenManager();
@@ -105,7 +99,7 @@ class PubNub implements LoggerAwareInterface
      * Pre-configured PubNub client with demo-keys
      * @return static
      */
-    public static function demo()
+    public static function demo(): static
     {
         return new PubNub(PNConfiguration::demoKeys());
     }
@@ -115,7 +109,7 @@ class PubNub implements LoggerAwareInterface
      *
      * @throws PubNubConfigurationException
      */
-    private function validateConfig(PNConfiguration $configuration)
+    private function validateConfig(PNConfiguration $configuration): void
     {
         if (empty($configuration->getUuid())) {
             throw new PubNubConfigurationException('UUID should not be empty');
@@ -125,7 +119,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @param SubscribeCallback $listener
      */
-    public function addListener($listener)
+    public function addListener(SubscribeCallback $listener): void
     {
         $this->subscriptionManager->addListener($listener);
     }
@@ -133,7 +127,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @param SubscribeCallback $listener
      */
-    public function removeListener($listener)
+    public function removeListener(SubscribeCallback $listener): void
     {
         $this->subscriptionManager->removeListener($listener);
     }
@@ -141,7 +135,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return Publish
      */
-    public function publish()
+    public function publish(): Publish
     {
         return new Publish($this);
     }
@@ -149,7 +143,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return Fire
      */
-    public function fire()
+    public function fire(): Fire
     {
         return new Fire($this);
     }
@@ -157,7 +151,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return Signal
      */
-    public function signal()
+    public function signal(): Signal
     {
         return new Signal($this);
     }
@@ -165,7 +159,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return SubscribeBuilder
      */
-    public function subscribe()
+    public function subscribe(): SubscribeBuilder
     {
         return new SubscribeBuilder($this->subscriptionManager);
     }
@@ -173,7 +167,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return History
      */
-    public function history()
+    public function history(): History
     {
         return new History($this);
     }
@@ -181,7 +175,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return HereNow
      */
-    public function hereNow()
+    public function hereNow(): HereNow
     {
         return new HereNow($this);
     }
@@ -189,7 +183,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return WhereNow
      */
-    public function whereNow()
+    public function whereNow(): WhereNow
     {
         return new WhereNow($this);
     }
@@ -197,15 +191,16 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return Grant
      */
-    public function grant()
+    public function grant(): Grant
     {
         return new Grant($this);
     }
 
     /**
      * @return PNAccessManagerTokenResult
+     * @throws PubNubTokenParseException
      */
-    public function parseToken($token)
+    public function parseToken($token): PNAccessManagerTokenResult
     {
         return (new GrantToken($this))->parseToken($token);
     }
@@ -213,7 +208,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GrantToken
      */
-    public function grantToken()
+    public function grantToken(): GrantToken
     {
         return new GrantToken($this);
     }
@@ -221,7 +216,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RevokeToken
      */
-    public function revokeToken()
+    public function revokeToken(): RevokeToken
     {
         return new RevokeToken($this);
     }
@@ -229,7 +224,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return Audit
      */
-    public function audit()
+    public function audit(): Audit
     {
         return new Audit($this);
     }
@@ -237,7 +232,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return Revoke
      */
-    public function revoke()
+    public function revoke(): Revoke
     {
         return new Revoke($this);
     }
@@ -245,7 +240,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return AddChannelToChannelGroup
      */
-    public function addChannelToChannelGroup()
+    public function addChannelToChannelGroup(): AddChannelToChannelGroup
     {
         return new AddChannelToChannelGroup($this);
     }
@@ -253,7 +248,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveChannelFromChannelGroup
      */
-    public function removeChannelFromChannelGroup()
+    public function removeChannelFromChannelGroup(): RemoveChannelFromChannelGroup
     {
         return new RemoveChannelFromChannelGroup($this);
     }
@@ -261,7 +256,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveChannelGroup
      */
-    public function removeChannelGroup()
+    public function removeChannelGroup(): RemoveChannelGroup
     {
         return new RemoveChannelGroup($this);
     }
@@ -269,7 +264,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return ListChannelsInChannelGroup
      */
-    public function listChannelsInChannelGroup()
+    public function listChannelsInChannelGroup(): ListChannelsInChannelGroup
     {
         return new ListChannelsInChannelGroup($this);
     }
@@ -285,7 +280,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return AddChannelsToPush
      */
-    public function addChannelsToPush()
+    public function addChannelsToPush(): AddChannelsToPush
     {
         return new AddChannelsToPush($this);
     }
@@ -293,7 +288,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveChannelsFromPush
      */
-    public function removeChannelsFromPush()
+    public function removeChannelsFromPush(): RemoveChannelsFromPush
     {
         return new RemoveChannelsFromPush($this);
     }
@@ -301,7 +296,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveDeviceFromPush
      */
-    public function removeAllPushChannelsForDevice()
+    public function removeAllPushChannelsForDevice(): RemoveDeviceFromPush
     {
         return new RemoveDeviceFromPush($this);
     }
@@ -309,7 +304,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return ListPushProvisions
      */
-    public function listPushProvisions()
+    public function listPushProvisions(): ListPushProvisions
     {
         return new ListPushProvisions($this);
     }
@@ -317,7 +312,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return SetChannelMetadata
      */
-    public function setChannelMetadata()
+    public function setChannelMetadata(): SetChannelMetadata
     {
         return new SetChannelMetadata($this);
     }
@@ -325,7 +320,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GetChannelMetadata
      */
-    public function getChannelMetadata()
+    public function getChannelMetadata(): GetChannelMetadata
     {
         return new GetChannelMetadata($this);
     }
@@ -333,7 +328,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GetAllChannelMetadata
      */
-    public function getAllChannelMetadata()
+    public function getAllChannelMetadata(): GetAllChannelMetadata
     {
         return new GetAllChannelMetadata($this);
     }
@@ -341,7 +336,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveChannelMetadata
      */
-    public function removeChannelMetadata()
+    public function removeChannelMetadata(): RemoveChannelMetadata
     {
         return new RemoveChannelMetadata($this);
     }
@@ -349,7 +344,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return SetUUIDMetadata
      */
-    public function setUUIDMetadata()
+    public function setUUIDMetadata(): SetUUIDMetadata
     {
         return new SetUUIDMetadata($this);
     }
@@ -357,7 +352,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GetUUIDMetadata
      */
-    public function getUUIDMetadata()
+    public function getUUIDMetadata(): GetUUIDMetadata
     {
         return new GetUUIDMetadata($this);
     }
@@ -365,7 +360,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GetAllUUIDMetadata
      */
-    public function getAllUUIDMetadata()
+    public function getAllUUIDMetadata(): GetAllUUIDMetadata
     {
         return new GetAllUUIDMetadata($this);
     }
@@ -373,7 +368,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveUUIDMetadata
      */
-    public function removeUUIDMetadata()
+    public function removeUUIDMetadata(): RemoveUUIDMetadata
     {
         return new RemoveUUIDMetadata($this);
     }
@@ -381,7 +376,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GetMembers
      */
-    public function getMembers()
+    public function getMembers(): GetMembers
     {
         return new GetMembers($this);
     }
@@ -389,7 +384,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return SetMembers
      */
-    public function setMembers()
+    public function setMembers(): SetMembers
     {
         return new SetMembers($this);
     }
@@ -397,7 +392,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveMembers
      */
-    public function removeMembers()
+    public function removeMembers(): RemoveMembers
     {
         return new RemoveMembers($this);
     }
@@ -405,7 +400,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GetMemberships
      */
-    public function getMemberships()
+    public function getMemberships(): GetMemberships
     {
         return new GetMemberships($this);
     }
@@ -413,7 +408,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return SetMemberships
      */
-    public function setMemberships()
+    public function setMemberships(): SetMemberships
     {
         return new SetMemberships($this);
     }
@@ -421,7 +416,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return RemoveMemberships
      */
-    public function removeMemberships()
+    public function removeMemberships(): RemoveMemberships
     {
         return new RemoveMemberships($this);
     }
@@ -429,7 +424,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return int
      */
-    public function timestamp()
+    public function timestamp(): int
     {
         return time();
     }
@@ -437,7 +432,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return string
      */
-    public static function getSdkVersion()
+    public static function getSdkVersion(): string
     {
         return static::SDK_VERSION;
     }
@@ -445,7 +440,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return string
      */
-    public static function getSdkName()
+    public static function getSdkName(): string
     {
         return static::SDK_NAME;
     }
@@ -453,7 +448,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return string
      */
-    public static function getSdkFullName()
+    public static function getSdkFullName(): string
     {
         $fullName = static::SDK_NAME . "/" . static::SDK_VERSION;
 
@@ -465,7 +460,7 @@ class PubNub implements LoggerAwareInterface
      *
      * @return PNConfiguration
      */
-    public function getConfiguration()
+    public function getConfiguration(): PNConfiguration
     {
         return $this->configuration;
     }
@@ -473,15 +468,15 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return string Base path
      */
-    public function getBasePath($customHost = null)
+    public function getBasePath($customHost = null): string
     {
         return $this->basePathManager->getBasePath($customHost);
     }
 
     /**
-     * @return Logger
+     * @return LoggerInterface
      */
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -497,7 +492,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return GetState
      */
-    public function getState()
+    public function getState(): GetState
     {
         return new GetState($this);
     }
@@ -505,7 +500,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return SetState
      */
-    public function setState()
+    public function setState(): SetState
     {
         return new SetState($this);
     }
@@ -513,7 +508,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return HistoryDelete
      */
-    public function deleteMessages()
+    public function deleteMessages(): HistoryDelete
     {
         return new HistoryDelete($this);
     }
@@ -521,7 +516,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return MessageCount
      */
-    public function messageCounts()
+    public function messageCounts(): MessageCount
     {
         return new MessageCount($this);
     }
@@ -529,7 +524,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return TelemetryManager
      */
-    public function getTelemetryManager()
+    public function getTelemetryManager(): TelemetryManager
     {
         return $this->telemetryManager;
     }
@@ -537,7 +532,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return int unique sequence identifier
      */
-    public function getSequenceId()
+    public function getSequenceId(): int
     {
         if (static::$MAX_SEQUENCE === $this->nextSequence) {
             $this->nextSequence = 1;
@@ -551,7 +546,7 @@ class PubNub implements LoggerAwareInterface
     /**
      * @return string Token previously set by $this->setToken
      */
-    public function getToken()
+    public function getToken(): ?string
     {
         return $this->tokenManager->getToken();
     }
@@ -559,21 +554,12 @@ class PubNub implements LoggerAwareInterface
     /**
      * @param string $token Token obtained by GetToken
      */
-    public function setToken($token)
+    public function setToken(string $token)
     {
         return $this->tokenManager->setToken($token);
     }
 
-    public function getCrypto(): CryptoModule | null
-    {
-        if ($this->cryptoModule) {
-            return $this->cryptoModule;
-        } else {
-            return $this->configuration->getCryptoSafe();
-        }
-    }
-
-    public function getCryptoSafe(): CryptoModule|null
+    public function getCrypto(): ?CryptoModule
     {
         if ($this->cryptoModule) {
             return $this->cryptoModule;
@@ -597,27 +583,27 @@ class PubNub implements LoggerAwareInterface
         return new FetchMessages($this);
     }
 
-    public function sendFile()
+    public function sendFile(): SendFile
     {
         return new SendFile($this);
     }
 
-    public function deleteFile()
+    public function deleteFile(): DeleteFile
     {
         return new DeleteFile($this);
     }
 
-    public function downloadFile()
+    public function downloadFile(): DownloadFile
     {
         return new DownloadFile($this);
     }
 
-    public function listFiles()
+    public function listFiles(): ListFiles
     {
         return new ListFiles($this);
     }
 
-    public function getFileDownloadUrl()
+    public function getFileDownloadUrl(): GetFileDownloadUrl
     {
         return new GetFileDownloadUrl($this);
     }

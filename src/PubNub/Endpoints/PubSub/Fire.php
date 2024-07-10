@@ -155,7 +155,7 @@ class Fire extends Endpoint
     /**
      * @return PNPublishResult
      */
-    public function sync()
+    public function sync(): PNPublishResult
     {
         return parent::sync();
     }
@@ -164,7 +164,7 @@ class Fire extends Endpoint
      * @param array $json Decoded json
      * @return PNPublishResult
      */
-    protected function createResponse($json)
+    protected function createResponse($json): PNPublishResult
     {
         $timetoken = floatval($json[2]);
 

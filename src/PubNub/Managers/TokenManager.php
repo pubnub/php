@@ -4,14 +4,14 @@ namespace PubNub\Managers;
 
 class TokenManager
 {
-    private $token = null;
+    private ?string $token = null;
 
-    public function setToken($token)
+    public function setToken(string $token)
     {
         $this->token = $token;
     }
 
-    public function getToken()
+    public function getToken(): ?string
     {
         return $this->token;
     }

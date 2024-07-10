@@ -11,7 +11,7 @@ use PubNub\PubNubUtil;
 
 class RevokeToken extends Endpoint
 {
-    const PATH = "/v3/pam/%s/grant/%s";
+    protected const PATH = "/v3/pam/%s/grant/%s";
 
     protected $token;
 
@@ -74,7 +74,7 @@ class RevokeToken extends Endpoint
     /**
      * @return PNRequestResult
      */
-    public function sync()
+    public function sync(): PNRequestResult
     {
         return parent::sync();
     }
@@ -83,7 +83,7 @@ class RevokeToken extends Endpoint
      * @param string $token
      * @return PNRequestResult
      */
-    public function createResponse($response)
+    public function createResponse($response): PNRequestResult
     {
         return new PNRequestResult(
             $response['status'],

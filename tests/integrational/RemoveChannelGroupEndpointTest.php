@@ -8,7 +8,6 @@ use PubNub\PubNub;
 use PubNubTestCase;
 use Tests\Helpers\StubTransport;
 
-
 class RemoveChannelGroupEndpointTest extends PubNubTestCase
 {
     public function testSuccess()
@@ -20,7 +19,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -41,7 +40,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -60,7 +59,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
@@ -69,6 +68,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
 
     public function testIsAuthRequiredSuccess()
     {
+        $this->expectNotToPerformAssertions();
         $removeChannelGroup = new RemoveChannelGroupExposed($this->pubnub);
 
         $removeChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA/remove")
@@ -77,7 +77,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
                 "uuid" => "myUUID",
                 "auth" => "myKey"
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {} , \"service\": \"ChannelGroups\"}");
+            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {},\"service\": \"ChannelGroups\"}");
 
         $this->pubnub->getConfiguration()->setUuid("myUUID")->setAuthKey("myKey");
 
@@ -92,7 +92,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveChannelGroupExposed extends RemoveChannelGroup
 {
     protected $transport;

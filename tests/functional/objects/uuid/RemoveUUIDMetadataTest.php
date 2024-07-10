@@ -19,7 +19,7 @@ class RemoveUUIDMetadataTest extends PubNubTestCase
             ->uuid("uuid");
 
         $this->assertEquals(sprintf(
-            RemoveUUIDMetadata::PATH,
+            RemoveUUIDMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "uuid"
         ), $removeMetadata->buildPath());
@@ -39,8 +39,10 @@ class RemoveUUIDMetadataTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveUUIDMetadataExposed extends RemoveUUIDMetadata
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();
@@ -51,9 +53,8 @@ class RemoveUUIDMetadataExposed extends RemoveUUIDMetadata
         return parent::buildPath();
     }
 
-    public function createResponse($result)
+    public function createResponse($result): bool
     {
         return parent::createResponse($result);
     }
-
 }

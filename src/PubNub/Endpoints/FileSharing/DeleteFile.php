@@ -11,7 +11,12 @@ class DeleteFile extends FileSharingEndpoint
 {
     protected const ENDPOINT_URL = "/v1/files/%s/channels/%s/files/%s/%s";
 
-    protected function createResponse($result)
+    public function sync(): PNDeleteFileResult
+    {
+        return parent::sync();
+    }
+
+    protected function createResponse($result): PNDeleteFileResult
     {
         return new PNDeleteFileResult($result);
     }

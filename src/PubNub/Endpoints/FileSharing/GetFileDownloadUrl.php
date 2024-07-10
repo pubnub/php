@@ -42,7 +42,7 @@ class GetFileDownloadUrl extends FileSharingEndpoint
         return false;
     }
 
-    protected function createResponse($result)
+    protected function createResponse($result): PNGetFileDownloadURLResult
     {
         return new PNGetFileDownloadURLResult($result);
     }

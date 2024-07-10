@@ -9,10 +9,9 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Objects\UUID\PNSetUUIDMetadataResult;
 use PubNub\PubNubUtil;
 
-
 class SetUUIDMetadata extends Endpoint
 {
-    const PATH = "/v2/objects/%s/uuids/%s";
+    protected const PATH = "/v2/objects/%s/uuids/%s";
 
     /** @var string */
     protected $uuid;
@@ -79,11 +78,16 @@ class SetUUIDMetadata extends Endpoint
         );
     }
 
+    public function sync(): PNSetUUIDMetadataResult
+    {
+        return parent::sync();
+    }
+
     /**
      * @param array $result Decoded json
      * @return PNSetUUIDMetadataResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNSetUUIDMetadataResult
     {
         return PNSetUUIDMetadataResult::fromPayload($result);
     }
@@ -105,7 +109,7 @@ class SetUUIDMetadata extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

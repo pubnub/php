@@ -1,11 +1,11 @@
 <?php
+
 namespace Tests\Functional;
 
 use PubNub\Endpoints\Presence\GetState;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-
 
 class GetStateTest extends PubNubTestCase
 {
@@ -26,11 +26,13 @@ class GetStateTest extends PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                GetState::PATH,
+                ExposedGetState::PATH,
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 "ch",
                 $this->pubnub->getConfiguration()->getUuid()
-            ), $this->getState->buildPath());
+            ),
+            $this->getState->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -46,11 +48,13 @@ class GetStateTest extends PubNubTestCase
 
         $this->assertEquals(
             sprintf(
-                GetState::PATH,
+                ExposedGetState::PATH,
                 $this->pubnub->getConfiguration()->getSubscribeKey(),
                 ",",
                 $this->pubnub->getConfiguration()->getUuid()
-            ), $this->getState->buildPath());
+            ),
+            $this->getState->buildPath()
+        );
 
         $this->assertEquals([
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
@@ -63,9 +67,10 @@ class GetStateTest extends PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class ExposedGetState extends GetState
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();

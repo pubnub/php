@@ -55,7 +55,7 @@ class PublishFileMessage extends FileSharingEndpoint
 
     public function encryptMessage($message)
     {
-        $crypto = $this->pubnub->getCryptoSafe();
+        $crypto = $this->pubnub->getCrypto();
         $messageString = PubNubUtil::writeValueAsString($message);
         if ($crypto) {
             return $crypto->encrypt($messageString);
@@ -101,9 +101,14 @@ class PublishFileMessage extends FileSharingEndpoint
         return "Sending file upload notification";
     }
 
-    public function createResponse($result)
+    public function createResponse($result): PNPublishFileMessageResult
     {
         return new PNPublishFileMessageResult($result);
+    }
+
+    public function sync(): PNPublishFileMessageResult
+    {
+        return parent::sync();
     }
 
     protected function isAuthRequired()

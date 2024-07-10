@@ -9,10 +9,9 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsRemoveChannelResult;
 use PubNub\PubNubUtil;
 
-
 class RemoveChannelFromChannelGroup extends Endpoint
 {
-    const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s";
+    protected const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s";
 
     /** @var  string */
     protected $channelGroup;
@@ -93,7 +92,7 @@ class RemoveChannelFromChannelGroup extends Endpoint
     /**
      * @return PNChannelGroupsRemoveChannelResult
      */
-    public function sync()
+    public function sync(): PNChannelGroupsRemoveChannelResult
     {
         return parent::sync();
     }
@@ -102,7 +101,7 @@ class RemoveChannelFromChannelGroup extends Endpoint
      * @param array $result Decoded json
      * @return PNChannelGroupsRemoveChannelResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNChannelGroupsRemoveChannelResult
     {
         return new PNChannelGroupsRemoveChannelResult();
     }
@@ -112,7 +111,7 @@ class RemoveChannelFromChannelGroup extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

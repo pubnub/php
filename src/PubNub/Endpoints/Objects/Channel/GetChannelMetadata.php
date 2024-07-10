@@ -8,10 +8,9 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Objects\Channel\PNGetChannelMetadataResult;
 
-
 class GetChannelMetadata extends Endpoint
 {
-    const PATH = "/v2/objects/%s/channels/%s";
+    protected const PATH = "/v2/objects/%s/channels/%s";
 
     /** @var string */
     protected $channel;
@@ -64,9 +63,14 @@ class GetChannelMetadata extends Endpoint
      * @param array $result Decoded json
      * @return PNGetChannelMetadataResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNGetChannelMetadataResult
     {
         return PNGetChannelMetadataResult::fromPayload($result);
+    }
+
+    public function sync(): PNGetChannelMetadataResult
+    {
+        return parent::sync();
     }
 
     /**
@@ -86,7 +90,7 @@ class GetChannelMetadata extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

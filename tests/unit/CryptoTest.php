@@ -1,7 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace PubNubTests\unit;
 
+use PHPUnit\Framework\TestCase;
 
 class CryptoTest extends TestCase
 {
@@ -10,7 +11,7 @@ class CryptoTest extends TestCase
      *
      * @requires extension openssl
      */
-    public function testOpenSSL_AES()
+    public function testOpenSSLAES()
     {
         $logger = new \Monolog\Logger('CryptoTest');
         $toDecode = "QfD1NCBJCmt1aPPGU2cshw==";
@@ -36,7 +37,7 @@ class CryptoTest extends TestCase
      *
      * @requires extension openssl
      */
-    public function testOpenSSL_AES_RandomIV()
+    public function testOpenSSLAESRandomIV()
     {
         $logger = new \Monolog\Logger('CryptoTest');
         $toDecode = "6y+vBnIds5znZOL8htyCJy0Wno4rKxs7ILwbWeF/AwamGqzTC+moces4/HOSVJyK";
@@ -56,7 +57,7 @@ class CryptoTest extends TestCase
         // NOTICE: The original encoded message is wrapped into quotes which are stripped out inside the decrypt method
         $decrypted = $crypto->decrypt($toDecode, $logger);
 
-        $this->assertObjectHasAttribute("hi", $decrypted);
+        $this->assertObjectHasProperty("hi", $decrypted);
         $this->assertEquals("hello world", $decrypted->hi);
     }
 
@@ -65,7 +66,7 @@ class CryptoTest extends TestCase
      *
      * @requires extension mcrypt
      */
-    public function testMcrypt_AES()
+    public function testMcryptAES()
     {
         $logger = new \Monolog\Logger('CryptoTest');
         $toDecode = "QfD1NCBJCmt1aPPGU2cshw==";

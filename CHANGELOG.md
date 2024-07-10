@@ -1,3 +1,9 @@
+## 7.0.1
+July 10 2024
+
+#### Modified
+- Added strict typing for some customer facing elements.
+
 ## 7.0.0
 June 27 2024
 

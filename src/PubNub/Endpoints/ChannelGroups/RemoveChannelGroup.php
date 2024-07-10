@@ -8,10 +8,9 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\ChannelGroup\PNChannelGroupsRemoveGroupResult;
 
-
 class RemoveChannelGroup extends Endpoint
 {
-    const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s/remove";
+    protected const PATH = "/v1/channel-registration/sub-key/%s/channel-group/%s/remove";
 
     /** @var  string */
     private $channelGroup;
@@ -72,7 +71,7 @@ class RemoveChannelGroup extends Endpoint
     /**
      * @return PNChannelGroupsRemoveGroupResult
      */
-    public function sync()
+    public function sync(): PNChannelGroupsRemoveGroupResult
     {
         return parent::sync();
     }
@@ -81,7 +80,7 @@ class RemoveChannelGroup extends Endpoint
      * @param array $result Decoded json
      * @return PNChannelGroupsRemoveGroupResult
      */
-    protected function createResponse($result)
+    protected function createResponse($result): PNChannelGroupsRemoveGroupResult
     {
         return new PNChannelGroupsRemoveGroupResult();
     }
@@ -91,7 +90,7 @@ class RemoveChannelGroup extends Endpoint
      */
     protected function isAuthRequired()
     {
-        return True;
+        return true;
     }
 
     /**

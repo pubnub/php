@@ -7,6 +7,7 @@ use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\FileSharing\PNPublishFileMessageResult;
 use PubNub\PubNubUtil;
 use WpOrg\Requests\Requests;
 
@@ -188,7 +189,7 @@ class SendFile extends Endpoint
 
     protected function encryptPayload()
     {
-        $crypto = $this->pubnub->getCryptoSafe();
+        $crypto = $this->pubnub->getCrypto();
         if ($this->fileHandle) {
             $fileContent = stream_get_contents($this->fileHandle);
         } else {
@@ -245,7 +246,7 @@ class SendFile extends Endpoint
         return $response;
     }
 
-    public function sync()
+    public function sync(): PNPublishFileMessageResult
     {
         $this->fileUploadEnvelope = (new FetchFileUploadS3Data($this->pubnub))
             ->channel($this->channel)

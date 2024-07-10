@@ -32,7 +32,7 @@ class SetChannelMetadataTest extends PubNubTestCase
             ->meta($metadata);
 
         $this->assertEquals(sprintf(
-            SetChannelMetadata::PATH,
+            SetChannelMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "ch"
         ), $setMetadata->buildPath());
@@ -78,7 +78,7 @@ class SetChannelMetadataTest extends PubNubTestCase
             ->meta($metadata);
 
         $this->assertEquals(sprintf(
-            SetChannelMetadata::PATH,
+            SetChannelMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "ch"
         ), $setMetadata->buildPath());
@@ -113,7 +113,7 @@ class SetChannelMetadataTest extends PubNubTestCase
         $setMetadata = new SetChannelMetadataExposed($this->pubnub);
 
         $metadata = new stdClass();
-        
+
         $metadata->id = "ch";
         $metadata->name = "ch_name";
         $metadata->description = "ch_description";
@@ -127,7 +127,7 @@ class SetChannelMetadataTest extends PubNubTestCase
             ->meta($metadata);
 
         $this->assertEquals(sprintf(
-            SetChannelMetadata::PATH,
+            SetChannelMetadataExposed::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             "ch"
         ), $setMetadata->buildPath());
@@ -153,8 +153,10 @@ class SetChannelMetadataTest extends PubNubTestCase
     }
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class SetChannelMetadataExposed extends SetChannelMetadata
 {
+    public const PATH = parent::PATH;
     public function buildParams()
     {
         return parent::buildParams();
@@ -164,10 +166,9 @@ class SetChannelMetadataExposed extends SetChannelMetadata
     {
         return parent::buildData();
     }
-    
+
     public function buildPath()
     {
         return parent::buildPath();
     }
-
 }
