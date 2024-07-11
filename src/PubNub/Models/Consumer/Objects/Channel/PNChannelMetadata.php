@@ -33,7 +33,7 @@ class PNChannelMetadata implements JsonSerializable
         $this->custom = $custom;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $vars = get_object_vars($this);
 
