@@ -16,7 +16,7 @@
     "test": "./vendor/bin/phpunit tests/  --verbose --coverage-clover=coverage.clover"
   },
   "require": {
-    "php": ">=5.6.0",
+    "php": ">=8.1.0",
     "rmccue/requests": "^1.0",
     "monolog/monolog": "^1.26"
   },

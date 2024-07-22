@@ -11,6 +11,56 @@ defaults:
     shell: bash
 
 jobs:
+  lint-project:
+    name: "Lint project"
+    runs-on:
+      group: Default
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Checkout actions
+        uses: actions/checkout@v4
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Determine composer cache directory
+        id: composer-cache-dir
+        run: echo "dir=$(composer config cache-dir)" >> $GITHUB_OUTPUT
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: |
+            "${{ steps.composer-cache-dir.outputs.dir }}"
+            ${{ github.workspace }}/vendor
+          key: ${{ runner.os }}-composer-8.3-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer
+          coverage: none
+      - name: Setup dependencies
+        run: |
+          composer self-update && composer --version
+          composer install --prefer-dist --dev
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyze --memory-limit 256M
+      - name: Run phpcs on changed files
+        run: git diff --name-only origin/master HEAD | grep -E '\.php$' | xargs vendor/bin/phpcs --standard=PSR12
+      - name: Cancel workflow runs for commit on error
+        if: failure()
+        uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
+
+
   pubnub-yml:
     name: "Validate .pubnub.yml"
     runs-on:
@@ -34,7 +84,7 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   all-validations:
     name: Validations
-    needs: [pubnub-yml]
+    needs: [pubnub-yml, lint-project]
     runs-on:
       group: Default
     steps:

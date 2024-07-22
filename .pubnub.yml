@@ -279,11 +279,9 @@ supported-platforms:
       - Mac OS X 10.8 or later, amd64
       - Windows 7 or later, amd64, 386
     editors:
-      - PHP 5.6
-      - PHP 7.0
-      - PHP 7.1
-      - PHP 7.2
-      - PHP 7.3
+      - PHP 8.1
+      - PHP 8.2
+      - PHP 8.3
 sdks:
   - full-name: PHP SDK
     short-name: PHP
