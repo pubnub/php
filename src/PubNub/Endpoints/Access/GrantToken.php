@@ -237,18 +237,18 @@ class GrantToken extends Endpoint
     }
 
     /**
-     * @return PNAccessManagerGrantResult
+     * @return string
      */
-    public function sync(): PNAccessManagerGrantResult
+    public function sync(): string
     {
         return parent::sync();
     }
 
     /**
      * @param string $token
-     * @return : PNAccessManagerGrantResult
+     * @return : string
      */
-    public function createResponse($response): PNAccessManagerGrantResult
+    public function createResponse($response): string
     {
         return $response['data']['token'];
     }
