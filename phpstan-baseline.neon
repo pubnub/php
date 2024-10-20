@@ -461,11 +461,6 @@ parameters:
 			path: src/PubNub/Endpoints/Access/GrantToken.php
 
 		-
-			message: "#^PHPDoc tag @return has invalid value \\(\\: PNAccessManagerGrantResult\\)\\: Unexpected token \"\\:\", expected type at offset 47$#"
-			count: 1
-			path: src/PubNub/Endpoints/Access/GrantToken.php
-
-		-
 			message: "#^Property PubNub\\\\Endpoints\\\\Access\\\\GrantToken\\:\\:\\$channels has no type specified\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/Access/GrantToken.php
@@ -3142,11 +3137,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\FileSharing\\\\PNGetFileDownloadURLResult\\:\\:__construct\\(\\) has parameter \\$result with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/FileSharing/PNGetFileDownloadURLResult.php
-
-		-
-			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\FileSharing\\\\PNGetFileDownloadURLResult\\:\\:__toString\\(\\) should return string but returns int\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/FileSharing/PNGetFileDownloadURLResult.php
 

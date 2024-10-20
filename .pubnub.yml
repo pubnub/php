@@ -319,25 +319,21 @@ sdks:
               supported-operating-systems:
                 macOS:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
-                    - macOS 11.2.3
+                    - macOS 15
                   target-architecture:
                     - arm64
                     - x86-64
                 Windows:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -350,15 +346,13 @@ sdks:
                     - x86-64
                 Linux:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
-                    - Ubuntu 16.04 LTS
+                    - Ubuntu 20.04 LTS
                   maximum-os-version:
-                    - Ubuntu 18.04 LTS
+                    - Ubuntu 24.04.1 LTS
                   target-architecture:
                     - x86
                     - x86-64
@@ -387,25 +381,21 @@ sdks:
               supported-operating-systems:
                 macOS:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
-                    - macOS 11.2.3
+                    - macOS 15
                   target-architecture:
                     - arm64
                     - x86-64
                 Windows:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -418,15 +408,13 @@ sdks:
                     - x86-64
                 Linux:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
-                    - Ubuntu 16.04 LTS
+                    - Ubuntu 20.04 LTS
                   maximum-os-version:
-                    - Ubuntu 18.04 LTS
+                    - Ubuntu 24.04.1 LTS
                   target-architecture:
                     - x86
                     - x86-64
@@ -455,25 +443,21 @@ sdks:
               supported-operating-systems:
                 macOS:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
-                    - macOS 11.2.3
+                    - macOS 15
                   target-architecture:
                     - arm64
                     - x86-64
                 Windows:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -486,15 +470,13 @@ sdks:
                     - x86-64
                 Linux:
                   runtime-version:
-                    - PHP 5.6
-                    - PHP 7.0
-                    - PHP 7.1
-                    - PHP 7.2
-                    - PHP 7.3
+                    - PHP 8.1
+                    - PHP 8.2
+                    - PHP 8.3
                   minimum-os-version:
-                    - Ubuntu 16.04 LTS
+                    - Ubuntu 20.04 LTS
                   maximum-os-version:
-                    - Ubuntu 18.04 LTS
+                    - Ubuntu 24.04.1 LTS
                   target-architecture:
                     - x86
                     - x86-64
