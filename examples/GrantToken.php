@@ -2,35 +2,37 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use PubNub\Models\Access\Permissions;
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
 
-
 $pnconfig = new \PubNub\PNConfiguration();
-$pnconfig->setPublishKey('my-publish-key');
-$pnconfig->setSubscribeKey('my-subscribe-key');
-$pnconfig->setSecretKey('my-secret-key');
+$pnconfig->setPublishKey(getenv("PUBLISH_PAM_KEY"));
+$pnconfig->setSubscribeKey(getenv("SUBSCRIBE_PAM_KEY"));
+$pnconfig->setSecretKey(getenv("SECRET_PAM_KEY"));
+$pnconfig->setUuid('example-uuid');
 
 $pubnub = new \PubNub\PubNub($pnconfig);
 
 try {
     $token = $pubnub->grantToken()
         ->ttl(30)
-        ->authorizedUuid('my-uuid')
+        ->authorizedUuid('example-uuid')
         ->addChannelResources([
             'my-channel' => ['read' => true]
         ])
         ->sync();
 
-        /** @var PNAccessManagerTokenResult */
-        $parsedToken = $pubnub->parseToken($token);
-        $parsedToken->getTtl();
-        $parsedToken->getChannelResource('my-channel')
-            ->hasRead();
+    print("Token granted: $token\n");
+
+    /** @var PNAccessManagerTokenResult */
+    $parsedToken = $pubnub->parseToken($token);
+
+    $tokensTTL = $parsedToken->getTtl();
+    $tokensMyChannelRead = $parsedToken->getChannelResource('my-channel')->hasRead();
+    $tokensMyChannelWrite = $parsedToken->getChannelResource('my-channel')->hasWrite();
+
+    print("Token TTL: $tokensTTL\n");
+    print("Token My Channel Read: " . (int)$tokensMyChannelRead . "\n");
+    print("Token My Channel Write: " . (int)$tokensMyChannelWrite . "\n");
 } catch (\PubNub\Exceptions\PubNubServerException $e) {
     var_dump($e->getBody());
 }
-
-var_dump(
-    $pubnub->parseToken($token)->toArray()
-); die;
