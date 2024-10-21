@@ -2,7 +2,6 @@
 
 namespace PubNub\Models\Consumer\FileSharing;
 
-
 class PNGetFileDownloadURLResult
 {
     protected string $fileUrl;

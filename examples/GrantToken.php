@@ -33,7 +33,6 @@ try {
     print("Token TTL: $tokensTTL\n");
     print("Token My Channel Read: " . (int)$tokensMyChannelRead . "\n");
     print("Token My Channel Write: " . (int)$tokensMyChannelWrite . "\n");
-
 } catch (\PubNub\Exceptions\PubNubServerException $e) {
     var_dump($e->getBody());
 }

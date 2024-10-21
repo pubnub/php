@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints\Access;
 
-
 use PubNub\Endpoints\Endpoint;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNubUtil;
@@ -11,7 +10,6 @@ use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubTokenParseException;
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
 use PubNub\PubNubCborDecode;
-
 
 class GrantToken extends Endpoint
 {
@@ -240,7 +238,7 @@ class GrantToken extends Endpoint
     /**
      * @return string
      */
-    public function sync() : string
+    public function sync(): string
     {
         return parent::sync();
     }
@@ -249,7 +247,7 @@ class GrantToken extends Endpoint
      * @param string $token
      * @return string
      */
-    public function createResponse($response) : string
+    public function createResponse($response): string
     {
         return $response['data']['token'];
     }

@@ -325,7 +325,7 @@ sdks:
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
-                    - macOS 15
+                    - macOS 15.0.1
                   target-architecture:
                     - arm64
                     - x86-64
@@ -387,7 +387,7 @@ sdks:
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
-                    - macOS 15
+                    - macOS 15.0.1
                   target-architecture:
                     - arm64
                     - x86-64
@@ -449,7 +449,7 @@ sdks:
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
-                    - macOS 15
+                    - macOS 15.0.1
                   target-architecture:
                     - arm64
                     - x86-64
