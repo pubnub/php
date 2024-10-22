@@ -1,3 +1,12 @@
+## 7.0.2
+October 22 2024
+
+#### Fixed
+- Fixed wrong type annotation for grant token response value.
+
+#### Modified
+- Updated compatibility list.
+
 ## 7.0.1
 July 10 2024
 

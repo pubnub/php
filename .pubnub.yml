@@ -1,8 +1,15 @@
 name: php
-version: 7.0.1
+version: 7.0.2
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2024-10-22
+    version: 7.0.2
+    changes:
+      - type: bug
+        text: "Fixed wrong type annotation for grant token response value."
+      - type: improvement
+        text: "Updated compatibility list."
   - date: 2024-07-10
     version: 7.0.1
     changes:
@@ -420,8 +427,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-7.0.1.zip
-            location: https://github.com/pubnub/php/releases/tag/7.0.1
+            package-name: php-7.0.2.zip
+            location: https://github.com/pubnub/php/releases/tag/7.0.2
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
