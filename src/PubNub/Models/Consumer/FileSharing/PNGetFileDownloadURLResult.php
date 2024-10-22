@@ -13,7 +13,7 @@ class PNGetFileDownloadURLResult
 
     public function __toString()
     {
-        return "Get file URL success with URL: %s" % $this->fileUrl;
+        return "Get file URL success with URL: {$this->fileUrl}";
     }
 
     public function getFileUrl()

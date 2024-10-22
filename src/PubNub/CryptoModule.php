@@ -178,7 +178,7 @@ class CryptoModule
             throw new PubNubResponseParsingException("Decryption error: message is not a string or object");
         }
 
-        if (strlen($input) == '') {
+        if (trim($input) == '') {
             throw new PubNubResponseParsingException("Decryption error: message is empty");
         }
         return $input;
