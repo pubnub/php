@@ -3146,11 +3146,6 @@ parameters:
 			path: src/PubNub/Models/Consumer/FileSharing/PNGetFileDownloadURLResult.php
 
 		-
-			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\FileSharing\\\\PNGetFileDownloadURLResult\\:\\:__toString\\(\\) should return string but returns int\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/FileSharing/PNGetFileDownloadURLResult.php
-
-		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\FileSharing\\\\PNGetFileDownloadURLResult\\:\\:getFileUrl\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/FileSharing/PNGetFileDownloadURLResult.php
