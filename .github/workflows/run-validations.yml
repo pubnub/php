@@ -14,7 +14,7 @@ jobs:
   lint-project:
     name: "Lint project"
     runs-on:
-      group: Default
+      group: organization/Default
     strategy:
       max-parallel: 1
       fail-fast: true
@@ -64,7 +64,7 @@ jobs:
   pubnub-yml:
     name: "Validate .pubnub.yml"
     runs-on:
-      group: Default
+      group: organization/Default
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -86,7 +86,7 @@ jobs:
     name: Validations
     needs: [pubnub-yml, lint-project]
     runs-on:
-      group: Default
+      group: organization/Default
     steps:
       - name: Validations summary
         run: echo -e "\033[38;2;95;215;0m\033[1mAll validations passed"
