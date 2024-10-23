@@ -55,7 +55,7 @@ jobs:
       - name: Run PHPStan
         run: vendor/bin/phpstan analyze --memory-limit 256M
       - name: Run phpcs on changed files
-        run: git diff --name-only origin/master HEAD | grep -E '\.php$' | xargs vendor/bin/phpcs --standard=PSR12
+        run: git diff --name-only --diff-filter=d origin/master HEAD | grep -E '\.php$' | xargs vendor/bin/phpcs --standard=PSR12
       - name: Cancel workflow runs for commit on error
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
