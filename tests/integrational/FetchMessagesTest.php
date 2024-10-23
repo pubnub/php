@@ -28,7 +28,11 @@ class FetchMessagesTest extends PubNubTestCase
             ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
             ->withQuery([
                 "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "true",
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -62,7 +66,11 @@ class FetchMessagesTest extends PubNubTestCase
             ->withQuery([
                 "max" => "5",
                 "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "true",
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -92,7 +100,11 @@ class FetchMessagesTest extends PubNubTestCase
                 "start" => "17165627042258346",
                 "end" => "17165627042258546",
                 "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "true",
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -120,7 +132,11 @@ class FetchMessagesTest extends PubNubTestCase
             ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD-ENCRYPTED")
             ->withQuery([
                 "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "true",
             ])
 
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels": {
