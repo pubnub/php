@@ -8,3 +8,7 @@ default:
         - "%paths.base%/tests/Acceptance/CustomMessageType"
       contexts:
         - PubNubTests\Acceptance\CustomMessageType\CustomMessageTypeContext
+  formatters:
+    pretty: true
+    junit:
+      output_path: "%paths.base%/tests/Acceptance/report.xml"

@@ -19,7 +19,7 @@
       "cp sdk-specifications/features/publish/publish-custom-mssg-type.feature tests/Acceptance/CustomMessageType/publish-custom-mssg-type.feature",
       "cp sdk-specifications/features/publish/signal-custom-mssg-type.feature tests/Acceptance/CustomMessageType/signal-custom-mssg-type.feature",
       "cp sdk-specifications/features/history/history-custom-mssg-type.feature tests/Acceptance/CustomMessageType/history-custom-mssg-type.feature",
-      "vendor/bin/behat -f junit -o tests/Acceptance/reports/"
+      "vendor/bin/behat"
     ]
   },
   "require": {
