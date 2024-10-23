@@ -45,7 +45,7 @@ class FetchMessages extends Endpoint
         'includeCustomMessageType' => 'include_custom_message_type',
     ];
 
-    public function channels(...$channel)
+    public function channels(...$channel): self
     {
         if (is_array($channel[0])) {
             $this->channels = $channel[0];
@@ -57,49 +57,49 @@ class FetchMessages extends Endpoint
         return $this;
     }
 
-    public function start($start)
+    public function start(int $start): self
     {
         $this->start = $start;
         return $this;
     }
 
-    public function end($end)
+    public function end(int $end): self
     {
         $this->end = $end;
         return $this;
     }
 
-    public function count($count)
+    public function count(int $count): self
     {
         $this->count = $count;
         return $this;
     }
 
-    public function includeMeta($includeMeta)
+    public function includeMeta(bool $includeMeta): self
     {
         $this->includeMeta = $includeMeta;
         return $this;
     }
 
-    public function includeUuid($includeUuid)
+    public function includeUuid(bool $includeUuid): self
     {
         $this->includeUuid = $includeUuid;
         return $this;
     }
 
-    public function includeMessageType($includeMessageType)
+    public function includeMessageType(bool $includeMessageType): self
     {
         $this->includeMessageType = $includeMessageType;
         return $this;
     }
 
-    public function includeCustomMessageType($includeCustomMessageType)
+    public function includeCustomMessageType(bool $includeCustomMessageType): self
     {
         $this->includeCustomMessageType = $includeCustomMessageType;
         return $this;
     }
 
-    public function includeMessageActions($includeMessageActions)
+    public function includeMessageActions(bool $includeMessageActions): self
     {
         $this->includeMessageActions = $includeMessageActions;
         return $this;
@@ -125,6 +125,7 @@ class FetchMessages extends Endpoint
     {
         $params = [];
         foreach ($this->customParamMapping as $customParam => $requestParam) {
+            // @phpstan-ignore-next-line
             if (isset($this->$customParam) && !is_null($this->$customParam)) {
                 if (strpos($customParam, 'include') === 0) {
                     $params[$requestParam] = $this->$customParam ? 'true' : 'false';

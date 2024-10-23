@@ -100,10 +100,10 @@ class History extends Endpoint
     }
 
     /**
-     * @param bool $includeTimetoken
+     * @param bool $includeCustomMessageType
      * @return $this
      */
-    public function includeCustomMessageType($includeCustomMessageType)
+    public function includeCustomMessageType(bool $includeCustomMessageType)
     {
         $this->includeCustomMessageType = $includeCustomMessageType;
 

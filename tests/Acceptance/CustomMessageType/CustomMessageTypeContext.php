@@ -29,7 +29,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     private PubNub $pubnub;
     private PNConfiguration $config;
     private string $channelName;
-    private $response;
+    private mixed $response;
 
 
     public function __construct()
@@ -40,7 +40,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @Given the demo keyset
      */
-    public function theDemoKeyset()
+    public function theDemoKeyset(): void
     {
         $this->config->setOrigin("localhost:8090")
             ->setSecure(false)
@@ -53,7 +53,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @Given the demo keyset with enabled storage
      */
-    public function theDemoKeysetWithEnabledStorage()
+    public function theDemoKeysetWithEnabledStorage(): void
     {
         $this->config->setOrigin("localhost:8090")
             ->setSecure(false)
@@ -66,7 +66,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @When I fetch message history for :channelName channel
      */
-    public function iFetchMessageHistoryForChannel($channelName)
+    public function iFetchMessageHistoryForChannel(string $channelName): void
     {
         $this->channelName = $channelName;
         try {
@@ -81,7 +81,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @When I fetch message history with :attribute set to :value for :channelName channel
      */
-    public function iFetchMessageHistoryWithSetToForChannel($attribute, $value, $channelName)
+    public function iFetchMessageHistoryWithSetToForChannel(string $attribute, string $value, string $channelName): void
     {
         $this->channelName = $channelName;
         $builder = $this->pubnub->fetchMessages()->channels($this->channelName);
@@ -98,7 +98,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @Then history response contains messages with :messageType1 and :messageType2 message types
      */
-    public function historyResponseContainsMessagesWithAndMessageTypes($messageType1, $messageType2)
+    public function historyResponseContainsMessagesWithAndMessageTypes(string $messageType1, string $messageType2): void
     {
         $messages = $this->response->getChannels()[$this->channelName];
         assert((int)$messages[0]->getMessageType() === (int)$messageType1);
@@ -106,19 +106,19 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     }
 
     /**
-     * @Then history response contains messages with :customMessageType1 and :customMessageType2 types
+     * @Then history response contains messages with :customType1 and :customType2 types
      */
-    public function historyResponseContainsMessagesWithAndTypes($customMessageType1, $customMessageType2)
+    public function historyResponseContainsMessagesWithAndTypes(string $customType1, string $customType2): void
     {
         $messages = $this->response->getChannels()[$this->channelName];
-        assert($messages[0]->getCustomMessageType() === $customMessageType1);
-        assert($messages[1]->getCustomMessageType() === $customMessageType2);
+        assert($messages[0]->getCustomMessageType() === $customType1);
+        assert($messages[1]->getCustomMessageType() === $customType2);
     }
 
     /**
      * @Then history response contains messages without customMessageType
      */
-    public function historyResponseContainsMessagesWithoutCustommessagetype()
+    public function historyResponseContainsMessagesWithoutCustommessagetype(): void
     {
         foreach ($this->response->getChannels()[$this->channelName] as $message) {
             assert(is_null($message->getCustomMessageType()));
@@ -128,7 +128,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @When I publish message with :customMessageType customMessageType
      */
-    public function iPublishMessageWithCustommessagetype($customMessageType)
+    public function iPublishMessageWithCustommessagetype(string $customMessageType): void
     {
         try {
             $this->response = $this->pubnub->publish()
@@ -144,7 +144,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @Then I receive a successful response
      */
-    public function iReceiveASuccessfulResponse()
+    public function iReceiveASuccessfulResponse(): void
     {
         assert($this->response instanceof PNPublishResult || $this->response instanceof PNSignalResult
             || $this->response instanceof PNFetchMessagesResult);
@@ -153,7 +153,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @Then I receive an error response
      */
-    public function iReceiveAnErrorResponse()
+    public function iReceiveAnErrorResponse(): void
     {
         assert($this->response instanceof PubNubServerException);
     }
@@ -161,7 +161,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @When I send a signal with :customMessageType customMessageType
      */
-    public function iSendASignalWithCustommessagetype($customMessageType)
+    public function iSendASignalWithCustommessagetype(string $customMessageType): void
     {
         try {
             $this->response = $this->pubnub->signal()

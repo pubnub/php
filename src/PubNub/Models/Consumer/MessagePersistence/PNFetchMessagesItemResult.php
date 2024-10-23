@@ -19,31 +19,31 @@ class PNFetchMessagesItemResult
         $this->timetoken = $timetoken;
     }
 
-    public function setMetadata(mixed $metadata)
+    public function setMetadata(mixed $metadata): self
     {
         $this->metadata = $metadata;
         return $this;
     }
 
-    public function setActions(mixed $actions)
+    public function setActions(mixed $actions): self
     {
         $this->actions = $actions;
         return $this;
     }
 
-    public function setUuid(string $uuid)
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
         return $this;
     }
 
-    public function setMessageType(string $messageType)
+    public function setMessageType(string $messageType): self
     {
         $this->messageType = $messageType;
         return $this;
     }
 
-    public function setCustomMessageType(string $customMessageType)
+    public function setCustomMessageType(string $customMessageType): self
     {
         $this->customMessageType = $customMessageType;
         return $this;
