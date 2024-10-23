@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNubFeatures;
+namespace PubNubTests\Acceptance;
 
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -8,7 +8,7 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 class PubNubContext
 {
     /** @BeforeScenario */
-    public function before(BeforeScenarioScope $scope)
+    public function before(BeforeScenarioScope $scope): void
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -23,7 +23,7 @@ class PubNubContext
     }
 
     /** @AfterScenario */
-    public function after(AfterScenarioScope $scope)
+    public function after(AfterScenarioScope $scope): void
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

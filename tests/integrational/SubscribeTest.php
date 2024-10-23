@@ -2,7 +2,6 @@
 
 namespace Tests\Integrational;
 
-
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubUnsubscribeException;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
@@ -11,11 +10,9 @@ use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 
-
 const CHANNEL = 'ch1';
 const MESSAGE = 'hey';
 const GROUP = 'gr1';
-
 
 /**
  * Class SubscribeTest
@@ -59,6 +56,7 @@ class SubscribeTest extends \PubNubTestCase
     }
 }
 
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class MySubscribeCallback extends SubscribeCallback
 {
     protected $config;
@@ -67,12 +65,12 @@ class MySubscribeCallback extends SubscribeCallback
      * MySubscribeCallback constructor.
      * @param $config
      */
-    function __construct(PNConfiguration $config)
+    public function __construct(PNConfiguration $config)
     {
         $this->config = $config;
     }
 
-    function status($pubnub, $status)
+    public function status($pubnub, $status)
     {
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
             throw new PubNubUnsubscribeException();
@@ -84,22 +82,22 @@ class MySubscribeCallback extends SubscribeCallback
      * @param PNMessageResult $message
      * @throws PubNubUnsubscribeException
      */
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
     }
 }
 
-
+//phpcs:ignore PSR1.Classes.ClassDeclaration
 class MySubscribePublishCallback extends SubscribeCallback
 {
     /** @var  PNConfiguration */
     protected $config;
 
-    function __construct($config)
+    public function __construct($config)
     {
         $this->config = $config;
     }
@@ -108,7 +106,7 @@ class MySubscribePublishCallback extends SubscribeCallback
      * @param PubNub $pubnub
      * @param PNStatus $status
      */
-    function status($pubnub, $status)
+    public function status($pubnub, $status)
     {
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
             $publishThread = new PublishThread($this->config, false);
@@ -122,20 +120,21 @@ class MySubscribePublishCallback extends SubscribeCallback
      * @param PNMessageResult $message
      * @throws PubNubUnsubscribeException
      */
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
         if ($message->getMessage() === MESSAGE) {
             throw new PubNubUnsubscribeException();
         }
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
     }
 }
 
-
-class PublishThread extends \Thread {
+//phpcs:ignore PSR1.Classes.ClassDeclaration
+class PublishThread extends \Thread
+{
     /** @var  PNConfiguration */
     protected $config;
 
@@ -156,11 +155,11 @@ class PublishThread extends \Thread {
         $pubnub->publish()->channel(CHANNEL)->message(MESSAGE)->sync();
     }
 
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
     }
 }

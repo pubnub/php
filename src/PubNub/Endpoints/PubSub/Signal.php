@@ -20,6 +20,9 @@ class Signal extends Endpoint
     /** @var  string $channel to send message on*/
     protected $channel;
 
+    /** @var string $customMessageType User defined message type */
+    protected ?string $customMessageType;
+
     /**
      * @param mixed $message
      * @return $this
@@ -38,6 +41,17 @@ class Signal extends Endpoint
     public function channel($channel)
     {
         $this->channel = $channel;
+
+        return $this;
+    }
+
+    /**
+     * @param string $customMessageType
+     * @return $this
+     */
+    public function customMessageType(?string $customMessageType)
+    {
+        $this->customMessageType = $customMessageType;
 
         return $this;
     }
@@ -84,7 +98,13 @@ class Signal extends Endpoint
 
     protected function customParams()
     {
-        return [];
+        $params = [];
+
+        if (isset($this->customMessageType)) {
+            $params['custom_message_type'] = $this->customMessageType;
+        }
+
+        return $params;
     }
 
     /**
