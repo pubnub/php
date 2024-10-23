@@ -67,12 +67,13 @@ jobs:
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   acceptance-tests:
     name: Perform Acceptance BDD tests
-    runs-on: ubuntu-latest
+    runs-on:
+      group: organization/Default
     steps:
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Checkout mock-server action
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -88,8 +89,11 @@ jobs:
       - name: Run acceptance tests
         run: |
           composer acceptance-test
+      - name: Cancel workflow runs for commit on error
+        if: failure()
+        uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
       - name: Expose acceptance tests reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: acceptance-test-reports
           path: ./tests/Acceptance/reports
