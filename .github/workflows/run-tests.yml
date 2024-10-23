@@ -65,6 +65,34 @@ jobs:
       - name: Cancel workflow runs for commit on error
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
+  acceptance-tests:
+    name: Perform Acceptance BDD tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Checkout mock-server action
+        uses: actions/checkout@v3
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Run mock server action
+        uses: ./.github/.release/actions/actions/mock-server
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Install Composer dev depenencies
+        run: |
+          composer install --dev
+      - name: Run acceptance tests
+        run: |
+          composer acceptance-test
+      - name: Expose acceptance tests reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: acceptance-test-reports
+          path: ./tests/Acceptance/reports
   all-tests:
     name: Tests
     needs: [tests]

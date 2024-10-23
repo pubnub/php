@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNubFeatures;
+namespace PubNubTests\Acceptance;
 
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;

@@ -31,6 +31,8 @@ class History extends Endpoint
     /** @var bool */
     protected ?bool $includeTimetoken;
 
+    protected ?bool $includeCustomMessageType;
+
     /**
      * @param string $channel
      * @return $this
@@ -98,6 +100,17 @@ class History extends Endpoint
     }
 
     /**
+     * @param bool $includeTimetoken
+     * @return $this
+     */
+    public function includeCustomMessageType($includeCustomMessageType)
+    {
+        $this->includeCustomMessageType = $includeCustomMessageType;
+
+        return $this;
+    }
+
+    /**
      * @throws PubNubValidationException
      */
     public function validateParams()
@@ -136,6 +149,14 @@ class History extends Endpoint
 
         if (isset($this->includeTimetoken)) {
             $this->includeTimetoken ? $params['include_token'] = "true" : $params['include_token'] = "false";
+        }
+
+        if (isset($this->includeCustomMessageType)) {
+            if ($this->includeCustomMessageType) {
+                $params['include_custom_message_type'] = "true";
+            } else {
+                $params['include_custom_message_type'] = "false";
+            }
         }
 
         return $params;
