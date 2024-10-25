@@ -1,4 +1,3 @@
-
 @featureSet=historyCustomMssgType @beta
 Feature: History for VSP
   As a PubNub user I want to fetch history with message type.

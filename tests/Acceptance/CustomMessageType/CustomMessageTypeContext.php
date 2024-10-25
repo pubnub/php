@@ -18,14 +18,6 @@ use PubNub\Exceptions\PubNubServerException;
  */
 class CustomMessageTypeContext extends PubNubContext implements Context
 {
-    /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
-     */
-
     private PubNub $pubnub;
     private PNConfiguration $config;
     private string $channelName;

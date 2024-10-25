@@ -8,6 +8,11 @@ default:
         - "%paths.base%/tests/Acceptance/CustomMessageType"
       contexts:
         - PubNubTests\Acceptance\CustomMessageType\CustomMessageTypeContext
+    subscribe:
+      paths:
+        - "%paths.base%/tests/Acceptance/Subscribe"
+      contexts:
+        - PubNubTests\Acceptance\Subscribe\SubscribeContext
   formatters:
     pretty: true
     junit:
