@@ -1,5 +1,6 @@
 <?php
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 declare(strict_types=1);
 
 error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
@@ -15,7 +16,6 @@ use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\PubNub;
 use PubNub\PNConfiguration;
-use PubNub\CryptoModule;
 
 if ($argc < 2) {
     echo "Usage: php sub.php <channel>\n";
@@ -34,7 +34,7 @@ $pubnub = new PubNub($pnConfig);
 
 $channelName = $argv[1];
 
-// phpcs:ignore
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class MySubscribeCallback extends SubscribeCallback
 {
     /**
