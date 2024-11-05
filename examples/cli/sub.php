@@ -17,15 +17,17 @@ use PubNub\PubNub;
 use PubNub\PNConfiguration;
 use PubNub\CryptoModule;
 
+if ($argc < 2) {
+    echo "Usage: php sub.php <channel>\n";
+    exit(1);
+}
 
 $pnUuid = 'pn-610da4553bb079.92567429';
 
 $pnConfig = new PNConfiguration();
 $pnConfig->setPublishKey(getenv('PN_KEY_PUBLISH'));
 $pnConfig->setSubscribeKey(getenv('PN_KEY_SUBSCRIBE'));
-if (array_key_exists(2, $argv)) {
-    $pnConfig->setCrypto(CryptoModule::aesCbcCryptor($argv[2], true));
-}
+
 $pnConfig->setUuid($pnUuid);
 
 $pubnub = new PubNub($pnConfig);
@@ -58,12 +60,14 @@ class MySubscribeCallback extends SubscribeCallback
     public function message($pubnub, $messageResult)
     {
         printf(
-            "\nMessage %s\n Channel: %s\n Timetoken: %s\n Publisher: %s\n",
-            $messageResult->getMessage(),
+            "\nMessage %s\n Channel: %s\n   Timetoken: %s\n   Publisher: %s\n   Custom message type: %s\n",
+            json_encode($messageResult->getMessage()),
             $messageResult->getChannel(),
             $messageResult->getTimetoken(),
             $messageResult->getPublisher(),
+            $messageResult->getCustomMessageType(),
         );
+
         if ($messageResult->isError()) {
             printf('\nError occured during parsing the message: %s', $messageResult->getError()->getMessage());
         }
