@@ -97,7 +97,7 @@ class PublishFileMessage extends FileSharingEndpoint
         $params['ttl'] = $this->ttl;
         $params['store'] = $this->shouldStore ? 1 : 0;
 
-        if ($this->customMessageType) {
+        if (isset($this->customMessageType)) {
             $params['custom_message_type'] = $this->customMessageType;
         }
 
