@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\Channel;
 
 use PubNubTestCase;
 
-
 class GetAllChannelMetadataEndpointTest extends PubNubTestCase
 {
     public function testGetAllChannelMetadata()
