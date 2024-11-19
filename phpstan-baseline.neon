@@ -746,16 +746,6 @@ parameters:
 			path: src/PubNub/Endpoints/Endpoint.php
 
 		-
-			message: "#^Variable \\$publishKey in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
-			message: "#^Variable \\$subscribeKey in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
 			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\DeleteFile\\:\\:createResponse\\(\\) has parameter \\$result with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/FileSharing/DeleteFile.php

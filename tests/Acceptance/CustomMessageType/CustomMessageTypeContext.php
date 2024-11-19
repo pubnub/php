@@ -90,7 +90,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @When I fetch message history with messageType for :channelName channel
      */
-    public function iFetchMessageHistoryWithMessagetypeForChannel($channelName)
+    public function iFetchMessageHistoryWithMessagetypeForChannel(string $channelName): void
     {
         $this->channelName = $channelName;
         $builder = $this->pubnub->fetchMessages()->channels($this->channelName)->includeMessageType(true);
@@ -104,7 +104,7 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     /**
      * @When I fetch message history with customMessageType for :channelName channel
      */
-    public function iFetchMessageHistoryWithCustommessagetypeForChannel($channelName)
+    public function iFetchMessageHistoryWithCustommessagetypeForChannel(string $channelName): void
     {
         $this->channelName = $channelName;
         $builder = $this->pubnub->fetchMessages()->channels($this->channelName)->includeCustomMessageType(true);
