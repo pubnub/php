@@ -10,7 +10,7 @@ require('../../vendor/autoload.php');
 use PubNub\PubNub;
 use PubNub\PNConfiguration;
 
-if ($argc < 3) {
+if ($argc < 5) {
     echo "Usage: php pub.php <uuid> <channel> <message> <custom_message_type>\n";
     exit(1);
 }

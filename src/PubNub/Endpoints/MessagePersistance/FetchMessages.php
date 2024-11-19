@@ -33,7 +33,7 @@ class FetchMessages extends Endpoint
     protected bool $includeUuid = false;
     protected bool $includeMessageType = true;
     protected bool $includeMessageActions = false;
-    protected bool $includeCustomMessageType = true;
+    protected bool $includeCustomMessageType = false;
 
     protected array $customParamMapping = [
         'start' => 'start',

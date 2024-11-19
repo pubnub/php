@@ -88,6 +88,35 @@ class CustomMessageTypeContext extends PubNubContext implements Context
     }
 
     /**
+     * @When I fetch message history with messageType for :channelName channel
+     */
+    public function iFetchMessageHistoryWithMessagetypeForChannel($channelName)
+    {
+        $this->channelName = $channelName;
+        $builder = $this->pubnub->fetchMessages()->channels($this->channelName)->includeMessageType(true);
+        try {
+            $this->response = $builder->sync();
+        } catch (PubNubServerException $e) {
+            $this->response = $e;
+        }
+    }
+
+    /**
+     * @When I fetch message history with customMessageType for :channelName channel
+     */
+    public function iFetchMessageHistoryWithCustommessagetypeForChannel($channelName)
+    {
+        $this->channelName = $channelName;
+        $builder = $this->pubnub->fetchMessages()->channels($this->channelName)->includeCustomMessageType(true);
+
+        try {
+            $this->response = $builder->sync();
+        } catch (PubNubServerException $e) {
+            $this->response = $e;
+        }
+    }
+
+    /**
      * @Then history response contains messages with :messageType1 and :messageType2 message types
      */
     public function historyResponseContainsMessagesWithAndMessageTypes(string $messageType1, string $messageType2): void
