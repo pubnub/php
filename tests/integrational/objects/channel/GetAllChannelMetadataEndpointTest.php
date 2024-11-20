@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\Channel;
 
 use PubNubTestCase;
 
-
 class GetAllChannelMetadataEndpointTest extends PubNubTestCase
 {
     public function testGetAllChannelMetadata()
@@ -53,11 +52,15 @@ class GetAllChannelMetadataEndpointTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        // $this->assertEquals(3, $response->getTotalCount());
 
         $data = $response->getData();
 
-        // $this->assertEquals(3, count($data));
+        // since we share keys between all SDK's we need to filter out other test data and focus only on our own
+        $data = array_values(array_filter($data, function ($element) {
+            return in_array($element->getId(), ['ch', 'ch1', 'ch2']);
+        }));
+
+        $this->assertEquals(3, count($data));
 
         $value = $data[0];
         $this->assertEquals("ch", $value->getId());
@@ -84,6 +87,11 @@ class GetAllChannelMetadataEndpointTest extends PubNubTestCase
         $custom = $value->getCustom();
         $this->assertNotEmpty($custom);
         $this->assertEquals("aa2", $custom->a);
-        $this->assertEquals("bb2", $custom->b);        
+        $this->assertEquals("bb2", $custom->b);
+
+        // cleanup
+        $this->pubnub->removeChannelMetadata()->channel("ch")->sync();
+        $this->pubnub->removeChannelMetadata()->channel("ch1")->sync();
+        $this->pubnub->removeChannelMetadata()->channel("ch2")->sync();
     }
 }

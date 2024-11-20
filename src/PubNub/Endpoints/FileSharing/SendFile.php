@@ -17,6 +17,7 @@ class SendFile extends Endpoint
     protected string $fileName;
     protected mixed $message;
     protected mixed $meta;
+    protected ?string $customMessageType;
     protected bool $shouldStore;
     protected int $ttl;
     protected mixed $fileContent;
@@ -48,6 +49,17 @@ class SendFile extends Endpoint
     public function meta($meta)
     {
         $this->meta = $meta;
+        return $this;
+    }
+
+    /**
+     * @param string $customMessageType
+     * @return $this
+     */
+    public function customMessageType(?string $customMessageType)
+    {
+        $this->customMessageType = $customMessageType;
+
         return $this;
     }
 
@@ -272,6 +284,9 @@ class SendFile extends Endpoint
         }
         if (isset($this->shouldStore)) {
             $publishRequest->shouldStore($this->shouldStore);
+        }
+        if (isset($this->customMessageType)) {
+            $publishRequest->customMessageType($this->customMessageType);
         }
         if (isset($this->ttl)) {
             $publishRequest->ttl($this->ttl);

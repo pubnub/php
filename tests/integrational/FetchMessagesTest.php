@@ -22,13 +22,18 @@ class FetchMessagesTest extends PubNubTestCase
 
     public function testFetchWithDefaults()
     {
-        $fetchMessages = new FetchMessagesExposed($this->pubnub);
+        $subKey = $this->pubnub_demo->getConfiguration()->getSubscribeKey();
+        $fetchMessages = new FetchMessagesExposed($this->pubnub_demo);
 
         $fetchMessages
             ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
             ->withQuery([
-                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "false",
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -55,14 +60,19 @@ class FetchMessagesTest extends PubNubTestCase
 
     public function testFetchWithCount()
     {
-        $fetchMessages = new FetchMessagesExposed($this->pubnub);
+        $subKey = $this->pubnub_demo->getConfiguration()->getSubscribeKey();
+        $fetchMessages = new FetchMessagesExposed($this->pubnub_demo);
 
         $fetchMessages
-            ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
+            ->stubFor("/v3/history/sub-key/{$subKey}/channel/TheMessageHistoryChannelHD")
             ->withQuery([
                 "max" => "5",
-                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "false",
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -84,15 +94,20 @@ class FetchMessagesTest extends PubNubTestCase
 
     public function testFetchWithStartEnd()
     {
-        $fetchMessages = new FetchMessagesExposed($this->pubnub);
+        $subKey = $this->pubnub_demo->getConfiguration()->getSubscribeKey();
+        $fetchMessages = new FetchMessagesExposed($this->pubnub_demo);
 
         $fetchMessages
-            ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
+            ->stubFor("/v3/history/sub-key/{$subKey}/channel/TheMessageHistoryChannelHD")
             ->withQuery([
                 "start" => "17165627042258346",
                 "end" => "17165627042258546",
-                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "false",
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -114,13 +129,18 @@ class FetchMessagesTest extends PubNubTestCase
 
     public function testFetchEncrypted()
     {
+        $subKey = $this->pubnub_enc->getConfiguration()->getSubscribeKey();
         $fetchMessages = new FetchMessagesExposed($this->pubnub_enc);
 
         $fetchMessages
-            ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD-ENCRYPTED")
+            ->stubFor("/v3/history/sub-key/{$subKey}/channel/TheMessageHistoryChannelHD-ENCRYPTED")
             ->withQuery([
-                "uuid" => $this->pubnub->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName
+                "uuid" => $this->pubnub_enc->getConfiguration()->getUserId(),
+                "pnsdk" => $this->encodedSdkName,
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "false",
             ])
 
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels": {

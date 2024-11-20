@@ -1,3 +1,9 @@
+## 7.1.0
+November 20 2024
+
+#### Added
+- Add custom message type support for the following APIs - publish, signal, share file, subscribe and history.
+
 ## 7.0.2
 October 22 2024
 

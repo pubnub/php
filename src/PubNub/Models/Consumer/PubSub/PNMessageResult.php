@@ -21,6 +21,8 @@ class PNMessageResult
 
     private $error;
 
+    private ?string $customMessageType = null;
+
     /**
      * PNMessageResult constructor.
      * @param array $message
@@ -29,14 +31,22 @@ class PNMessageResult
      * @param int $timetoken
      * @param string $publisher
      */
-    public function __construct($message, $channel, $subscription, $timetoken, $publisher, $error = null)
-    {
+    public function __construct(
+        $message,
+        $channel,
+        $subscription,
+        $timetoken,
+        $publisher,
+        $error = null,
+        ?string $customMessageType = null
+    ) {
         $this->message = $message;
         $this->channel = $channel;
         $this->subscription = $subscription;
         $this->timetoken = $timetoken;
         $this->publisher = $publisher;
         $this->error = $error;
+        $this->customMessageType = $customMessageType;
     }
 
     /**
@@ -87,5 +97,10 @@ class PNMessageResult
     public function getError()
     {
         return $this->error;
+    }
+
+    public function getCustomMessageType(): ?string
+    {
+        return $this->customMessageType;
     }
 }

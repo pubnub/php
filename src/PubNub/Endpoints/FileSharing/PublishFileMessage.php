@@ -14,6 +14,10 @@ class PublishFileMessage extends FileSharingEndpoint
 
     protected $message;
     protected $meta;
+
+    /** @var string $customMessageType User defined message type */
+    protected ?string $customMessageType;
+
     protected $shouldStore;
     protected $ttl;
 
@@ -26,6 +30,17 @@ class PublishFileMessage extends FileSharingEndpoint
     public function meta($meta)
     {
         $this->meta = $meta;
+        return $this;
+    }
+
+    /**
+     * @param string $customMessageType
+     * @return $this
+     */
+    public function customMessageType(?string $customMessageType)
+    {
+        $this->customMessageType = $customMessageType;
+
         return $this;
     }
 
@@ -81,6 +96,10 @@ class PublishFileMessage extends FileSharingEndpoint
         $params['meta'] = json_encode($this->meta);
         $params['ttl'] = $this->ttl;
         $params['store'] = $this->shouldStore ? 1 : 0;
+
+        if (isset($this->customMessageType)) {
+            $params['custom_message_type'] = $this->customMessageType;
+        }
 
         return $params;
     }

@@ -10,8 +10,8 @@ require('../../vendor/autoload.php');
 use PubNub\PubNub;
 use PubNub\PNConfiguration;
 
-if ($argc < 5) {
-    echo "Usage: php pub.php <uuid> <channel> <message> <custom_message_type>\n";
+if ($argc < 3) {
+    echo "Usage: php file.php <uuid> <channel> <message> <custom_message_type>\n";
     exit(1);
 }
 
@@ -23,11 +23,13 @@ $pnConfig->setSubscribeKey(getenv('PN_KEY_SUBSCRIBE'));
 $pnConfig->setUuid($pnUuid);
 
 $pubnub = new PubNub($pnConfig);
-
-$pubResult = $pubnub->publish()
+$file = fopen('pn.jpg', 'rb');
+$pubResult = $pubnub->sendFile()
     ->channel($argv[2])
     ->message($argv[3])
     ->customMessageType($argv[4])
+    ->fileHandle($file)
+    ->fileName('pn.jpg')
     ->sync();
 
-printf("Published message at timetoken: %d\n", $pubResult->getTimetoken());
+print("Published file");

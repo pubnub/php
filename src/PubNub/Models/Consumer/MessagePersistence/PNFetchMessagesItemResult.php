@@ -4,12 +4,13 @@ namespace PubNub\Models\Consumer\MessagePersistence;
 
 class PNFetchMessagesItemResult
 {
-    protected mixed $message;
-    protected string $timetoken;
-    protected mixed $metadata;
-    protected mixed $actions;
-    protected string $uuid;
-    protected string $messageType;
+    protected mixed $message = null;
+    protected ?string $timetoken = null;
+    protected mixed $metadata = null;
+    protected mixed $actions = null;
+    protected ?string $uuid = null;
+    protected ?string $messageType = null;
+    protected ?string $customMessageType = null;
 
 
     public function __construct(mixed $message, string $timetoken)
@@ -18,27 +19,33 @@ class PNFetchMessagesItemResult
         $this->timetoken = $timetoken;
     }
 
-    public function setMetadata(mixed $metadata)
+    public function setMetadata(mixed $metadata): self
     {
         $this->metadata = $metadata;
         return $this;
     }
 
-    public function setActions(mixed $actions)
+    public function setActions(mixed $actions): self
     {
         $this->actions = $actions;
         return $this;
     }
 
-    public function setUuid(string $uuid)
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
         return $this;
     }
 
-    public function setMessageType(string $messageType)
+    public function setMessageType(string $messageType): self
     {
         $this->messageType = $messageType;
+        return $this;
+    }
+
+    public function setCustomMessageType(string $customMessageType): self
+    {
+        $this->customMessageType = $customMessageType;
         return $this;
     }
 
@@ -47,7 +54,7 @@ class PNFetchMessagesItemResult
         return $this->message;
     }
 
-    public function getTimetoken(): string
+    public function getTimetoken(): ?string
     {
         return $this->timetoken;
     }
@@ -62,14 +69,19 @@ class PNFetchMessagesItemResult
         return $this->actions;
     }
 
-    public function getUuid(): string
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }
 
-    public function getMessageType(): string
+    public function getMessageType(): ?string
     {
         return $this->messageType;
+    }
+
+    public function getCustomMessageType(): ?string
+    {
+        return $this->customMessageType;
     }
 
     public static function fromJson($json, $crypto): static
@@ -89,6 +101,10 @@ class PNFetchMessagesItemResult
 
         if (isset($json['message_type'])) {
             $item->setMessageType($json['message_type']);
+        }
+
+        if (isset($json['custom_message_type'])) {
+            $item->setCustomMessageType($json['custom_message_type']);
         }
 
         if (isset($json['meta'])) {

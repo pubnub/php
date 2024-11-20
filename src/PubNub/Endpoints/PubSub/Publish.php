@@ -27,6 +27,9 @@ final class Publish extends Endpoint
     /** @var bool $usePost HTTP method instead of default GET  */
     protected $usePost;
 
+    /** @var string $customMessageType User defined message type */
+    protected ?string $customMessageType;
+
     /** @var  array $meta data */
     protected $meta;
 
@@ -89,6 +92,17 @@ final class Publish extends Endpoint
     public function usePost($usePost)
     {
         $this->usePost = $usePost;
+
+        return $this;
+    }
+
+    /**
+     * @param string $customMessageType
+     * @return $this
+     */
+    public function customMessageType(?string $customMessageType)
+    {
+        $this->customMessageType = $customMessageType;
 
         return $this;
     }
@@ -164,6 +178,10 @@ final class Publish extends Endpoint
 
         if (isset($this->ttl)) {
             $params['ttl'] = (string) $this->ttl;
+        }
+
+        if (isset($this->customMessageType)) {
+            $params['custom_message_type'] = $this->customMessageType;
         }
 
         $params['seqn'] = $this->pubnub->getSequenceId();

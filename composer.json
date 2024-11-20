@@ -5,7 +5,7 @@
   "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
   "homepage": "http://www.pubnub.com/",
   "license": "proprietary",
-  "version": "7.0.2",
+  "version": "7.1.0",
   "authors": [
     {
       "name": "PubNub",
@@ -13,10 +13,18 @@
     }
   ],
   "scripts": {
-    "test": "./vendor/bin/phpunit tests/  --verbose --coverage-clover=coverage.clover"
+    "test": "./vendor/bin/phpunit tests/  --verbose --coverage-clover=coverage.clover",
+    "acceptance-test": [
+      "mkdir -p tests/Acceptance/reports",
+      "cp sdk-specifications/features/publish/publish-custom-mssg-type.feature tests/Acceptance/CustomMessageType/publish-custom-mssg-type.feature",
+      "cp sdk-specifications/features/publish/signal-custom-mssg-type.feature tests/Acceptance/CustomMessageType/signal-custom-mssg-type.feature",
+      "cp sdk-specifications/features/history/history-custom-mssg-type.feature tests/Acceptance/CustomMessageType/history-custom-mssg-type.feature",
+      "cp sdk-specifications/features/subscribe/subscribe-custom-mssg-type.feature tests/Acceptance/Subscribe/subscribe-custom-mssg-type.feature",
+      "vendor/bin/behat"
+    ]
   },
   "require": {
-    "php": "^7.4|>=8.0",
+    "php": ">=8.0",
     "rmccue/requests": "^2.0",
     "psr/log": "^1.1|^2.0|^3.0"
   },
@@ -29,7 +37,8 @@
   },
   "autoload": {
     "psr-4": {
-      "PubNub\\": "src/PubNub"
+      "PubNub\\": "src/PubNub",
+      "PubNubTests\\": "tests"
     }
   },
   "autoload-dev": {

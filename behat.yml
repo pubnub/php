@@ -1,10 +1,19 @@
 default:
-    autoload:
-        - "%paths.base%/tests/features/bootstrap/"
-    suites:
-        access:
-            paths:    [ "%paths.base%/tests/features/bootstrap/access" ]
-            contexts: [ AccessManagerContext ]
-        utilities:
-            paths:    [ "%paths.base%/tests/features/bootstrap/utilities" ]
-            contexts: [ TimeContext ]
+  autoload:
+    '': "%paths.base%/tests/Acceptance/"
+
+  suites:
+    custom-message-type:
+      paths:
+        - "%paths.base%/tests/Acceptance/CustomMessageType"
+      contexts:
+        - PubNubTests\Acceptance\CustomMessageType\CustomMessageTypeContext
+    subscribe:
+      paths:
+        - "%paths.base%/tests/Acceptance/Subscribe"
+      contexts:
+        - PubNubTests\Acceptance\Subscribe\SubscribeContext
+  formatters:
+    pretty: true
+    junit:
+      output_path: "%paths.base%/tests/Acceptance/report.xml"

@@ -90,9 +90,9 @@ class SubscriptionManager
 
                 if ($e->getStatusCode() === 403) {
                     $pnStatus->setCategory(PNStatusCategory::PNAccessDeniedCategory);
-                } else if ($e->getStatusCode() === 400) {
+                } elseif ($e->getStatusCode() === 400) {
                     $pnStatus->setCategory(PNStatusCategory::PNBadRequestCategory);
-                } else if ($e->getStatusCode() === 530) {
+                } elseif ($e->getStatusCode() === 530) {
                     $pnStatus->setCategory(PNStatusCategory::PNNoStubMatchedCategory);
                 } else {
                     $pnStatus->setCategory(PNStatusCategory::PNUnknownCategory);
@@ -280,7 +280,8 @@ class SubscriptionManager
                     $subscriptionMatch,
                     $publishMetadata->getPublishTimetoken(),
                     $publisher,
-                    $messageError
+                    $messageError,
+                    $message->getCustomMessageType()
                 );
 
                 $this->listenerManager->announceMessage($pnMessageResult);
