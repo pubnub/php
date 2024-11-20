@@ -1,8 +1,13 @@
 name: php
-version: 7.0.2
+version: 7.1.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2024-11-20
+    version: 7.1.0
+    changes:
+      - type: feature
+        text: "Add custom message type support for the following APIs - publish, signal, share file, subscribe and history."
   - date: 2024-10-22
     version: 7.0.2
     changes:
@@ -427,8 +432,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-7.0.2.zip
-            location: https://github.com/pubnub/php/releases/tag/7.0.2
+            package-name: php-7.1.0.zip
+            location: https://github.com/pubnub/php/releases/tag/7.1.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
