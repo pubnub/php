@@ -130,7 +130,7 @@ abstract class Endpoint
     {
         $subscribeKey = $this->pubnub->getConfiguration()->getSubscribeKey();
 
-        if ($subscribeKey == null) {
+        if ($subscribeKey == null || empty($subscribeKey)) {
             throw new PubNubValidationException("Subscribe Key not configured");
         }
     }
@@ -142,7 +142,7 @@ abstract class Endpoint
     {
         $publishKey = $this->pubnub->getConfiguration()->getPublishKey();
 
-        if ($publishKey == null) {
+        if ($publishKey == null || empty($publishKey)) {
             throw new PubNubValidationException("Publish Key not configured");
         }
     }
@@ -154,7 +154,7 @@ abstract class Endpoint
     {
         $secretKey = $this->pubnub->getConfiguration()->getSecretKey();
 
-        if ($secretKey === null) {
+        if ($secretKey === null || empty($secretKey)) {
             throw new PubNubValidationException("Secret key not configured");
         }
     }
