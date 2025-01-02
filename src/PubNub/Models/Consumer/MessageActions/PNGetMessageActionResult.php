@@ -6,6 +6,10 @@ use PubNub\Models\Consumer\MessageActions\PNMessageAction;
 
 class PNGetMessageActionResult extends PNMessageAction
 {
+    /**
+     *
+     * @var PNMessageAction[] $actions
+     */
     public array $actions;
 
     /**
@@ -13,9 +17,8 @@ class PNGetMessageActionResult extends PNMessageAction
      * @param mixed $json
      * @return PNGetMessageActionResult
           */
-    public static function fromJson($json): self
+    public static function fromJson(mixed $json): self
     {
-
         $actions = [];
         foreach ($json['data'] as $action) {
             $actions[] = new self($action);

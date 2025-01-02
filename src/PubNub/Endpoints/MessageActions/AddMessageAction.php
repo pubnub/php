@@ -2,10 +2,12 @@
 
 namespace PubNub\Endpoints\MessageActions;
 
+use PubNub\PubNub;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Models\Consumer\MessageActions\PNMessageAction;
 use PubNub\Models\Consumer\MessageActions\PNAddMessageActionResult;
 use PubNub\PubNubUtil;
@@ -23,7 +25,7 @@ class AddMessageAction extends Endpoint
     protected string $channel;
     protected PNMessageAction $messageAction;
 
-    public function __construct($pubnub)
+    public function __construct(PubNub $pubnub)
     {
         parent::__construct($pubnub);
         $this->endpointConnectTimeout = $this->pubnub->getConfiguration()->getConnectTimeout();
@@ -57,7 +59,7 @@ class AddMessageAction extends Endpoint
     /**
      * @throws PubNubValidationException
      */
-    protected function validateParams()
+    protected function validateParams(): void
     {
         if (!$this->channel) {
             throw new PubNubValidationException("Channel Missing");
@@ -72,13 +74,13 @@ class AddMessageAction extends Endpoint
      */
     protected function validateMessageAction(): void
     {
-        if (!$this->messageAction) {
+        if (!isset($this->messageAction)) {
             throw new PubNubValidationException("Message Action Missing");
         }
-        if (!$this->messageAction->type) {
+        if (!isset($this->messageAction->type)) {
             throw new PubNubValidationException("Message Action Type Missing");
         }
-        if (!$this->messageAction->value) {
+        if (!isset($this->messageAction->value)) {
             throw new PubNubValidationException("Message Action Value Missing");
         }
         if (!$this->messageAction->messageTimetoken) {
@@ -87,7 +89,7 @@ class AddMessageAction extends Endpoint
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     protected function customParams()
     {
@@ -97,7 +99,7 @@ class AddMessageAction extends Endpoint
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     protected function customHeaders()
     {
@@ -108,7 +110,7 @@ class AddMessageAction extends Endpoint
     }
 
     /**
-     * @return array
+     * @return string | null
      */
     protected function buildData()
     {
@@ -141,11 +143,11 @@ class AddMessageAction extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
-     * @return PNPublishResult
+     * @param array<string, string> $json Decoded json
+     * @return PNAddMessageActionResult
      */
     protected function createResponse($json): PNAddMessageActionResult
     {
-        return PNAddMessageActionResult::fromJson($json, $this->pubnub->getCrypto());
+        return PNAddMessageActionResult::fromJson($json);
     }
 }

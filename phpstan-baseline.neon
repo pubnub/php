@@ -605,10 +605,6 @@ parameters:
 			count: 1
 			path: src/PubNub/Endpoints/Endpoint.php
 
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\Endpoint\\:\\:createStatus\\(\\) has parameter \\$category with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Endpoint.php
 
 		-
 			message: "#^Method PubNub\\\\Endpoints\\\\Endpoint\\:\\:createStatus\\(\\) has parameter \\$response with no type specified\\.$#"
@@ -698,11 +694,6 @@ parameters:
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 2
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(int\\{PNStatusCategory\\:\\:PNUnknownCategory\\.\\.PNStatusCategory\\:\\:PNRequestMessageCountExceededCategory\\} \\$category\\)\\: Unexpected token \"\\{\", expected variable at offset 21$#"
-			count: 1
 			path: src/PubNub/Endpoints/Endpoint.php
 
 		-

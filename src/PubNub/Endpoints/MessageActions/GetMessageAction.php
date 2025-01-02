@@ -2,10 +2,12 @@
 
 namespace PubNub\Endpoints\MessageActions;
 
+use PubNub\PubNub;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Models\Consumer\MessageActions\PNGetMessageActionResult;
 
 /** @package PubNub\Endpoints\MessageActions */
@@ -24,7 +26,7 @@ class GetMessageAction extends Endpoint
     protected ?string $end;
     protected ?int $limit;
 
-    public function __construct($pubnub)
+    public function __construct(PubNub $pubnub)
     {
         parent::__construct($pubnub);
         $this->endpointConnectTimeout = $this->pubnub->getConfiguration()->getConnectTimeout();
@@ -82,7 +84,7 @@ class GetMessageAction extends Endpoint
     /**
      * @throws PubNubValidationException
      */
-    protected function validateParams()
+    protected function validateParams(): void
     {
         if (!$this->channel) {
             throw new PubNubValidationException("Channel Missing");
@@ -92,7 +94,7 @@ class GetMessageAction extends Endpoint
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     protected function customParams()
     {
@@ -112,11 +114,11 @@ class GetMessageAction extends Endpoint
     }
 
     /**
-     * @return array
+     * @return string | null
      */
     protected function buildData()
     {
-        return [];
+        return null;
     }
 
     /**
@@ -141,11 +143,11 @@ class GetMessageAction extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
-     * @return PNPublishResult
+     * @param array<string, string> $json Decoded json
+     * @return PNGetMessageActionResult
      */
     protected function createResponse($json): PNGetMessageActionResult
     {
-        return PNGetMessageActionResult::fromJson($json, $this->pubnub->getCrypto());
+        return PNGetMessageActionResult::fromJson($json);
     }
 }

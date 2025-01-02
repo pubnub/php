@@ -4,13 +4,18 @@ namespace PubNub\Models\Consumer\MessageActions;
 
 class PNMessageAction
 {
-    public $type;
-    public $value;
-    public $messageTimetoken;
-    public $uuid;
-    public $actionTimetoken;
+    public ?string $type;
+    public ?string $value;
+    public int | float | null $messageTimetoken;
+    public ?string $uuid;
+    public int | float | null $actionTimetoken;
 
-    public function __construct($messageAction = null)
+    /**
+     *
+     * @param null|array<string, mixed> $messageAction
+     * @return void
+     */
+    public function __construct(?array $messageAction = null)
     {
         if ($messageAction != null) {
             $this->type = $messageAction['type'];

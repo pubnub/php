@@ -1,5 +1,6 @@
 <?php
 
+//phpcs:disable
 namespace PubNub\Enums;
 
 class PNOperationType

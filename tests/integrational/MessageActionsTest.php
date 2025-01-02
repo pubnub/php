@@ -8,7 +8,7 @@ use PubNub\Models\Consumer\MessageActions\PNRemoveMessageActionResult;
 
 class MessageActionsTest extends \PubNubTestCase
 {
-    public function testAddMessageAction()
+    public function testAddMessageAction(): void
     {
         $publishResult = $this->pubnub->publish()
         ->channel("pizza_talks")
@@ -35,7 +35,7 @@ class MessageActionsTest extends \PubNubTestCase
         $this->assertEquals($messageTimetoken, $addMessageActionResult->messageTimetoken);
     }
 
-    public function testGetMessageAction()
+    public function testGetMessageAction(): void
     {
         $publishResult = $this->pubnub->publish()
         ->channel("pizza_talks")
@@ -63,7 +63,7 @@ class MessageActionsTest extends \PubNubTestCase
         $this->assertEquals("angry_face", $messageAction->value);
     }
 
-    public function testDeleteMessageAction()
+    public function testDeleteMessageAction(): void
     {
         $getMessageActionResult = $this->pubnub->getMessageAction()
             ->channel("pizza_talks")

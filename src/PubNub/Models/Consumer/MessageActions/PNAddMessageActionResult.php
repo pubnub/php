@@ -6,7 +6,12 @@ use PubNub\Models\Consumer\MessageActions\PNMessageAction;
 
 class PNAddMessageActionResult extends PNMessageAction
 {
-    public static function fromJson($json): PNMessageAction
+    /**
+     *
+     * @param mixed $json
+     * @return PNAddMessageActionResult
+     */
+    public static function fromJson(mixed $json): self
     {
         $action = new self($json['data']);
         return $action;

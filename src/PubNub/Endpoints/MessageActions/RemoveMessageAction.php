@@ -2,10 +2,12 @@
 
 namespace PubNub\Endpoints\MessageActions;
 
+use PubNub\PubNub;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Models\Consumer\MessageActions\PNRemoveMessageActionResult;
 
 /** @package PubNub\Endpoints\MessageActions */
@@ -20,10 +22,10 @@ class RemoveMessageAction extends Endpoint
 
     protected const DELETE_PATH = "/v1/message-actions/%s/channel/%s/message/%s/action/%s";
     protected string $channel;
-    protected string $messageTimetoken;
-    protected string $actionTimetoken;
+    protected int | float $messageTimetoken;
+    protected int | float $actionTimetoken;
 
-    public function __construct($pubnub)
+    public function __construct(PubNub $pubnub)
     {
         parent::__construct($pubnub);
         $this->endpointConnectTimeout = $this->pubnub->getConfiguration()->getConnectTimeout();
@@ -45,10 +47,10 @@ class RemoveMessageAction extends Endpoint
     /**
      * The publish timetoken of a parent message.
      *
-     * @param string $messageTimetoken
+     * @param int | float $messageTimetoken
      * @return RemoveMessageAction
      */
-    public function messageTimetoken(string $messageTimetoken): self
+    public function messageTimetoken(int | float $messageTimetoken): self
     {
         $this->messageTimetoken = $messageTimetoken;
         return $this;
@@ -57,10 +59,10 @@ class RemoveMessageAction extends Endpoint
     /**
      * The publish timetoken of the reaction.
      *
-     * @param string $actionTimetoken
+     * @param int | float $actionTimetoken
      * @return RemoveMessageAction
      */
-    public function actionTimetoken(string $actionTimetoken): self
+    public function actionTimetoken(int | float $actionTimetoken): self
     {
         $this->actionTimetoken = $actionTimetoken;
         return $this;
@@ -69,7 +71,7 @@ class RemoveMessageAction extends Endpoint
     /**
      * @throws PubNubValidationException
      */
-    protected function validateParams()
+    protected function validateParams(): void
     {
         if (!$this->channel) {
             throw new PubNubValidationException("Channel Missing");
@@ -86,7 +88,7 @@ class RemoveMessageAction extends Endpoint
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     protected function customParams()
     {
@@ -94,11 +96,11 @@ class RemoveMessageAction extends Endpoint
     }
 
     /**
-     * @return array
+     * @return null|string
      */
     protected function buildData()
     {
-        return [];
+        return null;
     }
 
     /**
@@ -125,8 +127,8 @@ class RemoveMessageAction extends Endpoint
     }
 
     /**
-     * @param array $json Decoded json
-     * @return PNPublishResult
+     * @param mixed $json Decoded json
+     * @return PNRemoveMessageActionResult
      */
     protected function createResponse($json): PNRemoveMessageActionResult
     {
