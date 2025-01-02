@@ -17,6 +17,9 @@ use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
+use PubNub\Endpoints\MessageActions\AddMessageAction;
+use PubNub\Endpoints\MessageActions\GetMessageAction;
+use PubNub\Endpoints\MessageActions\RemoveMessageAction;
 use PubNub\Endpoints\MessagePersistance\FetchMessages;
 use PubNub\Endpoints\Objects\Channel\SetChannelMetadata;
 use PubNub\Endpoints\Objects\Channel\GetChannelMetadata;
@@ -606,5 +609,20 @@ class PubNub implements LoggerAwareInterface
     public function getFileDownloadUrl(): GetFileDownloadUrl
     {
         return new GetFileDownloadUrl($this);
+    }
+
+    public function addMessageAction(): AddMessageAction
+    {
+        return new AddMessageAction($this);
+    }
+
+    public function getMessageAction(): GetMessageAction
+    {
+        return new GetMessageAction($this);
+    }
+
+    public function removeMessageAction(): RemoveMessageAction
+    {
+        return new RemoveMessageAction($this);
     }
 }

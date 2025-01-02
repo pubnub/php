@@ -69,4 +69,7 @@ class PNOperationType
     const PNDownloadFileAction = 50;
     const PNSendFileAction = 51;
     const PNSendFileNotification = 52;
+
+    const PNAddMessageActionOperation = 53;
+    const PNGetMessageActionOperation = 54;
 }
