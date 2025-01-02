@@ -17,6 +17,9 @@ use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
+use PubNub\Endpoints\MessageActions\AddMessageAction;
+use PubNub\Endpoints\MessageActions\GetMessageAction;
+use PubNub\Endpoints\MessageActions\RemoveMessageAction;
 use PubNub\Endpoints\MessagePersistance\FetchMessages;
 use PubNub\Endpoints\Objects\Channel\SetChannelMetadata;
 use PubNub\Endpoints\Objects\Channel\GetChannelMetadata;
@@ -57,7 +60,7 @@ use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
 
 class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "7.1.0";
+    protected const SDK_VERSION = "7.2.0";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
@@ -606,5 +609,20 @@ class PubNub implements LoggerAwareInterface
     public function getFileDownloadUrl(): GetFileDownloadUrl
     {
         return new GetFileDownloadUrl($this);
+    }
+
+    public function addMessageAction(): AddMessageAction
+    {
+        return new AddMessageAction($this);
+    }
+
+    public function getMessageAction(): GetMessageAction
+    {
+        return new GetMessageAction($this);
+    }
+
+    public function removeMessageAction(): RemoveMessageAction
+    {
+        return new RemoveMessageAction($this);
     }
 }

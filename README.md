@@ -41,7 +41,7 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
          {
              "require": {
                  <!-- include the latest version from the badge at the top -->
-                 "pubnub/pubnub": "7.1.0"
+                 "pubnub/pubnub": "7.2.0"
              }
          }
          ```

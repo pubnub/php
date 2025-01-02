@@ -1,3 +1,9 @@
+## 7.2.0
+January 02 2025
+
+#### Added
+- Support for adding, getting and deleting message reactions.
+
 ## 7.1.0
 November 20 2024
 

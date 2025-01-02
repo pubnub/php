@@ -25,6 +25,13 @@ use WpOrg\Requests\Transport\Fsockopen;
 
 abstract class Endpoint
 {
+    protected bool $endpointAuthRequired;
+    protected int $endpointConnectTimeout;
+    protected int $endpointRequestTimeout;
+    protected string $endpointHttpMethod;
+    protected int $endpointOperationType;
+    protected string $endpointName;
+
     protected const RESPONSE_IS_JSON = true;
 
     /** @var  PubNub */
@@ -56,12 +63,18 @@ abstract class Endpoint
     /**
      * @return int
      */
-    abstract protected function getOperationType();
+    protected function getOperationType()
+    {
+        return $this->endpointOperationType;
+    }
 
     /**
      * @return bool
      */
-    abstract protected function isAuthRequired();
+    protected function isAuthRequired()
+    {
+        return $this->endpointAuthRequired;
+    }
 
     /**
      * @return null|string
@@ -81,24 +94,33 @@ abstract class Endpoint
     /**
      * @return int
      */
-    abstract protected function getRequestTimeout();
+    protected function getRequestTimeout()
+    {
+        return $this->endpointRequestTimeout;
+    }
 
     /**
      * @return int
      */
-    abstract protected function getConnectTimeout();
+    protected function getConnectTimeout()
+    {
+        return $this->endpointConnectTimeout;
+    }
 
     /**
      * @return string PNHttpMethod
      */
-    abstract protected function httpMethod();
+    protected function httpMethod()
+    {
+        return $this->endpointHttpMethod;
+    }
 
     /**
      * @return string
      */
     protected function getName()
     {
-        return substr(strrchr(get_class($this), '\\'), 1);
+        return !empty($this->endpointName) ? $this->endpointName : substr(strrchr(get_class($this), '\\'), 1);
     }
 
     /**
@@ -532,7 +554,7 @@ abstract class Endpoint
     }
 
     /**
-     * @param int{PNStatusCategory::PNUnknownCategory..PNStatusCategory::PNRequestMessageCountExceededCategory} $category
+     * @param int $category
      * @param $response
      * @param ResponseInfo | null $responseInfo
      * @param PubNubException | null $exception
@@ -598,7 +620,7 @@ abstract class Endpoint
             self::$cachedTransports[$method] = [];
         }
 
-        if (isset(self::$cachedTransports[$method][$cap_string]) && self::$cachedTransports[$method][$cap_string] !== null) {
+        if (isset(self::$cachedTransports[$method][$cap_string])) {
             return self::$cachedTransports[$method][$cap_string];
         }
 

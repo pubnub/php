@@ -5,7 +5,7 @@
   "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
   "homepage": "http://www.pubnub.com/",
   "license": "proprietary",
-  "version": "7.1.0",
+  "version": "7.2.0",
   "authors": [
     {
       "name": "PubNub",
@@ -21,6 +21,10 @@
       "cp sdk-specifications/features/history/history-custom-mssg-type.feature tests/Acceptance/CustomMessageType/history-custom-mssg-type.feature",
       "cp sdk-specifications/features/subscribe/subscribe-custom-mssg-type.feature tests/Acceptance/Subscribe/subscribe-custom-mssg-type.feature",
       "vendor/bin/behat"
+    ],
+    "lint": [
+      "vendor/bin/phpstan analyze --memory-limit 256M",
+      "git diff --name-only --diff-filter=d origin/master HEAD | grep -E '\\.php$' | xargs vendor/bin/phpcs --standard=PSR12"
     ]
   },
   "require": {
