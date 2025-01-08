@@ -18,7 +18,7 @@ use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
 use PubNub\Endpoints\MessageActions\AddMessageAction;
-use PubNub\Endpoints\MessageActions\GetMessageAction;
+use PubNub\Endpoints\MessageActions\GetMessageActions;
 use PubNub\Endpoints\MessageActions\RemoveMessageAction;
 use PubNub\Endpoints\MessagePersistance\FetchMessages;
 use PubNub\Endpoints\Objects\Channel\SetChannelMetadata;
@@ -616,9 +616,9 @@ class PubNub implements LoggerAwareInterface
         return new AddMessageAction($this);
     }
 
-    public function getMessageAction(): GetMessageAction
+    public function getMessageActions(): GetMessageActions
     {
-        return new GetMessageAction($this);
+        return new GetMessageActions($this);
     }
 
     public function removeMessageAction(): RemoveMessageAction
