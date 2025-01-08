@@ -11,7 +11,7 @@ use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Models\Consumer\MessageActions\PNGetMessageActionResult;
 
 /** @package PubNub\Endpoints\MessageActions */
-class GetMessageAction extends Endpoint
+class GetMessageActions extends Endpoint
 {
     protected bool $endpointAuthRequired = true;
     protected int $endpointConnectTimeout;
@@ -37,7 +37,7 @@ class GetMessageAction extends Endpoint
      * Set a channel for the message action
      *
      * @param string $channel
-     * @return GetMessageAction
+     * @return GetMessageActions
      */
     public function channel(string $channel): self
     {
@@ -49,7 +49,7 @@ class GetMessageAction extends Endpoint
      * Reaction timetoken denoting the start of the range requested. Returned values will be less than start.
      *
      * @param string $start
-     * @return GetMessageAction
+     * @return GetMessageActions
      */
     public function setStart(string $start): self
     {
@@ -61,7 +61,7 @@ class GetMessageAction extends Endpoint
      * Reaction timetoken denoting the end of the range requested. Returned values will be greater than or equal to end.
      *
      * @param string $end
-     * @return GetMessageAction
+     * @return GetMessageActions
      */
     public function setEnd(string $end): self
     {
@@ -73,7 +73,7 @@ class GetMessageAction extends Endpoint
      * Number of reactions to return in response.
      *
      * @param int $limit
-     * @return GetMessageAction
+     * @return GetMessageActions
      */
     public function setLimit(int $limit): self
     {

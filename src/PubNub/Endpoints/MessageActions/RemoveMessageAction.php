@@ -22,8 +22,8 @@ class RemoveMessageAction extends Endpoint
 
     protected const DELETE_PATH = "/v1/message-actions/%s/channel/%s/message/%s/action/%s";
     protected string $channel;
-    protected int | float $messageTimetoken;
-    protected int | float $actionTimetoken;
+    protected int $messageTimetoken;
+    protected int $actionTimetoken;
 
     public function __construct(PubNub $pubnub)
     {
@@ -47,10 +47,10 @@ class RemoveMessageAction extends Endpoint
     /**
      * The publish timetoken of a parent message.
      *
-     * @param int | float $messageTimetoken
+     * @param int $messageTimetoken
      * @return RemoveMessageAction
      */
-    public function messageTimetoken(int | float $messageTimetoken): self
+    public function messageTimetoken(int $messageTimetoken): self
     {
         $this->messageTimetoken = $messageTimetoken;
         return $this;
@@ -59,10 +59,10 @@ class RemoveMessageAction extends Endpoint
     /**
      * The publish timetoken of the reaction.
      *
-     * @param int | float $actionTimetoken
+     * @param int $actionTimetoken
      * @return RemoveMessageAction
      */
-    public function actionTimetoken(int | float $actionTimetoken): self
+    public function actionTimetoken(int $actionTimetoken): self
     {
         $this->actionTimetoken = $actionTimetoken;
         return $this;
