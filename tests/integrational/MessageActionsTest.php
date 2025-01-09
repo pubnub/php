@@ -3,7 +3,7 @@
 namespace Tests\Integrational;
 
 use PubNub\Models\Consumer\MessageActions\PNAddMessageActionResult;
-use PubNub\Models\Consumer\MessageActions\PNGetMessageActionResult;
+use PubNub\Models\Consumer\MessageActions\PNGetMessageActionsResult;
 use PubNub\Models\Consumer\MessageActions\PNMessageAction;
 use PubNub\Models\Consumer\MessageActions\PNRemoveMessageActionResult;
 
@@ -56,7 +56,7 @@ class MessageActionsTest extends \PubNubTestCase
         $this->assertEquals($this->messageTimetoken, $addMessageActionResult->messageTimetoken);
     }
 
-    public function testGetMessageAction(): void
+    public function testGetMessageActions(): void
     {
         $addMessageActionResult = $this->addTestMessageAction();
         $getMessageActionsResult = $this->pubnub->getMessageActions()
@@ -64,7 +64,7 @@ class MessageActionsTest extends \PubNubTestCase
             ->sync();
 
         $this->assertNotNull($getMessageActionsResult);
-        $this->assertInstanceOf(PNGetMessageActionResult::class, $getMessageActionsResult);
+        $this->assertInstanceOf(PNGetMessageActionsResult::class, $getMessageActionsResult);
         $this->assertNotEmpty($getMessageActionsResult->actions);
         $this->assertCount(1, $getMessageActionsResult->actions);
 
@@ -85,7 +85,7 @@ class MessageActionsTest extends \PubNubTestCase
             ->sync();
 
         $this->assertNotNull($getMessageActionsResult);
-        $this->assertInstanceOf(PNGetMessageActionResult::class, $getMessageActionsResult);
+        $this->assertInstanceOf(PNGetMessageActionsResult::class, $getMessageActionsResult);
         $this->assertNotEmpty($getMessageActionsResult->actions);
         $this->assertCount(1, $getMessageActionsResult->actions);
 

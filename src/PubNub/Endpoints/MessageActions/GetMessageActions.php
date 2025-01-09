@@ -8,7 +8,7 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Exceptions\PubNubBuildRequestException;
-use PubNub\Models\Consumer\MessageActions\PNGetMessageActionResult;
+use PubNub\Models\Consumer\MessageActions\PNGetMessageActionsResult;
 
 /** @package PubNub\Endpoints\MessageActions */
 class GetMessageActions extends Endpoint
@@ -17,7 +17,7 @@ class GetMessageActions extends Endpoint
     protected int $endpointConnectTimeout;
     protected int $endpointRequestTimeout;
     protected string $endpointHttpMethod = PNHttpMethod::GET;
-    protected int $endpointOperationType = PNOperationType::PNGetMessageActionOperation;
+    protected int $endpointOperationType = PNOperationType::PNGetMessageActionsOperation;
     protected string $endpointName = "Get Message Actions";
 
     protected const GET_PATH = "/v1/message-actions/%s/channel/%s";
@@ -135,19 +135,19 @@ class GetMessageActions extends Endpoint
     }
 
     /**
-     * @return PNGetMessageActionResult
+     * @return PNGetMessageActionsResult
      */
-    public function sync(): PNGetMessageActionResult
+    public function sync(): PNGetMessageActionsResult
     {
         return parent::sync();
     }
 
     /**
      * @param array<string, string> $json Decoded json
-     * @return PNGetMessageActionResult
+     * @return PNGetMessageActionsResult
      */
-    protected function createResponse($json): PNGetMessageActionResult
+    protected function createResponse($json): PNGetMessageActionsResult
     {
-        return PNGetMessageActionResult::fromJson($json);
+        return PNGetMessageActionsResult::fromJson($json);
     }
 }

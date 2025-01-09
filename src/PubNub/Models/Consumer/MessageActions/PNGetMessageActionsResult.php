@@ -4,7 +4,7 @@ namespace PubNub\Models\Consumer\MessageActions;
 
 use PubNub\Models\Consumer\MessageActions\PNMessageAction;
 
-class PNGetMessageActionResult extends PNMessageAction
+class PNGetMessageActionsResult extends PNMessageAction
 {
     /**
      *
@@ -15,7 +15,7 @@ class PNGetMessageActionResult extends PNMessageAction
     /**
      *
      * @param mixed $json
-     * @return PNGetMessageActionResult
+     * @return PNGetMessageActionsResult
           */
     public static function fromJson(mixed $json): self
     {

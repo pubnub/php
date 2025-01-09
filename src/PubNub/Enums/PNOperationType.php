@@ -72,5 +72,6 @@ class PNOperationType
     const PNSendFileNotification = 52;
 
     const PNAddMessageActionOperation = 53;
-    const PNGetMessageActionOperation = 54;
+    const PNGetMessageActionsOperation = 54;
+    const PNRemoveMessageActionOperation = 55;
 }
