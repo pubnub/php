@@ -2,8 +2,6 @@
 
 namespace PubNub;
 
-use Monolog\Logger;
-use PHPUnit\Framework\Error\Deprecated;
 use PubNub\Builders\SubscribeBuilder;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Endpoints\Access\Audit;
@@ -19,6 +17,7 @@ use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
 use PubNub\Endpoints\MessageActions\AddMessageAction;
+use PubNub\Endpoints\MessageActions\GetMessageAction;
 use PubNub\Endpoints\MessageActions\GetMessageActions;
 use PubNub\Endpoints\MessageActions\RemoveMessageAction;
 use PubNub\Endpoints\MessagePersistance\FetchMessages;
@@ -57,7 +56,6 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
 use PubNub\Endpoints\FileSharing\{SendFile, DeleteFile, DownloadFile, GetFileDownloadUrl, ListFiles};
-use PubNub\Endpoints\MessageActions\GetMessageAction;
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
 
 class PubNub implements LoggerAwareInterface

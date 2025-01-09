@@ -18,7 +18,7 @@ class RemoveMessageAction extends Endpoint
     protected int $endpointRequestTimeout;
     protected string $endpointHttpMethod = PNHttpMethod::DELETE;
     protected int $endpointOperationType = PNOperationType::PNRemoveMessageActionOperation;
-    protected string $endpointName = "Get Message Actions";
+    protected string $endpointName = "Remove Message Actions";
 
     protected const DELETE_PATH = "/v1/message-actions/%s/channel/%s/message/%s/action/%s";
     protected string $channel;
