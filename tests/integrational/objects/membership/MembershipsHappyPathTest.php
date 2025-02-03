@@ -2,7 +2,6 @@
 
 namespace PubNubTests\integrational\objects\member;
 
-use PubNub\Models\Consumer\Objects\Channel\PNSetChannelMetadataResult;
 use PubNubTestCase;
 use PubNub\Models\Consumer\Objects\Membership\PNChannelMembership;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipIncludes;
@@ -19,16 +18,14 @@ class MembershipsHappyPathTest extends PubNubTestCase
     public function testHappyPath(): void
     {
         // Cleanup
-        $cleanup = $this->pubnub->removeMemberships()
-        ->userId($this->user)
-        ->memberships([
-            new PNChannelMembership($this->channel1),
-            new PNChannelMembership($this->channel2),
-            new PNChannelMembership($this->channel3),
-        ])
-        ->sync();
+        $staleMemberships = [];
+        $getStaleMemberships = $this->pubnub->getMemberships()->userId($this->user)->sync();
+        foreach ($getStaleMemberships->getData() as $membership) {
+            array_push($staleMemberships, new PNChannelMembership($membership->getChannel()->getId()));
+        }
+        $cleanup = $this->pubnub->removeMemberships()->userId($this->user)->memberships($staleMemberships)->sync();
         $this->assertInstanceOf(PNMembershipsResult::class, $cleanup);
-        $this->assertCount(0, $cleanup->getData(), print_r($cleanup->getData(), true));
+        $this->assertCount(0, $cleanup->getData());
 
         $includes = new PNMembershipIncludes();
         $includes->channel()->channelId()->channelCustom()->channelType()->channelStatus()->custom()->status()->type();

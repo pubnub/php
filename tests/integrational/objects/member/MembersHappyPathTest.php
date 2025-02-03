@@ -20,14 +20,16 @@ class MembersHappyPathTest extends PubNubTestCase
     public function testHappyPath(): void
     {
         // Cleanup
+        $staleMembers = [];
+        $getStaleMembers = $this->pubnub->getMembers()->channel($this->channel)->sync();
+        foreach ($getStaleMembers->getData() as $member) {
+            array_push($staleMembers, new PNChannelMember($member->getUser()->getId()));
+        }
+
         $this->pubnub->removeMembers()
-        ->channel($this->channel)
-        ->members([
-            new PNChannelMember($this->userName1),
-            new PNChannelMember($this->userName2),
-            new PNChannelMember($this->userName3),
-        ])
-        ->sync();
+            ->channel($this->channel)
+            ->members($staleMembers)
+            ->sync();
 
         $channelSetup = $this->pubnub->setChannelMetadata()
             ->channel($this->channel)
@@ -115,7 +117,7 @@ class MembersHappyPathTest extends PubNubTestCase
     {
         $this->assertInstanceOf(PNMembersResult::class, $response);
         $members = $response->getData();
-        $this->assertCount(2, $members, print_r($members, true));
+        $this->assertCount(2, $members);
         $epic = $members[0];
         $monarch = $members[1];
 
