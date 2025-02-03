@@ -1,3 +1,9 @@
+## 7.2.1
+February 03 2025
+
+#### Fixed
+- Pluralize getMessageActions and fix typing.
+
 ## 7.2.0
 January 02 2025
 

@@ -1,8 +1,13 @@
 name: php
-version: 7.2.0
+version: 7.2.1
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2025-02-03
+    version: 7.2.1
+    changes:
+      - type: bug
+        text: "Pluralize getMessageActions and fix typing."
   - date: 2025-01-02
     version: 7.2.0
     changes:
@@ -437,8 +442,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-7.2.0.zip
-            location: https://github.com/pubnub/php/releases/tag/7.2.0
+            package-name: php-7.2.1.zip
+            location: https://github.com/pubnub/php/releases/tag/7.2.1
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
