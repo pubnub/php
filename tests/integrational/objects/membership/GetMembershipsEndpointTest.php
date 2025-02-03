@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\Memberships;
 
 use PubNubTestCase;
 
-
 class GetMembershipsEndpointTest extends PubNubTestCase
 {
     public function testGetMemberships()

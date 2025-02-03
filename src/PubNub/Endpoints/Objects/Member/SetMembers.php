@@ -6,12 +6,20 @@ use PubNub\Endpoints\Objects\ObjectsCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\Objects\Member\PNMemberIncludes;
+use PubNub\Models\Consumer\Objects\Member\PNChannelMember;
 use PubNub\Models\Consumer\Objects\Member\PNMembersResult;
 use PubNub\PubNubUtil;
+use PubNub\PubNub;
 
 class SetMembers extends ObjectsCollectionEndpoint
 {
     protected const PATH = "/v2/objects/%s/channels/%s/uuids";
+
+    protected bool $endpointAuthRequired = true;
+    protected string $endpointHttpMethod = PNHttpMethod::PATCH;
+    protected int $endpointOperationType = PNOperationType::PNSetMembersOperation;
+    protected string $endpointName = "SetMembers";
 
     /** @var string */
     protected $channel;
@@ -24,6 +32,22 @@ class SetMembers extends ObjectsCollectionEndpoint
 
     /** @var array */
     protected $include = [];
+
+    /** @var PNMemberIncludes */
+    protected PNMemberIncludes $includes;
+
+    /** @var PNChannelMember[] */
+    protected array $members;
+
+    /**
+     * @param PubNub $pubnubInstance
+     */
+    public function __construct(PubNub $pubnubInstance)
+    {
+        parent::__construct($pubnubInstance);
+        $this->endpointConnectTimeout = $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+        $this->endpointRequestTimeout = $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
 
     /**
      * @param string $ch
@@ -38,6 +62,8 @@ class SetMembers extends ObjectsCollectionEndpoint
 
     /**
      * @param array $uuids
+     * @deprecated Use members() method
+     *
      * @return $this
      */
     public function uuids($uuids)
@@ -48,7 +74,19 @@ class SetMembers extends ObjectsCollectionEndpoint
     }
 
     /**
+     * @param PNChannelMember[] $members
+     * @return $this
+     */
+    public function members(array $members)
+    {
+        $this->members = $members;
+
+        return $this;
+    }
+
+    /**
      * @param array $custom
+     * @deprecated Use members() method
      * @return $this
      */
     public function custom($custom)
@@ -59,7 +97,25 @@ class SetMembers extends ObjectsCollectionEndpoint
     }
 
     /**
+     * Defines a list of fields to be included in response. It takes an instance of PNMemberIncludes.
+     *
+     * Example:
+     *
+     * $includes = (new PNMemberIncludes())->custom()->status()->totalCount()->type()-user();
+     * $pnGetMembers->include($includes);
+     *
+     * @param PNMemberIncludes $includes
+     * @return $this
+     */
+    public function include(PNMemberIncludes $includes): self
+    {
+        $this->includes = $includes;
+        return $this;
+    }
+
+    /**
      * @param array $include
+     * @deprecated Use include() method
      * @return $this
      */
     public function includeFields($include)
@@ -80,8 +136,12 @@ class SetMembers extends ObjectsCollectionEndpoint
             throw new PubNubValidationException("channel missing");
         }
 
-        if (empty($this->uuids)) {
-            throw new PubNubValidationException("uuids missing");
+        if (!empty($this->members) and !empty($this->uuids)) {
+            throw new PubNubValidationException("Either members or uuids should be provided");
+        }
+
+        if (empty($this->uuids) and empty($this->members)) {
+            throw new PubNubValidationException("Members or a list of uuids missing");
         }
     }
 
@@ -92,21 +152,25 @@ class SetMembers extends ObjectsCollectionEndpoint
     protected function buildData()
     {
         $entries = [];
-
-        foreach ($this->uuids as $value) {
-            $entry = [
-                "uuid" => [
-                    "id" => $value,
-                ]
-            ];
-
-            if (!empty($this->custom)) {
-                $entry["custom"] = $this->custom;
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                array_push($entries, $member->toArray());
             }
+        } else {
+            foreach ($this->uuids as $value) {
+                $entry = [
+                    "uuid" => [
+                        "id" => $value,
+                    ]
+                ];
 
-            array_push($entries, $entry);
+                if (!empty($this->custom)) {
+                    $entry["custom"] = $this->custom;
+                }
+
+                array_push($entries, $entry);
+            }
         }
-
         return PubNubUtil::writeValueAsString([
             "set" => $entries
         ]);
@@ -145,25 +209,29 @@ class SetMembers extends ObjectsCollectionEndpoint
     {
         $params = $this->defaultParams();
 
-        if (count($this->include) > 0) {
-            $includes = [];
+        if (!empty($this->includes)) {
+            $params['include'] = (string)$this->includes;
+        } else {
+            if (count($this->include) > 0) {
+                $includes = [];
 
-            if (array_key_exists("customFields", $this->include)) {
-                array_push($includes, 'custom');
-            }
+                if (array_key_exists("customFields", $this->include)) {
+                    array_push($includes, 'custom');
+                }
 
-            if (array_key_exists("customUUIDFields", $this->include)) {
-                array_push($includes, 'uuid.custom');
-            }
+                if (array_key_exists("customUUIDFields", $this->include)) {
+                    array_push($includes, 'uuid.custom');
+                }
 
-            if (array_key_exists("UUIDFields", $this->include)) {
-                array_push($includes, 'uuid');
-            }
+                if (array_key_exists("UUIDFields", $this->include)) {
+                    array_push($includes, 'uuid');
+                }
 
-            $includesString = implode(",", $includes);
+                $includesString = implode(",", $includes);
 
-            if (strlen($includesString) > 0) {
-                $params['include'] = $includesString;
+                if (strlen($includesString) > 0) {
+                    $params['include'] = $includesString;
+                }
             }
         }
 
@@ -201,53 +269,5 @@ class SetMembers extends ObjectsCollectionEndpoint
         }
 
         return $params;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return true;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getRequestTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
-    }
-
-    /**
-     * @return int
-     */
-    protected function getConnectTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getConnectTimeout();
-    }
-
-    /**
-     * @return string PNHttpMethod
-     */
-    protected function httpMethod()
-    {
-        return PNHttpMethod::PATCH;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNSetMembersOperation;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getName()
-    {
-        return "SetMembers";
     }
 }

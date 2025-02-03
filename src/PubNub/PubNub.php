@@ -32,9 +32,11 @@ use PubNub\Endpoints\Objects\UUID\RemoveUUIDMetadata;
 use PubNub\Endpoints\Objects\Member\SetMembers;
 use PubNub\Endpoints\Objects\Member\GetMembers;
 use PubNub\Endpoints\Objects\Member\RemoveMembers;
+use PubNub\Endpoints\Objects\Member\ManageMembers;
 use PubNub\Endpoints\Objects\Membership\SetMemberships;
 use PubNub\Endpoints\Objects\Membership\GetMemberships;
 use PubNub\Endpoints\Objects\Membership\RemoveMemberships;
+use PubNub\Endpoints\Objects\Membership\ManageMemberships;
 use PubNub\Endpoints\Presence\GetState;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Endpoints\Presence\SetState;
@@ -401,6 +403,14 @@ class PubNub implements LoggerAwareInterface
     }
 
     /**
+     * @return ManageMembers
+     */
+    public function manageMembers(): ManageMembers
+    {
+        return new ManageMembers($this);
+    }
+
+    /**
      * @return GetMemberships
      */
     public function getMemberships(): GetMemberships
@@ -422,6 +432,14 @@ class PubNub implements LoggerAwareInterface
     public function removeMemberships(): RemoveMemberships
     {
         return new RemoveMemberships($this);
+    }
+
+    /**
+     * @return ManageMemberships
+     */
+    public function manageMemberships(): ManageMemberships
+    {
+        return new ManageMemberships($this);
     }
 
     /**

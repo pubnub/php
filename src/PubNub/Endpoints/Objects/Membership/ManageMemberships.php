@@ -6,35 +6,44 @@ use PubNub\Endpoints\Objects\ObjectsCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
-use PubNub\Models\Consumer\Objects\Membership\PNChannelMembership;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipIncludes;
+use PubNub\Models\Consumer\Objects\Membership\PNChannelMembership;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipsResult;
 use PubNub\PubNubUtil;
 use PubNub\PubNub;
 
-class RemoveMemberships extends ObjectsCollectionEndpoint
+class ManageMemberships extends ObjectsCollectionEndpoint
 {
     protected const PATH = "/v2/objects/%s/uuids/%s/channels";
 
     protected bool $endpointAuthRequired = true;
     protected string $endpointHttpMethod = PNHttpMethod::PATCH;
-    protected int $endpointOperationType = PNOperationType::PNRemoveMembershipsOperation;
-    protected string $endpointName = "RemoveMemberships";
+    protected int $endpointOperationType = PNOperationType::PNManageMembershipsOperation;
+    protected string $endpointName = "ManageMemberships";
 
     /** @var string */
     protected $userId;
 
-    /** @var array */
-    protected $channels;
+    /** @var string[] */
+    protected $setChannels;
 
-    /** @var array */
+    /** @var string[] */
+    protected $removeChannels;
+
+    /** @var string[] */
+    protected $custom;
+
+    /** @var string[] */
     protected $include = [];
 
     /** @var PNMembershipIncludes */
     protected ?PNMembershipIncludes $includes;
 
     /** @var ?PNChannelMembership[] */
-    protected array $memberships;
+    protected array $setMemberships;
+
+    /** @var ?PNChannelMembership[] */
+    protected array $removeMemberships;
 
     /**
      * @param PubNub $pubnubInstance
@@ -50,33 +59,43 @@ class RemoveMemberships extends ObjectsCollectionEndpoint
      * @param string $uuid
      * @return $this
      */
-    public function uuid(string $uuid): self
+    public function uuid($uuid): self
     {
         $this->userId = $uuid;
-
         return $this;
     }
 
     /**
-     * @param string $uuid
+     * @param string $userId
      * @return $this
      */
-    public function userId(string $userId): self
+    public function userId($userId): self
     {
         $this->userId = $userId;
-
         return $this;
     }
 
     /**
      * @param array $channels
      * @deprecated Use memberships() method
+     *
      * @return $this
      */
-    public function channels($channels): self
+    public function setChannels($channels): self
     {
-        $this->channels = $channels;
+        $this->setChannels = $channels;
+        return $this;
+    }
 
+    /**
+     * @param array $channels
+     * @deprecated Use memberships() method
+     *
+     * @return $this
+     */
+    public function removeChannels($channels): self
+    {
+        $this->removeChannels = $channels;
         return $this;
     }
 
@@ -84,21 +103,43 @@ class RemoveMemberships extends ObjectsCollectionEndpoint
      * @param PNChannelMemberhips[] $members
      * @return $this
      */
-    public function memberships(array $memberships): self
+    public function setMemberships(array $memberships): self
     {
-        $this->memberships = $memberships;
+        $this->setMemberships = $memberships;
+        return $this;
+    }
+
+    /**
+     * @param PNChannelMemberhips[] $members
+     * @return $this
+     */
+    public function removeMemberships(array $memberships): self
+    {
+        $this->removeMemberships = $memberships;
+        return $this;
+    }
+
+    /**
+     * @param array $custom
+     * @deprecated Use members() method
+     *
+     * @return $this
+     */
+    public function custom($custom): self
+    {
+        $this->custom = $custom;
         return $this;
     }
 
     /**
      * @param array $include
      * @deprecated Use includes() method
+     *
      * @return $this
      */
     public function includeFields($include): self
     {
         $this->include = $include;
-
         return $this;
     }
 
@@ -130,11 +171,14 @@ class RemoveMemberships extends ObjectsCollectionEndpoint
             throw new PubNubValidationException("uuid missing");
         }
 
-        if (!empty($this->channels) and !empty($this->memberships)) {
+        $memberships = !empty($this->setMemberships) or !empty($this->removeMemberships);
+        $channels = !empty($this->setChannels) or !empty($this->removeChannels);
+
+        if ($memberships and $channels) {
             throw new PubNubValidationException("Either memberships or channels should be provided");
         }
 
-        if (empty($this->channels) and empty($this->memberships)) {
+        if (!$memberships and !$channels) {
             throw new PubNubValidationException("Memberships or a list of channels missing");
         }
     }
@@ -145,25 +189,32 @@ class RemoveMemberships extends ObjectsCollectionEndpoint
      */
     protected function buildData()
     {
-        $entries = [];
-        if (!empty($this->memberships)) {
-            foreach ($this->memberships as $memberhip) {
-                array_push($entries, $memberhip->toArray());
+        $set = [];
+        $remove = [];
+        if (!empty($this->setMemberships)) {
+            foreach ($this->setMemberships as $memberhip) {
+                array_push($set, $memberhip->toArray());
             }
-        } elseif (!empty($this->channels)) {
-            foreach ($this->channels as $value) {
-                $entry = [
-                    "channel" => [
-                        "id" => $value,
-                    ]
-                ];
+        } else {
+            foreach ($this->setChannels as $value) {
+                array_push($set, ["channel" => ["id" => $value], "custom" => $this->custom]);
+            }
+        }
 
-                array_push($entries, $entry);
+        $remove = [];
+        if (!empty($this->removeMemberships)) {
+            foreach ($this->removeMemberships as $memberhip) {
+                array_push($remove, $memberhip->toArray());
+            }
+        } else {
+            foreach ($this->removeChannels as $value) {
+                array_push($remove, ["channel" => ["id" => $value]]);
             }
         }
 
         return PubNubUtil::writeValueAsString([
-            "delete" => $entries
+            "set" => $set,
+            "delete" => $remove
         ]);
     }
 

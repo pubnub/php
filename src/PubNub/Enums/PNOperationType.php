@@ -74,4 +74,7 @@ class PNOperationType
     const PNAddMessageActionOperation = 53;
     const PNGetMessageActionsOperation = 54;
     const PNRemoveMessageActionOperation = 55;
+
+    const PNManageMembersOperation = 56;
+    const PNManageMembershipsOperation = 56;
 }

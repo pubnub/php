@@ -23,7 +23,7 @@ class PNMembershipsResult
      * @param string $next
      * @param array $data
      */
-    function __construct($totalCount, $prev, $next, $data)
+    public function __construct($totalCount, $prev, $next, $data)
     {
         $this->totalCount = $totalCount;
         $this->prev = $prev;
@@ -65,13 +65,17 @@ class PNMembershipsResult
 
     public function __toString()
     {
-        if (!empty($data))
-        {
-          $data_string = json_encode($data);
+        if (!empty($data)) {
+            $data_string = json_encode($data);
         }
 
-        return sprintf("totalCount: %s, prev: %s, next: %s, data: %s",
-            $this->totalCount, $this->prev, $this->next, $data_string);
+        return sprintf(
+            "totalCount: %s, prev: %s, next: %s, data: %s",
+            $this->totalCount,
+            $this->prev,
+            $this->next,
+            $data_string
+        );
     }
 
     /**
@@ -85,27 +89,22 @@ class PNMembershipsResult
         $next = null;
         $data = null;
 
-        if (array_key_exists("totalCount", $payload))
-        {
+        if (array_key_exists("totalCount", $payload)) {
             $totalCount = $payload["totalCount"];
         }
 
-        if (array_key_exists("prev", $payload))
-        {
+        if (array_key_exists("prev", $payload)) {
             $prev = $payload["prev"];
         }
 
-        if (array_key_exists("next", $payload))
-        {
+        if (array_key_exists("next", $payload)) {
             $next = $payload["next"];
         }
 
-        if (array_key_exists("data", $payload))
-        {
+        if (array_key_exists("data", $payload)) {
             $data = [];
 
-            foreach($payload["data"] as $value)
-            {
+            foreach ($payload["data"] as $value) {
                 array_push($data, PNMembershipsResultItem::fromPayload($value));
             }
         }

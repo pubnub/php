@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\Members;
 
 use PubNubTestCase;
 
-
 class GetMembersEndpointTest extends PubNubTestCase
 {
     public function testGetMembersForChannel()

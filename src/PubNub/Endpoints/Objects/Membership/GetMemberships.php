@@ -6,17 +6,36 @@ use PubNub\Endpoints\Objects\ObjectsCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\Objects\Membership\PNMembershipIncludes;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipsResult;
+use PubNub\PubNub;
 
 class GetMemberships extends ObjectsCollectionEndpoint
 {
     protected const PATH = "/v2/objects/%s/uuids/%s/channels";
 
+    protected bool $endpointAuthRequired = true;
+    protected string $endpointHttpMethod = PNHttpMethod::GET;
+    protected int $endpointOperationType = PNOperationType::PNGetMembershipsOperation;
+    protected string $endpointName = "GetMemberships";
+
     /** @var string */
-    protected $uuid;
+    protected $userId;
 
     /** @var array */
     protected $include = [];
+
+    protected ?PNMembershipIncludes $includes;
+
+    /**
+     * @param PubNub $pubnubInstance
+     */
+    public function __construct(PubNub $pubnubInstance)
+    {
+        parent::__construct($pubnubInstance);
+        $this->endpointConnectTimeout = $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+        $this->endpointRequestTimeout = $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
 
     /**
      * @param string $uuid
@@ -24,8 +43,23 @@ class GetMemberships extends ObjectsCollectionEndpoint
      */
     public function uuid($uuid)
     {
-        $this->uuid = $uuid;
+        $this->userId = $uuid;
+        return $this;
+    }
 
+    /**
+     * @param string $uuid
+     * @return $this
+     */
+    public function userId($uuid)
+    {
+        $this->userId = $uuid;
+        return $this;
+    }
+
+    public function include(PNMembershipIncludes $includes): self
+    {
+        $this->includes = $includes;
         return $this;
     }
 
@@ -47,7 +81,7 @@ class GetMemberships extends ObjectsCollectionEndpoint
     {
         $this->validateSubscribeKey();
 
-        if (!is_string($this->uuid)) {
+        if (!is_string($this->userId)) {
             throw new PubNubValidationException("uuid missing");
         }
     }
@@ -69,7 +103,7 @@ class GetMemberships extends ObjectsCollectionEndpoint
         return sprintf(
             static::PATH,
             $this->pubnub->getConfiguration()->getSubscribeKey(),
-            $this->uuid
+            $this->userId
         );
     }
 
@@ -94,7 +128,9 @@ class GetMemberships extends ObjectsCollectionEndpoint
     {
         $params = $this->defaultParams();
 
-        if (count($this->include) > 0) {
+        if (!empty($this->includes)) {
+            $params['include'] = (string)$this->includes;
+        } elseif (count($this->include) > 0) {
             $includes = [];
 
             if (array_key_exists("customFields", $this->include)) {
@@ -151,53 +187,5 @@ class GetMemberships extends ObjectsCollectionEndpoint
         }
 
         return $params;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return true;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getRequestTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
-    }
-
-    /**
-     * @return int
-     */
-    protected function getConnectTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getConnectTimeout();
-    }
-
-    /**
-     * @return string PNHttpMethod
-     */
-    protected function httpMethod()
-    {
-        return PNHttpMethod::GET;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNGetMembershipsOperation;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getName()
-    {
-        return "GetMemberships";
     }
 }

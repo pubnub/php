@@ -6,17 +6,36 @@ use PubNub\Endpoints\Objects\ObjectsCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Models\Consumer\Objects\Member\PNMemberIncludes;
 use PubNub\Models\Consumer\Objects\Member\PNMembersResult;
+use PubNub\PubNub;
 
 class GetMembers extends ObjectsCollectionEndpoint
 {
     protected const PATH = "/v2/objects/%s/channels/%s/uuids";
+
+    protected bool $endpointAuthRequired = true;
+    protected string $endpointHttpMethod = PNHttpMethod::GET;
+    protected int $endpointOperationType = PNOperationType::PNGetMembersOperation;
+    protected string $endpointName = "GetMembers";
 
     /** @var string */
     protected $channel;
 
     /** @var array */
     protected $include = [];
+
+    protected ?PNMemberIncludes $includes;
+
+    /**
+     * @param PubNub $pubnubInstance
+     */
+    public function __construct(PubNub $pubnubInstance)
+    {
+        parent::__construct($pubnubInstance);
+        $this->endpointConnectTimeout = $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
+        $this->endpointRequestTimeout = $this->pubnub->getConfiguration()->getConnectTimeout();
+    }
 
     /**
      * @param string $ch
@@ -26,6 +45,12 @@ class GetMembers extends ObjectsCollectionEndpoint
     {
         $this->channel = $ch;
 
+        return $this;
+    }
+
+    public function include(PNMemberIncludes $includes): self
+    {
+        $this->includes = $includes;
         return $this;
     }
 
@@ -94,8 +119,10 @@ class GetMembers extends ObjectsCollectionEndpoint
     {
         $params = $this->defaultParams();
 
-        if (count($this->include) > 0) {
-            $includes = [];
+        if (!empty($this->includes)) {
+            $params['include'] = (string)$this->includes;
+        } elseif (count($this->include) > 0) {
+                $includes = [];
 
             if (array_key_exists("customFields", $this->include)) {
                 array_push($includes, 'custom');
@@ -151,53 +178,5 @@ class GetMembers extends ObjectsCollectionEndpoint
         }
 
         return $params;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAuthRequired()
-    {
-        return true;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getRequestTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getNonSubscribeRequestTimeout();
-    }
-
-    /**
-     * @return int
-     */
-    protected function getConnectTimeout()
-    {
-        return $this->pubnub->getConfiguration()->getConnectTimeout();
-    }
-
-    /**
-     * @return string PNHttpMethod
-     */
-    protected function httpMethod()
-    {
-        return PNHttpMethod::GET;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getOperationType()
-    {
-        return PNOperationType::PNGetMembersOperation;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getName()
-    {
-        return "GetMembers";
     }
 }
