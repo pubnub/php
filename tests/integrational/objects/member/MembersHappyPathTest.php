@@ -28,7 +28,7 @@ class MembersHappyPathTest extends PubNubTestCase
 
         if (!empty($staleMembers)) {
             $cleanup = $this->pubnub->removeMembers()->channel($this->channel)->members($staleMembers)->sync();
-            $this->assertInstanceOf(PNSetChannelMetadataResult::class, $cleanup);
+            $this->assertInstanceOf(PNMembersResult::class, $cleanup);
             $this->assertCount(0, $cleanup->getData());
         }
 
