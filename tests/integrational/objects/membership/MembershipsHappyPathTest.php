@@ -28,7 +28,7 @@ class MembershipsHappyPathTest extends PubNubTestCase
         ])
         ->sync();
         $this->assertInstanceOf(PNMembershipsResult::class, $cleanup);
-        $this->assertCount(0, $cleanup->getData());
+        $this->assertCount(0, $cleanup->getData(), print_r($cleanup->getData(), true));
 
         $includes = new PNMembershipIncludes();
         $includes->channel()->channelId()->channelCustom()->channelType()->channelStatus()->custom()->status()->type();

@@ -115,7 +115,7 @@ class MembersHappyPathTest extends PubNubTestCase
     {
         $this->assertInstanceOf(PNMembersResult::class, $response);
         $members = $response->getData();
-        $this->assertCount(2, $members);
+        $this->assertCount(2, $members, print_r($members, true));
         $epic = $members[0];
         $monarch = $members[1];
 
