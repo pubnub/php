@@ -5,7 +5,7 @@
   "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
   "homepage": "http://www.pubnub.com/",
   "license": "proprietary",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "authors": [
     {
       "name": "PubNub",

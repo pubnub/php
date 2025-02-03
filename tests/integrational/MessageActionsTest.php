@@ -3,7 +3,7 @@
 namespace Tests\Integrational;
 
 use PubNub\Models\Consumer\MessageActions\PNAddMessageActionResult;
-use PubNub\Models\Consumer\MessageActions\PNGetMessageActionResult;
+use PubNub\Models\Consumer\MessageActions\PNGetMessageActionsResult;
 use PubNub\Models\Consumer\MessageActions\PNMessageAction;
 use PubNub\Models\Consumer\MessageActions\PNRemoveMessageActionResult;
 
@@ -56,19 +56,19 @@ class MessageActionsTest extends \PubNubTestCase
         $this->assertEquals($this->messageTimetoken, $addMessageActionResult->messageTimetoken);
     }
 
-    public function testGetMessageAction(): void
+    public function testGetMessageActions(): void
     {
         $addMessageActionResult = $this->addTestMessageAction();
-        $getMessageActionResult = $this->pubnub->getMessageAction()
+        $getMessageActionsResult = $this->pubnub->getMessageActions()
             ->channel($this->channelName)
             ->sync();
 
-        $this->assertNotNull($getMessageActionResult);
-        $this->assertInstanceOf(PNGetMessageActionResult::class, $getMessageActionResult);
-        $this->assertNotEmpty($getMessageActionResult->actions);
-        $this->assertCount(1, $getMessageActionResult->actions);
+        $this->assertNotNull($getMessageActionsResult);
+        $this->assertInstanceOf(PNGetMessageActionsResult::class, $getMessageActionsResult);
+        $this->assertNotEmpty($getMessageActionsResult->actions);
+        $this->assertCount(1, $getMessageActionsResult->actions);
 
-        $messageAction = $getMessageActionResult->actions[0];
+        $messageAction = $getMessageActionsResult->actions[0];
         $this->assertInstanceOf(PNMessageAction::class, $messageAction);
         $this->assertEquals("reaction", $messageAction->type);
         $this->assertEquals("angry_face", $messageAction->value);
@@ -80,16 +80,16 @@ class MessageActionsTest extends \PubNubTestCase
     {
         $addMessageActionResult = $this->addTestMessageAction();
 
-        $getMessageActionResult = $this->pubnub->getMessageAction()
+        $getMessageActionsResult = $this->pubnub->getMessageActions()
             ->channel($this->channelName)
             ->sync();
 
-        $this->assertNotNull($getMessageActionResult);
-        $this->assertInstanceOf(PNGetMessageActionResult::class, $getMessageActionResult);
-        $this->assertNotEmpty($getMessageActionResult->actions);
-        $this->assertCount(1, $getMessageActionResult->actions);
+        $this->assertNotNull($getMessageActionsResult);
+        $this->assertInstanceOf(PNGetMessageActionsResult::class, $getMessageActionsResult);
+        $this->assertNotEmpty($getMessageActionsResult->actions);
+        $this->assertCount(1, $getMessageActionsResult->actions);
 
-        foreach ($getMessageActionResult->actions as $action) {
+        foreach ($getMessageActionsResult->actions as $action) {
             $removeMessageActionResult = $this->pubnub->removeMessageAction()
                 ->channel($this->channelName)
                 ->messageTimetoken($action->messageTimetoken)

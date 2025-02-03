@@ -6,9 +6,9 @@ class PNMessageAction
 {
     public ?string $type;
     public ?string $value;
-    public int | float | null $messageTimetoken;
+    public ?int $messageTimetoken;
     public ?string $uuid;
-    public int | float | null $actionTimetoken;
+    public ?int $actionTimetoken;
 
     /**
      *

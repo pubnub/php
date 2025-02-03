@@ -93,7 +93,7 @@ jobs:
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
       - name: Expose acceptance tests reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: acceptance-test-reports
           path: ./tests/Acceptance/reports
