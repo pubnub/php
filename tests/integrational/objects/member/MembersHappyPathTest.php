@@ -17,7 +17,7 @@ class MembersHappyPathTest extends PubNubTestCase
     protected string $userName2 = "EpicFeastTime";
     protected string $userName3 = "PiotrekOgi";
 
-    public function testHappyPath(): void
+    protected function cleanup(): void
     {
         // Cleanup
         $staleMembers = [];
@@ -31,7 +31,12 @@ class MembersHappyPathTest extends PubNubTestCase
             $this->assertInstanceOf(PNMembersResult::class, $cleanup);
             $this->assertCount(0, $cleanup->getData());
         }
+    }
 
+    public function testHappyPath(): void
+    {
+        $this->cleanup();
+        sleep(1);
         $channelSetup = $this->pubnub->setChannelMetadata()
             ->channel($this->channel)
             ->meta([
@@ -112,6 +117,8 @@ class MembersHappyPathTest extends PubNubTestCase
 
         $this->assertInstanceOf(PNMembersResult::class, $removeMembers);
         $this->assertCount(0, $removeMembers->getData());
+        $this->cleanup();
+        sleep(1);
     }
 
     private function checkResponse(PNMembersResult $response): void

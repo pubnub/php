@@ -28,10 +28,10 @@ class MembershipsHappyPathTest extends PubNubTestCase
             $this->assertInstanceOf(PNMembershipsResult::class, $cleanup);
             $this->assertCount(0, $cleanup->getData());
         }
+        sleep(1);
 
         $includes = new PNMembershipIncludes();
         $includes->channel()->channelId()->channelCustom()->channelType()->channelStatus()->custom()->status()->type();
-
         $addMembership = $this->pubnub->setMemberships()
             ->userId($this->user)
             ->memberships([
