@@ -139,6 +139,7 @@ class ManageMembers extends ObjectsCollectionEndpoint
 
     /**
      * @throws PubNubValidationException
+     * @return void
      */
     protected function validateParams()
     {
@@ -214,7 +215,7 @@ class ManageMembers extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $result Decoded json
+     * @param mixed $result Decoded json
      * @return PNMembersResult
      */
     protected function createResponse($result): PNMembersResult
@@ -228,7 +229,7 @@ class ManageMembers extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     protected function customParams()
     {

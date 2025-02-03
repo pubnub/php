@@ -6,6 +6,7 @@ use PubNub\Endpoints\Objects\ObjectsCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipIncludes;
 use PubNub\Models\Consumer\Objects\Membership\PNChannelMembership;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipsResult;
@@ -40,10 +41,10 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     protected ?PNMembershipIncludes $includes;
 
     /** @var ?PNChannelMembership[] */
-    protected array $setMemberships;
+    protected ?array $setMemberships;
 
     /** @var ?PNChannelMembership[] */
-    protected array $removeMemberships;
+    protected ?array $removeMemberships;
 
     /**
      * @param PubNub $pubnubInstance
@@ -76,7 +77,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $channels
+     * @param mixed $channels
      * @deprecated Use memberships() method
      *
      * @return $this
@@ -88,7 +89,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $channels
+     * @param mixed $channels
      * @deprecated Use memberships() method
      *
      * @return $this
@@ -100,7 +101,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param PNChannelMemberhips[] $members
+     * @param PNChannelMembership[] $memberships
      * @return $this
      */
     public function setMemberships(array $memberships): self
@@ -110,7 +111,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param PNChannelMemberhips[] $members
+     * @param PNChannelMembership[] $memberships
      * @return $this
      */
     public function removeMemberships(array $memberships): self
@@ -120,7 +121,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $custom
+     * @param mixed $custom
      * @deprecated Use members() method
      *
      * @return $this
@@ -132,7 +133,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $include
+     * @param string[] $include
      * @deprecated Use includes() method
      *
      * @return $this
@@ -162,6 +163,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
 
     /**
      * @throws PubNubValidationException
+     * @return void
      */
     protected function validateParams()
     {
@@ -236,7 +238,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $result Decoded json
+     * @param mixed $result Decoded json
      * @return PNMembershipsResult
      */
     protected function createResponse($result): PNMembershipsResult
@@ -245,7 +247,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     protected function customParams()
     {

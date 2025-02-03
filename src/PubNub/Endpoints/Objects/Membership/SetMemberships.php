@@ -36,7 +36,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
     /** @var PNMembershipIncludes */
     protected ?PNMembershipIncludes $includes;
 
-    /** @var ?PNChannelMembership[] */
+    /** @var PNChannelMembership[] */
     protected array $memberships;
 
     /**
@@ -82,7 +82,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param PNChannelMemberhips[] $members
+     * @param PNChannelMembership[] $memberships
      * @return $this
      */
     public function memberships(array $memberships): self

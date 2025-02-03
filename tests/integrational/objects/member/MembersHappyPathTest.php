@@ -26,10 +26,11 @@ class MembersHappyPathTest extends PubNubTestCase
             array_push($staleMembers, new PNChannelMember($member->getUser()->getId()));
         }
 
-        $this->pubnub->removeMembers()
-            ->channel($this->channel)
-            ->members($staleMembers)
-            ->sync();
+        if (!empty($staleMembers)) {
+            $cleanup = $this->pubnub->removeMembers()->channel($this->channel)->members($staleMembers)->sync();
+            $this->assertInstanceOf(PNSetChannelMetadataResult::class, $cleanup);
+            $this->assertCount(0, $cleanup->getData());
+        }
 
         $channelSetup = $this->pubnub->setChannelMetadata()
             ->channel($this->channel)

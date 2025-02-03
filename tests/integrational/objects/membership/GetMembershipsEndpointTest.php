@@ -19,7 +19,12 @@ class GetMembershipsEndpointTest extends PubNubTestCase
 
         $response = $this->pubnub_pam->getMemberships()
             ->uuid("uuid")
-            ->includeFields([ "totalCount" => true, "customFields" => true, "customUUIDFields" => true, "UUIDFields" => true ])
+            ->includeFields([
+                "totalCount" => true,
+                "customFields" => true,
+                "customUUIDFields" => true,
+                "UUIDFields" => true,
+            ])
             ->sync();
 
         $this->assertNotEmpty($response);

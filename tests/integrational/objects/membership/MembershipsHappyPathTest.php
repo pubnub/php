@@ -23,9 +23,11 @@ class MembershipsHappyPathTest extends PubNubTestCase
         foreach ($getStaleMemberships->getData() as $membership) {
             array_push($staleMemberships, new PNChannelMembership($membership->getChannel()->getId()));
         }
-        $cleanup = $this->pubnub->removeMemberships()->userId($this->user)->memberships($staleMemberships)->sync();
-        $this->assertInstanceOf(PNMembershipsResult::class, $cleanup);
-        $this->assertCount(0, $cleanup->getData());
+        if (!empty($staleMemberships)) {
+            $cleanup = $this->pubnub->removeMemberships()->userId($this->user)->memberships($staleMemberships)->sync();
+            $this->assertInstanceOf(PNMembershipsResult::class, $cleanup);
+            $this->assertCount(0, $cleanup->getData());
+        }
 
         $includes = new PNMembershipIncludes();
         $includes->channel()->channelId()->channelCustom()->channelType()->channelStatus()->custom()->status()->type();

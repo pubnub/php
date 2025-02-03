@@ -56,7 +56,7 @@ class PNMembershipsResult
     }
 
     /**
-     * @return array
+     * @return array | \StdClass
      */
     public function getData()
     {

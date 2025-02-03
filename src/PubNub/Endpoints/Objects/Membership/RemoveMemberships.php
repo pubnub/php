@@ -33,7 +33,7 @@ class RemoveMemberships extends ObjectsCollectionEndpoint
     /** @var PNMembershipIncludes */
     protected ?PNMembershipIncludes $includes;
 
-    /** @var ?PNChannelMembership[] */
+    /** @var PNChannelMembership[] */
     protected array $memberships;
 
     /**
@@ -58,7 +58,7 @@ class RemoveMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param string $uuid
+     * @param string $userId
      * @return $this
      */
     public function userId(string $userId): self
@@ -81,7 +81,7 @@ class RemoveMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param PNChannelMemberhips[] $members
+     * @param PNChannelMembership[] $memberships
      * @return $this
      */
     public function memberships(array $memberships): self

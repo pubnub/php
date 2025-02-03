@@ -51,7 +51,7 @@ class PNMembershipsResultItem
     }
 
     /**
-     * @return array
+     * @return array | \StdClass
      */
     public function getCustom()
     {
@@ -92,6 +92,7 @@ class PNMembershipsResultItem
 
     public function __toString()
     {
+        $data_string = '';
         if (!empty($data)) {
             $data_string = json_encode($data);
         }

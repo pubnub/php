@@ -15,7 +15,12 @@ class SetMembershipsEndpointTest extends PubNubTestCase
                 "a" => "aa",
                 "b" => "bb",
             ])
-            ->includeFields([ "totalCount" => true, "customFields" => true, "customChannelFields" => true, "channelFields" => true ])
+            ->includeFields([
+                "totalCount" => true,
+                "customFields" => true,
+                "customChannelFields" => true,
+                "channelFields" => true
+            ])
             ->sync();
 
 
