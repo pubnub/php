@@ -42,7 +42,7 @@ class MembershipsHappyPathTest extends PubNubTestCase
             ->sync();
 
         $this->checkResponse($addMembership);
-
+        sleep(1);
         $getMembership = $this->pubnub->getMemberships()
             ->userId($this->user)
             ->include($includes)
