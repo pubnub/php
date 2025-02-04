@@ -6,7 +6,6 @@ use PubNub\Endpoints\Objects\ObjectsCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
-use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipIncludes;
 use PubNub\Models\Consumer\Objects\Membership\PNChannelMembership;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipsResult;
@@ -23,19 +22,19 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     protected string $endpointName = "ManageMemberships";
 
     /** @var string */
-    protected $userId;
+    protected ?string $userId;
 
     /** @var string[] */
-    protected $setChannels;
+    protected array $setChannels;
 
     /** @var string[] */
-    protected $removeChannels;
+    protected array $removeChannels;
 
     /** @var string[] */
-    protected $custom;
+    protected array $custom;
 
     /** @var string[] */
-    protected $include = [];
+    protected array $include = [];
 
     /** @var PNMembershipIncludes */
     protected ?PNMembershipIncludes $includes;
@@ -60,7 +59,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
      * @param string $uuid
      * @return $this
      */
-    public function uuid($uuid): self
+    public function uuid(string $uuid): self
     {
         $this->userId = $uuid;
         return $this;
@@ -70,7 +69,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
      * @param string $userId
      * @return $this
      */
-    public function userId($userId): self
+    public function userId(string $userId): self
     {
         $this->userId = $userId;
         return $this;
@@ -82,7 +81,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function setChannels($channels): self
+    public function setChannels(mixed $channels): self
     {
         $this->setChannels = $channels;
         return $this;
@@ -94,7 +93,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function removeChannels($channels): self
+    public function removeChannels(mixed $channels): self
     {
         $this->removeChannels = $channels;
         return $this;
@@ -126,7 +125,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function custom($custom): self
+    public function custom(mixed $custom): self
     {
         $this->custom = $custom;
         return $this;
@@ -138,7 +137,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function includeFields($include): self
+    public function includeFields(array $include): self
     {
         $this->include = $include;
         return $this;
@@ -169,7 +168,7 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     {
         $this->validateSubscribeKey();
 
-        if (!is_string($this->userId)) {
+        if (empty($this->userId)) {
             throw new PubNubValidationException("uuid missing");
         }
 
@@ -187,12 +186,11 @@ class ManageMemberships extends ObjectsCollectionEndpoint
 
     /**
      * @return string
-     * @throws PubNubBuildRequestException
+     * @throws \PubNub\Exceptions\PubNubBuildRequestException
      */
     protected function buildData()
     {
         $set = [];
-        $remove = [];
         if (!empty($this->setMemberships)) {
             foreach ($this->setMemberships as $memberhip) {
                 array_push($set, $memberhip->toArray());
@@ -270,10 +268,8 @@ class ManageMemberships extends ObjectsCollectionEndpoint
                 array_push($includes, 'channel');
             }
 
-            $includesString = implode(",", $includes);
-
-            if (strlen($includesString) > 0) {
-                $params['include'] = $includesString;
+            if (!empty($includes)) {
+                $params['include'] = implode(",", $includes);
             }
         }
 

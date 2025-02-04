@@ -20,11 +20,12 @@ class GetMemberships extends ObjectsCollectionEndpoint
     protected string $endpointName = "GetMemberships";
 
     /** @var string */
-    protected $userId;
+    protected ?string $userId;
 
     /** @var array */
-    protected $include = [];
+    protected array $include = [];
 
+    /** @var PNMembershipIncludes */
     protected ?PNMembershipIncludes $includes;
 
     /**
@@ -41,22 +42,33 @@ class GetMemberships extends ObjectsCollectionEndpoint
      * @param string $uuid
      * @return $this
      */
-    public function uuid($uuid)
+    public function uuid(string $uuid): self
     {
         $this->userId = $uuid;
         return $this;
     }
 
     /**
-     * @param string $uuid
+     * @param string $userId
      * @return $this
      */
-    public function userId($uuid)
+    public function userId(string $userId): self
     {
-        $this->userId = $uuid;
+        $this->userId = $userId;
         return $this;
     }
 
+    /**
+     * Defines a list of fields to be included in response. It takes an instance of PNMemberIncludes.
+     *
+     * Example:
+     *
+     * $includes = (new PNMembershipIncludes())->custom()->status()->totalCount()->type()-user();
+     * $pnGetMembers->include($includes);
+     *
+     * @param PNMembershipIncludes $includes
+     * @return $this
+     */
     public function include(PNMembershipIncludes $includes): self
     {
         $this->includes = $includes;
@@ -67,7 +79,7 @@ class GetMemberships extends ObjectsCollectionEndpoint
      * @param array $include
      * @return $this
      */
-    public function includeFields($include)
+    public function includeFields(array $include): self
     {
         $this->include = $include;
 
@@ -81,14 +93,14 @@ class GetMemberships extends ObjectsCollectionEndpoint
     {
         $this->validateSubscribeKey();
 
-        if (!is_string($this->userId)) {
+        if (empty($this->userId)) {
             throw new PubNubValidationException("uuid missing");
         }
     }
 
     /**
      * @return string
-     * @throws PubNubBuildRequestException
+     * @throws \PubNub\Exceptions\PubNubBuildRequestException
      */
     protected function buildData()
     {
@@ -145,10 +157,8 @@ class GetMemberships extends ObjectsCollectionEndpoint
                 array_push($includes, 'channel');
             }
 
-            $includesString = implode(",", $includes);
-
-            if (strlen($includesString) > 0) {
-                $params['include'] = $includesString;
+            if (!empty($includes)) {
+                $params['include'] = implode(",", $includes);
             }
         }
 

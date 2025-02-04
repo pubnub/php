@@ -20,11 +20,12 @@ class GetMembers extends ObjectsCollectionEndpoint
     protected string $endpointName = "GetMembers";
 
     /** @var string */
-    protected $channel;
+    protected ?string $channel;
 
     /** @var array */
-    protected $include = [];
+    protected array $include = [];
 
+    /** @var PNMemberIncludes */
     protected ?PNMemberIncludes $includes;
 
     /**
@@ -38,12 +39,12 @@ class GetMembers extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param string $ch
+     * @param string $channel
      * @return $this
      */
-    public function channel($ch)
+    public function channel(string $channel): self
     {
-        $this->channel = $ch;
+        $this->channel = $channel;
 
         return $this;
     }
@@ -58,7 +59,7 @@ class GetMembers extends ObjectsCollectionEndpoint
      * @param array $include
      * @return $this
      */
-    public function includeFields($include)
+    public function includeFields(array $include): self
     {
         $this->include = $include;
 
@@ -67,19 +68,20 @@ class GetMembers extends ObjectsCollectionEndpoint
 
     /**
      * @throws PubNubValidationException
+     * @return void
      */
     protected function validateParams()
     {
         $this->validateSubscribeKey();
 
-        if (!is_string($this->channel)) {
+        if (empty($this->channel)) {
             throw new PubNubValidationException("channel missing");
         }
     }
 
     /**
      * @return string
-     * @throws PubNubBuildRequestException
+     * @throws \PubNub\Exceptions\PubNubBuildRequestException
      */
     protected function buildData()
     {
@@ -136,10 +138,8 @@ class GetMembers extends ObjectsCollectionEndpoint
                 array_push($includes, 'uuid');
             }
 
-            $includesString = implode(",", $includes);
-
-            if (strlen($includesString) > 0) {
-                $params['include'] = $includesString;
+            if (!empty($includes)) {
+                $params['include'] = implode(",", $includes);
             }
         }
 

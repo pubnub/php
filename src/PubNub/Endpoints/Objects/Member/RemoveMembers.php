@@ -22,13 +22,13 @@ class RemoveMembers extends ObjectsCollectionEndpoint
     protected string $endpointName = "ManageMembers";
 
     /** @var string */
-    protected $channel;
+    protected ?string $channel;
 
     /** @var array */
-    protected $uuids;
+    protected array $uuids;
 
     /** @var array */
-    protected $include = [];
+    protected array $include = [];
 
     /** @var PNMemberIncludes */
     protected PNMemberIncludes $includes;
@@ -50,7 +50,7 @@ class RemoveMembers extends ObjectsCollectionEndpoint
      * @param string $ch
      * @return $this
      */
-    public function channel($ch)
+    public function channel(string $ch): self
     {
         $this->channel = $ch;
 
@@ -63,7 +63,7 @@ class RemoveMembers extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function uuids($uuids)
+    public function uuids(array $uuids): self
     {
         $this->uuids = $uuids;
 
@@ -74,10 +74,9 @@ class RemoveMembers extends ObjectsCollectionEndpoint
      * @param PNChannelMember[] $members
      * @return $this
      */
-    public function members(array $members)
+    public function members(array $members): self
     {
         $this->members = $members;
-
         return $this;
     }
 
@@ -103,21 +102,21 @@ class RemoveMembers extends ObjectsCollectionEndpoint
      * @deprecated Use include() method
      * @return $this
      */
-    public function includeFields($include)
+    public function includeFields(array $include): self
     {
         $this->include = $include;
-
         return $this;
     }
 
     /**
      * @throws PubNubValidationException
+     * @return void
      */
     protected function validateParams()
     {
         $this->validateSubscribeKey();
 
-        if (!is_string($this->channel)) {
+        if (empty($this->channel)) {
             throw new PubNubValidationException("channel missing");
         }
 
@@ -132,7 +131,7 @@ class RemoveMembers extends ObjectsCollectionEndpoint
 
     /**
      * @return string
-     * @throws PubNubBuildRequestException
+     * @throws \PubNub\Exceptions\PubNubBuildRequestException
      */
     protected function buildData()
     {
@@ -206,10 +205,8 @@ class RemoveMembers extends ObjectsCollectionEndpoint
                 array_push($includes, 'uuid');
             }
 
-            $includesString = implode(",", $includes);
-
-            if (strlen($includesString) > 0) {
-                $params['include'] = $includesString;
+            if (!empty($includes)) {
+                $params['include'] = implode(",", $includes);
             }
         }
 

@@ -17,7 +17,7 @@ class PNChannelMembership
      * @param ?string $status
      * @return void
      */
-    public function __construct($channel, $custom = null, $type = null, $status = null)
+    public function __construct(string $channel, mixed $custom = null, ?string $type = null, ?string $status = null)
     {
         $this->channel = $channel;
         $this->custom = $custom;
@@ -25,7 +25,7 @@ class PNChannelMembership
         $this->status = $status;
     }
 
-    public function setchannel(string $channel): self
+    public function setChannel(string $channel): self
     {
         $this->channel = $channel;
         return $this;
@@ -62,12 +62,12 @@ class PNChannelMembership
         return $this->custom;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
@@ -75,7 +75,7 @@ class PNChannelMembership
     /**
      * @return string[]
      */
-    public function toArray()
+    public function toArray(): array
     {
         $result = [
             'channel' => [

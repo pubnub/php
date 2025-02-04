@@ -1372,16 +1372,6 @@ parameters:
 			path: src/PubNub/Endpoints/Objects/Member/GetMembers.php
 
 		-
-			message: "#^Method PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\GetMembers\\:\\:validateParams\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Member/GetMembers.php
-
-		-
-			message: "#^PHPDoc tag @throws with type PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\PubNubBuildRequestException is not subtype of Throwable$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Member/GetMembers.php
-
-		-
 			message: "#^Property PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\GetMembers\\:\\:\\$include type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/Objects/Member/GetMembers.php
@@ -1403,16 +1393,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\RemoveMembers\\:\\:uuids\\(\\) has parameter \\$uuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Member/RemoveMembers.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\RemoveMembers\\:\\:validateParams\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Member/RemoveMembers.php
-
-		-
-			message: "#^PHPDoc tag @throws with type PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\PubNubBuildRequestException is not subtype of Throwable$#"
 			count: 1
 			path: src/PubNub/Endpoints/Objects/Member/RemoveMembers.php
 
@@ -1448,16 +1428,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\SetMembers\\:\\:uuids\\(\\) has parameter \\$uuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Member/SetMembers.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\SetMembers\\:\\:validateParams\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Member/SetMembers.php
-
-		-
-			message: "#^PHPDoc tag @throws with type PubNub\\\\Endpoints\\\\Objects\\\\Member\\\\PubNubBuildRequestException is not subtype of Throwable$#"
 			count: 1
 			path: src/PubNub/Endpoints/Objects/Member/SetMembers.php
 
@@ -1502,11 +1472,6 @@ parameters:
 			path: src/PubNub/Endpoints/Objects/Membership/GetMemberships.php
 
 		-
-			message: "#^PHPDoc tag @throws with type PubNub\\\\Endpoints\\\\Objects\\\\Membership\\\\PubNubBuildRequestException is not subtype of Throwable$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Membership/GetMemberships.php
-
-		-
 			message: "#^Property PubNub\\\\Endpoints\\\\Objects\\\\Membership\\\\GetMemberships\\:\\:\\$include type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/Objects/Membership/GetMemberships.php
@@ -1533,11 +1498,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\Endpoints\\\\Objects\\\\Membership\\\\RemoveMemberships\\:\\:validateParams\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Membership/RemoveMemberships.php
-
-		-
-			message: "#^PHPDoc tag @throws with type PubNub\\\\Endpoints\\\\Objects\\\\Membership\\\\PubNubBuildRequestException is not subtype of Throwable$#"
 			count: 1
 			path: src/PubNub/Endpoints/Objects/Membership/RemoveMemberships.php
 
@@ -1578,11 +1538,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\Endpoints\\\\Objects\\\\Membership\\\\SetMemberships\\:\\:validateParams\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Objects/Membership/SetMemberships.php
-
-		-
-			message: "#^PHPDoc tag @throws with type PubNub\\\\Endpoints\\\\Objects\\\\Membership\\\\PubNubBuildRequestException is not subtype of Throwable$#"
 			count: 1
 			path: src/PubNub/Endpoints/Objects/Membership/SetMemberships.php
 

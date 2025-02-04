@@ -16,7 +16,7 @@ class PNChannelMember
      * @param ?string $status
      * @return void
      */
-    public function __construct($userId, $custom = null, $type = null, $status = null)
+    public function __construct(string $userId, mixed $custom = null, ?string $type = null, ?string $status = null)
     {
         $this->userId = $userId;
         $this->custom = $custom;

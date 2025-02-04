@@ -22,16 +22,16 @@ class ManageMembers extends ObjectsCollectionEndpoint
     protected string $endpointName = "ManageMembers";
 
     /** @var string */
-    protected $channel;
+    protected ?string $channel;
 
     /** @var string[] */
-    protected $setUuids;
+    protected array $setUuids;
 
     /** @var string[] */
-    protected $removeUuids;
+    protected array $removeUuids;
 
     /** @var string[] */
-    protected $include = [];
+    protected array $include = [];
 
     /** @var PNMemberIncludes */
     protected PNMemberIncludes $includes;
@@ -56,10 +56,9 @@ class ManageMembers extends ObjectsCollectionEndpoint
      * @param string $ch
      * @return $this
      */
-    public function channel($ch)
+    public function channel(string $ch): self
     {
         $this->channel = $ch;
-
         return $this;
     }
 
@@ -93,7 +92,7 @@ class ManageMembers extends ObjectsCollectionEndpoint
      * @param PNChannelMember[] $setMembers
      * @return $this
      */
-    public function setMembers(array $setMembers)
+    public function setMembers(array $setMembers): self
     {
         $this->setMembers = $setMembers;
         return $this;
@@ -145,7 +144,7 @@ class ManageMembers extends ObjectsCollectionEndpoint
     {
         $this->validateSubscribeKey();
 
-        if (!is_string($this->channel)) {
+        if (empty($this->channel)) {
             throw new PubNubValidationException("channel missing");
         }
         $members = !empty($this->setMembers) or !empty($this->removeMembers);
@@ -162,11 +161,11 @@ class ManageMembers extends ObjectsCollectionEndpoint
 
     /**
      * @return string
+     * @throws \PubNub\Exceptions\PubNubBuildRequestException
      */
     protected function buildData()
     {
         $set = [];
-        $remove = [];
         if (!empty($this->setMembers)) {
             foreach ($this->setMembers as $member) {
                 array_push($set, $member->toArray());
@@ -181,7 +180,7 @@ class ManageMembers extends ObjectsCollectionEndpoint
                 array_push($set, $entry);
             }
         }
-
+        $remove = [];
         if (!empty($this->removeMembers)) {
             foreach ($this->removeMembers as $member) {
                 array_push($remove, $member->toArray());
@@ -253,10 +252,8 @@ class ManageMembers extends ObjectsCollectionEndpoint
                     array_push($includes, 'uuid');
                 }
 
-                $includesString = implode(",", $includes);
-
-                if (strlen($includesString) > 0) {
-                    $params['include'] = $includesString;
+                if (!empty($includes)) {
+                    $params['include'] = implode(",", $includes);
                 }
             }
         }

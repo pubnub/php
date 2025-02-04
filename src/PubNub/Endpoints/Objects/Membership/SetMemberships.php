@@ -22,16 +22,16 @@ class SetMemberships extends ObjectsCollectionEndpoint
     protected string $endpointName = "SetMemberships";
 
     /** @var string */
-    protected $userId;
+    protected ?string $userId;
 
     /** @var array */
-    protected $channels;
+    protected array $channels;
 
     /** @var array */
-    protected $custom;
+    protected array $custom;
 
     /** @var array */
-    protected $include = [];
+    protected array $include = [];
 
     /** @var PNMembershipIncludes */
     protected ?PNMembershipIncludes $includes;
@@ -53,7 +53,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
      * @param string $uuid
      * @return $this
      */
-    public function uuid($uuid): self
+    public function uuid(string $uuid): self
     {
         $this->userId = $uuid;
         return $this;
@@ -63,7 +63,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
      * @param string $userId
      * @return $this
      */
-    public function userId($userId): self
+    public function userId(string $userId): self
     {
         $this->userId = $userId;
         return $this;
@@ -75,7 +75,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function channels($channels): self
+    public function channels(array $channels): self
     {
         $this->channels = $channels;
         return $this;
@@ -97,7 +97,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function custom($custom): self
+    public function custom(array $custom): self
     {
         $this->custom = $custom;
         return $this;
@@ -109,7 +109,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
      *
      * @return $this
      */
-    public function includeFields($include): self
+    public function includeFields(array $include): self
     {
         $this->include = $include;
         return $this;
@@ -139,7 +139,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
     {
         $this->validateSubscribeKey();
 
-        if (!is_string($this->userId)) {
+        if (empty($this->userId)) {
             throw new PubNubValidationException("uuid missing");
         }
 
@@ -154,7 +154,7 @@ class SetMemberships extends ObjectsCollectionEndpoint
 
     /**
      * @return string
-     * @throws PubNubBuildRequestException
+     * @throws \PubNub\Exceptions\PubNubBuildRequestException
      */
     protected function buildData()
     {
@@ -233,10 +233,8 @@ class SetMemberships extends ObjectsCollectionEndpoint
                 array_push($includes, 'channel');
             }
 
-            $includesString = implode(",", $includes);
-
-            if (strlen($includesString) > 0) {
-                $params['include'] = $includesString;
+            if (!empty($includes)) {
+                $params['include'] = implode(",", $includes);
             }
         }
 
