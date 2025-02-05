@@ -23,6 +23,12 @@ class PNMember
     protected $custom;
 
     /** @var string */
+    protected ?string $status;
+
+    /** @var string */
+    protected ?string $type;
+
+    /** @var string */
     protected $updated;
 
     /** @var string */
@@ -38,9 +44,21 @@ class PNMember
      * @param array $custom
      * @param string $updated
      * @param string $eTag
+     * @param string $status
+     * @param string $type
      */
-    function __construct($id, $name, $externalId, $profileUrl, $email, $custom = null, $updated = null, $eTag = null)
-    {
+    public function __construct(
+        $id,
+        $name,
+        $externalId,
+        $profileUrl,
+        $email,
+        $custom = null,
+        $updated = null,
+        $eTag = null,
+        $status = null,
+        $type = null
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->externalId = $externalId;
@@ -49,6 +67,8 @@ class PNMember
         $this->custom = $custom;
         $this->updated = $updated;
         $this->eTag = $eTag;
+        $this->status = $status;
+        $this->type = $type;
     }
 
     /**
@@ -102,6 +122,22 @@ class PNMember
     /**
      * @return string
      */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
     public function getUpdated()
     {
         return $this->updated;
@@ -118,22 +154,29 @@ class PNMember
     public function __toString()
     {
         $custom_string = "";
-        
-        foreach($this->custom as $key => $value) {
+
+        foreach ($this->custom as $key => $value) {
             if (strlen($custom_string) > 0) {
                 $custom_string .= ", ";
             }
 
             $custom_string .=  "$key: $value";
         }
-        
-        return sprintf("id: %s, custom: %s, updated: %s, eTag: %s",
-            $this->id, "[" . $custom_string . "]", $this->updated, $this->eTag);
+
+        return sprintf(
+            "id: %s, custom: %s, updated: %s, eTag: %s, status: %s, type: %s",
+            $this->id,
+            "[" . $custom_string . "]",
+            $this->updated,
+            $this->eTag,
+            $this->status,
+            $this->type
+        );
     }
 
     /**
      * @param array $payload
-     * @return PNMember 
+     * @return PNMember
      */
     public static function fromPayload(array $payload)
     {
@@ -145,48 +188,61 @@ class PNMember
         $email = null;
         $custom = null;
         $updated = null;
+        $status = null;
+        $type = null;
         $eTag = null;
 
-        if (array_key_exists("id", $data))
-        {
+        if (array_key_exists("id", $data)) {
             $id = $data["id"];
         }
 
-        if (array_key_exists("name", $data))
-        {
+        if (array_key_exists("name", $data)) {
             $name = $data["name"];
         }
 
-        if (array_key_exists("externalId", $data))
-        {
+        if (array_key_exists("externalId", $data)) {
             $externalId = $data["externalId"];
         }
 
-        if (array_key_exists("profileUrl", $data))
-        {
+        if (array_key_exists("profileUrl", $data)) {
             $profileUrl = $data["profileUrl"];
         }
 
-        if (array_key_exists("email", $data))
-        {
+        if (array_key_exists("email", $data)) {
             $email = $data["email"];
         }
 
-        if (array_key_exists("custom", $data))
-        {
+        if (array_key_exists("custom", $data)) {
             $custom = (object)$data["custom"];
         }
 
-        if (array_key_exists("updated", $data))
-        {
+        if (array_key_exists("updated", $data)) {
             $updated = (object)$data["updated"];
         }
 
-        if (array_key_exists("eTag", $data))
-        {
+        if (array_key_exists("eTag", $data)) {
             $eTag = (object)$data["eTag"];
         }
 
-        return new PNMember($id, $name, $externalId, $profileUrl, $email, (object) $custom, $updated, $eTag);
+        if (array_key_exists("status", $data)) {
+            $status = $data["status"];
+        }
+
+        if (array_key_exists("type", $data)) {
+            $type = $data["type"];
+        }
+
+        return new PNMember(
+            $id,
+            $name,
+            $externalId,
+            $profileUrl,
+            $email,
+            (object)$custom,
+            $updated,
+            $eTag,
+            $status,
+            $type
+        );
     }
 }

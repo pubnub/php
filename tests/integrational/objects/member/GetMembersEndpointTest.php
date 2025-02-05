@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\Members;
 
 use PubNubTestCase;
 
-
 class GetMembersEndpointTest extends PubNubTestCase
 {
     public function testGetMembersForChannel()
@@ -20,7 +19,12 @@ class GetMembersEndpointTest extends PubNubTestCase
 
         $response = $this->pubnub_pam->getMembers()
             ->channel("ch")
-            ->includeFields([ "totalCount" => true, "customFields" => true, "customChannelFields" => true, "channelFields" => true ])
+            ->includeFields([
+                "totalCount" => true,
+                "customFields" => true,
+                "customChannelFields" => true,
+                "channelFields" => true,
+            ])
             ->sync();
 
         $this->assertNotEmpty($response);

@@ -7,26 +7,43 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipIncludes;
+use PubNub\Models\Consumer\Objects\Membership\PNChannelMembership;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipsResult;
+use PubNub\PubNubUtil;
 use PubNub\PubNub;
 
-class GetMemberships extends ObjectsCollectionEndpoint
+class ManageMemberships extends ObjectsCollectionEndpoint
 {
     protected const PATH = "/v2/objects/%s/uuids/%s/channels";
 
     protected bool $endpointAuthRequired = true;
-    protected string $endpointHttpMethod = PNHttpMethod::GET;
-    protected int $endpointOperationType = PNOperationType::PNGetMembershipsOperation;
-    protected string $endpointName = "GetMemberships";
+    protected string $endpointHttpMethod = PNHttpMethod::PATCH;
+    protected int $endpointOperationType = PNOperationType::PNManageMembershipsOperation;
+    protected string $endpointName = "ManageMemberships";
 
     /** @var string */
     protected ?string $userId;
 
-    /** @var array */
+    /** @var string[] */
+    protected array $setChannels;
+
+    /** @var string[] */
+    protected array $removeChannels;
+
+    /** @var string[] */
+    protected array $custom;
+
+    /** @var string[] */
     protected array $include = [];
 
     /** @var PNMembershipIncludes */
     protected ?PNMembershipIncludes $includes;
+
+    /** @var ?PNChannelMembership[] */
+    protected ?array $setMemberships;
+
+    /** @var ?PNChannelMembership[] */
+    protected ?array $removeMemberships;
 
     /**
      * @param PubNub $pubnubInstance
@@ -59,6 +76,74 @@ class GetMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
+     * @param mixed $channels
+     * @deprecated Use memberships() method
+     *
+     * @return $this
+     */
+    public function setChannels(mixed $channels): self
+    {
+        $this->setChannels = $channels;
+        return $this;
+    }
+
+    /**
+     * @param mixed $channels
+     * @deprecated Use memberships() method
+     *
+     * @return $this
+     */
+    public function removeChannels(mixed $channels): self
+    {
+        $this->removeChannels = $channels;
+        return $this;
+    }
+
+    /**
+     * @param PNChannelMembership[] $memberships
+     * @return $this
+     */
+    public function setMemberships(array $memberships): self
+    {
+        $this->setMemberships = $memberships;
+        return $this;
+    }
+
+    /**
+     * @param PNChannelMembership[] $memberships
+     * @return $this
+     */
+    public function removeMemberships(array $memberships): self
+    {
+        $this->removeMemberships = $memberships;
+        return $this;
+    }
+
+    /**
+     * @param mixed $custom
+     * @deprecated Use members() method
+     *
+     * @return $this
+     */
+    public function custom(mixed $custom): self
+    {
+        $this->custom = $custom;
+        return $this;
+    }
+
+    /**
+     * @param string[] $include
+     * @deprecated Use includes() method
+     *
+     * @return $this
+     */
+    public function includeFields(array $include): self
+    {
+        $this->include = $include;
+        return $this;
+    }
+
+    /**
      * Defines a list of fields to be included in response. It takes an instance of PNMemberIncludes.
      *
      * Example:
@@ -76,18 +161,8 @@ class GetMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $include
-     * @return $this
-     */
-    public function includeFields(array $include): self
-    {
-        $this->include = $include;
-
-        return $this;
-    }
-
-    /**
      * @throws PubNubValidationException
+     * @return void
      */
     protected function validateParams()
     {
@@ -95,6 +170,17 @@ class GetMemberships extends ObjectsCollectionEndpoint
 
         if (empty($this->userId)) {
             throw new PubNubValidationException("uuid missing");
+        }
+
+        $memberships = !empty($this->setMemberships) or !empty($this->removeMemberships);
+        $channels = !empty($this->setChannels) or !empty($this->removeChannels);
+
+        if ($memberships and $channels) {
+            throw new PubNubValidationException("Either memberships or channels should be provided");
+        }
+
+        if (!$memberships and !$channels) {
+            throw new PubNubValidationException("Memberships or a list of channels missing");
         }
     }
 
@@ -104,7 +190,32 @@ class GetMemberships extends ObjectsCollectionEndpoint
      */
     protected function buildData()
     {
-        return null;
+        $set = [];
+        if (!empty($this->setMemberships)) {
+            foreach ($this->setMemberships as $memberhip) {
+                array_push($set, $memberhip->toArray());
+            }
+        } else {
+            foreach ($this->setChannels as $value) {
+                array_push($set, ["channel" => ["id" => $value], "custom" => $this->custom]);
+            }
+        }
+
+        $remove = [];
+        if (!empty($this->removeMemberships)) {
+            foreach ($this->removeMemberships as $memberhip) {
+                array_push($remove, $memberhip->toArray());
+            }
+        } else {
+            foreach ($this->removeChannels as $value) {
+                array_push($remove, ["channel" => ["id" => $value]]);
+            }
+        }
+
+        return PubNubUtil::writeValueAsString([
+            "set" => $set,
+            "delete" => $remove
+        ]);
     }
 
     /**
@@ -125,7 +236,7 @@ class GetMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @param array $result Decoded json
+     * @param mixed $result Decoded json
      * @return PNMembershipsResult
      */
     protected function createResponse($result): PNMembershipsResult
@@ -134,7 +245,7 @@ class GetMemberships extends ObjectsCollectionEndpoint
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     protected function customParams()
     {

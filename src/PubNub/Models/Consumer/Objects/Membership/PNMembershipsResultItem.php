@@ -11,6 +11,13 @@ class PNMembershipsResultItem
     protected $custom;
 
     /** @var string */
+    protected $status;
+
+    /** @var string */
+    protected $type;
+
+
+    /** @var string */
     protected $updated;
 
     /** @var string */
@@ -22,13 +29,17 @@ class PNMembershipsResultItem
      * @param object $custom
      * @param string $updated
      * @param string $eTag
+     * @param string $status
+     * @param string $type
      */
-    function __construct($channel, $custom, $updated, $eTag)
+    public function __construct($channel, $custom, $updated, $eTag, $status = null, $type = null)
     {
         $this->channel = $channel;
         $this->custom = $custom;
         $this->updated = $updated;
         $this->eTag = $eTag;
+        $this->status = $status;
+        $this->type = $type;
     }
 
     /**
@@ -40,11 +51,27 @@ class PNMembershipsResultItem
     }
 
     /**
-     * @return array
+     * @return array | \StdClass
      */
     public function getCustom()
     {
         return $this->custom;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -65,13 +92,19 @@ class PNMembershipsResultItem
 
     public function __toString()
     {
-        if (!empty($data))
-        {
-          $data_string = json_encode($data);
+        $data_string = '';
+        if (!empty($data)) {
+            $data_string = json_encode($data);
         }
 
-        return sprintf("channel: %s, custom: %s, updated: %s, eTag: %s",
-            $this->channel, $this->custom, $this->updated, $this->eTag);
+        return sprintf(
+            "channel: %s, custom: %s, updated: %s, eTag: %s, Data: %s",
+            $this->channel,
+            $this->custom,
+            $this->updated,
+            $this->eTag,
+            $data_string
+        );
     }
 
     /**
@@ -84,27 +117,32 @@ class PNMembershipsResultItem
         $custom = null;
         $updated = null;
         $eTag = null;
+        $status = null;
+        $type = null;
 
-        if (array_key_exists("channel", $payload))
-        {
+        if (array_key_exists("channel", $payload)) {
             $channel = PNMembership::fromPayload([ "data" => $payload["channel"] ]);
         }
 
-        if (array_key_exists("custom", $payload))
-        {
+        if (array_key_exists("custom", $payload)) {
             $custom = $payload["custom"];
         }
 
-        if (array_key_exists("updated", $payload))
-        {
+        if (array_key_exists("status", $payload)) {
+            $status = $payload["status"];
+        }
+        if (array_key_exists("type", $payload)) {
+            $type = $payload["type"];
+        }
+
+        if (array_key_exists("updated", $payload)) {
             $updated = $payload["updated"];
         }
 
-        if (array_key_exists("eTag", $payload))
-        {
+        if (array_key_exists("eTag", $payload)) {
             $eTag = $payload["eTag"];
         }
 
-        return new PNMembershipsResultItem($channel, (object) $custom, $updated, $eTag);
+        return new PNMembershipsResultItem($channel, (object) $custom, $updated, $eTag, $status, $type);
     }
 }

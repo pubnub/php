@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\Members;
 
 use PubNubTestCase;
 
-
 class RemoveMembersEndpointTest extends PubNubTestCase
 {
     public function testRemoveMembersForChannel()
