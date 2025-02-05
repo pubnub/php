@@ -1,3 +1,9 @@
+## 7.3.0
+February 05 2025
+
+#### Added
+- Extended functionality of Channel Members and User Membership. Now it's possible to use fine-grade includes and set member/membership status and type.
+
 ## 7.2.1
 February 03 2025
 

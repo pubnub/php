@@ -1,8 +1,13 @@
 name: php
-version: 7.2.1
+version: 7.3.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2025-02-05
+    version: 7.3.0
+    changes:
+      - type: feature
+        text: "Extended functionality of Channel Members and User Membership. Now it's possible to use fine-grade includes and set member/membership status and type."
   - date: 2025-02-03
     version: 7.2.1
     changes:
@@ -442,8 +447,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-7.2.1.zip
-            location: https://github.com/pubnub/php/releases/tag/7.2.1
+            package-name: php-7.3.0.zip
+            location: https://github.com/pubnub/php/releases/tag/7.3.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
