@@ -39,8 +39,16 @@ class PNGetUUIDMetadataResult
      * @param string $updated
      * @param string $eTag
      */
-    function __construct($id, $name, $externalId, $profileUrl, $email, $custom = null, $updated = null, $eTag = null)
-    {
+    public function __construct(
+        $id,
+        $name,
+        $externalId,
+        $profileUrl,
+        $email,
+        $custom = null,
+        $updated = null,
+        $eTag = null
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->externalId = $externalId;
@@ -118,8 +126,8 @@ class PNGetUUIDMetadataResult
     public function __toString()
     {
         $custom_string = "";
-        
-        foreach($this->custom as $key => $value) {
+
+        foreach ($this->custom as $key => $value) {
             if (strlen($custom_string) > 0) {
                 $custom_string .= ", ";
             }
@@ -127,8 +135,18 @@ class PNGetUUIDMetadataResult
             $custom_string .=  "$key: $value";
         }
 
-        return sprintf("UUID metadata set: id: %s, name: %s, externalId: %s, profileUrl: %s, email: %s, custom: %s, updated: %s, eTag: %s",
-        $this->id, $this->name, $this->externalId, $this->profileUrl, $this->email, "[" . $custom_string . "]", $this->updated, $this->eTag);
+        return sprintf(
+            "UUID metadata set: id: %s, name: %s, externalId: %s, profileUrl: %s, email: %s, custom: %s, updated: %s,"
+            . " eTag: %s",
+            $this->id,
+            $this->name,
+            $this->externalId,
+            $this->profileUrl,
+            $this->email,
+            "[" . $custom_string . "]",
+            $this->updated,
+            $this->eTag
+        );
     }
 
     /**
@@ -147,46 +165,47 @@ class PNGetUUIDMetadataResult
         $updated = null;
         $eTag = null;
 
-        if (array_key_exists("id", $meta))
-        {
+        if (array_key_exists("id", $meta)) {
             $id = $meta["id"];
         }
 
-        if (array_key_exists("name", $meta))
-        {
+        if (array_key_exists("name", $meta)) {
             $name = $meta["name"];
         }
 
-        if (array_key_exists("externalId", $meta))
-        {
+        if (array_key_exists("externalId", $meta)) {
             $externalId = $meta["externalId"];
         }
 
-        if (array_key_exists("profileUrl", $meta))
-        {
+        if (array_key_exists("profileUrl", $meta)) {
             $profileUrl = $meta["profileUrl"];
         }
 
-        if (array_key_exists("email", $meta))
-        {
+        if (array_key_exists("email", $meta)) {
             $email = $meta["email"];
         }
 
-        if (array_key_exists("custom", $meta))
-        {
+        if (array_key_exists("custom", $meta)) {
             $custom = (object)$meta["custom"];
         }
 
-        if (array_key_exists("updated", $meta))
-        {
+        if (array_key_exists("updated", $meta)) {
             $updated = (object)$meta["updated"];
         }
 
-        if (array_key_exists("eTag", $meta))
-        {
+        if (array_key_exists("eTag", $meta)) {
             $eTag = (object)$meta["eTag"];
         }
 
-        return new PNGetUUIDMetadataResult($id, $name, $externalId, $profileUrl, $email, (object) $custom, $updated, $eTag);
+        return new PNGetUUIDMetadataResult(
+            $id,
+            $name,
+            $externalId,
+            $profileUrl,
+            $email,
+            (object) $custom,
+            $updated,
+            $eTag
+        );
     }
 }

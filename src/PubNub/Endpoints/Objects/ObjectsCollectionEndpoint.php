@@ -61,5 +61,4 @@ abstract class ObjectsCollectionEndpoint extends Endpoint
 
         return $this;
     }
-
 }

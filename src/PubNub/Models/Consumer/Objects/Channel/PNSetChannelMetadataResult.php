@@ -16,19 +16,24 @@ class PNSetChannelMetadataResult
     /** @var array */
     protected $custom;
 
+    /** @var ?string */
+    protected ?string $eTag;
+
     /**
      * PNSetChannelMetadataResult constructor.
      * @param string $id
      * @param string $name
      * @param string $description
      * @param array $custom
+     * @param ?string $eTag
      */
-    function __construct($id, $name, $description, $custom = null)
+    public function __construct($id, $name, $description, $custom = null, ?string $eTag = null)
     {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->custom = $custom;
+        $this->eTag = $eTag;
     }
 
     /**
@@ -63,20 +68,34 @@ class PNSetChannelMetadataResult
         return $this->custom;
     }
 
+    /**
+     * @return ?string
+     */
+    public function getETag(): ?string
+    {
+        return $this->eTag;
+    }
+
     public function __toString()
     {
         $custom_string = "";
-        
-        foreach($this->custom as $key => $value) {
+
+        foreach ($this->custom as $key => $value) {
             if (strlen($custom_string) > 0) {
                 $custom_string .= ", ";
             }
 
             $custom_string .=  "$key: $value";
         }
-        
-        return sprintf("Channel metadata set: id: %s, name: %s, description: %s, custom: %s",
-            $this->id, $this->name, $this->description, "[" . $custom_string . "]");
+
+        return sprintf(
+            "Channel metadata set: id: %s, name: %s, description: %s, custom: %s, eTag: %s",
+            $this->id,
+            $this->name,
+            $this->description,
+            "[" . $custom_string . "]",
+            $this->eTag
+        );
     }
 
     /**
@@ -85,32 +104,32 @@ class PNSetChannelMetadataResult
      */
     public static function fromPayload(array $payload)
     {
-        $meta = $payload["data"];
+        $data = $payload["data"];
         $id = null;
         $name = null;
         $description = null;
         $custom = null;
+        $eTag = null;
 
-        if (array_key_exists("id", $meta))
-        {
-            $id = $meta["id"];
+        if (array_key_exists("id", $data)) {
+            $id = $data["id"];
         }
 
-        if (array_key_exists("name", $meta))
-        {
-            $name = $meta["name"];
+        if (array_key_exists("name", $data)) {
+            $name = $data["name"];
         }
 
-        if (array_key_exists("description", $meta))
-        {
-            $description = $meta["description"];
+        if (array_key_exists("description", $data)) {
+            $description = $data["description"];
         }
 
-        if (array_key_exists("custom", $meta))
-        {
-            $custom = (object)$meta["custom"];
+        if (array_key_exists("custom", $data)) {
+            $custom = (object)$data["custom"];
         }
 
-        return new PNSetChannelMetadataResult($id, $name, $description, (object) $custom);
+        if (array_key_exists("eTag", $data)) {
+            $eTag = $data["eTag"];
+        }
+        return new PNSetChannelMetadataResult($id, $name, $description, (object)$custom, $eTag);
     }
 }

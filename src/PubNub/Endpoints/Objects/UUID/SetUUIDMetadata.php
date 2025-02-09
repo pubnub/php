@@ -3,6 +3,7 @@
 namespace PubNub\Endpoints\Objects\UUID;
 
 use PubNub\Endpoints\Endpoint;
+use PubNub\Endpoints\Objects\MatchesETagTrait;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
@@ -11,6 +12,8 @@ use PubNub\PubNubUtil;
 
 class SetUUIDMetadata extends Endpoint
 {
+    use MatchesETagTrait;
+
     protected const PATH = "/v2/objects/%s/uuids/%s";
 
     /** @var string */
