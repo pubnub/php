@@ -31,7 +31,7 @@ class PNGetChannelMetadataResult
      * @param string $updated
      * @param string $eTag
      */
-    function __construct($id, $name, $description, $custom = null, $updated = null, $eTag = null)
+    public function __construct($id, $name, $description, $custom = null, $updated = null, $eTag = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -92,17 +92,24 @@ class PNGetChannelMetadataResult
     public function __toString()
     {
         $custom_string = "";
-        
-        foreach($this->custom as $key => $value) {
+
+        foreach ($this->custom as $key => $value) {
             if (strlen($custom_string) > 0) {
                 $custom_string .= ", ";
             }
 
             $custom_string .=  "$key: $value";
         }
-        
-        return sprintf("Channel metadata set: id: %s, name: %s, description: %s, custom: %s, updated: %s, eTag: %s",
-            $this->id, $this->name, $this->description, "[" . $custom_string . "]", $this->updated, $this->eTag);
+
+        return sprintf(
+            "Channel metadata set: id: %s, name: %s, description: %s, custom: %s, updated: %s, eTag: %s",
+            $this->id,
+            $this->name,
+            $this->description,
+            "[" . $custom_string . "]",
+            $this->updated,
+            $this->eTag
+        );
     }
 
     /**
@@ -111,7 +118,7 @@ class PNGetChannelMetadataResult
      */
     public static function fromPayload(array $payload)
     {
-        $meta = $payload["data"];
+        $data = $payload["data"];
         $id = null;
         $name = null;
         $description = null;
@@ -119,34 +126,28 @@ class PNGetChannelMetadataResult
         $updated = null;
         $eTag = null;
 
-        if (array_key_exists("id", $meta))
-        {
-            $id = $meta["id"];
+        if (array_key_exists("id", $data)) {
+            $id = $data["id"];
         }
 
-        if (array_key_exists("name", $meta))
-        {
-            $name = $meta["name"];
+        if (array_key_exists("name", $data)) {
+            $name = $data["name"];
         }
 
-        if (array_key_exists("description", $meta))
-        {
-            $description = $meta["description"];
+        if (array_key_exists("description", $data)) {
+            $description = $data["description"];
         }
 
-        if (array_key_exists("custom", $meta))
-        {
-            $custom = (object)$meta["custom"];
+        if (array_key_exists("custom", $data)) {
+            $custom = (object)$data["custom"];
         }
 
-        if (array_key_exists("updated", $meta))
-        {
-            $updated = (object)$meta["updated"];
+        if (array_key_exists("updated", $data)) {
+            $updated = (object)$data["updated"];
         }
 
-        if (array_key_exists("eTag", $meta))
-        {
-            $eTag = (object)$meta["eTag"];
+        if (array_key_exists("eTag", $data)) {
+            $eTag = (object)$data["eTag"];
         }
 
         return new PNGetChannelMetadataResult($id, $name, $description, (object) $custom, $updated, $eTag);

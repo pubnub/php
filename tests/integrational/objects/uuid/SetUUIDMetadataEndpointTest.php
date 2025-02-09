@@ -2,8 +2,8 @@
 
 namespace Tests\Integrational\Objects\UUID;
 
+use PubNub\Exceptions\PubNubServerException;
 use PubNubTestCase;
-
 
 class SetUUIDMetadataEndpointTest extends PubNubTestCase
 {
@@ -36,5 +36,64 @@ class SetUUIDMetadataEndpointTest extends PubNubTestCase
         $this->assertNotEmpty($custom);
         $this->assertEquals("aa", $custom->a);
         $this->assertEquals("bb", $custom->b);
+    }
+
+
+    public function testIfMatchesEtagWriteProtection(): void
+    {
+        $response = $this->pubnub->setUUIDMetadata()
+            ->uuid("uuid")
+            ->meta([
+                "id" => "uuid",
+                "name" => "Some Name",
+                "description" => "Some description",
+                "custom" => [
+                    "a" => "aa",
+                    "b" => "bb"
+                ]
+            ])
+            ->sync();
+
+        $this->assertNotEmpty($response);
+        $this->assertEquals("uuid", $response->getId());
+        $this->assertNotEmpty($response->getETag());
+        $eTag = $response->getETag();
+
+        $overwrite = $this->pubnub->setUUIDMetadata()
+            ->uuid("uuid")
+            ->meta([
+                "id" => "uuid",
+                "name" => "Edited Some Name",
+                "description" => "Edited Some description",
+                "custom" => [
+                    "c" => "cc",
+                    "d" => "dd"
+                ]
+            ])
+        ->sync();
+
+        $this->assertNotEmpty($overwrite);
+        $this->assertNotEmpty($overwrite->getETag());
+        $this->assertNotEquals($eTag, $overwrite->getETag());
+
+        try {
+            $response = $this->pubnub->setUUIDMetadata()
+                ->uuid("uuid")
+                ->meta([
+                    "id" => "uuid",
+                    "name" => "Some Name Fixed",
+                    "description" => "Some description Fixed",
+                    "custom" => [
+                        "a" => "aaa",
+                        "b" => "bbb"
+                    ]
+                ])
+
+                ->ifMatchesETag($eTag)
+                ->sync();
+        } catch (PubNubServerException $exception) {
+            $this->assertEquals("412", $exception->getStatusCode());
+            $this->assertNotEmpty($exception->getServerErrorMessage());
+        }
     }
 }

@@ -22,6 +22,8 @@ class PNSetUUIDMetadataResult
     /** @var array */
     protected $custom;
 
+    protected ?string $eTag;
+
     /**
      * PNSetUUIDMetadataResult constructor.
      * @param string $id
@@ -30,8 +32,9 @@ class PNSetUUIDMetadataResult
      * @param array $profileUrl
      * @param array $email
      * @param array $custom
+     * @param ?string $eTag
      */
-    function __construct($id, $name, $externalId, $profileUrl, $email, $custom = null)
+    public function __construct($id, $name, $externalId, $profileUrl, $email, $custom = null, $eTag = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -39,6 +42,7 @@ class PNSetUUIDMetadataResult
         $this->profileUrl = $profileUrl;
         $this->email = $email;
         $this->custom = $custom;
+        $this->eTag = $eTag;
     }
 
     /**
@@ -82,6 +86,14 @@ class PNSetUUIDMetadataResult
     }
 
     /**
+     * @return string
+     */
+    public function getETag(): ?string
+    {
+        return $this->eTag;
+    }
+
+    /**
      * @return object
      */
     public function getCustom()
@@ -92,17 +104,24 @@ class PNSetUUIDMetadataResult
     public function __toString()
     {
         $custom_string = "";
-        
-        foreach($this->custom as $key => $value) {
+
+        foreach ($this->custom as $key => $value) {
             if (strlen($custom_string) > 0) {
                 $custom_string .= ", ";
             }
 
             $custom_string .=  "$key: $value";
         }
-        
-        return sprintf("UUID metadata set: id: %s, name: %s, externalId: %s, profileUrl: %s, email: %s, custom: %s",
-            $this->id, $this->name, $this->externalId, $this->profileUrl, $this->email, "[" . $custom_string . "]");
+
+        return sprintf(
+            "UUID metadata set: id: %s, name: %s, externalId: %s, profileUrl: %s, email: %s, custom: %s",
+            $this->id,
+            $this->name,
+            $this->externalId,
+            $this->profileUrl,
+            $this->email,
+            "[" . $custom_string . "]"
+        );
     }
 
     /**
@@ -111,44 +130,43 @@ class PNSetUUIDMetadataResult
      */
     public static function fromPayload(array $payload)
     {
-        $meta = $payload["data"];
+        $data = $payload["data"];
         $id = null;
         $name = null;
         $externalId = null;
         $profileUrl = null;
         $email = null;
         $custom = null;
+        $eTag = null;
 
-        if (array_key_exists("id", $meta))
-        {
-            $id = $meta["id"];
+        if (array_key_exists("id", $data)) {
+            $id = $data["id"];
         }
 
-        if (array_key_exists("name", $meta))
-        {
-            $name = $meta["name"];
+        if (array_key_exists("name", $data)) {
+            $name = $data["name"];
         }
 
-        if (array_key_exists("externalId", $meta))
-        {
-            $externalId = $meta["externalId"];
+        if (array_key_exists("externalId", $data)) {
+            $externalId = $data["externalId"];
         }
 
-        if (array_key_exists("profileUrl", $meta))
-        {
-            $profileUrl = $meta["profileUrl"];
+        if (array_key_exists("profileUrl", $data)) {
+            $profileUrl = $data["profileUrl"];
         }
 
-        if (array_key_exists("email", $meta))
-        {
-            $email = $meta["email"];
+        if (array_key_exists("email", $data)) {
+            $email = $data["email"];
         }
 
-        if (array_key_exists("custom", $meta))
-        {
-            $custom = (object)$meta["custom"];
+        if (array_key_exists("custom", $data)) {
+            $custom = (object)$data["custom"];
         }
 
-        return new PNSetUUIDMetadataResult($id, $name, $externalId, $profileUrl, $email, (object) $custom);
+        if (array_key_exists("eTag", $data)) {
+            $eTag = $data["eTag"];
+        }
+
+        return new PNSetUUIDMetadataResult($id, $name, $externalId, $profileUrl, $email, (object) $custom, $eTag);
     }
 }

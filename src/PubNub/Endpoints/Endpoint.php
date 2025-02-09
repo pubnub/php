@@ -2,6 +2,7 @@
 
 namespace PubNub\Endpoints;
 
+use Exception;
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNStatusCategory;
@@ -31,6 +32,9 @@ abstract class Endpoint
     protected string $endpointHttpMethod;
     protected int $endpointOperationType;
     protected string $endpointName;
+
+    /** @var string[] */
+    protected array $customHeaders = [];
 
     protected const RESPONSE_IS_JSON = true;
 
@@ -178,7 +182,7 @@ abstract class Endpoint
 
     protected function customHeaders()
     {
-        return [];
+        return $this->customHeaders;
     }
 
     /**

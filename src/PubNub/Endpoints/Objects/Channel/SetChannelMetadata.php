@@ -3,6 +3,7 @@
 namespace PubNub\Endpoints\Objects\Channel;
 
 use PubNub\Endpoints\Endpoint;
+use PubNub\Endpoints\Objects\MatchesETagTrait;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
@@ -11,6 +12,8 @@ use PubNub\PubNubUtil;
 
 class SetChannelMetadata extends Endpoint
 {
+    use MatchesETagTrait;
+
     protected const PATH = "/v2/objects/%s/channels/%s";
 
     /** @var string */

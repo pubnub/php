@@ -2,7 +2,6 @@
 
 namespace PubNub\Models\Consumer\Objects\Channel;
 
-
 class PNGetAllChannelMetadataResult
 {
     /** @var integer */
@@ -17,19 +16,24 @@ class PNGetAllChannelMetadataResult
     /** @var array */
     protected $data;
 
+    /** @var ?string */
+    protected $eTag;
+
     /**
      * PNGetAllChannelMetadataResult constructor.
      * @param integer $totalCount
      * @param string $prev
      * @param string $next
      * @param array $data
+     * @param $string $eTag
      */
-    function __construct($totalCount, $prev, $next, $data)
+    public function __construct($totalCount, $prev, $next, $data, ?string $eTag = null)
     {
         $this->totalCount = $totalCount;
         $this->prev = $prev;
         $this->next = $next;
         $this->data = $data;
+        $this->eTag = $eTag;
     }
 
     /**
@@ -64,15 +68,28 @@ class PNGetAllChannelMetadataResult
         return $this->data;
     }
 
+    /**
+     * @return ?string
+     */
+    public function getETag(): ?string
+    {
+        return $this->eTag;
+    }
+
     public function __toString()
     {
-        if (!empty($data))
-        {
-          $data_string = json_encode($data);
+        if (!empty($data)) {
+            $data_string = json_encode($data);
         }
 
-        return sprintf("totalCount: %s, prev: %s, next: %s, data: %s",
-            $this->totalCount, $this->prev, $this->next, $data_string);
+        return sprintf(
+            "totalCount: %s, prev: %s, next: %s, data: %s, eTag: %s",
+            $this->totalCount,
+            $this->prev,
+            $this->next,
+            $data_string,
+            $this->eTag
+        );
     }
 
     /**
@@ -85,32 +102,32 @@ class PNGetAllChannelMetadataResult
         $prev = null;
         $next = null;
         $data = null;
+        $eTag = null;
 
-        if (array_key_exists("totalCount", $payload))
-        {
+        if (array_key_exists("totalCount", $payload)) {
             $totalCount = $payload["totalCount"];
         }
 
-        if (array_key_exists("prev", $payload))
-        {
+        if (array_key_exists("prev", $payload)) {
             $prev = $payload["prev"];
         }
 
-        if (array_key_exists("next", $payload))
-        {
+        if (array_key_exists("next", $payload)) {
             $next = $payload["next"];
         }
 
-        if (array_key_exists("data", $payload))
-        {
+        if (array_key_exists("data", $payload)) {
             $data = [];
 
-            foreach($payload["data"] as $value)
-            {
+            foreach ($payload["data"] as $value) {
                 array_push($data, PNGetChannelMetadataResult::fromPayload([ "data" => $value ]));
             }
         }
 
-        return new PNGetAllChannelMetadataResult($totalCount, $prev, $next, $data);
+        if (array_key_exists("eTag", $payload)) {
+            $eTag = $payload["eTag"];
+        }
+
+        return new PNGetAllChannelMetadataResult($totalCount, $prev, $next, $data, $eTag);
     }
 }
