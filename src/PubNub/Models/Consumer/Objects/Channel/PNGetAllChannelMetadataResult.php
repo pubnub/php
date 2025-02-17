@@ -25,7 +25,7 @@ class PNGetAllChannelMetadataResult
      * @param string $prev
      * @param string $next
      * @param array $data
-     * @param ?$string $eTag
+     * @param ?string $eTag
      */
     public function __construct($totalCount, $prev, $next, $data, ?string $eTag = null)
     {
