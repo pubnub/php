@@ -25,7 +25,7 @@ class PNGetAllChannelMetadataResult
      * @param string $prev
      * @param string $next
      * @param array $data
-     * @param $string $eTag
+     * @param ?$string $eTag
      */
     public function __construct($totalCount, $prev, $next, $data, ?string $eTag = null)
     {
@@ -78,8 +78,9 @@ class PNGetAllChannelMetadataResult
 
     public function __toString()
     {
-        if (!empty($data)) {
-            $data_string = json_encode($data);
+        $data_string = null;
+        if (!empty($this->data)) {
+            $data_string = json_encode($this->data);
         }
 
         return sprintf(
