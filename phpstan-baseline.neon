@@ -3327,21 +3327,6 @@ parameters:
 			path: src/PubNub/Models/Consumer/Objects/Channel/PNGetAllChannelMetadataResult.php
 
 		-
-			message: "#^Undefined variable\\: \\$data$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/Channel/PNGetAllChannelMetadataResult.php
-
-		-
-			message: "#^Undefined variable\\: \\$data_string$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/Channel/PNGetAllChannelMetadataResult.php
-
-		-
-			message: "#^Variable \\$data in empty\\(\\) is never defined\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/Channel/PNGetAllChannelMetadataResult.php
-
-		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\Objects\\\\Channel\\\\PNGetChannelMetadataResult\\:\\:__construct\\(\\) has parameter \\$custom with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/Objects/Channel/PNGetChannelMetadataResult.php
