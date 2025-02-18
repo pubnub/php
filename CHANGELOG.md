@@ -1,3 +1,9 @@
+## 7.4.0
+February 18 2025
+
+#### Added
+- Write protection with If-Match eTag header for setting channel and uuid metadata.
+
 ## 7.3.0
 February 05 2025
 
