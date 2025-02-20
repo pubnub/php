@@ -59,6 +59,12 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
 use PubNub\Endpoints\FileSharing\{SendFile, DeleteFile, DownloadFile, GetFileDownloadUrl, ListFiles};
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Client\ClientInterface;
+use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\Psr7\HttpFactory as GuzzleRequestFactory;
+use GuzzleHttp\Psr7\Utils as GuzzleUtils;
+use Psr\Http\Message\StreamFactoryInterface;
 
 class PubNub implements LoggerAwareInterface
 {
@@ -79,6 +85,15 @@ class PubNub implements LoggerAwareInterface
 
     protected LoggerInterface $logger;
 
+    /**
+     * PSR-7 compatible HTTP Client. Defaults to new GuzzleHttp\Client instance.
+     *
+     * @var ClientInterface
+     */
+    protected ClientInterface $httpClient;
+
+    protected RequestFactoryInterface $requestFactory;
+
     protected int $nextSequence = 0;
 
     protected ?CryptoModule $cryptoModule = null;
@@ -98,6 +113,9 @@ class PubNub implements LoggerAwareInterface
         $this->telemetryManager = new TelemetryManager();
         $this->tokenManager = new TokenManager();
         $this->logger = new NullLogger();
+
+        $this->httpClient = new GuzzleHttpClient();
+        $this->requestFactory = new GuzzleRequestFactory();
     }
 
     /**
@@ -508,6 +526,48 @@ class PubNub implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * Set PSR-7 compatible HTTP Client
+     *
+     * @param ClientInterface $httpClient
+     * @return void
+     */
+    public function setClient(ClientInterface $httpClient): void
+    {
+        $this->httpClient = $httpClient;
+    }
+
+    /**
+     * Get PSR-7 compatible HTTP Client
+     *
+     * @return ClientInterface
+     */
+    public function getClient(): ClientInterface
+    {
+        return $this->httpClient;
+    }
+
+    /**
+     * Set PSR-7 compatible Request Factory
+     *
+     * @param RequestFactoryInterface $requestFactory
+     * @return void
+     */
+    public function setRequestFactory(RequestFactoryInterface $requestFactory): void
+    {
+        $this->requestFactory = $requestFactory;
+    }
+
+    /**
+     * Get PSR-7 compatible Request Factory
+     *
+     * @return RequestFactoryInterface
+     */
+    public function getRequestFactory(): RequestFactoryInterface
+    {
+        return $this->requestFactory;
     }
 
     /**

@@ -16,6 +16,11 @@ use PubNub\Models\ResponseHelpers\PNStatus;
 use PubNub\Models\ResponseHelpers\ResponseInfo;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\RequestExceptionInterface;
+use Psr\Http\Client\NetworkExceptionInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use WpOrg\Requests\Requests;
 use WpOrg\Requests\Exception as RequestsException;
 use WpOrg\Requests\Exception\Transport\Curl as RequestsTransportCurlException;
@@ -341,11 +346,98 @@ abstract class Endpoint
      */
     protected function invokeRequestAndCacheIt()
     {
+
         if ($this->envelope === null) {
-            $this->envelope = $this->invokeRequest();
+            $this->envelope = $this->sendRequest($this->getRequest());
+            // $this->envelope = $this->invokeRequest();
         }
 
         return $this->envelope;
+    }
+
+    /**
+     * @return PNEnvelope
+     */
+    protected function sendRequest(RequestInterface $request): PNEnvelope
+    {
+        $client = $this->pubnub->getClient();
+
+        try {
+            $response = $client->sendRequest($request);
+            $envelope = $this->parseResponse($response);
+        } catch (NetworkExceptionInterface $exception) {
+            return new PNEnvelope(null, $this->createStatus(
+                PNStatusCategory::PNTimeoutCategory,
+                null,
+                null,
+                (new PubNubConnectionException())->setOriginalException($exception)
+            ));
+        }
+        return $envelope;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return PNEnvelope
+     */
+    public function parseResponse(ResponseInterface $response): PNEnvelope
+    {
+        $result = null;
+        $status = null;
+
+        $statusCode = $response->getStatusCode();
+        $statusCategory = PNStatusCategory::PNUnknownCategory;
+
+        $request = $this->getRequest();
+
+        $uuid = null;
+        $authKey = null;
+
+        parse_str($request->getUri()->getQuery(), $query);
+
+        if (array_key_exists('uuid', $query) && strlen($query['uuid']) > 0) {
+            $uuid = $query['uuid'];
+        }
+
+        if (array_key_exists('auth', $query) && strlen($query['auth']) > 0) {
+            $uuid = $query['auth'];
+        }
+        $responseInfo = new ResponseInfo(
+            $statusCode,
+            $request->getUri()->getScheme() === 'https',
+            $request->getUri()->getHost(),
+            $uuid,
+            $authKey,
+            $response
+        );
+
+        if ($statusCode === 200) {
+            $contents = $response->getBody()->getContents();
+            if (static::RESPONSE_IS_JSON) {
+                $parsedJSON = json_decode($contents, true);
+
+                if (json_last_error()) {
+                    return new PNEnvelope(null, $this->createStatus(
+                        $statusCategory,
+                        $request->body,
+                        $responseInfo,
+                        (new PubNubResponseParsingException())
+                            ->setResponseString($request->body)
+                            ->setDescription(json_last_error_msg())
+                    ));
+                }
+                $result = $this->createResponse($parsedJSON);
+            } else {
+                $result = $this->createResponse($contents);
+            }
+            $status = $this->createStatus($statusCategory, $response->getBody(), $responseInfo, null);
+        } elseif ($statusCode === 307 && !$this->followRedirects) {
+            $result = $this->createResponse($response);
+        } else {
+            throw new \Exception('f');
+        }
+
+        return new PNEnvelope($result, $status);
     }
 
     /**
@@ -360,6 +452,33 @@ abstract class Endpoint
             'useragent' => 'PHP/' . PHP_VERSION,
             'follow_redirects' => $this->followRedirects,
         ];
+    }
+
+    public function getRequest(): RequestInterface
+    {
+        $factory = $this->pubnub->getRequestFactory();
+        $method = $this->httpMethod();
+        $url =  PubNubUtil::buildUrl(
+            $this->pubnub->getBasePath($this->customHost),
+            $this->buildPath(),
+            $this->buildParams()
+        );
+
+        $data = $this->buildData();
+        $method = $this->httpMethod();
+        $options = $this->requestOptions();
+        $headers = array_merge($this->defaultHeaders(), $this->customHeaders());
+
+        $request = $factory->createRequest($method, $url);
+
+        foreach ($headers as $key => $value) {
+            $request = $request->withHeader($key, $value);
+        }
+
+        if ($data) {
+            $request = $request->withBody(\GuzzleHttp\Psr7\Utils::streamFor($data));
+        }
+        return $request;
     }
 
     protected function getTransport()

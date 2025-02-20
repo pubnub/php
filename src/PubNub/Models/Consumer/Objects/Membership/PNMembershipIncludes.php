@@ -7,7 +7,6 @@ use PubNub\Models\Consumer\Objects\PNIncludes;
 class PNMembershipIncludes extends PNIncludes
 {
     public bool $channel = false;
-    public bool $channelId = false;
     public bool $channelCustom = false;
     public bool $channelType = false;
     public bool $channelStatus = false;
@@ -15,8 +14,7 @@ class PNMembershipIncludes extends PNIncludes
     public function __construct()
     {
         $this->mapping = array_merge($this->mapping, [
-            'channel' => 'channel',
-            'channelId' => 'channel.id',
+            'channel' => 'channel.id',
             'channelCustom' => 'channel.custom',
             'channelType' => 'channel.type',
             'channelStatus' => 'channel.status',
@@ -26,12 +24,6 @@ class PNMembershipIncludes extends PNIncludes
     public function channel(bool $channel = true): self
     {
         $this->channel = $channel;
-        return $this;
-    }
-
-    public function channelId(bool $channelId = true): self
-    {
-        $this->channelId = $channelId;
         return $this;
     }
 

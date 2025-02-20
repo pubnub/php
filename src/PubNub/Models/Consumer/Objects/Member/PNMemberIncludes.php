@@ -7,7 +7,6 @@ use PubNub\Models\Consumer\Objects\PNIncludes;
 class PNMemberIncludes extends PNIncludes
 {
     public bool $user = false;
-    public bool $userId = false;
     public bool $userCustom = false;
     public bool $userType = false;
     public bool $userStatus = false;
@@ -15,8 +14,7 @@ class PNMemberIncludes extends PNIncludes
     public function __construct()
     {
         $this->mapping = array_merge($this->mapping, [
-            'user' => 'uuid',
-            'userId' => 'uuid.id',
+            'user' => 'uuid.id',
             'userCustom' => 'uuid.custom',
             'userType' => 'uuid.type',
             'userStatus' => 'uuid.status',
@@ -26,12 +24,6 @@ class PNMemberIncludes extends PNIncludes
     public function user(bool $user = true): self
     {
         $this->user = $user;
-        return $this;
-    }
-
-    public function userId(bool $userId = true): self
-    {
-        $this->userId = $userId;
         return $this;
     }
 

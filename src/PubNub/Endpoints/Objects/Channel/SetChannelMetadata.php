@@ -34,6 +34,8 @@ class SetChannelMetadata extends Endpoint
     }
 
     /**
+     * @deprecated use setName, setDescription and setCustom instead
+     *
      * @param array $meta
      * @return $this
      */
@@ -41,6 +43,36 @@ class SetChannelMetadata extends Endpoint
     {
         $this->meta = $meta;
 
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name): self
+    {
+        $this->meta['name'] = $name;
+        return $this;
+    }
+
+    /**
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description): self
+    {
+        $this->meta['description'] = $description;
+        return $this;
+    }
+
+    /**
+     * @param array $custom
+     * @return $this
+     */
+    public function setCustom($custom): self
+    {
+        $this->meta['custom'] = $custom;
         return $this;
     }
 
