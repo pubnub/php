@@ -419,7 +419,7 @@ abstract class Endpoint
                 if (json_last_error()) {
                     return new PNEnvelope(null, $this->createStatus(
                         $statusCategory,
-                        $request->body,
+                        $response->getBody()->getContents(),
                         $responseInfo,
                         (new PubNubResponseParsingException())
                             ->setResponseString($request->body)
@@ -434,7 +434,21 @@ abstract class Endpoint
         } elseif ($statusCode === 307 && !$this->followRedirects) {
             $result = $this->createResponse($response);
         } else {
-            throw new \Exception('f');
+            $result = null;
+            switch ($statusCode) {
+                case 400:
+                    $statusCategory = PNStatusCategory::PNBadRequestCategory;
+                    break;
+                case 403:
+                    $statusCategory = PNStatusCategory::PNAccessDeniedCategory;
+                    break;
+            }
+
+            $exception = (new PubNubServerException())
+                ->setStatusCode($statusCode)
+                ->setRawBody($response->getBody());
+
+            $status = $this->createStatus($statusCategory, $response->getBody(), $responseInfo, $exception);
         }
 
         return new PNEnvelope($result, $status);
@@ -683,7 +697,7 @@ abstract class Endpoint
      * @param PubNubException | null $exception
      * @return PNStatus
      */
-    private function createStatus($category, $response, $responseInfo, $exception)
+    private function createStatus($category, $response, $responseInfo, $exception, $errorMessage = null)
     {
         $pnStatus = new PNStatus();
 
@@ -693,6 +707,10 @@ abstract class Endpoint
 
         if ($exception !== null) {
             $pnStatus->setException($exception);
+        }
+
+        if ($errorMessage !== null) {
+            $pnStatus->setErrorMessage($errorMessage);
         }
 
         if ($responseInfo !== null) {

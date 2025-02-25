@@ -8,8 +8,8 @@ use PubNub\Models\Consumer\History\PNHistoryResult;
 use PubNub\PubNub;
 use PubNub\Endpoints\History;
 use PubNub\Exceptions\PubNubValidationException;
-use Tests\Helpers\Stub;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class HistoryTest extends \PubNubTestCase
 {
@@ -19,7 +19,7 @@ class HistoryTest extends \PubNubTestCase
      */
     public function testSuccess()
     {
-        $history = new HistoryExposed($this->pubnub);
+        $history = new HistoryExposed($this->pubnub_demo);
 
         $testArray = [];
         $historyItems = [];
@@ -52,8 +52,8 @@ class HistoryTest extends \PubNubTestCase
             ->withQuery([
                 "count" => "100",
                 "include_token" => "true",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid()
             ])
             ->setResponseBody(json_encode($testArray));
 
@@ -77,8 +77,8 @@ class HistoryTest extends \PubNubTestCase
     public function testAuthSuccess()
     {
         $this->expectNotToPerformAssertions();
-        $this->pubnub->getConfiguration()->setAuthKey("blah");
-        $history = new HistoryExposed($this->pubnub);
+        $this->pubnub_demo->getConfiguration()->setAuthKey("blah");
+        $history = new HistoryExposed($this->pubnub_demo);
 
         $testArray = [];
         $historyItems = [];
@@ -111,9 +111,9 @@ class HistoryTest extends \PubNubTestCase
             ->withQuery([
                 "count" => "100",
                 "include_token" => "true",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY,
-                "auth" => "auth"
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
+                "auth" => "blah"
             ])
             ->setResponseBody(json_encode($testArray));
 
@@ -131,6 +131,9 @@ class HistoryTest extends \PubNubTestCase
         $config = $this->config->clone();
         $config->setUseRandomIV(false);
         $config->setCipherKey("cipherKey");
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("demo");
         $pubnub = new PubNub($config);
         $history = new HistoryExposed($pubnub);
 
@@ -138,8 +141,8 @@ class HistoryTest extends \PubNubTestCase
             ->withQuery([
                 "count" => "100",
                 "include_token" => "true",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("[[{\"message\":\"zFJeF9BVABL80GUiQEBjLg==\","
                 . "\"timetoken\":\"14649369736959785\"},"
@@ -166,6 +169,9 @@ class HistoryTest extends \PubNubTestCase
         $config = $this->config->clone();
         $config->setUseRandomIV(false);
         $config->setCipherKey("hello");
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("demo");
         $pubnub = new PubNub($config);
         $history = new HistoryExposed($pubnub);
 
@@ -173,8 +179,8 @@ class HistoryTest extends \PubNubTestCase
             ->withQuery([
                 "count" => "100",
                 "include_token" => "false",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("[[{\"pn_other\":\"6QoqmS9CnB3W9+I4mhmL7w==\"}],14606134331557852,14606134485013970]");
 
@@ -188,7 +194,7 @@ class HistoryTest extends \PubNubTestCase
 
     public function testSuccessWithoutTimeToken()
     {
-        $history = new HistoryExposed($this->pubnub);
+        $history = new HistoryExposed($this->pubnub_demo);
 
         $testArray = [];
         $historyItems = [];
@@ -211,8 +217,8 @@ class HistoryTest extends \PubNubTestCase
         $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "count" => "100",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid()
             ])
             ->setResponseBody(json_encode($testArray));
 
@@ -237,12 +243,12 @@ class HistoryTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
 
-        $history = new HistoryExposed($this->pubnub);
+        $history = new HistoryExposed($this->pubnub_demo);
 
         $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody(json_encode([]));
 
@@ -254,12 +260,12 @@ class HistoryTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
 
-        $history = new HistoryExposed($this->pubnub);
+        $history = new HistoryExposed($this->pubnub_demo);
 
         $history->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid()
             ])
             ->setResponseBody(json_encode([]));
 
@@ -268,7 +274,7 @@ class HistoryTest extends \PubNubTestCase
 
     public function testCountReverseStartEndSuccess()
     {
-        $history = new HistoryExposed($this->pubnub);
+        $history = new HistoryExposed($this->pubnub_demo);
 
         $testArray = [];
         $historyItems = [];
@@ -304,8 +310,8 @@ class HistoryTest extends \PubNubTestCase
                 "count" => "5",
                 "reverse" => "true",
                 "include_token" => "true",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid()
             ])
             ->setResponseBody(json_encode($testArray));
 
@@ -337,9 +343,9 @@ class HistoryTest extends \PubNubTestCase
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Decryption error: message is not a string");
 
-        $history = new HistoryExposed($this->pubnub);
+        $history = new HistoryExposed($this->pubnub_demo);
 
-        $this->pubnub->getConfiguration()->setCipherKey("Test");
+        $this->pubnub_demo->getConfiguration()->setCipherKey("Test");
 
         $testArray = [];
         $historyItems = [];
@@ -375,8 +381,8 @@ class HistoryTest extends \PubNubTestCase
                 "count" => "5",
                 "reverse" => "true",
                 "include_token" => "true",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid()
             ])
             ->setResponseBody(json_encode($testArray));
 
@@ -446,24 +452,19 @@ class HistoryTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryExposed extends History
 {
-    protected $transport;
+    protected $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
     public function stubFor($url)
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

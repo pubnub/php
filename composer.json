@@ -24,7 +24,7 @@
     ],
     "lint": [
       "vendor/bin/phpstan analyze --memory-limit 256M",
-      "git diff --name-only --diff-filter=d origin/master HEAD | grep -E '\\.php$' | xargs vendor/bin/phpcs --standard=PSR12"
+      "git diff --name-only --diff-filter=d origin/master HEAD | grep -E '\\.php$' | xargs --no-run-if-empty vendor/bin/phpcs --standard=PSR12"
     ]
   },
   "require": {
