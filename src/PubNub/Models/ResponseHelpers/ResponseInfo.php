@@ -3,7 +3,7 @@
 namespace PubNub\Models\ResponseHelpers;
 
 use WpOrg\Requests\Response;
-use Psr\Http\Message\ResponseInterface as Psr7ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class ResponseInfo
 {
@@ -22,7 +22,7 @@ class ResponseInfo
     /** @var  string */
     private $authKey;
 
-    /** @var  \Requests_Response */
+    /** @var  ResponseInterface */
     private $originalResponse;
 
     /**
@@ -33,7 +33,7 @@ class ResponseInfo
      * @param string $origin
      * @param string $uuid
      * @param string $authKey
-     * @param \Requests_Response | Psr\Http\Message\ResponseInterface $originalResponse
+     * @param ResponseInterface $originalResponse
      *
      */
     public function __construct(
@@ -42,7 +42,7 @@ class ResponseInfo
         $origin,
         $uuid,
         $authKey,
-        Response | Psr7ResponseInterface $originalResponse
+        ResponseInterface $originalResponse
     ) {
         $this->statusCode = $statusCode;
         $this->tlsEnabled = $tlsEnabled;
@@ -93,7 +93,7 @@ class ResponseInfo
     }
 
     /**
-     * @return \Requests_Response
+     * @return ResponseInterface
      */
     public function getOriginalResponse()
     {

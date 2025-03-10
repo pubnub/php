@@ -68,7 +68,7 @@ class MembersHappyPathTest extends PubNubTestCase
         $this->assertInstanceOf(PNSetUUIDMetadataResult::class, $userSetup2);
 
         $includes = new PNMemberIncludes();
-        $includes->user()->userId()->userCustom()->userType()->userStatus()->custom()->status()->type();
+        $includes->user()->user()->userCustom()->userType()->userStatus()->custom()->status()->type();
 
         $addMembers = $this->pubnub->setMembers()
             ->channel($this->channel)

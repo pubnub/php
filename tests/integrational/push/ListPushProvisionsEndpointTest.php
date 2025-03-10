@@ -146,7 +146,7 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListPushProvisionsEndpointExposed extends ListPushProvisions
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -155,7 +155,7 @@ class ListPushProvisionsEndpointExposed extends ListPushProvisions
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

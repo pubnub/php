@@ -639,7 +639,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveChannelsFromPushTestExposed extends RemoveDeviceFromPush
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -648,7 +648,7 @@ class RemoveChannelsFromPushTestExposed extends RemoveDeviceFromPush
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);
@@ -659,7 +659,7 @@ class RemoveChannelsFromPushTestExposed extends RemoveDeviceFromPush
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class AddChannelsToPushExposed extends AddChannelsToPush
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -668,7 +668,7 @@ class AddChannelsToPushExposed extends AddChannelsToPush
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);
@@ -679,7 +679,7 @@ class AddChannelsToPushExposed extends AddChannelsToPush
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemovePushNotificationsFromChannelsExposed extends RemoveChannelsFromPush
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -688,7 +688,7 @@ class RemovePushNotificationsFromChannelsExposed extends RemoveChannelsFromPush
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

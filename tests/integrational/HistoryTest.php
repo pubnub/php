@@ -451,7 +451,7 @@ class HistoryTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryExposed extends History
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {

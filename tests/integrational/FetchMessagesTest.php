@@ -167,7 +167,7 @@ class FetchMessagesTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class FetchMessagesExposed extends FetchMessages
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -176,7 +176,7 @@ class FetchMessagesExposed extends FetchMessages
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

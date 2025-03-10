@@ -10,7 +10,7 @@ use PubNubTests\helpers\PsrStubClient;
 
 class HistoryDeleteTest extends \PubNubTestCase
 {
-    public function testMissingChannelException()
+    public function testMissingChannelException(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
@@ -27,14 +27,14 @@ class HistoryDeleteTest extends \PubNubTestCase
         $historyDelete->sync();
     }
 
-    public function testChannelIsEmptyException()
+    public function testChannelIsEmptyException(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
         $this->pubnub->deleteMessages()->channel("")->sync();
     }
 
-    public function testSuperCallTest()
+    public function testSuperCallTest(): void
     {
         $this->expectNotToPerformAssertions();
         $this->pubnub_pam->deleteMessages()
@@ -46,7 +46,7 @@ class HistoryDeleteTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryDeleteExposed extends HistoryDelete
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -55,7 +55,7 @@ class HistoryDeleteExposed extends HistoryDelete
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

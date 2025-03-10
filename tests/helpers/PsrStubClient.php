@@ -20,9 +20,10 @@ class PsrStubClient implements ClientInterface
         return $stub;
     }
 
-    public function addStub(PsrStub $stub)
+    public function addStub(PsrStub $stub): self
     {
         $this->stubs[] = $stub;
+        return $this;
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
@@ -36,11 +37,7 @@ class PsrStubClient implements ClientInterface
             }
         }
         throw new \Exception(
-            "No stub matched for:"
-            . $request->getUri()->getPath() . "?" . $request->getUri()->getQuery()
-            . "\nChecks: "
-            . ($stub->isPathMatch($request->getUri()->getPath()) ? "PathMatch" : "PathMismatch")
-            . ($stub->isQueryMatch($request->getUri()->getQuery()) ? "QueryMatch" : "QueryMismatch")
+            "No stub matched for:" . $request->getUri()->getPath() . "?" . $request->getUri()->getQuery()
         );
     }
 }

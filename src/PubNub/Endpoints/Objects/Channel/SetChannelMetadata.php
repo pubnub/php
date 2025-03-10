@@ -67,7 +67,7 @@ class SetChannelMetadata extends Endpoint
     }
 
     /**
-     * @param array $custom
+     * @param string[] | string $custom
      * @return $this
      */
     public function setCustom($custom): self

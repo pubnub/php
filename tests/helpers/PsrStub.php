@@ -17,6 +17,10 @@ class PsrStub
         $this->path = $path;
     }
 
+    /**
+     * @param String[] $query
+     * @return PsrStub
+     */
     public function withQuery(array $query): self
     {
         $this->query = http_build_query($query);

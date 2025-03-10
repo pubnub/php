@@ -15,7 +15,7 @@ class MessageCountTest extends \PubNubTestCase
 {
     protected Endpoint $endpoint;
 
-    public function testSyncDisabled()
+    public function testSyncDisabled(): void
     {
         $this->expectException(PubNubServerException::class);
 
@@ -39,7 +39,7 @@ class MessageCountTest extends \PubNubTestCase
         $messageCount->channels(["my_channel"])->channelsTimetoken(["10000"])->sync();
     }
 
-    public function testSingleChannelWithSingleTimestamp()
+    public function testSingleChannelWithSingleTimestamp(): void
     {
         $messageCount = new MessageCountExposed($this->pubnub);
 
@@ -69,7 +69,7 @@ class MessageCountTest extends \PubNubTestCase
         }
     }
 
-    public function testSingleChannelWithMultiTimestamp()
+    public function testSingleChannelWithMultiTimestamp(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("The number of channels and the number of timetokens do not match");
@@ -80,7 +80,7 @@ class MessageCountTest extends \PubNubTestCase
             ->channelsTimetoken(["10000", "20000"])->sync();
     }
 
-    public function testMultiChannelWithSingleTimestamp()
+    public function testMultiChannelWithSingleTimestamp(): void
     {
         $messageCount = new MessageCountExposed($this->pubnub);
 
@@ -115,7 +115,7 @@ class MessageCountTest extends \PubNubTestCase
         }
     }
 
-    public function testMultiChannelWithMultiTimestamp()
+    public function testMultiChannelWithMultiTimestamp(): void
     {
         $messageCount = new MessageCountExposed($this->pubnub);
 
@@ -150,7 +150,7 @@ class MessageCountTest extends \PubNubTestCase
         }
     }
 
-    public function testWithoutTimeToken()
+    public function testWithoutTimeToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Timetoken missing");
@@ -160,7 +160,7 @@ class MessageCountTest extends \PubNubTestCase
         $messageCount->channels(["my_channel"])->sync();
     }
 
-    public function testWithoutChannelsSingleTimeToken()
+    public function testWithoutChannelsSingleTimeToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
@@ -170,7 +170,7 @@ class MessageCountTest extends \PubNubTestCase
         $messageCount->channelsTimetoken(["10000"])->sync();
     }
 
-    public function testWithoutChannelsTimeTokenList()
+    public function testWithoutChannelsTimeTokenList(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
@@ -180,7 +180,7 @@ class MessageCountTest extends \PubNubTestCase
         $messageCount->channelsTimetoken(["10000", "20000"])->sync();
     }
 
-    public function testChannelWithMultiEmptyToken()
+    public function testChannelWithMultiEmptyToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Timetoken missing");
@@ -201,7 +201,7 @@ class MessageCountTest extends \PubNubTestCase
             ->channelsTimetoken([])->sync();
     }
 
-    public function testChannelWithMultiNullToken()
+    public function testChannelWithMultiNullToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Timetoken missing");
@@ -226,7 +226,7 @@ class MessageCountTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class MessageCountExposed extends MessageCount
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -235,7 +235,7 @@ class MessageCountExposed extends MessageCount
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

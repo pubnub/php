@@ -6,8 +6,8 @@ use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use Monolog\Logger;
 use Monolog\Handler\ErrorLogHandler;
-use PubNubTests\helpers\PsrStubClient;
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 abstract class PubNubTestCase extends TestCase
 {
     protected const CIPHER_KEY = "enigma";
@@ -42,7 +42,8 @@ abstract class PubNubTestCase extends TestCase
     /** @var  string */
     protected $encodedSdkName;
 
-    protected function fakeSignature($params, $httpMethod, $timestamp, $publishKey, $path, $secretKey) {
+    protected function fakeSignature($params, $httpMethod, $timestamp, $publishKey, $path, $secretKey)
+    {
 
         $params['timestamp'] = (string) $timestamp;
 

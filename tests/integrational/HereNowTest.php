@@ -339,7 +339,7 @@ class HereNowTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class HereNowExposed extends HereNow
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -348,7 +348,7 @@ class HereNowExposed extends HereNow
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

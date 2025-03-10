@@ -348,7 +348,7 @@ class SetStateTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class SetStateExposed extends SetState
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -357,7 +357,7 @@ class SetStateExposed extends SetState
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

@@ -6,9 +6,14 @@ class PNGetFileDownloadURLResult
 {
     protected string $fileUrl;
 
-    public function __construct($response)
+    /**
+     *
+     * @param string[] $response
+     * @return void
+     */
+    public function __construct(array $response)
     {
-        $this->fileUrl = $response->getHeader('location')[0];
+        $this->fileUrl = $response['Location'][0];
     }
 
     public function __toString()

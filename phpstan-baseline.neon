@@ -605,7 +605,6 @@ parameters:
 			count: 1
 			path: src/PubNub/Endpoints/Endpoint.php
 
-
 		-
 			message: "#^Method PubNub\\\\Endpoints\\\\Endpoint\\:\\:createStatus\\(\\) has parameter \\$response with no type specified\\.$#"
 			count: 1
@@ -657,11 +656,6 @@ parameters:
 			path: src/PubNub/Endpoints/Endpoint.php
 
 		-
-			message: "#^Method PubNub\\\\Endpoints\\\\Endpoint\\:\\:getTransport\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
 			message: "#^Method PubNub\\\\Endpoints\\\\Endpoint\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/Endpoint.php
@@ -693,11 +687,6 @@ parameters:
 
 		-
 			message: "#^Negated boolean expression is always false\\.$#"
-			count: 2
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
-			message: "#^Parameter \\#1 \\$result of method PubNub\\\\Endpoints\\\\Endpoint\\:\\:createResponse\\(\\) expects array, WpOrg\\\\Requests\\\\Response given\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/Endpoint.php
 
@@ -707,17 +696,7 @@ parameters:
 			path: src/PubNub/Endpoints/Endpoint.php
 
 		-
-			message: "#^Parameter \\#3 \\$data of static method WpOrg\\\\Requests\\\\Requests\\:\\:request\\(\\) expects array\\|null, string\\|null given\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
 			message: "#^Parameter \\#5 \\$authKey of class PubNub\\\\Models\\\\ResponseHelpers\\\\ResponseInfo constructor expects string, null given\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
-			message: "#^Property PubNub\\\\Endpoints\\\\Endpoint\\:\\:\\$cachedTransports type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/Endpoint.php
 
@@ -2997,11 +2976,6 @@ parameters:
 			path: src/PubNub/Models/Consumer/FileSharing/PNFetchFileUploadS3DataResult.php
 
 		-
-			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\FileSharing\\\\PNGetFileDownloadURLResult\\:\\:__construct\\(\\) has parameter \\$result with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/FileSharing/PNGetFileDownloadURLResult.php
-
-		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\FileSharing\\\\PNGetFileDownloadURLResult\\:\\:getFileUrl\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/FileSharing/PNGetFileDownloadURLResult.php
@@ -5257,77 +5231,7 @@ parameters:
 			path: tests/functional/ListChannelsInChannelGroupTest.php
 
 		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testChannel_withMultiEmptyToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testChannel_withMultiNullToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testMultiChannel_withMultiTimestamp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testMultiChannel_withSingleTimestamp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testSingleChannel_withMultiTimestamp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testSingleChannel_withSingleTimestamp\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testSyncDisabled\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testWithoutChannels_SingleTimeToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testWithoutChannels_TimeTokenList\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\MessageCountTest\\:\\:testWithoutTimeToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$channelsTimetoken of method PubNub\\\\Endpoints\\\\MessageCount\\:\\:channelsTimetoken\\(\\) expects array, null given\\.$#"
-			count: 1
-			path: tests/functional/MessageCountTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\MessageCountExposed\\:\\:\\$transport has no type specified\\.$#"
 			count: 1
 			path: tests/functional/MessageCountTest.php
 
@@ -5902,21 +5806,6 @@ parameters:
 			path: tests/functional/push/ListPushProvisionsTest.php
 
 		-
-			message: "#^Method Tests\\\\Functional\\\\Push\\\\ListPushProvisionsExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/functional/push/ListPushProvisionsTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Push\\\\ListPushProvisionsExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/push/ListPushProvisionsTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Push\\\\ListPushProvisionsExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/functional/push/ListPushProvisionsTest.php
-
-		-
 			message: "#^Method Tests\\\\Functional\\\\Push\\\\ListPushProvisionsTest\\:\\:testListChannelGroupAPNS\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/functional/push/ListPushProvisionsTest.php
@@ -5933,11 +5822,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Functional\\\\Push\\\\ListPushProvisionsTest\\:\\:testListChannelGroupMPNS\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/push/ListPushProvisionsTest.php
-
-		-
-			message: "#^Property Tests\\\\Functional\\\\Push\\\\ListPushProvisionsExposed\\:\\:\\$transport has no type specified\\.$#"
 			count: 1
 			path: tests/functional/push/ListPushProvisionsTest.php
 
@@ -5982,116 +5866,6 @@ parameters:
 			path: tests/functional/push/RemoveDeviceFromPushTest.php
 
 		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:isPathMatch\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:isPathMatch\\(\\) has parameter \\$path with no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:isQueryMatch\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:isQueryMatch\\(\\) has parameter \\$actualQueryString with no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:queryString\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:stripKeys\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:stripKeys\\(\\) has parameter \\$path with no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\Stub\\:\\:withQuery\\(\\) has parameter \\$query with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^PHPDoc tag @var above a method has no effect\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^PHPDoc tag @var does not specify variable name\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Property Tests\\\\Helpers\\\\Stub\\:\\:\\$host has no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Property Tests\\\\Helpers\\\\Stub\\:\\:\\$initialUrl has no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Property Tests\\\\Helpers\\\\Stub\\:\\:\\$method has no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Property Tests\\\\Helpers\\\\Stub\\:\\:\\$path has no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Property Tests\\\\Helpers\\\\Stub\\:\\:\\$scheme has no type specified\\.$#"
-			count: 1
-			path: tests/helpers/Stub.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\StubTransport\\:\\:request\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/helpers/StubTransport.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\StubTransport\\:\\:request\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/helpers/StubTransport.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\StubTransport\\:\\:request\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/helpers/StubTransport.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\StubTransport\\:\\:request_multiple\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/helpers/StubTransport.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\StubTransport\\:\\:request_multiple\\(\\) has parameter \\$requests with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/helpers/StubTransport.php
-
-		-
-			message: "#^Method Tests\\\\Helpers\\\\StubTransport\\:\\:request_multiple\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/helpers/StubTransport.php
-
-		-
-			message: "#^Property Tests\\\\Helpers\\\\StubTransport\\:\\:\\$requestsCountInt has no type specified\\.$#"
-			count: 1
-			path: tests/helpers/StubTransport.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\AddChannelChannelGroupEndpointTest\\:\\:testChannelMissing\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/AddChannelChannelGroupEndpointTest.php
@@ -6127,41 +5901,6 @@ parameters:
 			path: tests/integrational/AddChannelChannelGroupEndpointTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\AddChannelChannelGroupExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/AddChannelChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\AddChannelChannelGroupExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/AddChannelChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\AddChannelChannelGroupExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/AddChannelChannelGroupEndpointTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\AddChannelChannelGroupExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/AddChannelChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\FetchMessagesExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/FetchMessagesTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\FetchMessagesExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FetchMessagesTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\FetchMessagesExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/FetchMessagesTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\FetchMessagesTest\\:\\:testFetchEncrypted\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/FetchMessagesTest.php
@@ -6178,11 +5917,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\FetchMessagesTest\\:\\:testFetchWithStartEnd\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FetchMessagesTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\FetchMessagesExposed\\:\\:\\$transport has no type specified\\.$#"
 			count: 1
 			path: tests/integrational/FetchMessagesTest.php
 
@@ -6235,21 +5969,6 @@ parameters:
 			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testSendTextFile\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/FilesTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\GetStateExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/GetStateTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\GetStateExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/GetStateTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\GetStateExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/GetStateTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\GetStateTest\\:\\:testCombination\\(\\) has no return type specified\\.$#"
@@ -6327,31 +6046,6 @@ parameters:
 			path: tests/integrational/GetStateTest.php
 
 		-
-			message: "#^Property Tests\\\\Integrational\\\\GetStateExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/GetStateTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HereNowExposed\\:\\:__construct\\(\\) has parameter \\$pubnubInstance with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/HereNowTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HereNowExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/HereNowTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HereNowExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/HereNowTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HereNowExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/HereNowTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\HereNowTest\\:\\:testEmptySubKey\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/HereNowTest.php
@@ -6417,46 +6111,6 @@ parameters:
 			path: tests/integrational/HereNowTest.php
 
 		-
-			message: "#^Property Tests\\\\Integrational\\\\HereNowExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/HereNowTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HistoryDeleteExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/HistoryDeleteTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HistoryDeleteExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryDeleteTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HistoryDeleteExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryDeleteTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\TestPubNubHistoryDelete\\:\\:testChannelIsEmptyException\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryDeleteTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\TestPubNubHistoryDelete\\:\\:testMissingChannelException\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryDeleteTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\TestPubNubHistoryDelete\\:\\:testSuperCallTest\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryDeleteTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\HistoryDeleteExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryDeleteTest.php
-
-		-
 			message: "#^Access to offset 'a' on an unknown class PubNub\\\\Models\\\\Consumer\\\\History\\\\any\\.$#"
 			count: 6
 			path: tests/integrational/HistoryTest.php
@@ -6473,11 +6127,6 @@ parameters:
 
 		-
 			message: "#^Access to property \\$text2 on an unknown class PubNub\\\\Models\\\\Consumer\\\\History\\\\any\\.$#"
-			count: 1
-			path: tests/integrational/HistoryTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HistoryExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/integrational/HistoryTest.php
 
@@ -6552,29 +6201,9 @@ parameters:
 			path: tests/integrational/HistoryTest.php
 
 		-
-			message: "#^Property Tests\\\\Integrational\\\\HistoryExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryTest.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: tests/integrational/HistoryTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\ListChannelsInChannelGroupExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ListChannelsInChannelGroupTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\ListChannelsInChannelGroupExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListChannelsInChannelGroupTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\ListChannelsInChannelGroupExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListChannelsInChannelGroupTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\ListChannelsInChannelGroupTest\\:\\:testEmptyGroup\\(\\) has no return type specified\\.$#"
@@ -6605,36 +6234,6 @@ parameters:
 			message: "#^Method Tests\\\\Integrational\\\\ListChannelsInChannelGroupTest\\:\\:testSuccess\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/ListChannelsInChannelGroupTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\ListChannelsInChannelGroupExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListChannelsInChannelGroupTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsExposed\\:\\:buildParams\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ListPushProvisionsTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ListPushProvisionsTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListPushProvisionsTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListPushProvisionsTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsTest\\:\\:superCallTest\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListPushProvisionsTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsTest\\:\\:testAppleSuccess\\(\\) has no return type specified\\.$#"
@@ -6685,31 +6284,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$subscribeKey of method PubNub\\\\PNConfiguration\\:\\:setSubscribeKey\\(\\) expects string, null given\\.$#"
 			count: 1
 			path: tests/integrational/ListPushProvisionsTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListPushProvisionsTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushExposed\\:\\:buildParams\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ModifyPushChannelsForDeviceTest\\:\\:superCallTest\\(\\) has no return type specified\\.$#"
@@ -6862,63 +6436,8 @@ parameters:
 			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushTestExposed\\:\\:buildParams\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushTestExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushTestExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushTestExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemovePushNotificationsFromChannelsExposed\\:\\:buildParams\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemovePushNotificationsFromChannelsExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemovePushNotificationsFromChannelsExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemovePushNotificationsFromChannelsExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$subscribeKey of method PubNub\\\\PNConfiguration\\:\\:setSubscribeKey\\(\\) expects string, null given\\.$#"
 			count: 3
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushTestExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\RemovePushNotificationsFromChannelsExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
 			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
 
 		-
@@ -7087,26 +6606,6 @@ parameters:
 			path: tests/integrational/RemoveChannelFromChannelGroupEndpointTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelFromChannelGroupExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelFromChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelFromChannelGroupExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelFromChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelFromChannelGroupExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelFromChannelGroupEndpointTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\RemoveChannelFromChannelGroupExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelFromChannelGroupEndpointTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelGroupEndpointTest\\:\\:superCallTest\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/RemoveChannelGroupEndpointTest.php
@@ -7130,41 +6629,6 @@ parameters:
 			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelGroupEndpointTest\\:\\:testSuccess\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/RemoveChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelGroupExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelGroupExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\RemoveChannelGroupExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelGroupEndpointTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\RemoveChannelGroupExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/RemoveChannelGroupEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\SetStateExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/SetStateTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\SetStateExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/SetStateTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\SetStateExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/SetStateTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\SetStateTest\\:\\:testApplyNon200\\(\\) has no return type specified\\.$#"
@@ -7232,59 +6696,14 @@ parameters:
 			path: tests/integrational/SetStateTest.php
 
 		-
+			message: "#^Parameter \\#1 \\$state of method PubNub\\\\Endpoints\\\\Presence\\\\SetState\\:\\:state\\(\\) expects array, null given\\.$#"
+			count: 1
+			path: tests/integrational/SetStateTest.php
+
+		-
 			message: "#^Parameter \\#1 \\$subscribeKey of method PubNub\\\\PNConfiguration\\:\\:setSubscribeKey\\(\\) expects string, null given\\.$#"
 			count: 1
 			path: tests/integrational/SetStateTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\SetStateExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/SetStateTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:isRequestedSecureOrigin\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:request\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:request\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:request\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:request_multiple\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:request_multiple\\(\\) has parameter \\$requests with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:request_multiple\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:request_multiple\\(\\) should return array but return statement is missing\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\CheckSslTransport\\:\\:test\\(\\) should return bool but return statement is missing\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\SslTest\\:\\:testSslCanBeDisabled\\(\\) has no return type specified\\.$#"
@@ -7293,11 +6712,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\SslTest\\:\\:testSslIsSetByDefault\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/SslTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\CheckSslTransport\\:\\:\\$requestedThroughHttps has no type specified\\.$#"
 			count: 1
 			path: tests/integrational/SslTest.php
 
@@ -7647,26 +7061,6 @@ parameters:
 			path: tests/integrational/WhereNowTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\WhereNowTestExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/WhereNowTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\WhereNowTestExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/WhereNowTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\WhereNowTestExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/WhereNowTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\WhereNowTestExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/WhereNowTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\Objects\\\\Channel\\\\GetAllChannelMetadataEndpointTest\\:\\:testGetAllChannelMetadata\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/objects/channel/GetAllChannelMetadataEndpointTest.php
@@ -7737,21 +7131,6 @@ parameters:
 			path: tests/integrational/objects/uuid/SetUUIDMetadataEndpointTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushEndpointExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/push/AddChannelsToPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushEndpointExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/AddChannelsToPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushEndpointExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/AddChannelsToPushEndpointTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushEndpointTest\\:\\:testPushAddApns2\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/push/AddChannelsToPushEndpointTest.php
@@ -7775,31 +7154,6 @@ parameters:
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushEndpointTest\\:\\:testWarningWhenUsingDeprecatedGCMType\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/push/AddChannelsToPushEndpointTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\AddChannelsToPushEndpointExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/AddChannelsToPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointExposed\\:\\:buildParams\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointTest\\:\\:testListChannelGroupAPNS\\(\\) has no return type specified\\.$#"
@@ -7827,26 +7181,6 @@ parameters:
 			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
 
 		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushEndpointExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveChannelsFromPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushEndpointExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveChannelsFromPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushEndpointExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveChannelsFromPushEndpointTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushEndpointTest\\:\\:testPushRemoveApns2\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/push/RemoveChannelsFromPushEndpointTest.php
@@ -7865,26 +7199,6 @@ parameters:
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushEndpointTest\\:\\:testPushRemoveSingleChannel\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/push/RemoveChannelsFromPushEndpointTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\RemoveChannelsFromPushEndpointExposed\\:\\:\\$transport has no type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveChannelsFromPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointExposed\\:\\:requestOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveDeviceFromPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveDeviceFromPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveDeviceFromPushEndpointTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointTest\\:\\:testRemovePushAPNS\\(\\) has no return type specified\\.$#"
@@ -7908,11 +7222,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointTest\\:\\:testWarningWhenUsingDeprecatedGCMType\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveDeviceFromPushEndpointTest.php
-
-		-
-			message: "#^Property Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointExposed\\:\\:\\$transport has no type specified\\.$#"
 			count: 1
 			path: tests/integrational/push/RemoveDeviceFromPushEndpointTest.php
 
@@ -8005,26 +7314,6 @@ parameters:
 			message: "#^Method PublishTest\\:\\:testSequenceCounterRestartsAfterMaxReached\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/unit/PublishTest.php
-
-		-
-			message: "#^Method StubTest\\:\\:testAny\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/unit/StubTest.php
-
-		-
-			message: "#^Method StubTest\\:\\:testExtraActualArgument\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/unit/StubTest.php
-
-		-
-			message: "#^Method StubTest\\:\\:testExtraExpectedArgument\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/unit/StubTest.php
-
-		-
-			message: "#^Method StubTest\\:\\:testSimpleStub\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/unit/StubTest.php
 
 		-
 			message: "#^Method TelemetryManagerTest\\:\\:testAverageLatency\\(\\) has no return type specified\\.$#"

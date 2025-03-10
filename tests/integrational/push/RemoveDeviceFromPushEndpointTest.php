@@ -128,7 +128,7 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveDeviceFromPushEndpointExposed extends RemoveDeviceFromPush
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -137,7 +137,7 @@ class RemoveDeviceFromPushEndpointExposed extends RemoveDeviceFromPush
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

@@ -96,7 +96,7 @@ class RemoveChannelGroupEndpointTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveChannelGroupExposed extends RemoveChannelGroup
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -105,7 +105,7 @@ class RemoveChannelGroupExposed extends RemoveChannelGroup
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

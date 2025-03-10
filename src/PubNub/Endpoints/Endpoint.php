@@ -52,7 +52,7 @@ abstract class Endpoint
     abstract protected function validateParams();
 
     /**
-     * @param array $result Decoded json
+     * @param array $result
      * @return mixed
      */
     abstract protected function createResponse($result);
@@ -424,7 +424,7 @@ abstract class Endpoint
             }
             $status = $this->createStatus($statusCategory, $response->getBody(), $responseInfo, null);
         } elseif ($statusCode === 307 && !$this->followRedirects) {
-            $result = $this->createResponse($response);
+            $result = $this->createResponse($response->getHeaders());
             $status = $this->createStatus($statusCategory, $response->getBody(), $responseInfo, null);
         } else {
             $result = null;

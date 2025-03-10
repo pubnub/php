@@ -131,7 +131,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListChannelsInChannelGroupExposed extends ListChannelsInChannelGroup
 {
-    protected $client;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
@@ -140,7 +140,7 @@ class ListChannelsInChannelGroupExposed extends ListChannelsInChannelGroup
         $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
         $stub = new PsrStub($url);
         $this->client->addStub($stub);

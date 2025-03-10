@@ -31,7 +31,7 @@ class MembershipsHappyPathTest extends PubNubTestCase
         sleep(1);
 
         $includes = new PNMembershipIncludes();
-        $includes->channel()->channelId()->channelCustom()->channelType()->channelStatus()->custom()->status()->type();
+        $includes->channel()->channel()->channelCustom()->channelType()->channelStatus()->custom()->status()->type();
         $addMembership = $this->pubnub->setMemberships()
             ->userId($this->user)
             ->memberships([
