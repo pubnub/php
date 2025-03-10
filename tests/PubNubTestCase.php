@@ -6,6 +6,7 @@ use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use Monolog\Logger;
 use Monolog\Handler\ErrorLogHandler;
+use PubNubTests\helpers\PsrStubClient;
 
 abstract class PubNubTestCase extends TestCase
 {
@@ -29,10 +30,13 @@ abstract class PubNubTestCase extends TestCase
     /** @var PNConfiguration config */
     protected $config;
 
-    /** @var PNConfiguration config */
+    /** @var PNConfiguration config_demo */
+    protected $config_demo;
+
+    /** @var PNConfiguration config_enc */
     protected $config_enc;
 
-    /** @var PNConfiguration config */
+    /** @var PNConfiguration config_pam */
     protected $config_pam;
 
     /** @var  string */
@@ -94,10 +98,16 @@ abstract class PubNubTestCase extends TestCase
         $this->config_pam->setSecretKey($secretKeyPam);
         $this->config_pam->setUuid($uuidMock);
 
+        $this->config_demo = new PNConfiguration();
+        $this->config_demo->setSubscribeKey('demo');
+        $this->config_demo->setPublishKey('demo');
+        $this->config_demo->setUuid($uuidMock);
+        $this->config_demo->disableImmutableCheck();
+
         $this->pubnub = new PubNub($this->config);
         $this->pubnub_enc = new PubNub($this->config_enc);
         $this->pubnub_pam = new PubNub($this->config_pam);
-        $this->pubnub_demo = PubNub::demo();
+        $this->pubnub_demo = new PubNub($this->config_demo);
 
         $this->pubnub->setLogger($logger);
         $this->pubnub_enc->setLogger($logger);

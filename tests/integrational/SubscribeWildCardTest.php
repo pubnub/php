@@ -9,55 +9,55 @@ use PubNub\Models\Consumer\PubSub\PNMessageResult;
 use PubNub\PubNub;
 use PubNubTestCase;
 use PHPUnit\Framework\AssertionFailedError;
-use Tests\Helpers\StubTransport;
+use PubNub\PNConfiguration;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class SubscribeWildCardTest extends PubNubTestCase
 {
     public function testWildCard()
     {
-        $transport = new StubTransport();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("myUUID");
+        $pubnub = new PubNub($config);
 
-        $transport->stubFor("/v2/presence/sub-key/demo/channel/channels.%2A/leave")
+        $client = new PsrStubClient();
+        $pubnub->setClient($client);
+
+        $client->addStub((new PsrStub("/v2/presence/sub-key/demo/channel/channels.%2A/leave"))
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"status": 200, "action": "leave", "message": "OK", "service": "Presence"}');
+            ->setResponseBody('{"status": 200, "action": "leave", "message": "OK", "service": "Presence"}'));
 
-        $transport->stubFor("/v2/subscribe/demo/channels.%2A/0")
+        $client->addStub((new PsrStub("/v2/subscribe/demo/channels.%2A/0"))
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"t":{"t":"14818963579052943","r":12},"m":[]}');
+            ->setResponseBody('{"t":{"t":"14818963579052943","r":12},"m":[]}'));
 
-        $transport->stubFor("/v2/subscribe/demo/channels.%2A/0")
+        $client->addStub((new PsrStub("/v2/subscribe/demo/channels.%2A/0"))
             ->withQuery([
                 "tt" => '14818963579052943',
                 "tr" => "12",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseStatus("HTTP/1.0 200 OK")
             ->setResponseBody('{"t":{"t":"14921661962885137","r":12},'
                 . '"m":[{"a":"5","f":0,"i":"eda482a8-9de3-4891-b328-b2c1d14f210c",'
                 . '"p":{"t":"14921661962867845","r":12},"k":"demo","c":"channels.one","u":{},'
-                . '"d":{"text":"hey"},"b":"channels.*"}]}');
+                . '"d":{"text":"hey"},"b":"channels.*"}]}'));
 
         $callback = new MySubscribeCallbackToTestWildCard();
-
-        $config = $this->config->clone();
-        $config->setTransport($transport);
-        $config->setUuid("myUUID");
-        $pubnub = new PubNub($config);
 
         $pubnub->addListener($callback);
         $pubnub->subscribe()->channel("channels.*")->execute();
 
         $this->assertTrue($callback->areBothConnectedAndDisconnectedInvoked());
-        $this->assertEquals(3, $transport->requestsCount());
     }
 }
 

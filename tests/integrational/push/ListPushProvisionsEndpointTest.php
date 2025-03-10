@@ -4,15 +4,19 @@ namespace Tests\Integrational\Push;
 
 use PubNub\Endpoints\Push\ListPushProvisions;
 use PubNub\Enums\PNPushType;
+use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class ListPushProvisionsEndpointTest extends PubNubTestCase
 {
     public function testListChannelGroupAPNS()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $list = new ListPushProvisionsEndpointExposed($pubnub);
@@ -34,7 +38,9 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
 
     public function testListChannelGroupAPNS2()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $list = new ListPushProvisionsEndpointExposed($pubnub);
@@ -59,9 +65,9 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
 
     public function testListChannelGroupFCM()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $list = new ListPushProvisionsEndpointExposed($pubnub);
@@ -83,7 +89,9 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
 
     public function testListChannelGroupMPNS()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $list = new ListPushProvisionsEndpointExposed($pubnub);
@@ -112,7 +120,9 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $list = new ListPushProvisionsEndpointExposed($pubnub);
@@ -136,34 +146,19 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListPushProvisionsEndpointExposed extends ListPushProvisions
 {
-    protected $transport;
+    protected $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
     public function stubFor($url)
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function buildParams()
-    {
-        return parent::buildParams();
-    }
-
-    public function buildPath()
-    {
-        return parent::buildPath();
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

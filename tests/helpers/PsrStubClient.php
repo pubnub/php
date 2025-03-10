@@ -13,6 +13,13 @@ class PsrStubClient implements ClientInterface
      */
     private $stubs = [];
 
+    public function stubFor(string $url): PsrStub
+    {
+        $stub = new PsrStub($url);
+        $this->addStub($stub);
+        return $stub;
+    }
+
     public function addStub(PsrStub $stub)
     {
         $this->stubs[] = $stub;

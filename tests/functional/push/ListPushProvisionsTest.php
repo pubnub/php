@@ -7,7 +7,6 @@ use PubNub\Enums\PNPushType;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
 
 class ListPushProvisionsTest extends PubNubTestCase
 {
@@ -106,20 +105,6 @@ class ListPushProvisionsTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListPushProvisionsExposed extends ListPushProvisions
 {
-    protected $transport;
-
-    public function __construct(PubNub $pubnubInstance)
-    {
-        parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
-    }
-
-    public function stubFor($url)
-    {
-        return $this->transport->stubFor($url);
-    }
-
     public function buildParams()
     {
         return parent::buildParams();
@@ -128,12 +113,5 @@ class ListPushProvisionsExposed extends ListPushProvisions
     public function buildPath()
     {
         return parent::buildPath();
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
     }
 }

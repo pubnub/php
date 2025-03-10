@@ -7,13 +7,14 @@ use PubNub\Exceptions\PubNubResponseParsingException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class ListChannelsInChannelGroupTest extends PubNubTestCase
 {
     public function testSuccess()
     {
-        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub_demo);
 
         $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
@@ -23,7 +24,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
                 . "\"service\": \"ChannelGroups\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
 
         $response = $listChannelsInChannelGroup->channelGroup("groupA")->sync();
 
@@ -35,7 +36,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel group missing");
 
-        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub_demo);
 
         $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
@@ -45,7 +46,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
                 . "\"service\": \"ChannelGroups\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
 
         $listChannelsInChannelGroup->sync();
     }
@@ -55,7 +56,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel group missing");
 
-        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub_demo);
 
         $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
@@ -65,7 +66,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
                 . "\"service\": \"ChannelGroups\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
 
         $listChannelsInChannelGroup->channelGroup("")->sync();
     }
@@ -75,7 +76,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Unable to parse server response: No payload found in response");
 
-        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub_demo);
 
         $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
@@ -84,7 +85,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
             ])
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"ChannelGroups\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
 
         $listChannelsInChannelGroup->channelGroup("groupA")->sync();
     }
@@ -93,16 +94,16 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
     {
         $this->expectException(PubNubResponseParsingException::class);
 
-        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub_demo);
 
         $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseBody("");
+            ->setResponseBody(json_encode(""));
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
 
         $listChannelsInChannelGroup->channelGroup("groupA")->sync();
     }
@@ -110,7 +111,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
     public function testIsAuthRequiredSuccess()
     {
         $this->expectNotToPerformAssertions();
-        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub);
+        $listChannelsInChannelGroup = new ListChannelsInChannelGroupExposed($this->pubnub_demo);
 
         $listChannelsInChannelGroup->stubFor("/v1/channel-registration/sub-key/demo/channel-group/groupA")
             ->withQuery([
@@ -121,7 +122,7 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
                 . "\"service\": \"ChannelGroups\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID")->setAuthKey("myKey");
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID")->setAuthKey("myKey");
 
         $listChannelsInChannelGroup->channelGroup("groupA")->sync();
     }
@@ -130,24 +131,19 @@ class ListChannelsInChannelGroupTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class ListChannelsInChannelGroupExposed extends ListChannelsInChannelGroup
 {
-    protected $transport;
+    protected $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
     public function stubFor($url)
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

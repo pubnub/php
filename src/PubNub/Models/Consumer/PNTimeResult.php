@@ -2,7 +2,6 @@
 
 namespace PubNub\Models\Consumer;
 
-
 class PNTimeResult
 {
     /** @var  int */

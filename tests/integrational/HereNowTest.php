@@ -2,11 +2,11 @@
 
 namespace Tests\Integrational;
 
-use Countable;
+use PubNub\PubNub;
 use PubNub\Endpoints\Presence\HereNow;
 use PubNub\Exceptions\PubNubValidationException;
-use Tests\Helpers\Stub;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class HereNowTest extends \PubNubTestCase
 {
@@ -16,12 +16,12 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testMultipleChannelState()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,
-                'uuid' => Stub::ANY
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":3,\"total_channels\""
                 . ":2,\"channels\":{\"ch1\":{\"occupancy\":1,\"uuids\":[{\"uuid\":\"user1\"}]},\"ch2\":{\"occupancy\":2"
@@ -53,12 +53,12 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testMultipleChannel()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,
-                'uuid' => Stub::ANY
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":3,\"total_channels\""
                 . ":2,\"channels\":{\"ch1\":{\"occupancy\":1,\"uuids\":[{\"uuid\":\"user1\"}]},\"ch2\":{\"occupancy\":2"
@@ -90,11 +90,11 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testMultipleChannelWithoutState()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1,game2")
             ->withQuery([
                 'pnsdk' => $this->encodedSdkName,
-                'uuid' => Stub::ANY
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": {\"game1\": {\"uuids"
                 . "\": [\"a3ffd012-a3b9-478c-8705-64089f24d71e\"], \"occupancy\": 1}}, \"total_channels\": 1, \"total_o"
@@ -121,12 +121,12 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testMultipleChannelWithoutStateUUIDs()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1,game2")
             ->withQuery([
                 'disable-uuids' => '1',
-                'uuid' => Stub::ANY,
-                'pnsdk' => $this->encodedSdkName
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": {\"game1\": {\"occupa"
                 . "ncy\": 1}}, \"total_channels\": 1, \"total_occupancy\": 1}, \"service\": \"Presence\"}");
@@ -147,12 +147,12 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testSingularChannelWithoutStateUUIDs()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'disable-uuids' => '1',
-                'uuid' => Stub::ANY,
-                'pnsdk' => $this->encodedSdkName
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"occupancy\": 3}");
 
@@ -168,11 +168,11 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testSingularChannelWithoutState()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
-                'uuid' => Stub::ANY,
-                'pnsdk' => $this->encodedSdkName
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"service\": \"Presence\", \"uuids\": [\"a3ffd012"
                 . "-a3b9-478c-8705-64089f24d71e\"], \"occupancy\": 1}");
@@ -197,12 +197,12 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testSingularChannel()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'state' => '1',
-                'uuid' => Stub::ANY,
-                'pnsdk' => $this->encodedSdkName
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"service\":\"Presence\",\"uuids\":[{\"uuid\":\"a3ffd"
                 . "012-a3b9-478c-8705-64089f24d71e\",\"state\":{\"age\":10}}],\"occupancy\":1}");
@@ -227,13 +227,13 @@ class HereNowTest extends \PubNubTestCase
      */
     public function testSingularChannelAndGroup()
     {
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'channel-group' => 'grp1',
                 'state' => '1',
-                'uuid' => Stub::ANY,
-                'pnsdk' => $this->encodedSdkName
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"channels\":{}, \"total_channels\":0, "
                 . "\"total_occupancy\":0},\"service\":\"Presence\"}");
@@ -250,12 +250,12 @@ class HereNowTest extends \PubNubTestCase
     public function testIsAuthRequiredSuccess()
     {
         $this->expectNotToPerformAssertions();
-        $hereNow = new HereNowExposed($this->pubnub);
+        $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,
-                'uuid' => Stub::ANY,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
                 'auth' => 'myKey'
             ])
             ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":3,\"total_channels"
@@ -263,7 +263,7 @@ class HereNowTest extends \PubNubTestCase
                 . ",\"ch2\":{\"occupancy\":2,\"uuids\":[{\"uuid\":\"user1\",\"state\":{\"age\":10}},{\"uuid\":\"user3"
                 . "\",\"state\":{\"age\":30}}]}}},\"service\":\"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setAuthKey("myKey");
+        $this->pubnub_demo->getConfiguration()->setAuthKey("myKey");
 
         $hereNow->channels(["ch1", "ch2"])->includeState(true)->sync();
     }
@@ -284,7 +284,7 @@ class HereNowTest extends \PubNubTestCase
             ->withQuery([
                 'channel-group' => 'grp1',
                 'state' => '1',
-                'uuid' => Stub::ANY,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
                 'pnsdk' => $this->encodedSdkName
             ])
             ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":3,\"total_channels"
@@ -312,7 +312,7 @@ class HereNowTest extends \PubNubTestCase
             ->withQuery([
                 'state' => '1',
                 'pnsdk' => $this->encodedSdkName,
-                'uuid' => Stub::ANY,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
                 'auth' => 'myKey'
             ])
             ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":3,\"total_channels"
@@ -339,24 +339,19 @@ class HereNowTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class HereNowExposed extends HereNow
 {
-    protected $transport;
+    protected $client;
 
-    public function __construct($pubnubInstance)
+    public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
     public function stubFor($url)
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

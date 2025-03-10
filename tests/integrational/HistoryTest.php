@@ -3,7 +3,6 @@
 namespace Tests\Integrational;
 
 use PubNub\Exceptions\PubNubResponseParsingException;
-use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\History\PNHistoryResult;
 use PubNub\PubNub;
 use PubNub\Endpoints\History;
@@ -141,8 +140,8 @@ class HistoryTest extends \PubNubTestCase
             ->withQuery([
                 "count" => "100",
                 "include_token" => "true",
-                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
-                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
+                "pnsdk" => $pubnub->getSdkFullName(),
+                "uuid" => $pubnub->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("[[{\"message\":\"zFJeF9BVABL80GUiQEBjLg==\","
                 . "\"timetoken\":\"14649369736959785\"},"
@@ -179,8 +178,8 @@ class HistoryTest extends \PubNubTestCase
             ->withQuery([
                 "count" => "100",
                 "include_token" => "false",
-                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
-                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
+                "pnsdk" => $pubnub->getSdkFullName(),
+                "uuid" => $pubnub->getConfiguration()->getUuid(),
             ])
             ->setResponseBody("[[{\"pn_other\":\"6QoqmS9CnB3W9+I4mhmL7w==\"}],14606134331557852,14606134485013970]");
 

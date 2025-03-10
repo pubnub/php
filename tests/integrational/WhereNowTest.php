@@ -5,8 +5,11 @@ namespace Tests\Integrational;
 use PubNub\Endpoints\Presence\WhereNow;
 use PubNub\Exceptions\PubNubResponseParsingException;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
 use PHPUnit\Framework\Constraint\IsType;
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class WhereNowTest extends PubNubTestCase
 {
@@ -14,16 +17,22 @@ class WhereNowTest extends PubNubTestCase
     {
         $uuid = "where-now-uuid";
 
-        $this->pubnub_demo->getConfiguration()->setUuid($uuid);
-
-        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid($uuid);
+        $pubnub = new PubNub($config);
+        $whereNow = new WhereNowTestExposed($pubnub);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/where-now-uuid")
             ->withQuery([
                 'uuid' => $uuid,
                 'pnsdk' => $this->encodedSdkName
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"Presence\"}");
+            ->setResponseBody(
+                "{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
+                . "\"service\": \"Presence\"}"
+            );
 
         $response = $whereNow->sync();
 
@@ -35,16 +44,22 @@ class WhereNowTest extends PubNubTestCase
         $uuid = "where-now-uuid";
         $customUuid = "custom-uuid";
 
-        $this->pubnub_demo->getConfiguration()->setUuid($uuid);
-
-        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid($uuid);
+        $pubnub = new PubNub($config);
+        $whereNow = new WhereNowTestExposed($pubnub);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/custom-uuid")
             ->withQuery([
                 'uuid' => $uuid,
                 'pnsdk' => $this->encodedSdkName
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, \"service\": \"Presence\"}");
+            ->setResponseBody(
+                "{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [\"a\",\"b\"]}, "
+                . "\"service\": \"Presence\"}"
+            );
 
         $response = $whereNow->uuid($customUuid)->sync();
 
@@ -56,15 +71,22 @@ class WhereNowTest extends PubNubTestCase
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Unable to parse server response: Syntax error");
 
-        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
-        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("myUUID");
+        $pubnub = new PubNub($config);
+        $whereNow = new WhereNowTestExposed($pubnub);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
                 'uuid' => "myUUID",
                 'pnsdk' => $this->encodedSdkName
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [zimp]}, \"service\": \"Presence\"}");
+            ->setResponseBody(
+                "{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": [zimp]}, \"service\": "
+                . "\"Presence\"}"
+            );
 
         $whereNow->sync();
     }
@@ -74,15 +96,22 @@ class WhereNowTest extends PubNubTestCase
         $this->expectException(PubNubResponseParsingException::class);
         $this->expectExceptionMessage("Unable to parse server response: Syntax error");
 
-        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
-        $whereNow = new WhereNowTestExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("myUUID");
+        $pubnub = new PubNub($config);
+        $whereNow = new WhereNowTestExposed($pubnub);
 
         $whereNow->stubFor("/v2/presence/sub-key/demo/uuid/myUUID")
             ->withQuery([
                 'uuid' => "myUUID",
                 'pnsdk' => $this->encodedSdkName
             ])
-            ->setResponseBody("{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": zimp}, \"service\": \"Presence\"}");
+            ->setResponseBody(
+                "{\"status\": 200, \"message\": \"OK\", \"payload\": {\"channels\": zimp}, \"service\": "
+                . "\"Presence\"}"
+            );
 
         $whereNow->sync();
     }
@@ -114,27 +143,22 @@ class WhereNowTest extends PubNubTestCase
     }
 }
 
-
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class WhereNowTestExposed extends WhereNow
 {
-    protected $transport;
+    protected $client;
 
-    public function __construct($pubnubInstance)
+    public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
     public function stubFor($url)
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }
