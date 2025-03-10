@@ -6626,11 +6626,6 @@ parameters:
 			path: tests/integrational/RemoveChannelGroupEndpointTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\SetStateTest\\:\\:testApplyNon200\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/SetStateTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\SetStateTest\\:\\:testApplyStateForChannel\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/SetStateTest.php
