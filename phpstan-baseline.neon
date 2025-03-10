@@ -696,11 +696,6 @@ parameters:
 			path: src/PubNub/Endpoints/Endpoint.php
 
 		-
-			message: "#^Parameter \\#5 \\$authKey of class PubNub\\\\Models\\\\ResponseHelpers\\\\ResponseInfo constructor expects string, null given\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/Endpoint.php
-
-		-
 			message: "#^Property PubNub\\\\Endpoints\\\\Endpoint\\:\\:\\$customHost has no type specified\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/Endpoint.php

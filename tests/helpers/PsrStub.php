@@ -42,10 +42,6 @@ class PsrStub
 
     public function isPathMatch(string $path): bool
     {
-        if ($this->path !== $path) {
-            print("\nThis: {$this->path}\n");
-            print("\nThat: {$path}\n");
-        }
         return $this->path === $path;
     }
 
@@ -60,10 +56,6 @@ class PsrStub
         $expected = http_build_query($expected);
         $actual = http_build_query($actual);
 
-        if ($expected !== $actual) {
-            print("\nThis: {$expected}\n");
-            print("\nThat: {$actual}\n");
-        }
         return $expected === $actual;
     }
 

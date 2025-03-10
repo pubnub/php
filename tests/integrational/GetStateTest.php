@@ -69,7 +69,7 @@ class GetStateTest extends PubNubTestCase
 
         $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $getState->channels("testChannel")->sync();
+        $getState->sync();
     }
 
     public function testMultipleChannel()

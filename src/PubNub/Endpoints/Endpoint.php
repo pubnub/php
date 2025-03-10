@@ -17,6 +17,7 @@ use PubNub\Models\ResponseHelpers\ResponseInfo;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use Psr\Http\Client\NetworkExceptionInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -337,7 +338,6 @@ abstract class Endpoint
 
         if ($this->envelope === null) {
             $this->envelope = $this->sendRequest($this->getRequest());
-            // $this->envelope = $this->invokeRequest();
         }
 
         return $this->envelope;
@@ -364,6 +364,36 @@ abstract class Endpoint
                 null,
                 (new PubNubConnectionException())->setOriginalException($exception)
             ));
+        } catch (ClientExceptionInterface $exception) {
+            $statusCode = $exception->getCode();
+            $response = substr($exception->getMessage(), strpos($exception->getMessage(), "\n") + 1);
+            $pnServerException = new PubNubServerException();
+            $pnServerException->setRawBody($response);
+            $pnServerException->setStatusCode($exception->getCode());
+
+            $uuid = null;
+            $authKey = null;
+
+            parse_str($request->getUri()->getQuery(), $query);
+
+            if (array_key_exists('uuid', $query) && strlen($query['uuid']) > 0) {
+                $uuid = $query['uuid'];
+            }
+
+            if (array_key_exists('auth', $query) && strlen($query['auth']) > 0) {
+                $authKey = $query['auth'];
+            }
+
+            $responseInfo = new ResponseInfo(
+                $statusCode,
+                $request->getUri()->getScheme() === 'https',
+                $request->getUri()->getHost(),
+                $uuid,
+                $authKey,
+                null
+            );
+            $statusCategory = PNStatusCategory::PNBadRequestCategory;
+            return new PNEnvelope(null, $this->createStatus($statusCategory, null, $responseInfo, $pnServerException));
         }
         return $envelope;
     }
@@ -392,7 +422,7 @@ abstract class Endpoint
         }
 
         if (array_key_exists('auth', $query) && strlen($query['auth']) > 0) {
-            $uuid = $query['auth'];
+            $authKey = $query['auth'];
         }
         $responseInfo = new ResponseInfo(
             $statusCode,

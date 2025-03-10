@@ -22,7 +22,7 @@ class ResponseInfo
     /** @var  string */
     private $authKey;
 
-    /** @var  ResponseInterface */
+    /** @var ?ResponseInterface */
     private $originalResponse;
 
     /**
@@ -33,7 +33,7 @@ class ResponseInfo
      * @param string $origin
      * @param string $uuid
      * @param string $authKey
-     * @param ResponseInterface $originalResponse
+     * @param ?ResponseInterface $originalResponse
      *
      */
     public function __construct(
@@ -42,7 +42,7 @@ class ResponseInfo
         $origin,
         $uuid,
         $authKey,
-        ResponseInterface $originalResponse
+        ?ResponseInterface $originalResponse
     ) {
         $this->statusCode = $statusCode;
         $this->tlsEnabled = $tlsEnabled;

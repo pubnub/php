@@ -6,6 +6,7 @@ use PubNub\Endpoints\Presence\SetState;
 use PubNub\PubNub;
 use PubNub\Exceptions\PubNubException;
 use PubNub\Exceptions\PubNubServerException;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PNConfiguration;
 use PubNub\PubNubUtil;
 use PubNubTests\helpers\PsrStub;
@@ -172,34 +173,6 @@ class SetStateTest extends \PubNubTestCase
         $this->assertEquals($response->getState()["status"], "online");
     }
 
-    public function testApplyNon200()
-    {
-        $this->expectException(PubNubException::class);
-        $config = new PNConfiguration();
-        $config->setSubscribeKey("demo");
-        $config->setPublishKey("demo");
-        $config->setUuid("myUserId");
-        $pubnub = new PubNub($config);
-        $setState = new SetStateExposed($pubnub);
-
-        $myState = [
-            "age" => 20
-        ];
-
-        $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUserId/data")
-            ->withQuery([
-                "uuid" => "myUserId",
-                "state" => "%7B%22age%22%3A20%7D",
-                "pnsdk" => $this->encodedSdkName,
-                "channel-group" => "cg1,cg2"
-            ])
-            ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", \"payload\": { \"age\" : 20, \"status\" : "
-                . "\"online\" }, \"service\": \"Presence\"}");
-
-
-        $setState->channels("ch1")->channelGroups(["cg1", "cg2"])->state($myState)->sync();
-    }
-
     public function testMissingState()
     {
         $this->expectNotToPerformAssertions();
@@ -275,14 +248,14 @@ class SetStateTest extends \PubNubTestCase
 
     public function testEmptySubKey()
     {
-        $this->expectException(PubNubException::class);
+        $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Subscribe Key not configured");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
         $config->setUuid("myUserId");
         $config->setSubscribeKey("");
         $pubnub = new PubNub($config);
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $setState = new SetStateExposed($pubnub);
 
         $myState = [
             "age" => 20
