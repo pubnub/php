@@ -12,6 +12,8 @@ class PubNubContext
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+
         foreach ($scope->getScenario()->getTags() as $tag) {
             if (0 === strpos($tag, 'contract')) {
                 list(, $contractName) = explode('=', $tag);
@@ -27,6 +29,8 @@ class PubNubContext
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+
         foreach ($scope->getScenario()->getTags() as $tag) {
             if (0 === strpos($tag, 'contract')) {
                 curl_setopt($ch, CURLOPT_URL, 'http://localhost:8090/expect');
