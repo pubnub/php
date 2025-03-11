@@ -6126,16 +6126,6 @@ parameters:
 			path: tests/integrational/HistoryTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\HistoryExposed\\:\\:stubFor\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\HistoryExposed\\:\\:stubFor\\(\\) has parameter \\$url with no type specified\\.$#"
-			count: 1
-			path: tests/integrational/HistoryTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\HistoryTest\\:\\:testAuthSuccess\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/HistoryTest.php
