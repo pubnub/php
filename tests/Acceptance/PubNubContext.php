@@ -44,7 +44,7 @@ class PubNubContext
         curl_close($ch);
     }
 
-    protected function waitForServer()
+    protected function waitForServer(): void
     {
 
         for ($i = 1; $i <= $this->retryLimit; $i++) {
