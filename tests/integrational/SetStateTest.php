@@ -16,7 +16,12 @@ class SetStateTest extends \PubNubTestCase
 {
     public function testApplyStateForChannel()
     {
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUserId("myUserId");
+        $pubnub = new PubNub($config);
+        $setState = new SetStateExposed($pubnub);
 
         $myState = [
             "age" => 20
@@ -125,7 +130,12 @@ class SetStateTest extends \PubNubTestCase
 
     public function testApplyStateForChannelGroups()
     {
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUserId("myUserId");
+        $pubnub = new PubNub($config);
+        $setState = new SetStateExposed($pubnub);
 
         $myState = [
             "age" => 20
@@ -150,7 +160,12 @@ class SetStateTest extends \PubNubTestCase
 
     public function testApplyStateForMix()
     {
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUserId("myUserId");
+        $pubnub = new PubNub($config);
+        $setState = new SetStateExposed($pubnub);
 
         $myState = [
             "age" => 20
@@ -177,7 +192,12 @@ class SetStateTest extends \PubNubTestCase
     {
         $this->expectNotToPerformAssertions();
 
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUserId("myUserId");
+        $pubnub = new PubNub($config);
+        $setState = new SetStateExposed($pubnub);
 
         $setState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/myUserId/data")
             ->withQuery([
@@ -228,7 +248,7 @@ class SetStateTest extends \PubNubTestCase
         $config->setUuid("myUserId");
         $config->setSubscribeKey(null);
         $pubnub = new PubNub($config);
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $setState = new SetStateExposed($pubnub);
 
         $myState = [
             "age" => 20
@@ -278,7 +298,12 @@ class SetStateTest extends \PubNubTestCase
         $this->expectException(PubNubException::class);
         $this->expectExceptionMessage("Channel or group missing");
 
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUserId("myUserId");
+        $pubnub = new PubNub($config);
+        $setState = new SetStateExposed($pubnub);
 
         $myState = [
             "age" => 20
@@ -301,7 +326,12 @@ class SetStateTest extends \PubNubTestCase
     {
         $this->expectException(PubNubException::class);
 
-        $setState = new SetStateExposed($this->pubnub_demo);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUserId("myUserId");
+        $pubnub = new PubNub($config);
+        $setState = new SetStateExposed($pubnub);
 
         $myState = null;
 
