@@ -108,14 +108,14 @@ class FilesTest extends PubNubTestCase
         }
     }
 
-    public function testEmptyFileListAfterDelete()
+    public function testEmptyFileListAfterDelete(): void
     {
         $response = $this->pubnub->listFiles()->channel($this->channel)->sync();
         $this->assertNotEmpty($response);
         $this->assertCount(0, $response->getData());
     }
 
-    public function testThrowErrorOnMalformedResponse()
+    public function testThrowErrorOnMalformedResponse(): void
     {
         $this->expectException(PubNubResponseParsingException::class);
         $client = new PsrStubClient();
@@ -134,7 +134,7 @@ class FilesTest extends PubNubTestCase
         $pubnub->getFileDownloadUrl()->channel($this->channel)->fileId('none')->fileName('none')->sync();
     }
 
-    public function testThrowErrorOnNoFileFound()
+    public function testThrowErrorOnNoFileFound(): void
     {
         $this->expectException(PubNubServerException::class);
         $this->pubnub->downloadFile()->channel($this->channel)->fileId('-')->fileName('-')->sync();
