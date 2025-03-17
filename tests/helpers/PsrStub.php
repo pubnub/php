@@ -11,6 +11,7 @@ class PsrStub
     private string $query;
     private mixed $responseBody;
     private ?int $responseStatus;
+    private mixed $responseHeaders;
 
     public function __construct(string $path)
     {
@@ -40,6 +41,12 @@ class PsrStub
         return $this;
     }
 
+    public function setResponseHeaders(mixed $responseHeaders): self
+    {
+        $this->responseHeaders = $responseHeaders;
+        return $this;
+    }
+
     public function isPathMatch(string $path): bool
     {
         return $this->path === $path;
@@ -64,6 +71,7 @@ class PsrStub
         if (isset($this->responseStatus)) {
             return new Response($this->responseStatus, ['Content-Type' => 'application/json'], $this->responseBody);
         }
-        return new Response(200, ['Content-Type' => 'application/json'], $this->responseBody);
+        $headers = $this->responseHeaders ?? ['Content-Type' => 'application/json'];
+        return new Response(200, $headers, $this->responseBody);
     }
 }

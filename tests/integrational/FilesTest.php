@@ -2,7 +2,12 @@
 
 namespace PubNubTests\integrational;
 
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
 use PubNubTestCase;
+use PubNubTests\helpers\PsrStubClient;
+use PubNub\Exceptions\PubNubResponseParsingException;
+use PubNub\Exceptions\PubNubServerException;
 
 class FilesTest extends PubNubTestCase
 {
@@ -101,5 +106,37 @@ class FilesTest extends PubNubTestCase
             $this->assertNotEmpty($response);
             $this->assertEquals(200, $response->getStatus(), "Unexpected status value");
         }
+    }
+
+    public function testEmptyFileListAfterDelete()
+    {
+        $response = $this->pubnub->listFiles()->channel($this->channel)->sync();
+        $this->assertNotEmpty($response);
+        $this->assertCount(0, $response->getData());
+    }
+
+    public function testThrowErrorOnMalformedResponse()
+    {
+        $this->expectException(PubNubResponseParsingException::class);
+        $client = new PsrStubClient();
+        $config = new PNConfiguration();
+        $config->setPublishKey("demo");
+        $config->setSubscribeKey("demo");
+        $config->setUserId("test");
+        $pubnub = new PubNub($config);
+        $pubnub->setClient($client);
+        $client->stubFor("/v1/files/demo/channels/files-test/files/none/none")
+            ->withQuery(["pnsdk" => $pubnub->getSdkFullName(), "uuid" => "test"])
+            ->setResponseBody('{}')
+            ->setResponseStatus(307)
+            ->setResponseHeaders(['Location' => '']);
+        $this->pubnub->setClient($client);
+        $pubnub->getFileDownloadUrl()->channel($this->channel)->fileId('none')->fileName('none')->sync();
+    }
+
+    public function testThrowErrorOnNoFileFound()
+    {
+        $this->expectException(PubNubServerException::class);
+        $this->pubnub->downloadFile()->channel($this->channel)->fileId('-')->fileName('-')->sync();
     }
 }
