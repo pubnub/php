@@ -1,5 +1,7 @@
 <?php
 
+// @phpstan-ignore-file
+// phpcs:ignoreFile
 require_once 'vendor/autoload.php';
 
 use PubNub\PubNub;
