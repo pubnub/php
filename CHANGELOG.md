@@ -1,3 +1,9 @@
+## 8.0.0
+March 19 2025
+
+#### Modified
+- Replace dependency from Requests to GuzzleHTTP to allow communication over HTTP/2. This is potentially breaking change because removes the old way to set up custom transport with setting the client dependency. Read more in the documentation (migration guide available).
+
 ## 7.4.0
 February 18 2025
 
