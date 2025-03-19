@@ -1,24 +1,21 @@
 <?php
+
 namespace Tests\Functional;
 
+use PubNub\Endpoints\Endpoint;
 use PubNub\Endpoints\MessageCount;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-use Tests\Helpers\StubTransport;
-
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class MessageCountTest extends \PubNubTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+    protected Endpoint $endpoint;
 
-        $this->pubnub = new PubNub($this->config);
-    }
-
-    public function testSyncDisabled()
+    public function testSyncDisabled(): void
     {
         $this->expectException(PubNubServerException::class);
 
@@ -28,32 +25,32 @@ class MessageCountTest extends \PubNubTestCase
             "subscribe key.Login to your PubNub Dashboard Account and enable Storage & Playback.Contact support " .
             "@pubnub.com if you require further assistance.\",0,0]";
 
-        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
-            ->withQuery([
+        $messageCount->stubFor(
+            "/v3/history/sub-key/" . $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel"
+        )->withQuery([
                 "timetoken" => "10000",
-                "pnsdk" => $this->encodedSdkName,
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => "myUUID",
             ])
             ->setResponseBody($payload);
 
         $this->pubnub->getConfiguration()->setUuid("myUUID");
 
-        $messageCount->channels(["my_channel"])
-            ->channelsTimetoken(["10000"])->sync();
-
+        $messageCount->channels(["my_channel"])->channelsTimetoken(["10000"])->sync();
     }
 
-    public function testSingleChannel_withSingleTimestamp()
+    public function testSingleChannelWithSingleTimestamp(): void
     {
         $messageCount = new MessageCountExposed($this->pubnub);
 
         $payload = "{\"status\": 200, \"error\": false, \"error_message\": \"\", " .
             "\"channels\": {\"my_channel\":19}}";
 
-        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
-            ->withQuery([
+        $messageCount->stubFor(
+            "/v3/history/sub-key/" . $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel"
+        )->withQuery([
                 "timetoken" => "10000",
-                "pnsdk" => $this->encodedSdkName,
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => "myUUID",
             ])
             ->setResponseBody($payload);
@@ -66,14 +63,13 @@ class MessageCountTest extends \PubNubTestCase
         $this->assertEquals(count($response->getChannels()), 1);
         $this->assertFalse(isset($response->getChannels()["channel_dont_exist"]));
         $this->assertTrue(isset($response->getChannels()["my_channel"]));
-        foreach($response->getChannels() as $channel => $count) {
+        foreach ($response->getChannels() as $channel => $count) {
             $this->assertEquals("my_channel", $channel);
             $this->assertEquals(19, $count);
         }
-
     }
 
-    public function testSingleChannel_withMultiTimestamp()
+    public function testSingleChannelWithMultiTimestamp(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("The number of channels and the number of timetokens do not match");
@@ -82,20 +78,21 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount->channels(["my_channel"])
             ->channelsTimetoken(["10000", "20000"])->sync();
-
     }
 
-    public function testMultiChannel_withSingleTimestamp()
+    public function testMultiChannelWithSingleTimestamp(): void
     {
         $messageCount = new MessageCountExposed($this->pubnub);
 
         $payload = "{\"status\": 200, \"error\": false, \"error_message\": \"\", " .
             "\"channels\": {\"my_channel\":19, \"new_channel\":5}}";
 
-        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel,new_channel")
-            ->withQuery([
+        $messageCount->stubFor(
+            "/v3/history/sub-key/" . $this->pubnub->getConfiguration()->getSubscribeKey()
+            . "/message-counts/my_channel,new_channel"
+        )->withQuery([
                 "timetoken" => "10000",
-                "pnsdk" => $this->encodedSdkName,
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => "myUUID",
             ])
             ->setResponseBody($payload);
@@ -109,28 +106,28 @@ class MessageCountTest extends \PubNubTestCase
         $this->assertFalse(isset($response->getChannels()["channel_dont_exist"]));
         $this->assertTrue(isset($response->getChannels()["my_channel"]));
         $this->assertTrue(isset($response->getChannels()["new_channel"]));
-        foreach($response->getChannels() as $channel => $count) {
+        foreach ($response->getChannels() as $channel => $count) {
             if ($channel === "my_channel") {
                 $this->assertEquals(19, $count);
-            }
-            else if ($channel === "new_channel") {
+            } elseif ($channel === "new_channel") {
                 $this->assertEquals(5, $count);
             }
         }
-
     }
 
-    public function testMultiChannel_withMultiTimestamp()
+    public function testMultiChannelWithMultiTimestamp(): void
     {
         $messageCount = new MessageCountExposed($this->pubnub);
 
         $payload = "{\"status\": 200, \"error\": false, \"error_message\": \"\", " .
-    "\"channels\": {\"my_channel\":19, \"new_channel\":5}}";
+            "\"channels\": {\"my_channel\":19, \"new_channel\":5}}";
 
-        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel,new_channel")
-            ->withQuery([
+        $messageCount->stubFor(
+            "/v3/history/sub-key/" . $this->pubnub->getConfiguration()->getSubscribeKey()
+            . "/message-counts/my_channel,new_channel"
+        )->withQuery([
                 "channelsTimetoken" => PubNubUtil::joinitems(["10000", "20000"]),
-                "pnsdk" => $this->encodedSdkName,
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => "myUUID",
             ])
             ->setResponseBody($payload);
@@ -144,18 +141,16 @@ class MessageCountTest extends \PubNubTestCase
         $this->assertFalse(isset($response->getChannels()["channel_dont_exist"]));
         $this->assertTrue(isset($response->getChannels()["my_channel"]));
         $this->assertTrue(isset($response->getChannels()["new_channel"]));
-        foreach($response->getChannels() as $channel => $count) {
+        foreach ($response->getChannels() as $channel => $count) {
             if ($channel === "my_channel") {
                 $this->assertEquals(19, $count);
-            }
-            else if ($channel === "new_channel") {
+            } elseif ($channel === "new_channel") {
                 $this->assertEquals(5, $count);
             }
         }
-
     }
 
-    public function testWithoutTimeToken()
+    public function testWithoutTimeToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Timetoken missing");
@@ -163,10 +158,9 @@ class MessageCountTest extends \PubNubTestCase
         $messageCount = new MessageCountExposed($this->pubnub);
 
         $messageCount->channels(["my_channel"])->sync();
-
     }
 
-    public function testWithoutChannels_SingleTimeToken()
+    public function testWithoutChannelsSingleTimeToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
@@ -174,10 +168,9 @@ class MessageCountTest extends \PubNubTestCase
         $messageCount = new MessageCountExposed($this->pubnub);
 
         $messageCount->channelsTimetoken(["10000"])->sync();
-
     }
 
-    public function testWithoutChannels_TimeTokenList()
+    public function testWithoutChannelsTimeTokenList(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
@@ -185,20 +178,20 @@ class MessageCountTest extends \PubNubTestCase
         $messageCount = new MessageCountExposed($this->pubnub);
 
         $messageCount->channelsTimetoken(["10000", "20000"])->sync();
-
     }
 
-    public function testChannel_withMultiEmptyToken()
+    public function testChannelWithMultiEmptyToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Timetoken missing");
 
         $messageCount = new MessageCountExposed($this->pubnub);
 
-        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
-            ->withQuery([
+        $messageCount->stubFor(
+            "/v3/history/sub-key/" . $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel"
+        )->withQuery([
                 "channelsToken" => PubNubUtil::joinitems([]),
-                "pnsdk" => $this->encodedSdkName,
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => "myUUID",
             ]);
 
@@ -206,20 +199,20 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount->channels(["my_channel"])
             ->channelsTimetoken([])->sync();
-
     }
 
-    public function testChannel_withMultiNullToken()
+    public function testChannelWithMultiNullToken(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Timetoken missing");
 
         $messageCount = new MessageCountExposed($this->pubnub);
 
-        $messageCount->stubFor("/v3/history/sub-key/". $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel")
-            ->withQuery([
+        $messageCount->stubFor(
+            "/v3/history/sub-key/" . $this->pubnub->getConfiguration()->getSubscribeKey() . "/message-counts/my_channel"
+        )->withQuery([
                 "timetoken" => null,
-                "pnsdk" => $this->encodedSdkName,
+                "pnsdk" => $this->pubnub->getSdkFullName(),
                 "uuid" => "myUUID",
             ]);
 
@@ -227,32 +220,25 @@ class MessageCountTest extends \PubNubTestCase
 
         $messageCount->channels(["my_channel"])
             ->channelsTimetoken(null)->sync();
-
     }
-
 }
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration
 class MessageCountExposed extends MessageCount
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
-    }
-
 }

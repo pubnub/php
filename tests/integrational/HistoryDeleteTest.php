@@ -2,53 +2,39 @@
 
 namespace Tests\Integrational;
 
-use PubNub\Exceptions\PubNubServerException;
 use PubNub\PubNub;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Exceptions\PubNubValidationException;
-use Tests\Helpers\Stub;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
-class TestPubNubHistoryDelete extends \PubNubTestCase
+class HistoryDeleteTest extends \PubNubTestCase
 {
-    public function testMissingChannelException()
+    public function testMissingChannelException(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
 
-        $historyDelete = new HistoryDeleteExposed($this->pubnub);
+        $historyDelete = new HistoryDeleteExposed($this->pubnub_demo);
 
         $historyDelete->stubFor("/v2/history/sub-key/demo/channel/niceChannel")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => Stub::ANY
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
             ->setResponseBody(json_encode([]));
 
         $historyDelete->sync();
     }
 
-    public function testChannelIsEmptyException()
+    public function testChannelIsEmptyException(): void
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
-
-        $historyDelete = new HistoryDeleteExposed($this->pubnub);
-
-        $historyDelete->channel("")->sync();
+        $this->pubnub->deleteMessages()->channel("")->sync();
     }
 
-    // This test will require a key with specific permissions assigned
-    // public function testNotPermitted()
-    // {
-    //     $channel = "history-delete-php-ch";
-    //     $this->expectException(PubNubServerException::class);
-
-    //     $this->pubnub_pam->getConfiguration()->setSecretKey(null);
-    //     $this->pubnub_pam->deleteMessages()->channel($channel)->start(123)->end(456)->sync();
-    // }
-
-    public function testSuperCallTest()
+    public function testSuperCallTest(): void
     {
         $this->expectNotToPerformAssertions();
         $this->pubnub_pam->deleteMessages()
@@ -60,24 +46,19 @@ class TestPubNubHistoryDelete extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class HistoryDeleteExposed extends HistoryDelete
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

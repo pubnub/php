@@ -2,7 +2,6 @@
 
 namespace PubNub\Models\ResponseHelpers;
 
-
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubException;

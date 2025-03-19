@@ -8,23 +8,24 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class GetStateTest extends PubNubTestCase
 {
     public function testOneChannel()
     {
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . " \"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
         $response = $getState->channels("testChannel")->sync();
 
@@ -34,7 +35,7 @@ class GetStateTest extends PubNubTestCase
 
     public function testOneChannelWithoutUUID()
     {
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/myUUID")
             ->withQuery([
@@ -44,7 +45,7 @@ class GetStateTest extends PubNubTestCase
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("myUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("myUUID");
 
         $response = $getState->channels("testChannel")->sync();
 
@@ -56,34 +57,35 @@ class GetStateTest extends PubNubTestCase
     {
         $this->expectException(PubNubException::class);
 
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $getState->channels("testChannel")->sync();
+        $getState->sync();
     }
 
     public function testMultipleChannel()
     {
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2/uuid/sampleUUID")
             ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"channels\": { \"ch1\": { \"age\" : 20, \"status\" : \"online\"}, "
                 . "\"ch2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
         $response = $getState->channels(["ch1", "ch2"])->sync();
 
@@ -96,19 +98,19 @@ class GetStateTest extends PubNubTestCase
 
     public function testOneChannelGroup()
     {
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/,/uuid/sampleUUID")
             ->withQuery([
-                "uuid" => "sampleUUID",
+                "channel-group" => "cg1",
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => "cg1"
+                "uuid" => "sampleUUID",
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, "
                 . "\"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
         $response = $getState->channelGroups("cg1")->sync();
 
@@ -121,19 +123,19 @@ class GetStateTest extends PubNubTestCase
 
     public function testManyChannelGroup()
     {
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/,/uuid/sampleUUID")
             ->withQuery([
-                "uuid" => "sampleUUID",
+                "channel-group" => PubNubUtil::urlEncode("cg1,cg2"),
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
+                "uuid" => "sampleUUID",
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, "
                 . "\"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
         $response = $getState->channelGroups(["cg1", "cg2"])->sync();
 
@@ -146,19 +148,19 @@ class GetStateTest extends PubNubTestCase
 
     public function testCombination()
     {
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/ch1/uuid/sampleUUID")
             ->withQuery([
-                "uuid" => "sampleUUID",
+                "channel-group" => PubNubUtil::urlEncode("cg1,cg2"),
                 "pnsdk" => $this->encodedSdkName,
-                "channel-group" => PubNubUtil::urlEncode("cg1,cg2")
+                "uuid" => "sampleUUID",
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"channels\": { \"chcg1\": { \"age\" : 20, \"status\" : \"online\"}, "
                 . "\"chcg2\": { \"age\": 100, \"status\": \"offline\" } } }, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
         $response = $getState->channels("ch1")->channelGroups(["cg1", "cg2"])->sync();
 
@@ -174,17 +176,17 @@ class GetStateTest extends PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel or group missing");
 
-        $getState = new GetStateExposed($this->pubnub);
+        $getState = new GetStateExposed($this->pubnub_demo);
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
         $getState->sync();
     }
@@ -198,12 +200,12 @@ class GetStateTest extends PubNubTestCase
 
         $pubnub = new PubNub($config);
         $getState = new GetStateExposed($pubnub);
-
-        $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
+        $subKey = $pubnub->getConfiguration()->getSubscribeKey();
+        $getState->stubFor("/v2/presence/sub-key/{$subKey}/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
-                "uuid" => "sampleUUID",
                 "pnsdk" => $this->encodedSdkName,
-                "auth" => "myKey"
+                "uuid" => "sampleUUID",
+                "auth" => "myKey",
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
@@ -223,8 +225,8 @@ class GetStateTest extends PubNubTestCase
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
@@ -234,8 +236,6 @@ class GetStateTest extends PubNubTestCase
 
     public function testEmptySubKeySync()
     {
-
-
         $this->expectException(PubNubException::class);
         $this->expectExceptionMessage("Subscribe Key not configured");
 
@@ -247,8 +247,8 @@ class GetStateTest extends PubNubTestCase
 
         $getState->stubFor("/v2/presence/sub-key/demo/channel/testChannel/uuid/sampleUUID")
             ->withQuery([
+                "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
-                "pnsdk" => $this->encodedSdkName
             ])
             ->setResponseBody("{ \"status\": 200, \"message\": \"OK\", "
                 . "\"payload\": { \"age\" : 20, \"status\" : \"online\"}, \"service\": \"Presence\"}");
@@ -272,24 +272,19 @@ class GetStateTest extends PubNubTestCase
 //phpcs:ignore PSR1.Classes.ClassDeclaration
 class GetStateExposed extends GetState
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

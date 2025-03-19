@@ -2,14 +2,13 @@
 
 namespace PubNub\Exceptions;
 
-
 class PubNubConnectionException extends PubNubException
 {
-    /** @var  \Exception */
+    /** @var  \Throwable */
     protected $originalException;
 
     /**
-     * @return \Exception
+     * @return \Throwable
      */
     public function getOriginalException()
     {
@@ -17,7 +16,7 @@ class PubNubConnectionException extends PubNubException
     }
 
     /**
-     * @param \Exception $originalException
+     * @param \Throwable $originalException
      * @return $this
      */
     public function setOriginalException($originalException)

@@ -5,20 +5,21 @@ namespace Tests\Integrational\Push;
 use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Enums\PNPushType;
 use PubNub\PubNub;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 {
     public function testRemovePushAPNS()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub);
+        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
 
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
                 "type" => "apns",
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
@@ -32,16 +33,16 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 
     public function testRemovePushAPNS2()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub);
+        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
 
         $remove->stubFor("/v2/push/sub-key/demo/devices-apns2/coolDevice/remove")
             ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID",
                 "topic" => "coolTopic",
-                "environment" => "production"
+                "environment" => "production",
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
 
@@ -56,14 +57,14 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 
     public function testRemovePushMPNS()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub);
+        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
 
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
                 "type" => "mpns",
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
@@ -77,14 +78,14 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 
     public function testRemovePushFCM()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub);
+        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
 
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
                 "type" => "gcm",
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
@@ -104,14 +105,14 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
+        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub);
+        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
 
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
                 "type" => "gcm",
+                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
@@ -127,24 +128,19 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveDeviceFromPushEndpointExposed extends RemoveDeviceFromPush
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

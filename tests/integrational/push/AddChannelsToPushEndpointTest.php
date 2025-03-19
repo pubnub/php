@@ -4,17 +4,22 @@ namespace Tests\Integrational\Push;
 
 use PubNub\Endpoints\Push\AddChannelsToPush;
 use PubNub\Enums\PNPushType;
+use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class AddChannelsToPushEndpointTest extends PubNubTestCase
 {
     public function testPushAddSingleChannel()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $add = new AddChannelsToPushEndpointExposed($this->pubnub);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("sampleUUID");
+        $pubnub = new PubNub($config);
+        $add = new AddChannelsToPushEndpointExposed($pubnub);
 
         $add->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
@@ -35,9 +40,12 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
 
     public function testPushAddMultipleChannels()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $add = new AddChannelsToPushEndpointExposed($this->pubnub);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("sampleUUID");
+        $pubnub = new PubNub($config);
+        $add = new AddChannelsToPushEndpointExposed($pubnub);
 
         $add->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
@@ -58,9 +66,12 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
 
     public function testPushAddApns2()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $add = new AddChannelsToPushEndpointExposed($this->pubnub);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("sampleUUID");
+        $pubnub = new PubNub($config);
+        $add = new AddChannelsToPushEndpointExposed($pubnub);
 
         $add->stubFor("/v2/push/sub-key/demo/devices-apns2/coolDevice")
             ->withQuery([
@@ -84,9 +95,12 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
 
     public function testPushAddFCM()
     {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $add = new AddChannelsToPushEndpointExposed($this->pubnub);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("sampleUUID");
+        $pubnub = new PubNub($config);
+        $add = new AddChannelsToPushEndpointExposed($pubnub);
 
         $add->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
@@ -114,9 +128,12 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
 
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $add = new AddChannelsToPushEndpointExposed($this->pubnub);
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("sampleUUID");
+        $pubnub = new PubNub($config);
+        $add = new AddChannelsToPushEndpointExposed($pubnub);
 
         $add->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
@@ -139,24 +156,19 @@ class AddChannelsToPushEndpointTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class AddChannelsToPushEndpointExposed extends AddChannelsToPush
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

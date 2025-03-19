@@ -7,14 +7,18 @@ use PubNub\Endpoints\Push\RemoveChannelsFromPush;
 use PubNub\Endpoints\Push\RemoveDeviceFromPush;
 use PubNub\Enums\PNPushType;
 use PubNub\Exceptions\PubNubValidationException;
+use PubNub\PNConfiguration;
 use PubNub\PubNub;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 {
     public function testListChannelGroupAPNS()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -37,7 +41,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testFCMSuccessRemoveAll()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -60,7 +66,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testMicrosoftSuccessRemoveAll()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -83,7 +91,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testIsAuthRequiredSuccessRemoveAll()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setAuthKey('myKey');
         $pubnub = new PubNub($config);
@@ -92,10 +102,10 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "auth" => "myKey",
                 "type" => "mpns",
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
+                "uuid" => "sampleUUID",
+                "auth" => "myKey",
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
@@ -109,7 +119,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
     public function testNullSubscribeKeyRemoveAll()
     {
         $this->expectException(\TypeError::class);
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setSubscribeKey(null);
         $pubnub = new PubNub($config);
@@ -126,7 +138,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Subscribe Key not configured");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setSubscribeKey("");
         $pubnub = new PubNub($config);
@@ -143,7 +157,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Push Type is missing");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -158,7 +174,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Device ID is missing for push operation");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -173,7 +191,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Device ID is missing for push operation");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -186,7 +206,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testAddAppleSuccess()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -211,7 +233,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testAddFCMSuccessSync()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -236,7 +260,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testAddMicrosoftSuccessSync()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
 
@@ -261,7 +287,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testIsAuthRequiredSuccessAdd()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setAuthKey("myKey");
         $pubnub = new PubNub($config);
@@ -271,10 +299,10 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
-                "auth" => "myKey",
                 "type" => "mpns",
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
+                "uuid" => "sampleUUID",
+                "auth" => "myKey",
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
@@ -290,7 +318,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
     {
         $this->expectException(\TypeError::class);
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setSubscribeKey(null);
         $pubnub = new PubNub($config);
@@ -307,7 +337,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
     {
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Subscribe Key not configured");
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setSubscribeKey('');
         $pubnub = new PubNub($config);
@@ -324,7 +356,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Push Type is missing");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
@@ -339,7 +373,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Device ID is missing for push operation");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
@@ -354,7 +390,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Device ID is missing for push operation");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
@@ -370,7 +408,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
@@ -382,7 +422,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testAppleSuccessRemove()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
@@ -406,7 +448,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testFCMSuccessRemove()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
@@ -430,7 +474,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testMicrosoftSuccessRemove()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
@@ -454,7 +500,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
     public function testIsAuthRequiredSuccessRemove()
     {
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setAuthKey("myKey");
         $pubnub = new PubNub($config);
@@ -462,11 +510,11 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
-                "auth" => "myKey",
                 "remove" => "ch1,ch2,ch3",
                 "type" => "mpns",
                 "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
+                "uuid" => "sampleUUID",
+                "auth" => "myKey",
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
@@ -482,7 +530,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
     {
         $this->expectException(\TypeError::class);
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setSubscribeKey(null);
         $pubnub = new PubNub($config);
@@ -499,7 +549,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Subscribe Key not configured");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $config->setSubscribeKey('');
         $pubnub = new PubNub($config);
@@ -545,7 +597,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Device ID is missing for push operation");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
@@ -561,7 +615,9 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage("Channel missing");
 
-        $config = $this->config->clone();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
         $config->setUuid("sampleUUID");
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
@@ -583,104 +639,59 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemoveChannelsFromPushTestExposed extends RemoveDeviceFromPush
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function buildParams()
-    {
-        return parent::buildParams();
-    }
-
-    public function buildPath()
-    {
-        return parent::buildPath();
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }
 
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class AddChannelsToPushExposed extends AddChannelsToPush
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function buildParams()
-    {
-        return parent::buildParams();
-    }
-
-    public function buildPath()
-    {
-        return parent::buildPath();
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }
 
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class RemovePushNotificationsFromChannelsExposed extends RemoveChannelsFromPush
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function buildParams()
-    {
-        return parent::buildParams();
-    }
-
-    public function buildPath()
-    {
-        return parent::buildPath();
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }

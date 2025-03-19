@@ -2,7 +2,6 @@
 
 namespace PubNub\Models\ResponseHelpers;
 
-
 class PNEnvelope
 {
     private $status;

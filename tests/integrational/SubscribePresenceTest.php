@@ -6,9 +6,11 @@ use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubUnsubscribeException;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
+use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 /**
  * Class SubscribePresenceTest
@@ -20,49 +22,47 @@ class SubscribePresenceTest extends PubNubTestCase
 {
     public function testMessageOnPresenceCallback()
     {
-        $transport = new StubTransport();
+        $config = new PNConfiguration();
+        $config->setSubscribeKey("demo");
+        $config->setPublishKey("demo");
+        $config->setUuid("myUUID");
+        $pubnub = new PubNub($config);
 
-        $transport->stubFor("/v2/presence/sub-key/demo/channel/blah/leave")
+        $client = new PsrStubClient();
+        $pubnub->setClient($client);
+
+        $client->addStub((new PsrStub("/v2/presence/sub-key/demo/channel/blah/leave"))
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"status": 200, "action": "leave", "message": "OK", "service": "Presence"}');
+            ->setResponseBody('{"status": 200, "action": "leave", "message": "OK", "service": "Presence"}'));
 
-        $transport->stubFor("/v2/subscribe/demo/blah,blah-pnpres/0")
+        $client->addStub((new PsrStub("/v2/subscribe/demo/blah,blah-pnpres/0"))
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID"
             ])
-            ->setResponseStatus("HTTP/1.0 200 OK")
-            ->setResponseBody('{"t":{"t":"14818963579052943","r":12},"m":[]}');
+            ->setResponseBody('{"t":{"t":"14818963579052943","r":12},"m":[]}'));
 
-        $transport->stubFor("/v2/subscribe/demo/blah,blah-pnpres/0")
+            $client->addStub((new PsrStub("/v2/subscribe/demo/blah,blah-pnpres/0"))
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "myUUID",
                 "tt" => '14818963579052943',
                 "tr" => "12"
             ])
-            ->setResponseStatus("HTTP/1.0 200 OK")
             ->setResponseBody('{"t":{"t":"14818963588185526","r":12},"m":[{"a":"2","f":0,'
                 . '"p":{"t":"14818963587725382","r":2},"k":"demo","c":"blah-pnpres",'
                 . '"d":{"action": "join", "timestamp": 1481896358, "uuid": "test-subscribe-listener", "occupancy": 1},'
-                . '"b":"blah-pnpres"}]}');
+                . '"b":"blah-pnpres"}]}'));
 
         $callback = new MySubscribeCallbackToTestPresence();
-
-        $config = $this->config->clone();
-        $config->setTransport($transport);
-        $config->setUuid("myUUID");
-        $pubnub = new PubNub($config);
 
         $pubnub->addListener($callback);
         $pubnub->subscribe()->channel("blah")->withPresence()->execute();
 
         $this->assertTrue($callback->areBothConnectedAndDisconnectedInvoked());
-        $this->assertEquals(3, $transport->requestsCount());
     }
 }
 

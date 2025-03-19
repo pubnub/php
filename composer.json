@@ -5,7 +5,7 @@
   "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
   "homepage": "http://www.pubnub.com/",
   "license": "proprietary",
-  "version": "7.4.0",
+  "version": "8.0.0",
   "authors": [
     {
       "name": "PubNub",
@@ -24,13 +24,14 @@
     ],
     "lint": [
       "vendor/bin/phpstan analyze --memory-limit 256M",
-      "git diff --name-only --diff-filter=d origin/master HEAD | grep -E '\\.php$' | xargs vendor/bin/phpcs --standard=PSR12"
+      "git diff --name-only --diff-filter=d origin/master HEAD | grep -E '\\.php$' | xargs --no-run-if-empty vendor/bin/phpcs --standard=PSR12"
     ]
   },
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.1",
     "rmccue/requests": "^2.0",
-    "psr/log": "^1.1|^2.0|^3.0"
+    "psr/log": "^1.1|^2.0|^3.0",
+    "guzzlehttp/guzzle": "^7.9"
   },
   "require-dev": {
     "monolog/monolog": "^2.9 || ^3.0",

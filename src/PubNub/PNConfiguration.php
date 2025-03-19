@@ -4,7 +4,6 @@ namespace PubNub;
 
 use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\Exceptions\PubNubValidationException;
-use WpOrg\Requests\Transport;
 use PubNub\CryptoModule;
 
 class PNConfiguration
@@ -61,9 +60,6 @@ class PNConfiguration
 
     /** @var  int How long to keep the subscribe request running before disconnect. The value is in seconds.*/
     protected int $subscribeTimeout;
-
-    /** @var  Transport Custom transport implementation. */
-    protected ?Transport $transport = null;
 
     /**
      * @var bool
@@ -439,26 +435,6 @@ class PNConfiguration
     {
         $this->checkLock();
         $this->subscribeTimeout = $subscribeTimeout;
-
-        return $this;
-    }
-
-    /**
-     * @return Transport
-     */
-    public function getTransport(): Transport | null
-    {
-        return $this->transport;
-    }
-
-    /**
-     * @param Transport $transport
-     * @return $this
-     */
-    public function setTransport($transport)
-    {
-        $this->checkLock();
-        $this->transport = $transport;
 
         return $this;
     }

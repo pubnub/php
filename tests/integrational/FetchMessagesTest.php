@@ -6,7 +6,8 @@ use PubNub\Endpoints\MessagePersistance\FetchMessages;
 use PubNub\Models\Consumer\MessagePersistence\PNFetchMessagesResult;
 use PubNub\PubNub;
 use PubNubTestCase;
-use Tests\Helpers\StubTransport;
+use PubNubTests\helpers\PsrStub;
+use PubNubTests\helpers\PsrStubClient;
 
 class FetchMessagesTest extends PubNubTestCase
 {
@@ -28,12 +29,12 @@ class FetchMessagesTest extends PubNubTestCase
         $fetchMessages
             ->stubFor("/v3/history/sub-key/demo/channel/TheMessageHistoryChannelHD")
             ->withQuery([
-                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName,
                 "include_meta" => "false",
                 "include_uuid" => "false",
                 "include_message_type" => "true",
                 "include_custom_message_type" => "false",
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -67,12 +68,12 @@ class FetchMessagesTest extends PubNubTestCase
             ->stubFor("/v3/history/sub-key/{$subKey}/channel/TheMessageHistoryChannelHD")
             ->withQuery([
                 "max" => "5",
-                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName,
                 "include_meta" => "false",
                 "include_uuid" => "false",
                 "include_message_type" => "true",
                 "include_custom_message_type" => "false",
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -102,12 +103,12 @@ class FetchMessagesTest extends PubNubTestCase
             ->withQuery([
                 "start" => "17165627042258346",
                 "end" => "17165627042258546",
-                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName,
                 "include_meta" => "false",
                 "include_uuid" => "false",
                 "include_message_type" => "true",
                 "include_custom_message_type" => "false",
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => $this->pubnub_demo->getConfiguration()->getUserId(),
             ])
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels":
                 {"TheMessageHistoryChannelHD":[
@@ -135,12 +136,12 @@ class FetchMessagesTest extends PubNubTestCase
         $fetchMessages
             ->stubFor("/v3/history/sub-key/{$subKey}/channel/TheMessageHistoryChannelHD-ENCRYPTED")
             ->withQuery([
-                "uuid" => $this->pubnub_enc->getConfiguration()->getUserId(),
-                "pnsdk" => $this->encodedSdkName,
                 "include_meta" => "false",
                 "include_uuid" => "false",
                 "include_message_type" => "true",
                 "include_custom_message_type" => "false",
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => $this->pubnub_enc->getConfiguration()->getUserId(),
             ])
 
             ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels": {
@@ -166,24 +167,19 @@ class FetchMessagesTest extends PubNubTestCase
 // phpcs:ignore PSR1.Classes.ClassDeclaration
 class FetchMessagesExposed extends FetchMessages
 {
-    protected $transport;
+    protected PsrStubClient $client;
 
     public function __construct(PubNub $pubnubInstance)
     {
         parent::__construct($pubnubInstance);
-
-        $this->transport = new StubTransport();
+        $this->client = new PsrStubClient();
+        $pubnubInstance->setClient($this->client);
     }
 
-    public function stubFor($url)
+    public function stubFor(string $url): PsrStub
     {
-        return $this->transport->stubFor($url);
-    }
-
-    public function requestOptions()
-    {
-        return [
-            'transport' => $this->transport
-        ];
+        $stub = new PsrStub($url);
+        $this->client->addStub($stub);
+        return $stub;
     }
 }
