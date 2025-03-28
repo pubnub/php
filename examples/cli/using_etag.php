@@ -7,8 +7,8 @@ use PubNub\PubNub;
 use PubNub\PNConfiguration;
 
 $config = new PNConfiguration();
-$config->setPublishKey('demo');
-$config->setSubscribeKey('demo');
+$config->setPublishKey(getenv('PUBLISH_KEY') ?? 'demo');
+$config->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
 $config->setUuid("example");
 
 $config_2 = clone $config;
