@@ -1,4 +1,4 @@
-g<?php
+<?php
 
 // Include Composer autoloader (adjust path if needed)
 require_once 'vendor/autoload.php';
