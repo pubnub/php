@@ -293,7 +293,8 @@ class SendFile extends Endpoint
         }
 
         $publishResponse = $publishRequest->sync();
-
+        $publishResponse->setFileId($this->fileUploadEnvelope->getFileId());
+        $publishResponse->setFileName($this->fileName);
         return $publishResponse;
     }
 }

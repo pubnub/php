@@ -1,3 +1,12 @@
+## 8.0.1
+April 01 2025
+
+#### Fixed
+- Added missing information in file publish endpoint.
+
+#### Modified
+- Basic usage examples have been added.
+
 ## 8.0.0
 March 19 2025
 

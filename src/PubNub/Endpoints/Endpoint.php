@@ -487,6 +487,7 @@ abstract class Endpoint
             'connect_timeout' => $this->getConnectTimeout(),
             'useragent' => 'PHP/' . PHP_VERSION,
             'allow_redirects' => (bool)$this->followRedirects,
+            'version' => '2',
         ];
     }
 

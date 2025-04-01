@@ -30,10 +30,8 @@ $description = trim(fgets(STDIN));
 // Set channel metadata
 $pubnub->setChannelMetadata()
     ->channel($channel)
-    ->meta([
-        "name" => $name,
-        "description" => $description,
-    ])
+    ->setName($name)
+    ->setDescription($description)
     ->sync();
 
 print("The channel has been created with name and description.\n");
@@ -81,11 +79,9 @@ while (true) {
     // Writing the updated object back to the server
     $pubnub->setChannelMetadata()
         ->channel($channel)
-        ->meta([
-            "name" => $response->getName(),
-            "description" => $response->getDescription(),
-            "custom" => $custom,
-        ])
+        ->setName($response->getName())
+        ->setDescription($response->getDescription())
+        ->setCustom($custom)
         ->sync();
     print("Object has been updated.\n");
 }

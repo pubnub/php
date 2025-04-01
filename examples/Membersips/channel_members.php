@@ -4,22 +4,28 @@ declare(strict_types=1);
 
 set_time_limit(0);
 
-require('../../vendor/autoload.php');
+require('vendor/autoload.php');
 
 use PubNub\PubNub;
 use PubNub\PNConfiguration;
 use PubNub\Models\Consumer\Objects\Member\PNMemberIncludes;
 use PubNub\Models\Consumer\Objects\Member\PNChannelMember;
 
-$pnConfig = new PNConfiguration();
-$pnConfig->setPublishKey('demo');
-$pnConfig->setSubscribeKey('demo');
-$pnConfig->setUserId('demo');
+$config = new PNConfiguration();
+$config->setPublishKey(getenv('PUBLISH_KEY') ?? 'demo');
+$config->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
+$config->setUserId('demo');
 
-$pubnub = new PubNub($pnConfig);
+$pubnub = new PubNub($config);
 
 $includes = new PNMemberIncludes();
-$includes->user()->userId()->userCustom()->userType()->userStatus()->custom()->status()->type();
+$includes->user()
+    ->userCustom()
+    ->userType()
+    ->userStatus()
+    ->custom()
+    ->status()
+    ->type();
 
 $channel_members = [
     (new PNChannelMember('uuid1'))
@@ -32,6 +38,10 @@ $channel_members = [
         ->setType("type")
 ];
 
-$set_response = $pubnub->setMembers()->include($includes)->channel("ch")->members($channel_members)->sync();
+$set_response = $pubnub->setMembers()
+    ->include($includes)
+    ->channel("ch")
+    ->members($channel_members)
+    ->sync();
 
 var_dump($set_response);

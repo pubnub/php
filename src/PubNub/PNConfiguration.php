@@ -384,6 +384,18 @@ class PNConfiguration
     }
 
     /**
+     * @param CryptoModule $crypto
+     * @return $this
+     */
+    public function setCryptoModule(CryptoModule $crypto): self
+    {
+        $this->checkLock();
+        $this->crypto = $crypto;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getFilterExpression(): string | null
