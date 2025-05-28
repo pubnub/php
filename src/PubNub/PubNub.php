@@ -17,7 +17,6 @@ use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
 use PubNub\Endpoints\MessageActions\AddMessageAction;
-use PubNub\Endpoints\MessageActions\GetMessageAction;
 use PubNub\Endpoints\MessageActions\GetMessageActions;
 use PubNub\Endpoints\MessageActions\RemoveMessageAction;
 use PubNub\Endpoints\MessagePersistance\FetchMessages;
@@ -692,13 +691,6 @@ class PubNub implements LoggerAwareInterface
     public function addMessageAction(): AddMessageAction
     {
         return new AddMessageAction($this);
-    }
-
-    // TODO: Remove in 8.0.0
-    public function getMessageAction(): GetMessageAction
-    {
-        trigger_error("This method is deprecated. Use getMessageActions()", E_USER_DEPRECATED);
-        return new GetMessageAction($this);
     }
 
     public function getMessageActions(): GetMessageActions

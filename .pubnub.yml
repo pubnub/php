@@ -273,11 +273,45 @@ features:
   access:
     - ACCESS-GRANT
     - ACCESS-SECRET-KEY-ALL-ACCESS
+    - ACCESS-GRANT-TOKEN
+    - ACCESS-REVOKE-TOKEN
+    - ACCESS-PARSE-TOKEN
+    - ACCESS-SET-TOKEN
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
     - CHANNEL-GROUPS-REMOVE-GROUPS
     - CHANNEL-GROUPS-LIST-CHANNELS-IN-GROUP
+  files:
+    - FILES-SEND-FILE
+    - FILES-DELETE-FILE
+    - FILES-DOWNLOAD-FILE
+    - FILES-GET-FILE-URL
+    - FILES-LIST-FILES
+  message-actions:
+    - MESSAGE-ACTIONS-ADD
+    - MESSAGE-ACTIONS-GET
+    - MESSAGE-ACTIONS-REMOVE
+  objects:
+    - OBJECTS-GET-ALL-CHANNEL-METADATA
+    - OBJECTS-GET-CHANNEL-METADATA
+    - OBJECTS-SET-CHANNEL-METADATA
+    - OBJECTS-REMOVE-CHANNEL-METADATA
+    - OBJECTS-GET-ALL-UUID-METADATA
+    - OBJECTS-GET-UUID-METADATA
+    - OBJECTS-SET-UUID-METADATA
+    - OBJECTS-REMOVE-UUID-METADATA
+    - OBJECTS-GET-CHANNEL-MEMBERS-V2
+    - OBJECTS-SET-CHANNEL-MEMBERS-V2
+    - OBJECTS-REMOVE-CHANNEL-MEMBERS-V2
+    - OBJECTS-MANAGE-CHANNEL-MEMBERS-V2
+    - OBJECTS-GET-MEMBERSHIPS-V2
+    - OBJECTS-SET-MEMBERSHIPS-V2
+    - OBJECTS-REMOVE-MEMBERSHIPS-V2
+    - OBJECTS-MANAGE-MEMBERSHIPS-V2
+  others:
+    - TELEMETRY
+    - RANDOM-INITIALIZATION-VECTOR
   presence:
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
@@ -288,7 +322,11 @@ features:
     - PUBLISH-RAW-JSON
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
+    - PUBLISH-POST
     - PUBLISH-FIRE
+    - PUBLISH-MESSAGE-TTL
+    - PUBLISH-REPLICATION-FLAG
+    - PUBLISH-SYNC
   push:
     - PUSH-ADD-DEVICE-TO-CHANNELS
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
@@ -297,14 +335,24 @@ features:
     - PUSH-TYPE-APNS
     - PUSH-TYPE-APNS2
     - PUSH-TYPE-FCM
+    - PUSH-TYPE-MPNS
+  signal:
+    - SIGNAL-SEND
   storage:
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
     - STORAGE-START-END
     - STORAGE-COUNT
     - STORAGE-MESSAGE-COUNT
-  time:
-    - TIME-TIME
+    - STORAGE-DELETE-MESSAGES
+    - STORAGE-FETCH-MESSAGES
+    - STORAGE-FETCH-MESSAGES-MAX-100
+    - STORAGE-FETCH-WITH-INCLUDE-MESSAGE-TYPE
+    - STORAGE-FETCH-WITH-INCLUDE-UUID
+    - STORAGE-FETCH-WITH-MESSAGE-ACTIONS
+    - STORAGE-FETCH-WITH-META
+    - STORAGE-HISTORY-WITH-INCLUDE-MESSAGE-TYPE
+    - STORAGE-HISTORY-WITH-META
   subscribe:
     - SUBSCRIBE-CHANNELS
     - SUBSCRIBE-CHANNEL-GROUPS
@@ -313,6 +361,16 @@ features:
     - SUBSCRIBE-WITH-TIMETOKEN
     - SUBSCRIBE-WILDCARD
     - SUBSCRIBE-PUBLISHER-UUID
+    - SUBSCRIBE-PUBSUB-V2
+    - SUBSCRIBE-FILTER-EXPRESSION
+    - SUBSCRIBE-SIGNAL-LISTENER
+    - SUBSCRIBE-MESSAGE-ACTIONS-LISTENER
+    - SUBSCRIBE-OBJECTS-CHANNEL-LISTENER
+    - SUBSCRIBE-OBJECTS-UUID-LISTENER
+    - SUBSCRIBE-MEMBERSHIP-LISTENER
+    - SUBSCRIBE-FILE-LISTENER
+  time:
+    - TIME-TIME
 
 supported-platforms:
   -
@@ -326,6 +384,7 @@ supported-platforms:
       - PHP 8.1
       - PHP 8.2
       - PHP 8.3
+      - PHP 8.4
 sdks:
   - full-name: PHP SDK
     short-name: PHP
@@ -366,6 +425,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
@@ -378,6 +438,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -393,6 +454,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Ubuntu 20.04 LTS
                   maximum-os-version:
@@ -428,6 +490,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
@@ -440,6 +503,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -455,6 +519,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Ubuntu 20.04 LTS
                   maximum-os-version:
@@ -490,6 +555,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Mac OS X 10.8
                   maximum-os-version:
@@ -502,6 +568,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Windows 7 Professional
                     - Windows 7 Enterprise
@@ -517,6 +584,7 @@ sdks:
                     - PHP 8.1
                     - PHP 8.2
                     - PHP 8.3
+                    - PHP 8.4
                   minimum-os-version:
                     - Ubuntu 20.04 LTS
                   maximum-os-version:
