@@ -1,3 +1,9 @@
+## 8.0.2
+May 29 2025
+
+#### Modified
+- Removed deprecated method getMessageAction, the feature exist under plural name getMessageActions.
+
 ## 8.0.1
 April 01 2025
 

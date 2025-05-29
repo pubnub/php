@@ -1,8 +1,13 @@
 name: php
-version: 8.0.1
+version: 8.0.2
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2025-05-29
+    version: 8.0.2
+    changes:
+      - type: improvement
+        text: "Removed deprecated method getMessageAction, the feature exist under plural name getMessageActions."
   - date: 2025-04-01
     version: 8.0.1
     changes:
@@ -529,8 +534,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-8.0.1.zip
-            location: https://github.com/pubnub/php/releases/tag/8.0.1
+            package-name: php-8.0.2.zip
+            location: https://github.com/pubnub/php/releases/tag/8.0.2
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
