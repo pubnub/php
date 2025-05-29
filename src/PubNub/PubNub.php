@@ -17,7 +17,6 @@ use PubNub\Endpoints\History;
 use PubNub\Endpoints\HistoryDelete;
 use PubNub\Endpoints\MessageCount;
 use PubNub\Endpoints\MessageActions\AddMessageAction;
-use PubNub\Endpoints\MessageActions\GetMessageAction;
 use PubNub\Endpoints\MessageActions\GetMessageActions;
 use PubNub\Endpoints\MessageActions\RemoveMessageAction;
 use PubNub\Endpoints\MessagePersistance\FetchMessages;
@@ -68,7 +67,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "8.0.1";
+    protected const SDK_VERSION = "8.0.2";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
@@ -692,13 +691,6 @@ class PubNub implements LoggerAwareInterface
     public function addMessageAction(): AddMessageAction
     {
         return new AddMessageAction($this);
-    }
-
-    // TODO: Remove in 8.0.0
-    public function getMessageAction(): GetMessageAction
-    {
-        trigger_error("This method is deprecated. Use getMessageActions()", E_USER_DEPRECATED);
-        return new GetMessageAction($this);
     }
 
     public function getMessageActions(): GetMessageActions
