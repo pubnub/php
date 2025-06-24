@@ -23,7 +23,7 @@ class AesCbcCryptor extends Cryptor
 
     public function getIV(): string
     {
-        return random_bytes(self::IV_LENGTH);
+        return random_bytes(static::IV_LENGTH);
     }
 
     public function getCipherKey($cipherKey = null): string
@@ -41,8 +41,8 @@ class AesCbcCryptor extends Cryptor
     {
         $secret = $this->getSecret($this->getCipherKey($cipherKey));
         $iv = $this->getIV();
-        $encrypted = openssl_encrypt($text, self::CIPHER_ALGO, $secret, OPENSSL_RAW_DATA, $iv);
-        return new CryptoPayload($encrypted, $iv, self::CRYPTOR_ID);
+        $encrypted = openssl_encrypt($text, static::CIPHER_ALGO, $secret, OPENSSL_RAW_DATA, $iv);
+        return new CryptoPayload($encrypted, $iv, static::CRYPTOR_ID);
     }
 
     public function decrypt(CryptoPayload $payload, ?string $cipherKey = null)
@@ -50,8 +50,8 @@ class AesCbcCryptor extends Cryptor
         $text = $payload->getData();
         $secret = $this->getSecret($this->getCipherKey($cipherKey));
         $iv = $payload->getCryptorData();
-        $decrypted = openssl_decrypt($text, self::CIPHER_ALGO, $secret, OPENSSL_RAW_DATA, $iv);
-        $result = json_decode($decrypted);
+        $decrypted = openssl_decrypt($text, static::CIPHER_ALGO, $secret, OPENSSL_RAW_DATA, $iv);
+        $result = json_decode($decrypted, false);
 
         if ($result === null) {
             return $decrypted;

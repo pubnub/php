@@ -8,7 +8,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\Exceptions\PubNubServerException;
-use PubNub\Exceptions\PubNubException;
 use PubNub\Models\Consumer\Objects\UUID\PNGetUUIDMetadataResult;
 use PubNub\Models\Consumer\Objects\Membership\PNChannelMembership;
 use PubNub\Models\Consumer\Objects\Membership\PNMembershipIncludes;

@@ -5,6 +5,7 @@ namespace PubNub\Models\ResponseHelpers;
 use PubNub\Enums\PNOperationType;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubException;
+use PubNub\Exceptions\PubNubServerException;
 
 class PNStatus
 {
@@ -53,9 +54,9 @@ class PNStatus
     }
 
     /**
-     * @return PubNubException
+     * @return PubNubException | PubNubServerException | null
      */
-    public function getException()
+    public function getException(): PubNubException | PubNubServerException | null
     {
         return $this->exception;
     }

@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\UUID;
 
 use PubNubTestCase;
 
-
 class GetUUIDMetadataEndpointTest extends PubNubTestCase
 {
     public function testGetMetadataFromUUID()

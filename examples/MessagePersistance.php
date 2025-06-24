@@ -1,20 +1,8 @@
 <?php
 
-/**
- * PubNub Message Persistence Demo Application
- *
- * This demo showcases all Message Persistence methods from the PubNub PHP SDK:
- * - Fetch History (fetchMessages)
- * - History (history)
- * - Delete Messages from History (deleteMessages)
- * - Message Counts (messageCounts)
- *
- * Based on: https://www.pubnub.com/docs/sdks/php/api-reference/storage-and-playback
- */
-
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 namespace PubNub\Examples;
 
-// Include Composer autoloader (adjust path if needed)
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use PubNub\PNConfiguration;

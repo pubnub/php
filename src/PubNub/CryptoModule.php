@@ -10,6 +10,7 @@ use PubNub\Crypto\Payload as CryptoPayload;
 use PubNub\Exceptions\PubNubCryptoException;
 use PubNub\Exceptions\PubNubResponseParsingException;
 
+/** @phpstan-consistent-constructor */
 class CryptoModule
 {
     public const CRYPTOR_VERSION = 1;
@@ -25,7 +26,7 @@ class CryptoModule
         $this->defaultCryptorId = $defaultCryptorId;
     }
 
-    public function registerCryptor(Cryptor $cryptor, ?string $cryptorId = null): self
+    public function registerCryptor(Cryptor $cryptor, ?string $cryptorId = null): static
     {
         if (is_null($cryptorId)) {
             $cryptorId = $cryptor::CRYPTOR_ID;
@@ -70,7 +71,13 @@ class CryptoModule
         return base64_encode($header . $cryptoPayload->getData());
     }
 
-    public function decrypt(string | object $input): string | object
+    /**
+     * @param string | object $input
+     * @return string | object | array<string, mixed> | null
+     * @throws PubNubCryptoException
+     * @throws PubNubResponseParsingException
+     */
+    public function decrypt(string | object $input): string | object | array | null
     {
         $input = $this->parseInput($input);
         $data = base64_decode($input);
@@ -90,7 +97,7 @@ class CryptoModule
 
     public function encodeHeader(CryptoPayload $payload): string
     {
-        if ($payload->getCryptorId() == self::FALLBACK_CRYPTOR_ID) {
+        if ($payload->getCryptorId() == static::FALLBACK_CRYPTOR_ID) {
             return '';
         }
 
@@ -108,13 +115,13 @@ class CryptoModule
             $cryptorDataLength = chr(255) . chr(hexdec($hexlen[0])) . chr(hexdec($hexlen[1]));
         }
 
-        return self::SENTINEL . $version . $payload->getCryptorId() . $cryptorDataLength . $payload->getCryptorData();
+        return static::SENTINEL . $version . $payload->getCryptorId() . $cryptorDataLength . $payload->getCryptorData();
     }
 
     public function decodeHeader(string $header): CryptoHeader
     {
-        if (strlen($header < 10) or substr($header, 0, 4) != self::SENTINEL) {
-            return new CryptoHeader('', self::FALLBACK_CRYPTOR_ID, '', 0);
+        if (strlen($header < 10) or substr($header, 0, 4) != static::SENTINEL) {
+            return new CryptoHeader('', static::FALLBACK_CRYPTOR_ID, '', 0);
         }
         $sentinel = substr($header, 0, 4);
         $version = ord($header[4]);
@@ -134,9 +141,9 @@ class CryptoModule
         return new CryptoHeader($sentinel, $cryptorId, $cryptorData, $headerLength);
     }
 
-    public static function legacyCryptor(string $cipherKey, bool $useRandomIV): self
+    public static function legacyCryptor(string $cipherKey, bool $useRandomIV): static
     {
-        return new self(
+        return new static(
             [
                 LegacyCryptor::CRYPTOR_ID => new LegacyCryptor($cipherKey, $useRandomIV),
                 AesCbcCryptor::CRYPTOR_ID => new AesCbcCryptor($cipherKey),
@@ -145,9 +152,9 @@ class CryptoModule
         );
     }
 
-    public static function aesCbcCryptor(string $cipherKey, bool $useRandomIV): self
+    public static function aesCbcCryptor(string $cipherKey, bool $useRandomIV): static
     {
-        return new self(
+        return new static(
             [
                 LegacyCryptor::CRYPTOR_ID => new LegacyCryptor($cipherKey, $useRandomIV),
                 AesCbcCryptor::CRYPTOR_ID => new AesCbcCryptor($cipherKey),

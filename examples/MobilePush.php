@@ -1,19 +1,6 @@
 <?php
 
-/**
- * PubNub Mobile Push Notifications Demo
- *
- * This comprehensive demo showcases all Mobile Push Notifications features:
- * 1. Add Device to Channel (FCM & APNS2)
- * 2. List Channels for Device
- * 3. Remove Device from Channel
- * 4. Remove All Push Channels from Device
- *
- * Features both FCM (Android) and APNS2 (iOS) push types with proper error handling.
- *
- * Based on: https://www.pubnub.com/docs/sdks/php/api-reference/mobile-push
- */
-
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 namespace PubNub\Examples;
 
 // Include Composer autoloader

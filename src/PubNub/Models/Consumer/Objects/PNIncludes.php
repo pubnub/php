@@ -28,25 +28,25 @@ class PNIncludes
         return implode(',', $result);
     }
 
-    public function custom(bool $custom = true): self
+    public function custom(bool $custom = true): static
     {
         $this->custom = $custom;
         return $this;
     }
 
-    public function status(bool $status = true): self
+    public function status(bool $status = true): static
     {
         $this->status = $status;
         return $this;
     }
 
-    public function totalCount(bool $totalCount = true): self
+    public function totalCount(bool $totalCount = true): static
     {
         $this->totalCount = $totalCount;
         return $this;
     }
 
-    public function type(bool $type = true): self
+    public function type(bool $type = true): static
     {
         $this->type = $type;
         return $this;

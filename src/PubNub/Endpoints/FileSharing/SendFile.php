@@ -202,7 +202,7 @@ class SendFile extends Endpoint
     protected function encryptPayload()
     {
         $crypto = $this->pubnub->getCrypto();
-        if ($this->fileHandle) {
+        if (isset($this->fileHandle) && is_resource($this->fileHandle)) {
             $fileContent = stream_get_contents($this->fileHandle);
         } else {
             $fileContent = $this->fileContent;

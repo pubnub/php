@@ -11,19 +11,19 @@ abstract class FileSharingEndpoint extends Endpoint
     protected ?string $fileId;
     protected ?string $fileName;
 
-    public function channel($channel): self
+    public function channel(string $channel): static
     {
         $this->channel = $channel;
         return $this;
     }
 
-    public function fileId($fileId): self
+    public function fileId(string $fileId): static
     {
         $this->fileId = $fileId;
         return $this;
     }
 
-    public function fileName($fileName)
+    public function fileName(string $fileName): static
     {
         $this->fileName = $fileName;
         return $this;

@@ -124,7 +124,7 @@ class GetAllChannelMetadata extends ObjectsCollectionEndpoint
                 }
             }
 
-            $params['sort'] = $sortEntries;
+            $params['sort'] = join(",", $sortEntries);
         }
 
         return $params;

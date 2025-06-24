@@ -19,13 +19,13 @@ class PNGetUUIDMetadataResult
     /** @var string */
     protected $email;
 
-    /** @var array */
+    /** @var mixed */
     protected $custom;
 
-    /** @var string */
+    /** @var ?string */
     protected $updated;
 
-    /** @var string */
+    /** @var ?string */
     protected $eTag;
 
     /**
@@ -35,9 +35,9 @@ class PNGetUUIDMetadataResult
      * @param array $externalId
      * @param array $profileUrl
      * @param array $email
-     * @param array $custom
-     * @param string $updated
-     * @param string $eTag
+     * @param mixed $custom
+     * @param ?string $updated
+     * @param ?string $eTag
      */
     public function __construct(
         $id,
@@ -62,7 +62,7 @@ class PNGetUUIDMetadataResult
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -70,7 +70,7 @@ class PNGetUUIDMetadataResult
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -78,7 +78,7 @@ class PNGetUUIDMetadataResult
     /**
      * @return string
      */
-    public function getExternalId()
+    public function getExternalId(): ?string
     {
         return $this->externalId;
     }
@@ -86,7 +86,7 @@ class PNGetUUIDMetadataResult
     /**
      * @return string
      */
-    public function getProfileUrl()
+    public function getProfileUrl(): ?string
     {
         return $this->profileUrl;
     }
@@ -94,15 +94,15 @@ class PNGetUUIDMetadataResult
     /**
      * @return string
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
     /**
-     * @return object
+     * @return mixed
      */
-    public function getCustom()
+    public function getCustom(): mixed
     {
         return $this->custom;
     }
@@ -110,7 +110,7 @@ class PNGetUUIDMetadataResult
     /**
      * @return string
      */
-    public function getUpdated()
+    public function getUpdated(): ?string
     {
         return $this->updated;
     }
@@ -118,7 +118,7 @@ class PNGetUUIDMetadataResult
     /**
      * @return string
      */
-    public function getETag()
+    public function getETag(): ?string
     {
         return $this->eTag;
     }
@@ -190,11 +190,11 @@ class PNGetUUIDMetadataResult
         }
 
         if (array_key_exists("updated", $meta)) {
-            $updated = (object)$meta["updated"];
+            $updated = $meta["updated"];
         }
 
         if (array_key_exists("eTag", $meta)) {
-            $eTag = (object)$meta["eTag"];
+            $eTag = $meta["eTag"];
         }
 
         return new PNGetUUIDMetadataResult(

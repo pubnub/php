@@ -56,7 +56,9 @@ use PubNub\Managers\TokenManager;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\NullLogger;
-use PubNub\Endpoints\FileSharing\{SendFile, DeleteFile, DownloadFile, GetFileDownloadUrl, ListFiles};
+use PubNub\Endpoints\FileSharing\{
+    SendFile, DeleteFile, DownloadFile, GetFileDownloadUrl, ListFiles, PublishFileMessage
+};
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerTokenResult;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Client\ClientInterface;
@@ -666,6 +668,11 @@ class PubNub implements LoggerAwareInterface
     public function sendFile(): SendFile
     {
         return new SendFile($this);
+    }
+
+    public function publishFileMessage(): PublishFileMessage
+    {
+        return new PublishFileMessage($this);
     }
 
     public function deleteFile(): DeleteFile

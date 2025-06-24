@@ -2,7 +2,6 @@
 
 namespace PubNub\Endpoints\FileSharing;
 
-use PubNub\Endpoints\Endpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Models\Consumer\FileSharing\PNPublishFileMessageResult;
@@ -64,7 +63,7 @@ class PublishFileMessage extends FileSharingEndpoint
             $this->pubnub->getConfiguration()->getPublishKey(),
             $this->pubnub->getConfiguration()->getSubscribeKey(),
             urlencode($this->channel),
-            urlencode($this->buildMessage())
+            $this->buildMessage()
         );
     }
 
@@ -73,9 +72,9 @@ class PublishFileMessage extends FileSharingEndpoint
         $crypto = $this->pubnub->getCrypto();
         $messageString = PubNubUtil::writeValueAsString($message);
         if ($crypto) {
-            return $crypto->encrypt($messageString);
+            return "\"" . urlencode($crypto->encrypt($messageString)) . "\"";
         }
-        return $messageString;
+        return urlencode($messageString);
     }
 
     protected function buildMessage()

@@ -751,11 +751,6 @@ parameters:
 			path: src/PubNub/Endpoints/FileSharing/DownloadFile.php
 
 		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FetchFileUploadS3Data\\:\\:channel\\(\\) has parameter \\$channel with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FetchFileUploadS3Data.php
-
-		-
 			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FetchFileUploadS3Data\\:\\:createResponse\\(\\) has parameter \\$result with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/FileSharing/FetchFileUploadS3Data.php
@@ -764,41 +759,6 @@ parameters:
 			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FetchFileUploadS3Data\\:\\:customParams\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Endpoints/FileSharing/FetchFileUploadS3Data.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FetchFileUploadS3Data\\:\\:fileName\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FetchFileUploadS3Data.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FetchFileUploadS3Data\\:\\:fileName\\(\\) has parameter \\$fileName with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FetchFileUploadS3Data.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FetchFileUploadS3Data\\:\\:name\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FetchFileUploadS3Data.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FileSharingEndpoint\\:\\:channel\\(\\) has parameter \\$channel with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FileSharingEndpoint.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FileSharingEndpoint\\:\\:fileId\\(\\) has parameter \\$fileId with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FileSharingEndpoint.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FileSharingEndpoint\\:\\:fileName\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FileSharingEndpoint.php
-
-		-
-			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\FileSharingEndpoint\\:\\:fileName\\(\\) has parameter \\$fileName with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/Endpoints/FileSharing/FileSharingEndpoint.php
 
 		-
 			message: "#^Method PubNub\\\\Endpoints\\\\FileSharing\\\\GetFileDownloadUrl\\:\\:createResponse\\(\\) has parameter \\$result with no value type specified in iterable type array\\.$#"
@@ -3021,11 +2981,6 @@ parameters:
 			path: src/PubNub/Models/Consumer/FileSharing/PNGetFilesItem.php
 
 		-
-			message: "#^Binary operation \"\\.\" between 'Get file success…' and array results in an error\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/FileSharing/PNGetFilesResult.php
-
-		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\FileSharing\\\\PNGetFilesResult\\:\\:__construct\\(\\) has parameter \\$result with no type specified\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/FileSharing/PNGetFilesResult.php
@@ -3631,11 +3586,6 @@ parameters:
 			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetAllUUIDMetadataResult.php
 
 		-
-			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult\\:\\:__construct\\(\\) has parameter \\$custom with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
-
-		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult\\:\\:__construct\\(\\) has parameter \\$email with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
@@ -3652,31 +3602,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult\\:\\:fromPayload\\(\\) has parameter \\$payload with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
-
-		-
-			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult\\:\\:getCustom\\(\\) should return object but returns array\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
-
-		-
-			message: "#^Parameter \\#6 \\$custom of class PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult constructor expects array\\|null, stdClass given\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
-
-		-
-			message: "#^Parameter \\#7 \\$updated of class PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult constructor expects string\\|null, stdClass\\|null given\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
-
-		-
-			message: "#^Parameter \\#8 \\$eTag of class PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult constructor expects string\\|null, stdClass\\|null given\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
-
-		-
-			message: "#^Property PubNub\\\\Models\\\\Consumer\\\\Objects\\\\UUID\\\\PNGetUUIDMetadataResult\\:\\:\\$custom type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/Objects/UUID/PNGetUUIDMetadataResult.php
 
@@ -5931,41 +5856,6 @@ parameters:
 			path: tests/integrational/FetchMessagesTest.php
 
 		-
-			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testDeleteAllFiles\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FilesTest.php
-
-		-
-			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testDownloadFiles\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FilesTest.php
-
-		-
-			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testEmptyFileList\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FilesTest.php
-
-		-
-			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testGetDownloadUrls\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FilesTest.php
-
-		-
-			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testNonEmptyFileList\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FilesTest.php
-
-		-
-			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testSendBinaryFile\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FilesTest.php
-
-		-
-			message: "#^Method PubNubTests\\\\integrational\\\\FilesTest\\:\\:testSendTextFile\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/FilesTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\GetStateTest\\:\\:testCombination\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/GetStateTest.php
@@ -6696,11 +6586,6 @@ parameters:
 			path: tests/integrational/SslTest.php
 
 		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: tests/integrational/SubscribePresenceTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\MySubscribeCallbackToTestPresence\\:\\:areBothConnectedAndDisconnectedInvoked\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/SubscribePresenceTest.php
@@ -6949,11 +6834,6 @@ parameters:
 			message: "#^Strict comparison using \\=\\=\\= between array and 'hey' will always evaluate to false\\.$#"
 			count: 1
 			path: tests/integrational/SubscribeTest.php
-
-		-
-			message: "#^Else branch is unreachable because previous condition is always true\\.$#"
-			count: 1
-			path: tests/integrational/SubscribeWildCardTest.php
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\MySubscribeCallbackToTestWildCard\\:\\:areBothConnectedAndDisconnectedInvoked\\(\\) has no return type specified\\.$#"

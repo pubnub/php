@@ -147,7 +147,8 @@ class PublishTest extends \PubNubTestCase
     public function testServerSideErrorSync()
     {
         $this->expectException(PubNubServerException::class);
-        $this->expectExceptionMessage("Server responded with an error and the status code is 400");
+        $this->expectExceptionMessageMatches("/Server responded with an error/");
+        $this->expectExceptionMessageMatches("/and the status code is 400/");
 
         $pnconf = PNConfiguration::demoKeys();
         $pnconf->setPublishKey("fake");
@@ -174,7 +175,8 @@ class PublishTest extends \PubNubTestCase
         $exception = $envelope->getStatus()->getException();
 
         $this->assertEquals(400, $exception->getStatusCode());
-        $this->assertEquals("Server responded with an error and the status code is 400", $exception->getMessage());
+        $this->assertStringContainsString("Server responded with an error", $exception->getMessage());
+        $this->assertStringContainsString("and the status code is 400", $exception->getMessage());
 
         $body = $exception->getBody();
         $this->assertEquals(0, $body[0]);

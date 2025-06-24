@@ -11,7 +11,7 @@ trait MatchesETagTrait
      * @param string $eTag
      * @return $this
      */
-    public function ifMatchesETag(string $eTag): self
+    public function ifMatchesETag(string $eTag): static
     {
         $this->eTag = $eTag;
         $this->customHeaders['If-Match'] = $eTag;

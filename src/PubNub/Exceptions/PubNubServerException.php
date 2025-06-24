@@ -18,7 +18,9 @@ class PubNubServerException extends PubNubException
     protected function updateMessage()
     {
         $this->message = "Server responded with an error";
-
+        if ($this->body) {
+            $this->message .= " " . json_encode($this->body);
+        }
         if ($this->statusCode > 0) {
             $this->message .= " and the status code is " . $this->statusCode;
         }
@@ -81,6 +83,8 @@ class PubNubServerException extends PubNubException
     {
         if (isset($this->body->error->message)) {
             return $this->body->error->message;
+        } elseif (isset($this->body->message)) {
+            return $this->body->message;
         } else {
             return null;
         }
@@ -90,6 +94,8 @@ class PubNubServerException extends PubNubException
     {
         if (isset($this->body->error->source)) {
             return $this->body->error->source;
+        } elseif (isset($this->body->source)) {
+            return $this->body->source;
         } else {
             return null;
         }
@@ -99,6 +105,8 @@ class PubNubServerException extends PubNubException
     {
         if (isset($this->body->error->details[0])) {
             return $this->body->error->details[0];
+        } elseif (isset($this->body->details[0])) {
+            return $this->body->details[0];
         } else {
             return null;
         }

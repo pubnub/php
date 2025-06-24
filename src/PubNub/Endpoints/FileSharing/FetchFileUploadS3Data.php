@@ -16,13 +16,13 @@ class FetchFileUploadS3Data extends Endpoint
     protected ?string $channel;
     protected ?string $fileName;
 
-    public function channel($channel): self
+    public function channel(string $channel): self
     {
         $this->channel = $channel;
         return $this;
     }
 
-    public function fileName($fileName)
+    public function fileName(string $fileName): self
     {
         $this->fileName = $fileName;
         return $this;
@@ -72,7 +72,7 @@ class FetchFileUploadS3Data extends Endpoint
         return PNOperationType::PNFetchFileUploadS3DataAction;
     }
 
-    public function name()
+    public function name(): string
     {
         return "Fetch file upload S3 data";
     }
