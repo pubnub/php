@@ -8,25 +8,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
-use PubNub\Exceptions\PubNubServerException;
 use PubNub\Exceptions\PubNubException;
-use PubNub\Callbacks\SubscribeCallback;
-use PubNub\Enums\PNStatusCategory;
-use PubNub\Models\Consumer\PubSub\PNMessageResult;
-use PubNub\Models\Consumer\PubSub\PNMessageActionResult;
 use PubNub\Models\Consumer\MessageActions\PNMessageAction;
-
-/**
- * PubNub Message Actions Comprehensive Example
- *
- * This example demonstrates all Message Actions features:
- * 1. Adding message actions (reactions, read receipts, custom metadata)
- * 2. Removing message actions
- * 3. Retrieving message actions with filtering and pagination
- * 4. Fetching messages with their associated actions
- * 5. Error handling and edge cases
- * 6. Practical use cases implementation
- */
 
 echo "=== PubNub Message Actions Comprehensive Demo ===\n\n";
 

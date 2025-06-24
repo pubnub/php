@@ -415,20 +415,33 @@ echo "--------------------------------------\n";
 // snippet.revoke_token
 try {
     $admin->setToken($token);
-    $admin->revokeToken()->token($token)->sync();
+    print("Revoking token {{$token}}...\n");
+    $revokeResult = $admin->revokeToken()->token($token)->sync();
+    print_r($revokeResult);
     $admin->setToken('');
     printResult("Admin revoke token", true);
     // token revoke propagation might take some time
-    sleep(15);
-    // Test user access after revocation (should fail)
-    try {
-        $user->publish()
-            ->channel('public-channel')
-            ->message(['text' => 'Hello after revocation!'])
-            ->sync();
-        printResult("User publish after token revocation", false, "Should have failed but succeeded");
-    } catch (Exception $e) {
-        printResult("User publish after token revocation", true, "Correctly denied - token revoked");
+    $attempts = 0;
+    while (true) {
+        $attempts++;
+        print("Attempt: $attempts\n");
+        if ($attempts > 10) {
+            printResult("User publish after token revocation", false, "Should have failed but succeeded");
+            break;
+        }
+        sleep(10);
+        // Test user access after revocation (should fail)
+        try {
+            $publishResult = $user->publish()
+                ->channel('public-channel')
+                ->message(['text' => 'Hello after revocation!'])
+                ->sync();
+            // print_r($publishResult);
+            // printResult("User publish after token revocation", false, "Should have failed but succeeded");
+        } catch (Exception $e) {
+            printResult("User publish after token revocation", true, "Correctly denied - token revoked");
+            break;
+        }
     }
 } catch (Exception $e) {
     printResult("Admin revoke token", false, $e->getMessage());
