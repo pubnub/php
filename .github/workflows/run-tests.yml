@@ -61,7 +61,7 @@ jobs:
           composer self-update && composer --version
           composer install --prefer-dist
       - name: Run unit tests
-        run: vendor/bin/phpunit --verbose
+        run: composer test
       - name: Cancel workflow runs for commit on error
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure

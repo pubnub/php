@@ -260,7 +260,7 @@ class SetMembers extends ObjectsCollectionEndpoint
                     array_push($sortEntries, $key);
                 }
             }
-            $params['sort'] = $sortEntries;
+            $params['sort'] = join(",", $sortEntries);
         }
 
         return $params;

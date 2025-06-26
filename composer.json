@@ -13,7 +13,7 @@
     }
   ],
   "scripts": {
-    "test": "./vendor/bin/phpunit tests/  --verbose --coverage-clover=coverage.clover",
+    "test": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text=coverage.txt --verbose ./tests",
     "acceptance-test": [
       "mkdir -p tests/Acceptance/reports",
       "cp sdk-specifications/features/publish/publish-custom-mssg-type.feature tests/Acceptance/CustomMessageType/publish-custom-mssg-type.feature",

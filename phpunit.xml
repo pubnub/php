@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="./tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src/</directory>
+        </include>
+    </coverage>
+    <testsuites>
+        <testsuite name="Pubnub Test Suite">
+            <directory>./tests/integrational/</directory>
+        </testsuite>
+        <testsuite name="Pubnub Test Suite">
+            <directory>./tests/functional/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

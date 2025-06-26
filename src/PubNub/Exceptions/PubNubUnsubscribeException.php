@@ -2,7 +2,6 @@
 
 namespace PubNub\Exceptions;
 
-
 use PubNub\Builders\DTO\UnsubscribeOperation;
 use PubNub\Managers\SubscriptionManager;
 
@@ -67,7 +66,8 @@ class PubNubUnsubscribeException extends \Exception
      * @param SubscriptionManager $subscriptionManager
      * @return UnsubscribeOperation
      */
-    public function getUnsubscribeOperation(SubscriptionManager $subscriptionManager) {
+    public function getUnsubscribeOperation(SubscriptionManager $subscriptionManager)
+    {
         if ($this->all) {
             return (new UnsubscribeOperation())
                 ->setChannels($subscriptionManager->subscriptionState->prepareChannelList(false))

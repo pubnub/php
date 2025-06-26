@@ -27,7 +27,7 @@ class PNGetFilesResult
 
     public function __toString()
     {
-        return "Get file success with data: " . $this->data;
+        return "Get file success with data: " . var_export($this->data, true);
     }
 
     public function getData()

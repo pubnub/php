@@ -26,10 +26,9 @@ class SetUUIDMetadata extends Endpoint
      * @param string $uuid
      * @return $this
      */
-    public function uuid($uuid)
+    public function uuid($uuid): static
     {
         $this->uuid = $uuid;
-
         return $this;
     }
 
@@ -37,10 +36,60 @@ class SetUUIDMetadata extends Endpoint
      * @param array $meta
      * @return $this
      */
-    public function meta($meta)
+    public function meta($meta): static
     {
         $this->meta = $meta;
+        return $this;
+    }
 
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function name(string $name): static
+    {
+        $this->meta['name'] = $name;
+
+        return $this;
+    }
+
+    /**
+     * @param string $externalId
+     * @return $this
+     */
+    public function externalId(string $externalId): static
+    {
+        $this->meta['externalId'] = $externalId;
+        return $this;
+    }
+
+    /**
+     * @param string $profileUrl
+     * @return $this
+     */
+    public function profileUrl(string $profileUrl): static
+    {
+        $this->meta['profileUrl'] = $profileUrl;
+        return $this;
+    }
+
+    /**
+     * @param string $email
+     * @return $this
+     */
+    public function email(string $email): static
+    {
+        $this->meta['email'] = $email;
+        return $this;
+    }
+
+    /**
+     * @param array<string, mixed> $custom
+     * @return $this
+     */
+    public function custom(array $custom): static
+    {
+        $this->meta['custom'] = $custom;
         return $this;
     }
 

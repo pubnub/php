@@ -368,6 +368,11 @@ abstract class Endpoint
             $statusCode = $exception->getCode();
             $response = substr($exception->getMessage(), strpos($exception->getMessage(), "\n") + 1);
             $pnServerException = new PubNubServerException();
+            if (is_callable([$exception, 'getResponse'])) {
+                $response = $exception->getResponse()->getBody()->getContents();
+            } else {
+                $response = substr($exception->getMessage(), strpos($exception->getMessage(), "\n") + 1);
+            }
             $pnServerException->setRawBody($response);
             $pnServerException->setStatusCode($exception->getCode());
 
