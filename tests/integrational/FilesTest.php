@@ -36,8 +36,17 @@ final class FilesTest extends PubNubTestCase
                     ->sync();
             }
         } catch (\Exception $e) {
-            // Ignore cleanup errors
+            // Ignore cleanup errors, just print the error for debugging
+            print_r($e);
         }
+    }
+
+    public static function setUpBeforeClass(): void
+    {
+        $instance = new static();
+        $instance->setUp();
+        $instance->cleanupFiles();
+        parent::setUpBeforeClass();
     }
 
     public static function tearDownAfterClass(): void
@@ -293,6 +302,7 @@ final class FilesTest extends PubNubTestCase
 
             $this->assertNotEmpty($response);
             $this->assertNotEmpty($response->getFileId());
+            sleep(1);
 
             // Verify file can be downloaded
             $downloadResponse = $this->pubnub->downloadFile()

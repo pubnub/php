@@ -204,7 +204,7 @@ if (count($messageActions) >= 2) {
             ->channel($testChannel)
             ->setStart($messageActions[count($messageActions) - 1]['actionTimetoken'])
             ->setEnd($messageActions[0]['actionTimetoken'])
-            ->setLimit(50) // TODO: Add limit
+            ->setLimit(50)
             ->sync();
 
         echo "✅ Retrieved " . count($result->actions) . " message actions in range:\n";
