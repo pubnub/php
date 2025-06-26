@@ -159,7 +159,7 @@ class CryptoModule
                 LegacyCryptor::CRYPTOR_ID => new LegacyCryptor($cipherKey, $useRandomIV),
                 AesCbcCryptor::CRYPTOR_ID => new AesCbcCryptor($cipherKey),
             ],
-            aesCbcCryptor::CRYPTOR_ID
+            AesCbcCryptor::CRYPTOR_ID
         );
     }
 

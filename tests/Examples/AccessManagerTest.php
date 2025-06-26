@@ -20,6 +20,7 @@ class AccessManagerTest extends TestCase
         if (!getenv('PUBLISH_KEY')) {
             putenv('PUBLISH_KEY=demo');
         }
+        putenv('WAIT_FOR_REVOKE=0');
 
         if (!getenv('SECRET_KEY')) {
             putenv('SECRET_KEY=demo');

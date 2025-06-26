@@ -39,22 +39,6 @@ function printResult($testName, $success, $message = '')
     echo "\n";
 }
 
-// Helper function to safely execute operations (deprecated - using direct try/catch now)
-function safeTest($callable, $description)
-{
-    try {
-        $result = $callable();
-        printResult($description, true, "Success");
-        return $result;
-    } catch (PubNubServerException $e) {
-        printResult($description, false, "Server Error: " . $e->getMessage());
-        return null;
-    } catch (Exception $e) {
-        printResult($description, false, "Error: " . $e->getMessage());
-        return null;
-    }
-}
-
 echo "🔧 Step 0: Prepare channels and users metadata\n";
 echo "----------------------------------------------\n";
 
@@ -102,7 +86,7 @@ $users = [
 
 foreach ($users as $uuid => $userData) {
     try {
-        $admin->setUuidMetadata()
+        $response = $admin->setUUIDMetadata()
             ->uuid($uuid)
             ->name($userData['name'])
             ->email($userData['email'])
@@ -422,7 +406,8 @@ try {
     printResult("Admin revoke token", true);
     // token revoke propagation might take some time
     $attempts = 0;
-    while (true) {
+    $waitForRevoke = getenv('WAIT_FOR_REVOKE') ?? true;
+    while ($waitForRevoke) {
         $attempts++;
         print("Attempt: $attempts\n");
         if ($attempts > 10) {

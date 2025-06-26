@@ -7,7 +7,7 @@ use PubNub\PNConfiguration;
 
 // snippet.setup
 $channelName = "file-channel";
-$fileName = "pn.gif";
+$testFileName = "pn.gif";
 
 $config = new PNConfiguration();
 $config->setSubscribeKey(getenv('SUBSCRIBE_KEY', 'demo'));
@@ -18,25 +18,25 @@ $pubnub = new PubNub($config);
 // snippet.end
 
 // snippet.send_file
-$fileHandle = fopen(__DIR__ . DIRECTORY_SEPARATOR . $fileName, "r");
+$fileHandle = fopen(__DIR__ . DIRECTORY_SEPARATOR . $testFileName, "r");
 $sendFileResult = $pubnub->sendFile()
     ->channel($channelName)
-    ->fileName($fileName)
+    ->fileName($testFileName)
     ->message("Hello from PHP SDK")
     ->fileHandle($fileHandle)
     ->sync();
+fclose($fileHandle);
 $fileId = $sendFileResult->getFileId();
 $fileName = $sendFileResult->getFileName();
 
 print("File uploaded successfully: {$fileName} with ID: {$fileId}\n");
-
 // snippet.end
 
 // snippet.send_file_with_just_content
-$fileContent = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . $fileName);
+$fileContent = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . $testFileName);
 $sendFileResult = $pubnub->sendFile()
     ->channel($channelName)
-    ->fileName($fileName)
+    ->fileName($testFileName)
     ->message("Hello from PHP SDK")
     ->fileContent($fileContent)
     ->sync();
@@ -49,7 +49,7 @@ print("File uploaded successfully: {$fileName} with ID: {$fileId}\n");
 $publishFileMessageResult = $pubnub->publishFileMessage()
     ->channel($channelName)
     ->fileId($fileId)
-    ->fileName($fileName)
+    ->fileName($testFileName)
     ->message("Hello from PHP SDK")
     ->ttl(10)
     ->meta(["key" => "value"])

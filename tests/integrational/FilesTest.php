@@ -162,7 +162,6 @@ final class FilesTest extends PubNubTestCase
             ->setResponseBody('{}')
             ->setResponseStatus(307)
             ->setResponseHeaders(['Location' => '']);
-        $this->pubnub->setClient($client);
         $pubnub->getFileDownloadUrl()->channel($this->channel)->fileId('none')->fileName('none')->sync();
     }
 

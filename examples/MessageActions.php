@@ -183,7 +183,7 @@ try {
     // snippet.get_all_message_actions
     $result = $pubnub->getMessageActions()
         ->channel($testChannel)
-        ->setLimit(100) // TODO: Add limit
+        ->setLimit(100)
         ->sync();
 
     echo "✅ Retrieved " . count($result->actions) . " message actions:\n";

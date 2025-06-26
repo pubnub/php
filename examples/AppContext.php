@@ -21,8 +21,8 @@ $publishKey = getenv('PUBLISH_KEY') ?: 'demo';
 $subscribeKey = getenv('SUBSCRIBE_KEY') ?: 'demo';
 
 $config = new PNConfiguration();
-$config->setSubscribeKey(getenv('SUBSCRIBE_KEY', 'demo'));
-$config->setPublishKey(getenv('PUBLISH_KEY', 'demo'));
+$config->setSubscribeKey($subscribeKey);
+$config->setPublishKey($publishKey);
 $config->setUserId("php-app-context-sample-" . time());
 
 $pubnub = new PubNub($config);
