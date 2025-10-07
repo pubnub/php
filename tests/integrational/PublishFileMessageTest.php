@@ -42,7 +42,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         parent::tearDown();
     }
 
-    public function testPublishFileMessageWithBasicMessage()
+    public function testPublishFileMessageWithBasicMessage(): void
     {
         // First upload a file to get file ID
         $file = fopen($this->testFilePath, "r");
@@ -71,7 +71,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageWithMetadata()
+    public function testPublishFileMessageWithMetadata(): void
     {
         // Upload a file first
         $file = fopen($this->testFilePath, "r");
@@ -105,7 +105,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageWithCustomMessageType()
+    public function testPublishFileMessageWithCustomMessageType(): void
     {
         // Upload a file first
         $file = fopen($this->testFilePath, "r");
@@ -133,7 +133,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageWithTTL()
+    public function testPublishFileMessageWithTTL(): void
     {
         // Upload a file first
         $file = fopen($this->testFilePath, "r");
@@ -161,7 +161,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageWithShouldStore()
+    public function testPublishFileMessageWithShouldStore(): void
     {
         // Upload a file first
         $file = fopen($this->testFilePath, "r");
@@ -189,7 +189,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageWithAllOptions()
+    public function testPublishFileMessageWithAllOptions(): void
     {
         // Upload a file first
         $file = fopen($this->testFilePath, "r");
@@ -225,7 +225,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageWithEncryption()
+    public function testPublishFileMessageWithEncryption(): void
     {
         // Use encrypted pubnub instance
         $file = fopen($this->testFilePath, "r");
@@ -252,7 +252,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageWithComplexMessage()
+    public function testPublishFileMessageWithComplexMessage(): void
     {
         // Upload a file first
         $file = fopen($this->testFilePath, "r");
@@ -289,7 +289,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEmpty($response->getTimetoken());
     }
 
-    public function testPublishFileMessageMultipleTimes()
+    public function testPublishFileMessageMultipleTimes(): void
     {
         // Upload a file first
         $file = fopen($this->testFilePath, "r");
@@ -324,7 +324,7 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEquals($response1->getTimetoken(), $response2->getTimetoken());
     }
 
-    public function testPublishFileMessageWithInvalidFileId()
+    public function testPublishFileMessageWithInvalidFileId(): void
     {
         $this->expectException(\PubNub\Exceptions\PubNubServerException::class);
         
@@ -337,7 +337,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
     }
 
-    public function testPublishFileMessageWithEmptyChannel()
+    public function testPublishFileMessageWithEmptyChannel(): void
     {
         $this->expectException(\PubNub\Exceptions\PubNubValidationException::class);
         
