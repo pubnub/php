@@ -5,7 +5,7 @@ use PubNub\Managers\TokenManager;
 
 class TokenManagerTest extends TestCase
 {
-    public function testSetAndGetToken()
+    public function testSetAndGetToken(): void
     {
         $manager = new TokenManager();
         $token = 'test-token-abc123';
@@ -15,14 +15,14 @@ class TokenManagerTest extends TestCase
         $this->assertEquals($token, $manager->getToken());
     }
 
-    public function testGetTokenReturnsNullByDefault()
+    public function testGetTokenReturnsNullByDefault(): void
     {
         $manager = new TokenManager();
         
         $this->assertNull($manager->getToken());
     }
 
-    public function testSetTokenOverwritesPreviousToken()
+    public function testSetTokenOverwritesPreviousToken(): void
     {
         $manager = new TokenManager();
         
@@ -33,7 +33,7 @@ class TokenManagerTest extends TestCase
         $this->assertEquals('second-token', $manager->getToken());
     }
 
-    public function testSetTokenWithEmptyString()
+    public function testSetTokenWithEmptyString(): void
     {
         $manager = new TokenManager();
         
@@ -42,7 +42,7 @@ class TokenManagerTest extends TestCase
         $this->assertEquals('', $manager->getToken());
     }
 
-    public function testSetTokenWithLongString()
+    public function testSetTokenWithLongString(): void
     {
         $manager = new TokenManager();
         $longToken = str_repeat('a', 10000);
@@ -52,7 +52,7 @@ class TokenManagerTest extends TestCase
         $this->assertEquals($longToken, $manager->getToken());
     }
 
-    public function testSetTokenWithSpecialCharacters()
+    public function testSetTokenWithSpecialCharacters(): void
     {
         $manager = new TokenManager();
         $specialToken = 'token-with-special!@#$%^&*()_+-={}[]|\\:";\'<>?,./';

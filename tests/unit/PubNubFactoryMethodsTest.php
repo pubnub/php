@@ -10,7 +10,7 @@ class PubNubFactoryMethodsTest extends TestCase
     // PubNub::demo() TESTS
     // ============================================================================
 
-    public function testDemoReturnsValidPubNubInstance()
+    public function testDemoReturnsValidPubNubInstance(): void
     {
         $pubnub = PubNub::demo();
         
@@ -26,7 +26,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('demo', $config->getPublishKey());
     }
 
-    public function testDemoHasDemoUserId()
+    public function testDemoHasDemoUserId(): void
     {
         $pubnub = PubNub::demo();
         $config = $pubnub->getConfiguration();
@@ -34,7 +34,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('demo', $config->getUserId());
     }
 
-    public function testDemoIsImmediatelyUsable()
+    public function testDemoIsImmediatelyUsable(): void
     {
         $pubnub = PubNub::demo();
         
@@ -46,7 +46,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertNotNull($config->getUserId());
     }
 
-    public function testDemoCreatesNewInstanceEachTime()
+    public function testDemoCreatesNewInstanceEachTime(): void
     {
         $pubnub1 = PubNub::demo();
         $pubnub2 = PubNub::demo();
@@ -54,7 +54,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertNotSame($pubnub1, $pubnub2);
     }
 
-    public function testDemoInstancesAreIndependent()
+    public function testDemoInstancesAreIndependent(): void
     {
         $pubnub1 = PubNub::demo();
         $pubnub2 = PubNub::demo();
@@ -67,7 +67,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('token2', $pubnub2->getToken());
     }
 
-    public function testDemoConfigurationIsLocked()
+    public function testDemoConfigurationIsLocked(): void
     {
         $pubnub = PubNub::demo();
         $config = $pubnub->getConfiguration();
@@ -77,7 +77,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $config->setPublishKey('new-key');
     }
 
-    public function testDemoCanBeUsedForBasicOperations()
+    public function testDemoCanBeUsedForBasicOperations(): void
     {
         $pubnub = PubNub::demo();
         
@@ -91,35 +91,35 @@ class PubNubFactoryMethodsTest extends TestCase
     // PNConfiguration::demoKeys() TESTS
     // ============================================================================
 
-    public function testDemoKeysReturnsValidConfiguration()
+    public function testDemoKeysReturnsValidConfiguration(): void
     {
         $config = PNConfiguration::demoKeys();
         
         $this->assertInstanceOf(PNConfiguration::class, $config);
     }
 
-    public function testDemoKeysHasSubscribeKey()
+    public function testDemoKeysHasSubscribeKey(): void
     {
         $config = PNConfiguration::demoKeys();
         
         $this->assertEquals('demo', $config->getSubscribeKey());
     }
 
-    public function testDemoKeysHasPublishKey()
+    public function testDemoKeysHasPublishKey(): void
     {
         $config = PNConfiguration::demoKeys();
         
         $this->assertEquals('demo', $config->getPublishKey());
     }
 
-    public function testDemoKeysHasUserId()
+    public function testDemoKeysHasUserId(): void
     {
         $config = PNConfiguration::demoKeys();
         
         $this->assertEquals('demo', $config->getUserId());
     }
 
-    public function testDemoKeysConfigurationIsNotLocked()
+    public function testDemoKeysConfigurationIsNotLocked(): void
     {
         $config = PNConfiguration::demoKeys();
         
@@ -138,7 +138,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('custom.origin.com', $config->getOrigin());
     }
 
-    public function testDemoKeysCreatesNewInstanceEachTime()
+    public function testDemoKeysCreatesNewInstanceEachTime(): void
     {
         $config1 = PNConfiguration::demoKeys();
         $config2 = PNConfiguration::demoKeys();
@@ -146,7 +146,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertNotSame($config1, $config2);
     }
 
-    public function testDemoKeysInstancesAreIndependent()
+    public function testDemoKeysInstancesAreIndependent(): void
     {
         $config1 = PNConfiguration::demoKeys();
         $config2 = PNConfiguration::demoKeys();
@@ -158,7 +158,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('key2', $config2->getPublishKey());
     }
 
-    public function testDemoKeysCanBeCustomized()
+    public function testDemoKeysCanBeCustomized(): void
     {
         $config = PNConfiguration::demoKeys();
         
@@ -172,7 +172,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('auth-key-123', $config->getAuthKey());
     }
 
-    public function testDemoKeysCanBeUsedToCreatePubNub()
+    public function testDemoKeysCanBeUsedToCreatePubNub(): void
     {
         $config = PNConfiguration::demoKeys();
         $pubnub = new PubNub($config);
@@ -185,14 +185,14 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('demo', $retrievedConfig->getUserId());
     }
 
-    public function testDemoKeysHasDefaultSecureSettings()
+    public function testDemoKeysHasDefaultSecureSettings(): void
     {
         $config = PNConfiguration::demoKeys();
         
         $this->assertTrue($config->isSecure());
     }
 
-    public function testDemoKeysHasDefaultTimeouts()
+    public function testDemoKeysHasDefaultTimeouts(): void
     {
         $config = PNConfiguration::demoKeys();
         
@@ -205,7 +205,7 @@ class PubNubFactoryMethodsTest extends TestCase
     // INTEGRATION TESTS
     // ============================================================================
 
-    public function testDemoMethodUsesDemoKeysInternally()
+    public function testDemoMethodUsesDemoKeysInternally(): void
     {
         $demoConfig = PNConfiguration::demoKeys();
         $demoPubNub = PubNub::demo();
@@ -218,7 +218,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals($demoConfig->getUserId(), $config->getUserId());
     }
 
-    public function testDemoKeysAndDemoProduceSimilarResults()
+    public function testDemoKeysAndDemoProduceSimilarResults(): void
     {
         $configFromDemoKeys = PNConfiguration::demoKeys();
         $pubnubFromDemo = PubNub::demo();
@@ -238,7 +238,7 @@ class PubNubFactoryMethodsTest extends TestCase
         );
     }
 
-    public function testDemoKeysCanBeCloned()
+    public function testDemoKeysCanBeCloned(): void
     {
         $config = PNConfiguration::demoKeys();
         $cloned = $config->clone();
@@ -249,7 +249,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertEquals('demo', $cloned->getUserId());
     }
 
-    public function testMultipleDemoInstancesCanCoexist()
+    public function testMultipleDemoInstancesCanCoexist(): void
     {
         $pubnub1 = PubNub::demo();
         $pubnub2 = PubNub::demo();

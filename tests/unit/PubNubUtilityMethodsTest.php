@@ -25,14 +25,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // TOKEN METHODS TESTS
     // ============================================================================
 
-    public function testGetTokenReturnsNullByDefault()
+    public function testGetTokenReturnsNullByDefault(): void
     {
         $token = $this->pubnub->getToken();
         
         $this->assertNull($token);
     }
 
-    public function testSetTokenAndGetToken()
+    public function testSetTokenAndGetToken(): void
     {
         $testToken = 'test-token-abc123';
         
@@ -41,7 +41,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertEquals($testToken, $this->pubnub->getToken());
     }
 
-    public function testSetTokenOverwritesPreviousToken()
+    public function testSetTokenOverwritesPreviousToken(): void
     {
         $this->pubnub->setToken('first-token');
         $this->assertEquals('first-token', $this->pubnub->getToken());
@@ -50,14 +50,14 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertEquals('second-token', $this->pubnub->getToken());
     }
 
-    public function testSetTokenWithEmptyString()
+    public function testSetTokenWithEmptyString(): void
     {
         $this->pubnub->setToken('');
         
         $this->assertEquals('', $this->pubnub->getToken());
     }
 
-    public function testSetTokenWithLongToken()
+    public function testSetTokenWithLongToken(): void
     {
         $longToken = 'qEF2AkF0GmFtet9DdHRsGDxDcmVzpURjaGFuoWpteS1jaGFubmVsGENDZ3JwoEN1c3KgQ3NwY6BEdXVpZKBDcGF0pURjaGFuoENnc' .
                      'nCgQ3VzcqBDc3BjoER1dWlkoERtZXRhoER1dWlkZ215LXV1aWRDc2lnWCAvUKKYbfc0vvvEhYqepG7-_lN5jh_yaA6eo98nAHV8Ug==';
@@ -67,7 +67,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertEquals($longToken, $this->pubnub->getToken());
     }
 
-    public function testSetTokenPersistsAcrossMultipleCalls()
+    public function testSetTokenPersistsAcrossMultipleCalls(): void
     {
         $token = 'persistent-token';
         $this->pubnub->setToken($token);
@@ -82,14 +82,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // TIMESTAMP METHOD TESTS
     // ============================================================================
 
-    public function testTimestampReturnsInteger()
+    public function testTimestampReturnsInteger(): void
     {
         $timestamp = $this->pubnub->timestamp();
         
         $this->assertIsInt($timestamp);
     }
 
-    public function testTimestampReturnsCurrentTime()
+    public function testTimestampReturnsCurrentTime(): void
     {
         $before = time();
         $timestamp = $this->pubnub->timestamp();
@@ -100,7 +100,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertLessThanOrEqual($after, $timestamp);
     }
 
-    public function testTimestampReturnsUnixTimestamp()
+    public function testTimestampReturnsUnixTimestamp(): void
     {
         $timestamp = $this->pubnub->timestamp();
         
@@ -111,7 +111,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertLessThan(4102444800, $timestamp); // Jan 1, 2100
     }
 
-    public function testTimestampChangesOverTime()
+    public function testTimestampChangesOverTime(): void
     {
         $timestamp1 = $this->pubnub->timestamp();
         usleep(1100000); // Sleep for slightly over 1 second
@@ -124,14 +124,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // SEQUENCE ID TESTS
     // ============================================================================
 
-    public function testGetSequenceIdReturnsInteger()
+    public function testGetSequenceIdReturnsInteger(): void
     {
         $sequenceId = $this->pubnub->getSequenceId();
         
         $this->assertIsInt($sequenceId);
     }
 
-    public function testGetSequenceIdStartsAtOne()
+    public function testGetSequenceIdStartsAtOne(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -144,7 +144,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertEquals(1, $sequenceId);
     }
 
-    public function testGetSequenceIdIncrementsOnEachCall()
+    public function testGetSequenceIdIncrementsOnEachCall(): void
     {
         $id1 = $this->pubnub->getSequenceId();
         $id2 = $this->pubnub->getSequenceId();
@@ -154,7 +154,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertEquals($id2 + 1, $id3);
     }
 
-    public function testGetSequenceIdWrapsAtMaxSequence()
+    public function testGetSequenceIdWrapsAtMaxSequence(): void
     {
         // Get sequence to near max
         for ($i = 0; $i < PubNub::$MAX_SEQUENCE; $i++) {
@@ -167,7 +167,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertEquals(1, $sequenceId);
     }
 
-    public function testGetSequenceIdIsUnique()
+    public function testGetSequenceIdIsUnique(): void
     {
         $ids = [];
         for ($i = 0; $i < 100; $i++) {
@@ -182,14 +182,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // TELEMETRY MANAGER TESTS
     // ============================================================================
 
-    public function testGetTelemetryManagerReturnsInstance()
+    public function testGetTelemetryManagerReturnsInstance(): void
     {
         $telemetryManager = $this->pubnub->getTelemetryManager();
         
         $this->assertInstanceOf(\PubNub\Managers\TelemetryManager::class, $telemetryManager);
     }
 
-    public function testGetTelemetryManagerReturnsSameInstance()
+    public function testGetTelemetryManagerReturnsSameInstance(): void
     {
         $telemetryManager1 = $this->pubnub->getTelemetryManager();
         $telemetryManager2 = $this->pubnub->getTelemetryManager();
@@ -201,14 +201,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // CONFIGURATION GETTER TESTS
     // ============================================================================
 
-    public function testGetConfigurationReturnsConfiguration()
+    public function testGetConfigurationReturnsConfiguration(): void
     {
         $config = $this->pubnub->getConfiguration();
         
         $this->assertInstanceOf(PNConfiguration::class, $config);
     }
 
-    public function testGetConfigurationReturnsSameConfiguration()
+    public function testGetConfigurationReturnsSameConfiguration(): void
     {
         $config1 = $this->pubnub->getConfiguration();
         $config2 = $this->pubnub->getConfiguration();
@@ -216,7 +216,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertSame($config1, $config2);
     }
 
-    public function testGetConfigurationReturnsCorrectValues()
+    public function testGetConfigurationReturnsCorrectValues(): void
     {
         $config = $this->pubnub->getConfiguration();
         
@@ -229,28 +229,28 @@ class PubNubUtilityMethodsTest extends TestCase
     // BASE PATH TESTS
     // ============================================================================
 
-    public function testGetBasePathReturnsString()
+    public function testGetBasePathReturnsString(): void
     {
         $basePath = $this->pubnub->getBasePath();
         
         $this->assertIsString($basePath);
     }
 
-    public function testGetBasePathReturnsValidUrl()
+    public function testGetBasePathReturnsValidUrl(): void
     {
         $basePath = $this->pubnub->getBasePath();
         
         $this->assertStringStartsWith('http', $basePath);
     }
 
-    public function testGetBasePathWithCustomHost()
+    public function testGetBasePathWithCustomHost(): void
     {
         $basePath = $this->pubnub->getBasePath('custom.pubnub.com');
         
         $this->assertEquals('https://custom.pubnub.com', $basePath);
     }
 
-    public function testGetBasePathUsesConfigurationOrigin()
+    public function testGetBasePathUsesConfigurationOrigin(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -267,14 +267,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // HTTP CLIENT TESTS
     // ============================================================================
 
-    public function testGetClientReturnsClientInterface()
+    public function testGetClientReturnsClientInterface(): void
     {
         $client = $this->pubnub->getClient();
         
         $this->assertInstanceOf(\Psr\Http\Client\ClientInterface::class, $client);
     }
 
-    public function testSetClientAndGetClient()
+    public function testSetClientAndGetClient(): void
     {
         $mockClient = $this->createMock(\Psr\Http\Client\ClientInterface::class);
         
@@ -283,7 +283,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertSame($mockClient, $this->pubnub->getClient());
     }
 
-    public function testGetClientReturnsSameInstanceByDefault()
+    public function testGetClientReturnsSameInstanceByDefault(): void
     {
         $client1 = $this->pubnub->getClient();
         $client2 = $this->pubnub->getClient();
@@ -295,14 +295,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // REQUEST FACTORY TESTS
     // ============================================================================
 
-    public function testGetRequestFactoryReturnsRequestFactoryInterface()
+    public function testGetRequestFactoryReturnsRequestFactoryInterface(): void
     {
         $requestFactory = $this->pubnub->getRequestFactory();
         
         $this->assertInstanceOf(\Psr\Http\Message\RequestFactoryInterface::class, $requestFactory);
     }
 
-    public function testSetRequestFactoryAndGetRequestFactory()
+    public function testSetRequestFactoryAndGetRequestFactory(): void
     {
         $mockFactory = $this->createMock(\Psr\Http\Message\RequestFactoryInterface::class);
         
@@ -311,7 +311,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertSame($mockFactory, $this->pubnub->getRequestFactory());
     }
 
-    public function testGetRequestFactoryReturnsSameInstanceByDefault()
+    public function testGetRequestFactoryReturnsSameInstanceByDefault(): void
     {
         $factory1 = $this->pubnub->getRequestFactory();
         $factory2 = $this->pubnub->getRequestFactory();
@@ -323,14 +323,14 @@ class PubNubUtilityMethodsTest extends TestCase
     // LOGGER TESTS
     // ============================================================================
 
-    public function testGetLoggerReturnsLoggerInterface()
+    public function testGetLoggerReturnsLoggerInterface(): void
     {
         $logger = $this->pubnub->getLogger();
         
         $this->assertInstanceOf(LoggerInterface::class, $logger);
     }
 
-    public function testSetLoggerAndGetLogger()
+    public function testSetLoggerAndGetLogger(): void
     {
         $mockLogger = $this->createMock(LoggerInterface::class);
         
@@ -339,7 +339,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertSame($mockLogger, $this->pubnub->getLogger());
     }
 
-    public function testGetLoggerReturnsSameInstanceByDefault()
+    public function testGetLoggerReturnsSameInstanceByDefault(): void
     {
         $logger1 = $this->pubnub->getLogger();
         $logger2 = $this->pubnub->getLogger();
@@ -347,7 +347,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertSame($logger1, $logger2);
     }
 
-    public function testSetLoggerReplacesDefaultLogger()
+    public function testSetLoggerReplacesDefaultLogger(): void
     {
         $defaultLogger = $this->pubnub->getLogger();
         $this->assertInstanceOf(\Psr\Log\NullLogger::class, $defaultLogger);

@@ -10,28 +10,28 @@ class CryptoCryptorGettersTest extends TestCase
     // AesCbcCryptor TESTS
     // ============================================================================
 
-    public function testAesCbcCryptorConstructor()
+    public function testAesCbcCryptorConstructor(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         
         $this->assertInstanceOf(AesCbcCryptor::class, $cryptor);
     }
 
-    public function testAesCbcCryptorGetCipherKey()
+    public function testAesCbcCryptorGetCipherKey(): void
     {
         $cryptor = new AesCbcCryptor('my-cipher-key');
         
         $this->assertEquals('my-cipher-key', $cryptor->getCipherKey());
     }
 
-    public function testAesCbcCryptorGetCipherKeyWithNullParameter()
+    public function testAesCbcCryptorGetCipherKeyWithNullParameter(): void
     {
         $cryptor = new AesCbcCryptor('my-cipher-key');
         
         $this->assertEquals('my-cipher-key', $cryptor->getCipherKey(null));
     }
 
-    public function testAesCbcCryptorGetCipherKeyWithCustomParameter()
+    public function testAesCbcCryptorGetCipherKeyWithCustomParameter(): void
     {
         $cryptor = new AesCbcCryptor('default-key');
         
@@ -39,7 +39,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals('custom-key', $cryptor->getCipherKey('custom-key'));
     }
 
-    public function testAesCbcCryptorGetIV()
+    public function testAesCbcCryptorGetIV(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         $iv = $cryptor->getIV();
@@ -48,7 +48,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals(16, strlen($iv)); // IV should be 16 bytes
     }
 
-    public function testAesCbcCryptorGetIVReturnsRandomValues()
+    public function testAesCbcCryptorGetIVReturnsRandomValues(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         $iv1 = $cryptor->getIV();
@@ -58,7 +58,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertNotEquals($iv1, $iv2);
     }
 
-    public function testAesCbcCryptorEncryptReturnsPayload()
+    public function testAesCbcCryptorEncryptReturnsPayload(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         $result = $cryptor->encrypt('test message');
@@ -66,7 +66,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertInstanceOf(\PubNub\Crypto\Payload::class, $result);
     }
 
-    public function testAesCbcCryptorEncryptPayloadHasCryptorId()
+    public function testAesCbcCryptorEncryptPayloadHasCryptorId(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         $result = $cryptor->encrypt('test message');
@@ -74,7 +74,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals('ACRH', $result->getCryptorId());
     }
 
-    public function testAesCbcCryptorEncryptPayloadHasData()
+    public function testAesCbcCryptorEncryptPayloadHasData(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         $result = $cryptor->encrypt('test message');
@@ -82,7 +82,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertNotEmpty($result->getData());
     }
 
-    public function testAesCbcCryptorEncryptPayloadHasCryptorData()
+    public function testAesCbcCryptorEncryptPayloadHasCryptorData(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         $result = $cryptor->encrypt('test message');
@@ -91,7 +91,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals(16, strlen($result->getCryptorData()));
     }
 
-    public function testAesCbcCryptorEncryptDecryptRoundTrip()
+    public function testAesCbcCryptorEncryptDecryptRoundTrip(): void
     {
         $cryptor = new AesCbcCryptor('test-key');
         $original = 'Hello, World!';
@@ -102,7 +102,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals($original, $decrypted);
     }
 
-    public function testAesCbcCryptorWithDifferentKeys()
+    public function testAesCbcCryptorWithDifferentKeys(): void
     {
         $cryptor1 = new AesCbcCryptor('key1');
         $cryptor2 = new AesCbcCryptor('key2');
@@ -115,28 +115,28 @@ class CryptoCryptorGettersTest extends TestCase
     // LegacyCryptor TESTS
     // ============================================================================
 
-    public function testLegacyCryptorConstructor()
+    public function testLegacyCryptorConstructor(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         
         $this->assertInstanceOf(LegacyCryptor::class, $cryptor);
     }
 
-    public function testLegacyCryptorConstructorWithRandomIV()
+    public function testLegacyCryptorConstructorWithRandomIV(): void
     {
         $cryptor = new LegacyCryptor('test-key', true);
         
         $this->assertInstanceOf(LegacyCryptor::class, $cryptor);
     }
 
-    public function testLegacyCryptorGetCipherKey()
+    public function testLegacyCryptorGetCipherKey(): void
     {
         $cryptor = new LegacyCryptor('my-legacy-key', false);
         
         $this->assertEquals('my-legacy-key', $cryptor->getCipherKey());
     }
 
-    public function testLegacyCryptorGetIVWithStaticIV()
+    public function testLegacyCryptorGetIVWithStaticIV(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         $iv = $cryptor->getIV();
@@ -146,7 +146,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals('0123456789012345', $iv); // Static IV
     }
 
-    public function testLegacyCryptorGetIVWithStaticIVIsConsistent()
+    public function testLegacyCryptorGetIVWithStaticIVIsConsistent(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         $iv1 = $cryptor->getIV();
@@ -157,7 +157,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals('0123456789012345', $iv1);
     }
 
-    public function testLegacyCryptorGetIVWithRandomIV()
+    public function testLegacyCryptorGetIVWithRandomIV(): void
     {
         $cryptor = new LegacyCryptor('test-key', true);
         $iv = $cryptor->getIV();
@@ -166,7 +166,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals(16, strlen($iv)); // IV should be 16 bytes
     }
 
-    public function testLegacyCryptorGetIVWithRandomIVReturnsRandomValues()
+    public function testLegacyCryptorGetIVWithRandomIVReturnsRandomValues(): void
     {
         $cryptor = new LegacyCryptor('test-key', true);
         $iv1 = $cryptor->getIV();
@@ -176,7 +176,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertNotEquals($iv1, $iv2);
     }
 
-    public function testLegacyCryptorEncryptReturnsPayload()
+    public function testLegacyCryptorEncryptReturnsPayload(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         $result = $cryptor->encrypt('test message');
@@ -184,7 +184,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertInstanceOf(\PubNub\Crypto\Payload::class, $result);
     }
 
-    public function testLegacyCryptorEncryptPayloadHasCryptorId()
+    public function testLegacyCryptorEncryptPayloadHasCryptorId(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         $result = $cryptor->encrypt('test message');
@@ -192,7 +192,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals('0000', $result->getCryptorId());
     }
 
-    public function testLegacyCryptorEncryptPayloadHasData()
+    public function testLegacyCryptorEncryptPayloadHasData(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         $result = $cryptor->encrypt('test message');
@@ -200,7 +200,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertNotEmpty($result->getData());
     }
 
-    public function testLegacyCryptorEncryptPayloadCryptorDataIsEmpty()
+    public function testLegacyCryptorEncryptPayloadCryptorDataIsEmpty(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         $result = $cryptor->encrypt('test message');
@@ -209,7 +209,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals('', $result->getCryptorData());
     }
 
-    public function testLegacyCryptorEncryptDecryptRoundTripWithStaticIV()
+    public function testLegacyCryptorEncryptDecryptRoundTripWithStaticIV(): void
     {
         $cryptor = new LegacyCryptor('test-key', false);
         $original = 'Hello, Legacy!';
@@ -220,7 +220,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals($original, $decrypted);
     }
 
-    public function testLegacyCryptorEncryptDecryptRoundTripWithRandomIV()
+    public function testLegacyCryptorEncryptDecryptRoundTripWithRandomIV(): void
     {
         $cryptor = new LegacyCryptor('test-key', true);
         $original = 'Hello, Random IV!';
@@ -231,7 +231,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals($original, $decrypted);
     }
 
-    public function testLegacyCryptorWithDifferentKeys()
+    public function testLegacyCryptorWithDifferentKeys(): void
     {
         $cryptor1 = new LegacyCryptor('key1', false);
         $cryptor2 = new LegacyCryptor('key2', true);
@@ -244,7 +244,7 @@ class CryptoCryptorGettersTest extends TestCase
     // COMPARISON TESTS
     // ============================================================================
 
-    public function testAesCbcCryptorAndLegacyCryptorHaveDifferentCryptorIds()
+    public function testAesCbcCryptorAndLegacyCryptorHaveDifferentCryptorIds(): void
     {
         $aesCbc = new AesCbcCryptor('key');
         $legacy = new LegacyCryptor('key', false);
@@ -257,7 +257,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertNotEquals($aesEncrypted->getCryptorId(), $legacyEncrypted->getCryptorId());
     }
 
-    public function testBothCryptorsReturnPayloadObjects()
+    public function testBothCryptorsReturnPayloadObjects(): void
     {
         $aesCbc = new AesCbcCryptor('key');
         $legacy = new LegacyCryptor('key', false);
@@ -269,7 +269,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertInstanceOf(\PubNub\Crypto\Payload::class, $legacyResult);
     }
 
-    public function testBothCryptorsHandleEmptyStrings()
+    public function testBothCryptorsHandleEmptyStrings(): void
     {
         $aesCbc = new AesCbcCryptor('key');
         $legacy = new LegacyCryptor('key', false);
@@ -281,7 +281,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertInstanceOf(\PubNub\Crypto\Payload::class, $legacyResult);
     }
 
-    public function testBothCryptorsHandleLongMessages()
+    public function testBothCryptorsHandleLongMessages(): void
     {
         $longMessage = str_repeat('A', 10000); // 10KB message
         
@@ -295,7 +295,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals($longMessage, $legacy->decrypt($legacyEncrypted));
     }
 
-    public function testBothCryptorsHandleUnicodeCharacters()
+    public function testBothCryptorsHandleUnicodeCharacters(): void
     {
         $unicodeMessage = '🔒 Encrypted 文字 مشفر';
         
@@ -309,7 +309,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals($unicodeMessage, $legacy->decrypt($legacyEncrypted));
     }
 
-    public function testBothCryptorsHaveGetCipherKeyMethod()
+    public function testBothCryptorsHaveGetCipherKeyMethod(): void
     {
         $aesCbc = new AesCbcCryptor('key1');
         $legacy = new LegacyCryptor('key2', false);
@@ -321,7 +321,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals('key2', $legacy->getCipherKey());
     }
 
-    public function testBothCryptorsHaveGetIVMethod()
+    public function testBothCryptorsHaveGetIVMethod(): void
     {
         $aesCbc = new AesCbcCryptor('key');
         $legacy = new LegacyCryptor('key', false);
@@ -333,7 +333,7 @@ class CryptoCryptorGettersTest extends TestCase
         $this->assertEquals(16, strlen($legacy->getIV()));
     }
 
-    public function testBothCryptorsImplementEncryptAndDecrypt()
+    public function testBothCryptorsImplementEncryptAndDecrypt(): void
     {
         $aesCbc = new AesCbcCryptor('key');
         $legacy = new LegacyCryptor('key', false);

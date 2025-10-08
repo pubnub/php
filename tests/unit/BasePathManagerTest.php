@@ -6,7 +6,7 @@ use PubNub\PNConfiguration;
 
 class BasePathManagerTest extends TestCase
 {
-    public function testGetBasePathWithDefaultSettings()
+    public function testGetBasePathWithDefaultSettings(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -19,7 +19,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('https://ps.pndsn.com', $basePath);
     }
 
-    public function testGetBasePathWithCustomOrigin()
+    public function testGetBasePathWithCustomOrigin(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -33,7 +33,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('https://custom.pubnub.com', $basePath);
     }
 
-    public function testGetBasePathWithCustomHost()
+    public function testGetBasePathWithCustomHost(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -46,7 +46,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('https://special.pubnub.com', $basePath);
     }
 
-    public function testGetBasePathWithCustomHostOverridesOrigin()
+    public function testGetBasePathWithCustomHostOverridesOrigin(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -60,7 +60,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('https://param-host.pubnub.com', $basePath);
     }
 
-    public function testGetBasePathWithInsecureConnection()
+    public function testGetBasePathWithInsecureConnection(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -74,7 +74,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('http://ps.pndsn.com', $basePath);
     }
 
-    public function testGetBasePathWithInsecureAndCustomOrigin()
+    public function testGetBasePathWithInsecureAndCustomOrigin(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -89,7 +89,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('http://insecure.pubnub.com', $basePath);
     }
 
-    public function testGetBasePathWithIPAddress()
+    public function testGetBasePathWithIPAddress(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -103,7 +103,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('https://192.168.1.100', $basePath);
     }
 
-    public function testGetBasePathWithPortNumber()
+    public function testGetBasePathWithPortNumber(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -117,7 +117,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals('https://localhost:8080', $basePath);
     }
 
-    public function testGetBasePathMultipleCalls()
+    public function testGetBasePathMultipleCalls(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -133,7 +133,7 @@ class BasePathManagerTest extends TestCase
         $this->assertEquals($basePath2, $basePath3);
     }
 
-    public function testGetBasePathWithDifferentCustomHosts()
+    public function testGetBasePathWithDifferentCustomHosts(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');

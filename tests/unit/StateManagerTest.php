@@ -23,12 +23,12 @@ class StateManagerTest extends TestCase
         $this->stateManager = new StateManager($this->pubnub);
     }
 
-    public function testIsEmptyByDefault()
+    public function testIsEmptyByDefault(): void
     {
         $this->assertTrue($this->stateManager->isEmpty());
     }
 
-    public function testAdaptSubscribeBuilderWithChannels()
+    public function testAdaptSubscribeBuilderWithChannels(): void
     {
         $operation = new SubscribeOperation(
             ['channel1', 'channel2'],
@@ -42,7 +42,7 @@ class StateManagerTest extends TestCase
         $this->assertFalse($this->stateManager->isEmpty());
     }
 
-    public function testAdaptSubscribeBuilderWithChannelGroups()
+    public function testAdaptSubscribeBuilderWithChannelGroups(): void
     {
         $operation = new SubscribeOperation(
             [],
@@ -56,7 +56,7 @@ class StateManagerTest extends TestCase
         $this->assertFalse($this->stateManager->isEmpty());
     }
 
-    public function testAdaptSubscribeBuilderWithChannelsAndGroups()
+    public function testAdaptSubscribeBuilderWithChannelsAndGroups(): void
     {
         $operation = new SubscribeOperation(
             ['channel1'],
@@ -70,7 +70,7 @@ class StateManagerTest extends TestCase
         $this->assertFalse($this->stateManager->isEmpty());
     }
 
-    public function testPrepareChannelListWithoutPresence()
+    public function testPrepareChannelListWithoutPresence(): void
     {
         $operation = new SubscribeOperation(
             ['channel1', 'channel2'],
@@ -87,7 +87,7 @@ class StateManagerTest extends TestCase
         $this->assertContains('channel2', $channelList);
     }
 
-    public function testPrepareChannelListWithPresence()
+    public function testPrepareChannelListWithPresence(): void
     {
         $operation = new SubscribeOperation(
             ['channel1', 'channel2'],
@@ -106,7 +106,7 @@ class StateManagerTest extends TestCase
         $this->assertContains('channel2-pnpres', $channelList);
     }
 
-    public function testPrepareChannelGroupListWithoutPresence()
+    public function testPrepareChannelGroupListWithoutPresence(): void
     {
         $operation = new SubscribeOperation(
             [],
@@ -123,7 +123,7 @@ class StateManagerTest extends TestCase
         $this->assertContains('group2', $groupList);
     }
 
-    public function testPrepareChannelGroupListWithPresence()
+    public function testPrepareChannelGroupListWithPresence(): void
     {
         $operation = new SubscribeOperation(
             [],
@@ -142,7 +142,7 @@ class StateManagerTest extends TestCase
         $this->assertContains('group2-pnpres', $groupList);
     }
 
-    public function testAdaptUnsubscribeBuilderRemovesChannels()
+    public function testAdaptUnsubscribeBuilderRemovesChannels(): void
     {
         // First subscribe
         $subscribeOp = new SubscribeOperation(
@@ -165,7 +165,7 @@ class StateManagerTest extends TestCase
         $this->assertNotContains('channel1', $channelList);
     }
 
-    public function testAdaptUnsubscribeBuilderRemovesChannelGroups()
+    public function testAdaptUnsubscribeBuilderRemovesChannelGroups(): void
     {
         // First subscribe
         $subscribeOp = new SubscribeOperation(
@@ -188,7 +188,7 @@ class StateManagerTest extends TestCase
         $this->assertNotContains('group1', $groupList);
     }
 
-    public function testAdaptUnsubscribeBuilderRemovesPresenceChannels()
+    public function testAdaptUnsubscribeBuilderRemovesPresenceChannels(): void
     {
         // Subscribe with presence
         $subscribeOp = new SubscribeOperation(
@@ -214,7 +214,7 @@ class StateManagerTest extends TestCase
         $this->assertNotContains('channel1-pnpres', $channelList);
     }
 
-    public function testIsEmptyAfterUnsubscribingFromAll()
+    public function testIsEmptyAfterUnsubscribingFromAll(): void
     {
         // Subscribe
         $subscribeOp = new SubscribeOperation(
@@ -235,7 +235,7 @@ class StateManagerTest extends TestCase
         $this->assertTrue($this->stateManager->isEmpty());
     }
 
-    public function testMultipleSubscribeOperations()
+    public function testMultipleSubscribeOperations(): void
     {
         // First subscription
         $operation1 = new SubscribeOperation(
@@ -262,7 +262,7 @@ class StateManagerTest extends TestCase
         $this->assertContains('channel2', $channelList);
     }
 
-    public function testResubscribeToSameChannel()
+    public function testResubscribeToSameChannel(): void
     {
         // Subscribe to channel1
         $operation1 = new SubscribeOperation(
@@ -288,7 +288,7 @@ class StateManagerTest extends TestCase
         $this->assertContains('channel1', $channelList);
     }
 
-    public function testEmptyChannelListWhenNoChannels()
+    public function testEmptyChannelListWhenNoChannels(): void
     {
         $operation = new SubscribeOperation(
             [],
@@ -303,7 +303,7 @@ class StateManagerTest extends TestCase
         $this->assertEmpty($channelList);
     }
 
-    public function testEmptyGroupListWhenNoGroups()
+    public function testEmptyGroupListWhenNoGroups(): void
     {
         $operation = new SubscribeOperation(
             ['channel1'],
@@ -318,7 +318,7 @@ class StateManagerTest extends TestCase
         $this->assertEmpty($groupList);
     }
 
-    public function testUnsubscribeFromNonExistentChannel()
+    public function testUnsubscribeFromNonExistentChannel(): void
     {
         $operation = new SubscribeOperation(
             ['channel1'],

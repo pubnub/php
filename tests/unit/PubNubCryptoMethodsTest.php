@@ -11,7 +11,7 @@ class PubNubCryptoMethodsTest extends TestCase
     // isCryptoEnabled() TESTS
     // ============================================================================
 
-    public function testIsCryptoEnabledReturnsFalseByDefault()
+    public function testIsCryptoEnabledReturnsFalseByDefault(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -22,7 +22,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertFalse($pubnub->isCryptoEnabled());
     }
 
-    public function testIsCryptoEnabledReturnsTrueWhenCipherKeySet()
+    public function testIsCryptoEnabledReturnsTrueWhenCipherKeySet(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -34,7 +34,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertTrue($pubnub->isCryptoEnabled());
     }
 
-    public function testIsCryptoEnabledReturnsTrueWhenCryptoModuleSet()
+    public function testIsCryptoEnabledReturnsTrueWhenCryptoModuleSet(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -47,7 +47,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertTrue($pubnub->isCryptoEnabled());
     }
 
-    public function testIsCryptoEnabledAfterSettingCryptoOnPubNub()
+    public function testIsCryptoEnabledAfterSettingCryptoOnPubNub(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -66,7 +66,7 @@ class PubNubCryptoMethodsTest extends TestCase
     // getCrypto() TESTS
     // ============================================================================
 
-    public function testGetCryptoReturnsNullWhenNotConfigured()
+    public function testGetCryptoReturnsNullWhenNotConfigured(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -77,7 +77,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertNull($pubnub->getCrypto());
     }
 
-    public function testGetCryptoReturnsModuleWhenCipherKeySet()
+    public function testGetCryptoReturnsModuleWhenCipherKeySet(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -90,7 +90,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertInstanceOf(CryptoModule::class, $crypto);
     }
 
-    public function testGetCryptoReturnsModuleWhenCryptoModuleSet()
+    public function testGetCryptoReturnsModuleWhenCryptoModuleSet(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -106,7 +106,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertSame($cryptoModule, $crypto);
     }
 
-    public function testGetCryptoReturnsConfigurationCryptoWhenNoPubNubCrypto()
+    public function testGetCryptoReturnsConfigurationCryptoWhenNoPubNubCrypto(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -119,7 +119,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertInstanceOf(CryptoModule::class, $crypto);
     }
 
-    public function testGetCryptoPrefersInstanceCryptoOverConfiguration()
+    public function testGetCryptoPrefersInstanceCryptoOverConfiguration(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -140,7 +140,7 @@ class PubNubCryptoMethodsTest extends TestCase
     // setCrypto() TESTS
     // ============================================================================
 
-    public function testSetCryptoStoresModule()
+    public function testSetCryptoStoresModule(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -154,7 +154,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertSame($cryptoModule, $pubnub->getCrypto());
     }
 
-    public function testSetCryptoOverwritesPreviousCrypto()
+    public function testSetCryptoOverwritesPreviousCrypto(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -171,7 +171,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertSame($crypto2, $pubnub->getCrypto());
     }
 
-    public function testSetCryptoEnablesCrypto()
+    public function testSetCryptoEnablesCrypto(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -186,7 +186,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertTrue($pubnub->isCryptoEnabled());
     }
 
-    public function testSetCryptoWithLegacyCryptor()
+    public function testSetCryptoWithLegacyCryptor(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -200,7 +200,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertInstanceOf(CryptoModule::class, $pubnub->getCrypto());
     }
 
-    public function testSetCryptoWithAesCbcCryptor()
+    public function testSetCryptoWithAesCbcCryptor(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -214,7 +214,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertInstanceOf(CryptoModule::class, $pubnub->getCrypto());
     }
 
-    public function testSetCryptoWithRandomIV()
+    public function testSetCryptoWithRandomIV(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -229,7 +229,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertNotNull($crypto);
     }
 
-    public function testSetCryptoWithStaticIV()
+    public function testSetCryptoWithStaticIV(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -248,7 +248,7 @@ class PubNubCryptoMethodsTest extends TestCase
     // INTEGRATION TESTS (getCrypto + setCrypto + isCryptoEnabled)
     // ============================================================================
 
-    public function testCryptoWorkflowConfigurationOnly()
+    public function testCryptoWorkflowConfigurationOnly(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -261,7 +261,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertInstanceOf(CryptoModule::class, $pubnub->getCrypto());
     }
 
-    public function testCryptoWorkflowInstanceOnly()
+    public function testCryptoWorkflowInstanceOnly(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -277,7 +277,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertSame($cryptoModule, $pubnub->getCrypto());
     }
 
-    public function testCryptoWorkflowBothConfigurationAndInstance()
+    public function testCryptoWorkflowBothConfigurationAndInstance(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -294,7 +294,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertSame($instanceCrypto, $pubnub->getCrypto());
     }
 
-    public function testCryptoCanBeUsedForEncryptionDecryption()
+    public function testCryptoCanBeUsedForEncryptionDecryption(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
@@ -313,7 +313,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertEquals($plaintext, $decrypted);
     }
 
-    public function testMultiplePubNubInstancesWithDifferentCrypto()
+    public function testMultiplePubNubInstancesWithDifferentCrypto(): void
     {
         $config1 = new PNConfiguration();
         $config1->setSubscribeKey('demo');
@@ -334,7 +334,7 @@ class PubNubCryptoMethodsTest extends TestCase
         $this->assertSame($crypto2, $pubnub2->getCrypto());
     }
 
-    public function testCryptoModuleCanBeRetrievedAndUsedDirectly()
+    public function testCryptoModuleCanBeRetrievedAndUsedDirectly(): void
     {
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');

@@ -9,21 +9,21 @@ class PubNubSdkInfoTest extends TestCase
     // getSdkVersion() TESTS
     // ============================================================================
 
-    public function testGetSdkVersionReturnsString()
+    public function testGetSdkVersionReturnsString(): void
     {
         $version = PubNub::getSdkVersion();
         
         $this->assertIsString($version);
     }
 
-    public function testGetSdkVersionIsNotEmpty()
+    public function testGetSdkVersionIsNotEmpty(): void
     {
         $version = PubNub::getSdkVersion();
         
         $this->assertNotEmpty($version);
     }
 
-    public function testGetSdkVersionFollowsSemanticVersioning()
+    public function testGetSdkVersionFollowsSemanticVersioning(): void
     {
         $version = PubNub::getSdkVersion();
         
@@ -32,7 +32,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression($pattern, $version);
     }
 
-    public function testGetSdkVersionIsConsistent()
+    public function testGetSdkVersionIsConsistent(): void
     {
         $version1 = PubNub::getSdkVersion();
         $version2 = PubNub::getSdkVersion();
@@ -40,14 +40,14 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertEquals($version1, $version2);
     }
 
-    public function testGetSdkVersionStartsWithDigit()
+    public function testGetSdkVersionStartsWithDigit(): void
     {
         $version = PubNub::getSdkVersion();
         
         $this->assertMatchesRegularExpression('/^\d/', $version);
     }
 
-    public function testGetSdkVersionContainsMajorMinorPatch()
+    public function testGetSdkVersionContainsMajorMinorPatch(): void
     {
         $version = PubNub::getSdkVersion();
         
@@ -56,7 +56,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertGreaterThanOrEqual(3, count($parts));
     }
 
-    public function testGetSdkVersionMajorVersionIsNumeric()
+    public function testGetSdkVersionMajorVersionIsNumeric(): void
     {
         $version = PubNub::getSdkVersion();
         $parts = explode('.', $version);
@@ -64,7 +64,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertIsNumeric($parts[0]);
     }
 
-    public function testGetSdkVersionMinorVersionIsNumeric()
+    public function testGetSdkVersionMinorVersionIsNumeric(): void
     {
         $version = PubNub::getSdkVersion();
         $parts = explode('.', $version);
@@ -72,7 +72,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertIsNumeric($parts[1]);
     }
 
-    public function testGetSdkVersionPatchVersionIsNumeric()
+    public function testGetSdkVersionPatchVersionIsNumeric(): void
     {
         $version = PubNub::getSdkVersion();
         $parts = explode('.', $version);
@@ -87,21 +87,21 @@ class PubNubSdkInfoTest extends TestCase
     // getSdkName() TESTS
     // ============================================================================
 
-    public function testGetSdkNameReturnsString()
+    public function testGetSdkNameReturnsString(): void
     {
         $name = PubNub::getSdkName();
         
         $this->assertIsString($name);
     }
 
-    public function testGetSdkNameIsNotEmpty()
+    public function testGetSdkNameIsNotEmpty(): void
     {
         $name = PubNub::getSdkName();
         
         $this->assertNotEmpty($name);
     }
 
-    public function testGetSdkNameIsConsistent()
+    public function testGetSdkNameIsConsistent(): void
     {
         $name1 = PubNub::getSdkName();
         $name2 = PubNub::getSdkName();
@@ -109,7 +109,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertEquals($name1, $name2);
     }
 
-    public function testGetSdkNameContainsPHP()
+    public function testGetSdkNameContainsPHP(): void
     {
         $name = PubNub::getSdkName();
         
@@ -117,7 +117,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression('/php/i', $name);
     }
 
-    public function testGetSdkNameContainsPubNub()
+    public function testGetSdkNameContainsPubNub(): void
     {
         $name = PubNub::getSdkName();
         
@@ -125,7 +125,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression('/pubnub/i', $name);
     }
 
-    public function testGetSdkNameFormat()
+    public function testGetSdkNameFormat(): void
     {
         $name = PubNub::getSdkName();
         
@@ -133,7 +133,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-zA-Z\-]+$/', $name);
     }
 
-    public function testGetSdkNameDoesNotContainVersion()
+    public function testGetSdkNameDoesNotContainVersion(): void
     {
         $name = PubNub::getSdkName();
         
@@ -145,21 +145,21 @@ class PubNubSdkInfoTest extends TestCase
     // getSdkFullName() TESTS
     // ============================================================================
 
-    public function testGetSdkFullNameReturnsString()
+    public function testGetSdkFullNameReturnsString(): void
     {
         $fullName = PubNub::getSdkFullName();
         
         $this->assertIsString($fullName);
     }
 
-    public function testGetSdkFullNameIsNotEmpty()
+    public function testGetSdkFullNameIsNotEmpty(): void
     {
         $fullName = PubNub::getSdkFullName();
         
         $this->assertNotEmpty($fullName);
     }
 
-    public function testGetSdkFullNameIsConsistent()
+    public function testGetSdkFullNameIsConsistent(): void
     {
         $fullName1 = PubNub::getSdkFullName();
         $fullName2 = PubNub::getSdkFullName();
@@ -167,7 +167,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertEquals($fullName1, $fullName2);
     }
 
-    public function testGetSdkFullNameContainsSdkName()
+    public function testGetSdkFullNameContainsSdkName(): void
     {
         $name = PubNub::getSdkName();
         $fullName = PubNub::getSdkFullName();
@@ -175,7 +175,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertStringContainsString($name, $fullName);
     }
 
-    public function testGetSdkFullNameContainsSdkVersion()
+    public function testGetSdkFullNameContainsSdkVersion(): void
     {
         $version = PubNub::getSdkVersion();
         $fullName = PubNub::getSdkFullName();
@@ -183,7 +183,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertStringContainsString($version, $fullName);
     }
 
-    public function testGetSdkFullNameFormat()
+    public function testGetSdkFullNameFormat(): void
     {
         $fullName = PubNub::getSdkFullName();
         
@@ -192,7 +192,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression($pattern, $fullName);
     }
 
-    public function testGetSdkFullNameIsConcatenationOfNameAndVersion()
+    public function testGetSdkFullNameIsConcatenationOfNameAndVersion(): void
     {
         $name = PubNub::getSdkName();
         $version = PubNub::getSdkVersion();
@@ -203,7 +203,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression($expectedPattern, $fullName);
     }
 
-    public function testGetSdkFullNameLongerThanName()
+    public function testGetSdkFullNameLongerThanName(): void
     {
         $name = PubNub::getSdkName();
         $fullName = PubNub::getSdkFullName();
@@ -211,7 +211,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertGreaterThan(strlen($name), strlen($fullName));
     }
 
-    public function testGetSdkFullNameLongerThanVersion()
+    public function testGetSdkFullNameLongerThanVersion(): void
     {
         $version = PubNub::getSdkVersion();
         $fullName = PubNub::getSdkFullName();
@@ -223,7 +223,7 @@ class PubNubSdkInfoTest extends TestCase
     // INTEGRATION TESTS
     // ============================================================================
 
-    public function testSdkInfoMethodsAreAllConsistent()
+    public function testSdkInfoMethodsAreAllConsistent(): void
     {
         $name = PubNub::getSdkName();
         $version = PubNub::getSdkVersion();
@@ -233,7 +233,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertStringContainsString($version, $fullName);
     }
 
-    public function testSdkInfoMethodsCanBeCalledMultipleTimes()
+    public function testSdkInfoMethodsCanBeCalledMultipleTimes(): void
     {
         // Call each method multiple times
         for ($i = 0; $i < 5; $i++) {
@@ -243,7 +243,7 @@ class PubNubSdkInfoTest extends TestCase
         }
     }
 
-    public function testSdkInfoMethodsReturnSameValuesAcrossInstances()
+    public function testSdkInfoMethodsReturnSameValuesAcrossInstances(): void
     {
         $pubnub1 = PubNub::demo();
         $pubnub2 = PubNub::demo();
@@ -254,7 +254,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertEquals(PubNub::getSdkFullName(), PubNub::getSdkFullName());
     }
 
-    public function testSdkVersionCanBeParsed()
+    public function testSdkVersionCanBeParsed(): void
     {
         $version = PubNub::getSdkVersion();
         
@@ -271,7 +271,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertIsNumeric($matches[1]); // Patch
     }
 
-    public function testSdkFullNameIsUsableForUserAgent()
+    public function testSdkFullNameIsUsableForUserAgent(): void
     {
         $fullName = PubNub::getSdkFullName();
         
@@ -279,7 +279,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-zA-Z0-9\-\.\/]+$/', $fullName);
     }
 
-    public function testSdkNameIsUsableAsIdentifier()
+    public function testSdkNameIsUsableAsIdentifier(): void
     {
         $name = PubNub::getSdkName();
         
@@ -287,7 +287,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-zA-Z\-]+$/', $name);
     }
 
-    public function testSdkVersionIsValidSemanticVersion()
+    public function testSdkVersionIsValidSemanticVersion(): void
     {
         $version = PubNub::getSdkVersion();
         
@@ -301,7 +301,7 @@ class PubNubSdkInfoTest extends TestCase
         $this->assertMatchesRegularExpression($semverPattern, $version);
     }
 
-    public function testSdkInfoDoesNotChangeAtRuntime()
+    public function testSdkInfoDoesNotChangeAtRuntime(): void
     {
         // Capture initial values
         $name1 = PubNub::getSdkName();
