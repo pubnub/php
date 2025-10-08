@@ -9,7 +9,7 @@ class PubNubCborDecodeTest extends TestCase
     // UNSIGNED INTEGER TESTS
     // ============================================================================
 
-    public function testDecodeUnsignedIntegerSmall()
+    public function testDecodeUnsignedIntegerSmall(): void
     {
         // Test small integers (0-23) which are encoded directly in the additional byte
         $this->assertEquals(0, PubNubCborDecode::decode('00'));
@@ -18,7 +18,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEquals(23, PubNubCborDecode::decode('17'));
     }
 
-    public function testDecodeUnsignedInteger1Byte()
+    public function testDecodeUnsignedInteger1Byte(): void
     {
         // Test 1-byte integers (24-255)
         $this->assertEquals(24, PubNubCborDecode::decode('1818'));
@@ -26,7 +26,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEquals(255, PubNubCborDecode::decode('18FF'));
     }
 
-    public function testDecodeUnsignedInteger2Bytes()
+    public function testDecodeUnsignedInteger2Bytes(): void
     {
         // Test 2-byte integers (256-65535)
         $this->assertEquals(256, PubNubCborDecode::decode('190100'));
@@ -34,14 +34,14 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEquals(65535, PubNubCborDecode::decode('19FFFF'));
     }
 
-    public function testDecodeUnsignedInteger4Bytes()
+    public function testDecodeUnsignedInteger4Bytes(): void
     {
         // Test 4-byte integers
         $this->assertEquals(100000, PubNubCborDecode::decode('1A000186A0'));
         $this->assertEquals(1000000, PubNubCborDecode::decode('1A000F4240'));
     }
 
-    public function testDecodeUnsignedInteger8Bytes()
+    public function testDecodeUnsignedInteger8Bytes(): void
     {
         // Test 8-byte integers
         $this->assertEquals(1000000000, PubNubCborDecode::decode('1B000000003B9ACA00'));
@@ -51,7 +51,7 @@ class PubNubCborDecodeTest extends TestCase
     // NEGATIVE INTEGER TESTS
     // ============================================================================
 
-    public function testDecodeNegativeIntegerSmall()
+    public function testDecodeNegativeIntegerSmall(): void
     {
         // Negative integers: -1 to -24 encoded as 0x20-0x37
         $this->assertEquals(-1, PubNubCborDecode::decode('20'));
@@ -59,7 +59,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEquals(-24, PubNubCborDecode::decode('37'));
     }
 
-    public function testDecodeNegativeInteger1Byte()
+    public function testDecodeNegativeInteger1Byte(): void
     {
         // -25 to -256
         $this->assertEquals(-25, PubNubCborDecode::decode('3818'));
@@ -67,7 +67,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEquals(-256, PubNubCborDecode::decode('38FF'));
     }
 
-    public function testDecodeNegativeInteger2Bytes()
+    public function testDecodeNegativeInteger2Bytes(): void
     {
         // -257 to -65536
         $this->assertEquals(-1000, PubNubCborDecode::decode('3903E7'));
@@ -77,18 +77,18 @@ class PubNubCborDecodeTest extends TestCase
     // BYTE STRING TESTS
     // ============================================================================
 
-    public function testDecodeByteStringEmpty()
+    public function testDecodeByteStringEmpty(): void
     {
         $this->assertEquals('', PubNubCborDecode::decode('40'));
     }
 
-    public function testDecodeByteStringSmall()
+    public function testDecodeByteStringSmall(): void
     {
         // Byte string "hello" (68656C6C6F in hex)
         $this->assertEquals('hello', PubNubCborDecode::decode('4568656C6C6F'));
     }
 
-    public function testDecodeByteString1ByteLength()
+    public function testDecodeByteString1ByteLength(): void
     {
         // Byte string with 1-byte length indicator
         $decoded = PubNubCborDecode::decode('5818' . bin2hex(str_repeat('a', 24)));
@@ -99,24 +99,24 @@ class PubNubCborDecodeTest extends TestCase
     // TEXT STRING TESTS
     // ============================================================================
 
-    public function testDecodeTextStringEmpty()
+    public function testDecodeTextStringEmpty(): void
     {
         $this->assertEquals('', PubNubCborDecode::decode('60'));
     }
 
-    public function testDecodeTextStringSmall()
+    public function testDecodeTextStringSmall(): void
     {
         // Text string "IETF"
         $this->assertEquals('IETF', PubNubCborDecode::decode('6449455446'));
     }
 
-    public function testDecodeTextStringUnicode()
+    public function testDecodeTextStringUnicode(): void
     {
         // Text string with unicode
         $this->assertEquals('hello', PubNubCborDecode::decode('6568656C6C6F'));
     }
 
-    public function testDecodeTextString1ByteLength()
+    public function testDecodeTextString1ByteLength(): void
     {
         // Text string with 1-byte length
         $text = str_repeat('x', 24);
@@ -128,32 +128,32 @@ class PubNubCborDecodeTest extends TestCase
     // ARRAY TESTS
     // ============================================================================
 
-    public function testDecodeArrayEmpty()
+    public function testDecodeArrayEmpty(): void
     {
         $this->assertEquals([], PubNubCborDecode::decode('80'));
     }
 
-    public function testDecodeArrayWithIntegers()
+    public function testDecodeArrayWithIntegers(): void
     {
         // Array [1, 2, 3]
         $this->assertEquals([1, 2, 3], PubNubCborDecode::decode('83010203'));
     }
 
-    public function testDecodeArrayWithMixedTypes()
+    public function testDecodeArrayWithMixedTypes(): void
     {
         // Array [1, "hello"]
         $result = PubNubCborDecode::decode('82016568656C6C6F');
         $this->assertEquals([1, 'hello'], $result);
     }
 
-    public function testDecodeArrayNested()
+    public function testDecodeArrayNested(): void
     {
         // Array [[1, 2], [3, 4]]
         $result = PubNubCborDecode::decode('828201028203 04');
         $this->assertEquals([[1, 2], [3, 4]], $result);
     }
 
-    public function testDecodeArrayWithNegativeNumbers()
+    public function testDecodeArrayWithNegativeNumbers(): void
     {
         // Array [-1, -2, -3]
         $this->assertEquals([-1, -2, -3], PubNubCborDecode::decode('83202122'));
@@ -163,33 +163,33 @@ class PubNubCborDecodeTest extends TestCase
     // HASHMAP (OBJECT) TESTS
     // ============================================================================
 
-    public function testDecodeHashmapEmpty()
+    public function testDecodeHashmapEmpty(): void
     {
         $this->assertEquals([], PubNubCborDecode::decode('A0'));
     }
 
-    public function testDecodeHashmapWithStrings()
+    public function testDecodeHashmapWithStrings(): void
     {
         // Map {"a": "A"}
         $result = PubNubCborDecode::decode('A161616141');
         $this->assertEquals(['a' => 'A'], $result);
     }
 
-    public function testDecodeHashmapWithNumbers()
+    public function testDecodeHashmapWithNumbers(): void
     {
         // Map {"a": 1, "b": 2}
         $result = PubNubCborDecode::decode('A26161016162 02');
         $this->assertEquals(['a' => 1, 'b' => 2], $result);
     }
 
-    public function testDecodeHashmapNested()
+    public function testDecodeHashmapNested(): void
     {
         // Map {"a": {"b": "c"}}
         $result = PubNubCborDecode::decode('A16161A161626163');
         $this->assertEquals(['a' => ['b' => 'c']], $result);
     }
 
-    public function testDecodeHashmapWithArray()
+    public function testDecodeHashmapWithArray(): void
     {
         // Map {"array": [1, 2, 3]}
     $result = PubNubCborDecode::decode('A16561727261798301 0203');
@@ -200,22 +200,22 @@ class PubNubCborDecodeTest extends TestCase
     // SIMPLE VALUES TESTS
     // ============================================================================
 
-    public function testDecodeSimpleValueFalse()
+    public function testDecodeSimpleValueFalse(): void
     {
         $this->assertFalse(PubNubCborDecode::decode('F4'));
     }
 
-    public function testDecodeSimpleValueTrue()
+    public function testDecodeSimpleValueTrue(): void
     {
         $this->assertTrue(PubNubCborDecode::decode('F5'));
     }
 
-    public function testDecodeSimpleValueNull()
+    public function testDecodeSimpleValueNull(): void
     {
         $this->assertNull(PubNubCborDecode::decode('F6'));
     }
 
-    public function testDecodeSimpleValueUndefined()
+    public function testDecodeSimpleValueUndefined(): void
     {
         // Undefined maps to null in PHP
         $this->assertNull(PubNubCborDecode::decode('F7'));
@@ -225,7 +225,7 @@ class PubNubCborDecodeTest extends TestCase
     // FLOAT TESTS
     // ============================================================================
 
-    public function testDecodeFloat16Bit()
+    public function testDecodeFloat16Bit(): void
     {
         // Test 16-bit float (half-precision)
         // 1.0 in half precision: 0x3C00
@@ -233,7 +233,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEquals(1.0, $result);
     }
 
-    public function testDecodeFloat32Bit()
+    public function testDecodeFloat32Bit(): void
     {
         // Test 32-bit float (single precision)
         // 3.14159 approximately in single precision
@@ -241,7 +241,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEqualsWithDelta(3.14159, $result, 0.00001);
     }
 
-    public function testDecodeFloat64Bit()
+    public function testDecodeFloat64Bit(): void
     {
         // Test 64-bit float (double precision)
         // 1.1 in double precision
@@ -249,21 +249,21 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEqualsWithDelta(1.1, $result, 0.0000001);
     }
 
-    public function testDecodeFloatZero()
+    public function testDecodeFloatZero(): void
     {
         // 0.0 in half precision: 0x0000
         $result = PubNubCborDecode::decode('F90000');
         $this->assertEquals(0.0, $result);
     }
 
-    public function testDecodeFloatNegative()
+    public function testDecodeFloatNegative(): void
     {
         // -1.0 in half precision: 0xBC00
         $result = PubNubCborDecode::decode('F9BC00');
         $this->assertEquals(-1.0, $result);
     }
 
-    public function testDecodeFloatInfinity()
+    public function testDecodeFloatInfinity(): void
     {
         // Positive infinity in half precision: 0x7C00
         $result = PubNubCborDecode::decode('F97C00');
@@ -274,7 +274,7 @@ class PubNubCborDecodeTest extends TestCase
     // COMPLEX DATA STRUCTURE TESTS
     // ============================================================================
 
-    public function testDecodeComplexNestedStructure()
+    public function testDecodeComplexNestedStructure(): void
     {
         // Complex structure: {"users": [{"name": "Alice", "age": 30}]}
         $cbor = 'A1' . // Map with 1 entry
@@ -295,7 +295,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertEquals(30, $result['users'][0]['age']);
     }
 
-    public function testDecodeArrayOfMixedPrimitives()
+    public function testDecodeArrayOfMixedPrimitives(): void
     {
         // Array with: integer, string, boolean, null
         // [42, "test", true, null]
@@ -314,21 +314,21 @@ class PubNubCborDecodeTest extends TestCase
     // INPUT SANITIZATION TESTS
     // ============================================================================
 
-    public function testDecodeWithSpaces()
+    public function testDecodeWithSpaces(): void
     {
         // Should handle spaces in input
         $this->assertEquals(42, PubNubCborDecode::decode('18 2A'));
         $this->assertEquals([1, 2], PubNubCborDecode::decode('82 01 02'));
     }
 
-    public function testDecodeWithLowerCase()
+    public function testDecodeWithLowerCase(): void
     {
         // Should handle lowercase hex
         $this->assertEquals(255, PubNubCborDecode::decode('18ff'));
         $this->assertEquals('hello', PubNubCborDecode::decode('6568656c6c6f'));
     }
 
-    public function testDecodeWithMixedCase()
+    public function testDecodeWithMixedCase(): void
     {
         // Should handle mixed case hex
         $this->assertEquals(1000, PubNubCborDecode::decode('1903E8'));
@@ -339,7 +339,7 @@ class PubNubCborDecodeTest extends TestCase
     // ERROR HANDLING TESTS
     // ============================================================================
 
-    public function testDecodeInvalidHexCharacters()
+    public function testDecodeInvalidHexCharacters(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid Input');
@@ -347,7 +347,7 @@ class PubNubCborDecodeTest extends TestCase
         PubNubCborDecode::decode('GG');
     }
 
-    public function testDecodeInvalidHexWithSpecialChars()
+    public function testDecodeInvalidHexWithSpecialChars(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid Input');
@@ -355,7 +355,7 @@ class PubNubCborDecodeTest extends TestCase
         PubNubCborDecode::decode('18@A');
     }
 
-    public function testDecodeInvalidHexWithNonHexLetters()
+    public function testDecodeInvalidHexWithNonHexLetters(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid Input');
@@ -367,32 +367,32 @@ class PubNubCborDecodeTest extends TestCase
     // EDGE CASES
     // ============================================================================
 
-    public function testDecodeEmptyArray()
+    public function testDecodeEmptyArray(): void
     {
         $result = PubNubCborDecode::decode('80');
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
-    public function testDecodeEmptyMap()
+    public function testDecodeEmptyMap(): void
     {
         $result = PubNubCborDecode::decode('A0');
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
-    public function testDecodeEmptyString()
+    public function testDecodeEmptyString(): void
     {
         $this->assertEquals('', PubNubCborDecode::decode('60'));
     }
 
-    public function testDecodeLargeInteger()
+    public function testDecodeLargeInteger(): void
     {
         // Test maximum values for different byte sizes
         $this->assertEquals(4294967295, PubNubCborDecode::decode('1AFFFFFFFF'));
     }
 
-    public function testDecodeArrayWith1ByteLength()
+    public function testDecodeArrayWith1ByteLength(): void
     {
         // Array with length specified in 1 byte (25+ elements)
         $cbor = '9818'; // Array with length in next byte: 24 elements
@@ -404,7 +404,7 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertCount(24, $result);
     }
 
-    public function testDecodeMapWith1ByteLength()
+    public function testDecodeMapWith1ByteLength(): void
     {
         // Map with length specified in 1 byte
         $cbor = 'B818'; // Map with length in next byte: 24 entries
@@ -418,28 +418,28 @@ class PubNubCborDecodeTest extends TestCase
         $this->assertCount(24, $result);
     }
 
-    public function testDecodeMultipleNesting()
+    public function testDecodeMultipleNesting(): void
     {
         // Deep nesting: [[[1]]]
         $result = PubNubCborDecode::decode('818181 01');
         $this->assertEquals([[[1]]], $result);
     }
 
-    public function testDecodeBooleanArray()
+    public function testDecodeBooleanArray(): void
     {
         // Array of booleans: [true, false, true]
         $result = PubNubCborDecode::decode('83F5F4F5');
         $this->assertEquals([true, false, true], $result);
     }
 
-    public function testDecodeNullArray()
+    public function testDecodeNullArray(): void
     {
         // Array with nulls: [null, null]
         $result = PubNubCborDecode::decode('82F6F6');
         $this->assertEquals([null, null], $result);
     }
 
-    public function testDecodeStringWithSpecialCharacters()
+    public function testDecodeStringWithSpecialCharacters(): void
     {
         // String with special chars like newline, tab
         $specialString = "test\nwith\ttabs";
