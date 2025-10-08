@@ -119,3 +119,16 @@ $result = $pubnub->signal()
 assert($result->getTimetoken() > 0);
 echo "Signal timetoken: {$result->getTimetoken()}\n";
 // snippet.end
+
+// snippet.publish_array
+try {
+    $result = $pubnub->publish()
+                    ->channel("my_channel")
+                    ->message(["hello", "there"])
+                    ->meta(["name" => "Alex", "online" => true])
+                    ->sync();
+    print_r($result->getTimetoken());
+} catch (PubNubException $error) {
+    echo "Error: " . $error->getMessage() . "\n";
+}
+// snippet.end

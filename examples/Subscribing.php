@@ -101,6 +101,93 @@ function getHistory($pubnub, $channels)
 }
 // snippet.end
 
+// snippet.basic_subscribe_with_logging
+use Monolog\Handler\ErrorLogHandler;
+
+$pnconf = new PNConfiguration();
+
+$pnconf->setPublishKey("demo");
+$pnconf->setSubscribeKey("demo");
+$pnconf->setUserId("php-subscriber-with-logging");
+
+$pubnub = new PubNub($pnconf);
+
+$pubnub->getLogger()->pushHandler(new ErrorLogHandler());
+
+$pubnub->subscribe()->channels("my_channel")->execute();
+// snippet.end
+
+// snippet.subscribe_with_state
+class MySubscribeCallbackWithState extends SubscribeCallback {
+    function status($pubnub, $status) {
+        if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
+            $result = $pubnub->setState()
+                            ->channels("awesomeChannel")
+                            ->channelGroups("awesomeChannelGroup")
+                            ->state([
+                                "fieldA" => "awesome",
+                                "fieldB" => 10
+                            ])
+                            ->sync();
+            print_r($result);
+        }
+    }
+
+    function message($pubnub, $message) {
+    }
+
+    function presence($pubnub, $presence) {
+    }
+}
+
+$subscribeCallback = new MySubscribeCallbackWithState();
+
+$pubnub->addListener($subscribeCallback);
+
+$pubnub->subscribe()
+    ->channels("my_channel")
+    ->execute();
+// snippet.end
+
+// snippet.unsubscribe_from_channel
+use PubNub\Exceptions\PubNubUnsubscribeException;
+
+class MyUnsubscribeCallback extends SubscribeCallback {
+    function status($pubnub, $status) {
+        if ($this->checkUnsubscribeCondition()) {
+            throw (new PubNubUnsubscribeException())->setChannels("awesomeChannel");
+        }
+    }
+
+    function message($pubnub, $message) {
+    }
+
+    function presence($pubnub, $presence) {
+    }
+
+    function checkUnsubscribeCondition() {
+        // return true or false
+        return false;
+    }
+}
+
+$pnconfig = new PNConfiguration();
+
+$pnconfig->setPublishKey("demo");
+$pnconfig->setSubscribeKey("demo");
+$pnconfig->setUserId("php-unsubscribe-demo");
+
+$pubnub = new PubNub($pnconfig);
+
+$subscribeCallback = new MyUnsubscribeCallback();
+
+$pubnub->addListener($subscribeCallback);
+
+$pubnub->subscribe()
+    ->channels("awesomeChannel")
+    ->execute();
+// snippet.end
+
 echo "Starting PubNub Subscriber...\n";
 echo "Press Ctrl+C to exit\n";
 
