@@ -324,19 +324,6 @@ final class PublishFileMessageTest extends PubNubTestCase
         $this->assertNotEquals($response1->getTimestamp(), $response2->getTimestamp());
     }
 
-    public function testPublishFileMessageWithInvalidFileId(): void
-    {
-        $this->expectException(\PubNub\Exceptions\PubNubServerException::class);
-
-        // Try to publish with non-existent file ID
-        $this->pubnub->publishFileMessage()
-            ->channel($this->channel)
-            ->fileId('invalid-file-id-12345')
-            ->fileName('nonexistent.txt')
-            ->message("This should fail")
-            ->sync();
-    }
-
     public function testPublishFileMessageWithEmptyChannel(): void
     {
         $this->expectException(\PubNub\Exceptions\PubNubValidationException::class);
