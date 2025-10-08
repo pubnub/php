@@ -17,7 +17,7 @@ class PubNubFactoryMethodsTest extends TestCase
         $this->assertInstanceOf(PubNub::class, $pubnub);
     }
 
-    public function testDemoHasDemoKeys()
+    public function testDemoHasDemoKeys(): void
     {
         $pubnub = PubNub::demo();
         $config = $pubnub->getConfiguration();
