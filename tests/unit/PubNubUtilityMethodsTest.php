@@ -1,6 +1,9 @@
 <?php
 
+namespace PubNubTests\unit
+
 use PHPUnit\Framework\TestCase;
+
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\CryptoModule;
@@ -57,6 +60,7 @@ class PubNubUtilityMethodsTest extends TestCase
         $this->assertEquals('', $this->pubnub->getToken());
     }
 
+    //phpcs:disable
     public function testSetTokenWithLongToken(): void
     {
         $longToken = 'qEF2AkF0GmFtet9DdHRsGDxDcmVzpURjaGFuoWpteS1jaGFubmVsGENDZ3JwoEN1c3KgQ3NwY6BEdXVpZKBDcGF0pURjaGFuoENnc' .
@@ -66,6 +70,7 @@ class PubNubUtilityMethodsTest extends TestCase
 
         $this->assertEquals($longToken, $this->pubnub->getToken());
     }
+    //phpcs:enable
 
     public function testSetTokenPersistsAcrossMultipleCalls(): void
     {

@@ -1,6 +1,9 @@
 <?php
 
+namespace PubNubTests\unit
+
 use PHPUnit\Framework\TestCase;
+
 use PubNub\PubNubCborDecode;
 
 class PubNubCborDecodeTest extends TestCase

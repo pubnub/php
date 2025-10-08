@@ -1,6 +1,9 @@
 <?php
 
+namespace PubNubTests\unit
+
 use PHPUnit\Framework\TestCase;
+
 use PubNub\Managers\TokenManager;
 
 class TokenManagerTest extends TestCase

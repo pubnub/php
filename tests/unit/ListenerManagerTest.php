@@ -1,5 +1,9 @@
 <?php
 
+//phpcs:disable
+namespace PubNubTests\unit
+
+use PubNubTestCase;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Managers\ListenerManager;
 

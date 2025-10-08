@@ -1,6 +1,9 @@
 <?php
 
+namespace PubNubTests\unit
+
 use PHPUnit\Framework\TestCase;
+
 use PubNub\Managers\BasePathManager;
 use PubNub\PNConfiguration;
 
