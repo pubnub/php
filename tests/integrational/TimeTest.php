@@ -2,7 +2,6 @@
 
 namespace Tests\Integrational;
 
-
 class TimeTest extends \PubNubTestCase
 {
     /**

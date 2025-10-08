@@ -12,21 +12,21 @@ class PubNubSdkInfoTest extends TestCase
     public function testGetSdkVersionReturnsString(): void
     {
         $version = PubNub::getSdkVersion();
-        
+
         $this->assertIsString($version);
     }
 
     public function testGetSdkVersionIsNotEmpty(): void
     {
         $version = PubNub::getSdkVersion();
-        
+
         $this->assertNotEmpty($version);
     }
 
     public function testGetSdkVersionFollowsSemanticVersioning(): void
     {
         $version = PubNub::getSdkVersion();
-        
+
         // Should match semantic versioning pattern (e.g., 7.1.0, 7.1.0-beta.1, etc.)
         $pattern = '/^\d+\.\d+\.\d+(-[a-zA-Z0-9\.\-]+)?$/';
         $this->assertMatchesRegularExpression($pattern, $version);
@@ -36,21 +36,21 @@ class PubNubSdkInfoTest extends TestCase
     {
         $version1 = PubNub::getSdkVersion();
         $version2 = PubNub::getSdkVersion();
-        
+
         $this->assertEquals($version1, $version2);
     }
 
     public function testGetSdkVersionStartsWithDigit(): void
     {
         $version = PubNub::getSdkVersion();
-        
+
         $this->assertMatchesRegularExpression('/^\d/', $version);
     }
 
     public function testGetSdkVersionContainsMajorMinorPatch(): void
     {
         $version = PubNub::getSdkVersion();
-        
+
         // Split by '.' and check we have at least 3 parts (major.minor.patch)
         $parts = explode('.', $version);
         $this->assertGreaterThanOrEqual(3, count($parts));
@@ -60,7 +60,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $version = PubNub::getSdkVersion();
         $parts = explode('.', $version);
-        
+
         $this->assertIsNumeric($parts[0]);
     }
 
@@ -68,7 +68,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $version = PubNub::getSdkVersion();
         $parts = explode('.', $version);
-        
+
         $this->assertIsNumeric($parts[1]);
     }
 
@@ -76,7 +76,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $version = PubNub::getSdkVersion();
         $parts = explode('.', $version);
-        
+
         // Patch might have a pre-release suffix (e.g., 0-beta)
         // So we extract just the numeric part
         preg_match('/^(\d+)/', $parts[2], $matches);
@@ -90,14 +90,14 @@ class PubNubSdkInfoTest extends TestCase
     public function testGetSdkNameReturnsString(): void
     {
         $name = PubNub::getSdkName();
-        
+
         $this->assertIsString($name);
     }
 
     public function testGetSdkNameIsNotEmpty(): void
     {
         $name = PubNub::getSdkName();
-        
+
         $this->assertNotEmpty($name);
     }
 
@@ -105,14 +105,14 @@ class PubNubSdkInfoTest extends TestCase
     {
         $name1 = PubNub::getSdkName();
         $name2 = PubNub::getSdkName();
-        
+
         $this->assertEquals($name1, $name2);
     }
 
     public function testGetSdkNameContainsPHP(): void
     {
         $name = PubNub::getSdkName();
-        
+
         // SDK name should indicate it's a PHP SDK
         $this->assertMatchesRegularExpression('/php/i', $name);
     }
@@ -120,7 +120,7 @@ class PubNubSdkInfoTest extends TestCase
     public function testGetSdkNameContainsPubNub(): void
     {
         $name = PubNub::getSdkName();
-        
+
         // SDK name should contain "PubNub"
         $this->assertMatchesRegularExpression('/pubnub/i', $name);
     }
@@ -128,7 +128,7 @@ class PubNubSdkInfoTest extends TestCase
     public function testGetSdkNameFormat(): void
     {
         $name = PubNub::getSdkName();
-        
+
         // Should be in format like "PubNub-PHP" or similar
         $this->assertMatchesRegularExpression('/^[a-zA-Z\-]+$/', $name);
     }
@@ -136,7 +136,7 @@ class PubNubSdkInfoTest extends TestCase
     public function testGetSdkNameDoesNotContainVersion(): void
     {
         $name = PubNub::getSdkName();
-        
+
         // Name should not contain version numbers
         $this->assertDoesNotMatchRegularExpression('/\d+\.\d+/', $name);
     }
@@ -148,14 +148,14 @@ class PubNubSdkInfoTest extends TestCase
     public function testGetSdkFullNameReturnsString(): void
     {
         $fullName = PubNub::getSdkFullName();
-        
+
         $this->assertIsString($fullName);
     }
 
     public function testGetSdkFullNameIsNotEmpty(): void
     {
         $fullName = PubNub::getSdkFullName();
-        
+
         $this->assertNotEmpty($fullName);
     }
 
@@ -163,7 +163,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $fullName1 = PubNub::getSdkFullName();
         $fullName2 = PubNub::getSdkFullName();
-        
+
         $this->assertEquals($fullName1, $fullName2);
     }
 
@@ -171,7 +171,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $name = PubNub::getSdkName();
         $fullName = PubNub::getSdkFullName();
-        
+
         $this->assertStringContainsString($name, $fullName);
     }
 
@@ -179,14 +179,14 @@ class PubNubSdkInfoTest extends TestCase
     {
         $version = PubNub::getSdkVersion();
         $fullName = PubNub::getSdkFullName();
-        
+
         $this->assertStringContainsString($version, $fullName);
     }
 
     public function testGetSdkFullNameFormat(): void
     {
         $fullName = PubNub::getSdkFullName();
-        
+
         // Should be in format like "PubNub-PHP/7.1.0" or "PubNub-PHP-7.1.0"
         $pattern = '/^[a-zA-Z\-]+[\/\-]\d+\.\d+\.\d+/';
         $this->assertMatchesRegularExpression($pattern, $fullName);
@@ -197,7 +197,7 @@ class PubNubSdkInfoTest extends TestCase
         $name = PubNub::getSdkName();
         $version = PubNub::getSdkVersion();
         $fullName = PubNub::getSdkFullName();
-        
+
         // Full name should be name + separator + version
         $expectedPattern = '/' . preg_quote($name, '/') . '[\/\-]' . preg_quote($version, '/') . '/';
         $this->assertMatchesRegularExpression($expectedPattern, $fullName);
@@ -207,7 +207,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $name = PubNub::getSdkName();
         $fullName = PubNub::getSdkFullName();
-        
+
         $this->assertGreaterThan(strlen($name), strlen($fullName));
     }
 
@@ -215,7 +215,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $version = PubNub::getSdkVersion();
         $fullName = PubNub::getSdkFullName();
-        
+
         $this->assertGreaterThan(strlen($version), strlen($fullName));
     }
 
@@ -228,7 +228,7 @@ class PubNubSdkInfoTest extends TestCase
         $name = PubNub::getSdkName();
         $version = PubNub::getSdkVersion();
         $fullName = PubNub::getSdkFullName();
-        
+
         $this->assertStringContainsString($name, $fullName);
         $this->assertStringContainsString($version, $fullName);
     }
@@ -247,7 +247,7 @@ class PubNubSdkInfoTest extends TestCase
     {
         $pubnub1 = PubNub::demo();
         $pubnub2 = PubNub::demo();
-        
+
         // Static methods should return same values regardless of instance
         $this->assertEquals(PubNub::getSdkName(), PubNub::getSdkName());
         $this->assertEquals(PubNub::getSdkVersion(), PubNub::getSdkVersion());
@@ -257,14 +257,14 @@ class PubNubSdkInfoTest extends TestCase
     public function testSdkVersionCanBeParsed(): void
     {
         $version = PubNub::getSdkVersion();
-        
+
         // Should be parsable as a version string
         $parts = explode('.', $version);
-        
+
         $this->assertGreaterThanOrEqual(3, count($parts));
         $this->assertIsNumeric($parts[0]); // Major
         $this->assertIsNumeric($parts[1]); // Minor
-        
+
         // Patch might have pre-release suffix, extract numeric part
         preg_match('/^(\d+)/', $parts[2], $matches);
         $this->assertNotEmpty($matches);
@@ -274,7 +274,7 @@ class PubNubSdkInfoTest extends TestCase
     public function testSdkFullNameIsUsableForUserAgent(): void
     {
         $fullName = PubNub::getSdkFullName();
-        
+
         // Should be a valid format for User-Agent headers (no spaces, special chars)
         $this->assertMatchesRegularExpression('/^[a-zA-Z0-9\-\.\/]+$/', $fullName);
     }
@@ -282,7 +282,7 @@ class PubNubSdkInfoTest extends TestCase
     public function testSdkNameIsUsableAsIdentifier(): void
     {
         $name = PubNub::getSdkName();
-        
+
         // Should be a valid identifier (no spaces, no version numbers)
         $this->assertMatchesRegularExpression('/^[a-zA-Z\-]+$/', $name);
     }
@@ -290,14 +290,14 @@ class PubNubSdkInfoTest extends TestCase
     public function testSdkVersionIsValidSemanticVersion(): void
     {
         $version = PubNub::getSdkVersion();
-        
+
         // Validate against semantic versioning 2.0.0 spec
         $semverPattern = '/^'
             . '(\d+)\.(\d+)\.(\d+)'                      // Major.Minor.Patch
             . '(-[0-9A-Za-z\-\.]+)?'                     // Pre-release (optional)
             . '(\+[0-9A-Za-z\-\.]+)?'                    // Build metadata (optional)
             . '$/';
-        
+
         $this->assertMatchesRegularExpression($semverPattern, $version);
     }
 
@@ -307,11 +307,11 @@ class PubNubSdkInfoTest extends TestCase
         $name1 = PubNub::getSdkName();
         $version1 = PubNub::getSdkVersion();
         $fullName1 = PubNub::getSdkFullName();
-        
+
         // Create some PubNub instances
         $pubnub1 = PubNub::demo();
         $pubnub2 = PubNub::demo();
-        
+
         // Values should remain the same
         $this->assertEquals($name1, PubNub::getSdkName());
         $this->assertEquals($version1, PubNub::getSdkVersion());

@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\UUID;
 
 use PubNubTestCase;
 
-
 class RemoveUUIDMetadataEndpointTest extends PubNubTestCase
 {
     public function testRemoveMetadataFromUUID()

@@ -6,7 +6,6 @@ use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\PNConfiguration;
 use PubNub\PubNubUtil;
 
-
 class PNConfigurationTest extends TestCase
 {
     public function testInitWithUUID()

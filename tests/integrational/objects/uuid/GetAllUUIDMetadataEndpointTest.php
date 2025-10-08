@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\UUID;
 
 use PubNubTestCase;
 
-
 class GetAllUUIDMetadataEndpointTest extends PubNubTestCase
 {
     public function testGetAllUUIDMetadata()
@@ -87,7 +86,7 @@ class GetAllUUIDMetadataEndpointTest extends PubNubTestCase
         // $custom = $value->getCustom();
         // $this->assertNotEmpty($custom);
         // $this->assertEquals("aa1", $custom->a);
-        // $this->assertEquals("bb1", $custom->b);  
+        // $this->assertEquals("bb1", $custom->b);
 
         // $value = $data[2];
         // $this->assertEquals("uuid2", $value->getId());
@@ -98,6 +97,6 @@ class GetAllUUIDMetadataEndpointTest extends PubNubTestCase
         // $custom = $value->getCustom();
         // $this->assertNotEmpty($custom);
         // $this->assertEquals("aa2", $custom->a);
-        // $this->assertEquals("bb2", $custom->b);        
+        // $this->assertEquals("bb2", $custom->b);
     }
 }

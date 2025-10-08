@@ -16,9 +16,9 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
-        
+
         $this->assertFalse($pubnub->isCryptoEnabled());
     }
 
@@ -28,9 +28,9 @@ class PubNubCryptoMethodsTest extends TestCase
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
         $config->setCipherKey('test-cipher-key');
-        
+
         $pubnub = new PubNub($config);
-        
+
         $this->assertTrue($pubnub->isCryptoEnabled());
     }
 
@@ -39,11 +39,11 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::legacyCryptor('test-key', false);
         $pubnub->setCrypto($cryptoModule);
-        
+
         $this->assertTrue($pubnub->isCryptoEnabled());
     }
 
@@ -52,13 +52,13 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $this->assertFalse($pubnub->isCryptoEnabled());
-        
+
         $cryptoModule = CryptoModule::aesCbcCryptor('my-key', true);
         $pubnub->setCrypto($cryptoModule);
-        
+
         $this->assertTrue($pubnub->isCryptoEnabled());
     }
 
@@ -71,9 +71,9 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
-        
+
         $this->assertNull($pubnub->getCrypto());
     }
 
@@ -83,10 +83,10 @@ class PubNubCryptoMethodsTest extends TestCase
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
         $config->setCipherKey('test-cipher-key');
-        
+
         $pubnub = new PubNub($config);
         $crypto = $pubnub->getCrypto();
-        
+
         $this->assertInstanceOf(CryptoModule::class, $crypto);
     }
 
@@ -95,13 +95,13 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::legacyCryptor('test-key', false);
         $pubnub->setCrypto($cryptoModule);
-        
+
         $crypto = $pubnub->getCrypto();
-        
+
         $this->assertInstanceOf(CryptoModule::class, $crypto);
         $this->assertSame($cryptoModule, $crypto);
     }
@@ -112,10 +112,10 @@ class PubNubCryptoMethodsTest extends TestCase
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
         $config->setCipherKey('config-key');
-        
+
         $pubnub = new PubNub($config);
         $crypto = $pubnub->getCrypto();
-        
+
         $this->assertInstanceOf(CryptoModule::class, $crypto);
     }
 
@@ -125,14 +125,14 @@ class PubNubCryptoMethodsTest extends TestCase
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
         $config->setCipherKey('config-key');
-        
+
         $pubnub = new PubNub($config);
-        
+
         $instanceCrypto = CryptoModule::aesCbcCryptor('instance-key', true);
         $pubnub->setCrypto($instanceCrypto);
-        
+
         $crypto = $pubnub->getCrypto();
-        
+
         $this->assertSame($instanceCrypto, $crypto);
     }
 
@@ -145,12 +145,12 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::legacyCryptor('my-cipher-key', false);
-        
+
         $pubnub->setCrypto($cryptoModule);
-        
+
         $this->assertSame($cryptoModule, $pubnub->getCrypto());
     }
 
@@ -159,13 +159,13 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
-        
+
         $crypto1 = CryptoModule::legacyCryptor('key1', false);
         $pubnub->setCrypto($crypto1);
         $this->assertSame($crypto1, $pubnub->getCrypto());
-        
+
         $crypto2 = CryptoModule::aesCbcCryptor('key2', true);
         $pubnub->setCrypto($crypto2);
         $this->assertSame($crypto2, $pubnub->getCrypto());
@@ -176,13 +176,13 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $this->assertFalse($pubnub->isCryptoEnabled());
-        
+
         $cryptoModule = CryptoModule::legacyCryptor('my-key', false);
         $pubnub->setCrypto($cryptoModule);
-        
+
         $this->assertTrue($pubnub->isCryptoEnabled());
     }
 
@@ -191,12 +191,12 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::legacyCryptor('legacy-key', false);
-        
+
         $pubnub->setCrypto($cryptoModule);
-        
+
         $this->assertInstanceOf(CryptoModule::class, $pubnub->getCrypto());
     }
 
@@ -205,12 +205,12 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::aesCbcCryptor('aes-key', true);
-        
+
         $pubnub->setCrypto($cryptoModule);
-        
+
         $this->assertInstanceOf(CryptoModule::class, $pubnub->getCrypto());
     }
 
@@ -219,12 +219,12 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::legacyCryptor('test-key', true);
-        
+
         $pubnub->setCrypto($cryptoModule);
-        
+
         $crypto = $pubnub->getCrypto();
         $this->assertNotNull($crypto);
     }
@@ -234,12 +234,12 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::legacyCryptor('test-key', false);
-        
+
         $pubnub->setCrypto($cryptoModule);
-        
+
         $crypto = $pubnub->getCrypto();
         $this->assertNotNull($crypto);
     }
@@ -254,9 +254,9 @@ class PubNubCryptoMethodsTest extends TestCase
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
         $config->setCipherKey('config-cipher-key');
-        
+
         $pubnub = new PubNub($config);
-        
+
         $this->assertTrue($pubnub->isCryptoEnabled());
         $this->assertInstanceOf(CryptoModule::class, $pubnub->getCrypto());
     }
@@ -266,13 +266,13 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $this->assertFalse($pubnub->isCryptoEnabled());
-        
+
         $cryptoModule = CryptoModule::aesCbcCryptor('instance-key', true);
         $pubnub->setCrypto($cryptoModule);
-        
+
         $this->assertTrue($pubnub->isCryptoEnabled());
         $this->assertSame($cryptoModule, $pubnub->getCrypto());
     }
@@ -283,13 +283,13 @@ class PubNubCryptoMethodsTest extends TestCase
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
         $config->setCipherKey('config-key');
-        
+
         $pubnub = new PubNub($config);
         $this->assertTrue($pubnub->isCryptoEnabled());
-        
+
         $instanceCrypto = CryptoModule::legacyCryptor('instance-key', false);
         $pubnub->setCrypto($instanceCrypto);
-        
+
         $this->assertTrue($pubnub->isCryptoEnabled());
         $this->assertSame($instanceCrypto, $pubnub->getCrypto());
     }
@@ -299,17 +299,17 @@ class PubNubCryptoMethodsTest extends TestCase
         $config = new PNConfiguration();
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
-        
+
         $pubnub = new PubNub($config);
         $cryptoModule = CryptoModule::aesCbcCryptor('encryption-key', false);
         $pubnub->setCrypto($cryptoModule);
-        
+
         $crypto = $pubnub->getCrypto();
-        
+
         $plaintext = 'Hello, World!';
         $encrypted = $crypto->encrypt($plaintext);
         $decrypted = $crypto->decrypt($encrypted);
-        
+
         $this->assertEquals($plaintext, $decrypted);
     }
 
@@ -321,14 +321,14 @@ class PubNubCryptoMethodsTest extends TestCase
         $pubnub1 = new PubNub($config1);
         $crypto1 = CryptoModule::legacyCryptor('key1', false);
         $pubnub1->setCrypto($crypto1);
-        
+
         $config2 = new PNConfiguration();
         $config2->setSubscribeKey('demo');
         $config2->setUserId('user2');
         $pubnub2 = new PubNub($config2);
         $crypto2 = CryptoModule::aesCbcCryptor('key2', true);
         $pubnub2->setCrypto($crypto2);
-        
+
         $this->assertNotSame($pubnub1->getCrypto(), $pubnub2->getCrypto());
         $this->assertSame($crypto1, $pubnub1->getCrypto());
         $this->assertSame($crypto2, $pubnub2->getCrypto());
@@ -340,14 +340,14 @@ class PubNubCryptoMethodsTest extends TestCase
         $config->setSubscribeKey('demo');
         $config->setUserId('test-user');
         $config->setCipherKey('direct-use-key');
-        
+
         $pubnub = new PubNub($config);
         $crypto = $pubnub->getCrypto();
-        
+
         // Use crypto module directly
         $message = 'Test message';
         $encrypted = $crypto->encrypt($message);
-        
+
         $this->assertNotEquals($message, $encrypted);
         $this->assertIsString($encrypted);
     }

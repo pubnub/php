@@ -192,7 +192,7 @@ class PubNubCborDecodeTest extends TestCase
     public function testDecodeHashmapWithArray(): void
     {
         // Map {"array": [1, 2, 3]}
-    $result = PubNubCborDecode::decode('A16561727261798301 0203');
+        $result = PubNubCborDecode::decode('A16561727261798301 0203');
         $this->assertEquals(['array' => [1, 2, 3]], $result);
     }
 
@@ -285,9 +285,9 @@ class PubNubCborDecodeTest extends TestCase
                 '65416C696365' . // value: "Alice"
                 '63616765' . // key: "age"
                 '181E'; // value: 30
-        
+
         $result = PubNubCborDecode::decode($cbor);
-        
+
         $this->assertIsArray($result);
         $this->assertArrayHasKey('users', $result);
         $this->assertIsArray($result['users']);
@@ -304,9 +304,9 @@ class PubNubCborDecodeTest extends TestCase
                 '6474657374' . // "test"
                 'F5' . // true
                 'F6'; // null
-        
+
         $result = PubNubCborDecode::decode($cbor);
-        
+
         $this->assertEquals([42, 'test', true, null], $result);
     }
 
@@ -343,7 +343,7 @@ class PubNubCborDecodeTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid Input');
-        
+
         PubNubCborDecode::decode('GG');
     }
 
@@ -351,7 +351,7 @@ class PubNubCborDecodeTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid Input');
-        
+
         PubNubCborDecode::decode('18@A');
     }
 
@@ -359,7 +359,7 @@ class PubNubCborDecodeTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid Input');
-        
+
         PubNubCborDecode::decode('18ZZ');
     }
 
@@ -399,7 +399,7 @@ class PubNubCborDecodeTest extends TestCase
         for ($i = 0; $i < 24; $i++) {
             $cbor .= '0' . dechex($i % 16); // Add elements 0-15 repeated
         }
-        
+
         $result = PubNubCborDecode::decode($cbor);
         $this->assertCount(24, $result);
     }
@@ -413,7 +413,7 @@ class PubNubCborDecodeTest extends TestCase
             $cbor .= '61' . bin2hex($key); // key
             $cbor .= '0' . dechex($i % 16); // value
         }
-        
+
         $result = PubNubCborDecode::decode($cbor);
         $this->assertCount(24, $result);
     }
@@ -446,7 +446,7 @@ class PubNubCborDecodeTest extends TestCase
         $hex = bin2hex($specialString);
         $length = strlen($specialString);
         $cbor = '6' . dechex($length) . $hex;
-        
+
         $result = PubNubCborDecode::decode($cbor);
         $this->assertEquals($specialString, $result);
     }

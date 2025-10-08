@@ -14,9 +14,9 @@ class PubNubUtilExtendedTest extends TestCase
         $basePath = 'https://ps.pndsn.com';
         $path = '/v2/subscribe/demo/ch1/0';
         $params = ['uuid' => 'test-user', 'pnsdk' => 'PubNub-PHP/8.0.0'];
-        
+
         $url = PubNubUtil::buildUrl($basePath, $path, $params);
-        
+
         $this->assertStringStartsWith($basePath . $path, $url);
         $this->assertStringContainsString('uuid=test-user', $url);
         $this->assertStringContainsString('pnsdk=PubNub-PHP/8.0.0', $url);
@@ -27,9 +27,9 @@ class PubNubUtilExtendedTest extends TestCase
         $basePath = 'https://ps.pndsn.com';
         $path = '/v2/time/0';
         $params = [];
-        
+
         $url = PubNubUtil::buildUrl($basePath, $path, $params);
-        
+
         $this->assertEquals($basePath . $path . '?', $url);
     }
 
@@ -38,9 +38,9 @@ class PubNubUtilExtendedTest extends TestCase
         $basePath = 'https://ps.pndsn.com';
         $path = '/publish';
         $params = ['message' => 'hello%20world'];
-        
+
         $url = PubNubUtil::buildUrl($basePath, $path, $params);
-        
+
         $this->assertStringContainsString('message=hello%20world', $url);
     }
 
@@ -53,9 +53,9 @@ class PubNubUtilExtendedTest extends TestCase
             'count' => '100',
             'reverse' => 'false'
         ];
-        
+
         $url = PubNubUtil::buildUrl($basePath, $path, $params);
-        
+
         $this->assertStringContainsString('channel=test-channel', $url);
         $this->assertStringContainsString('count=100', $url);
         $this->assertStringContainsString('reverse=false', $url);
@@ -68,45 +68,45 @@ class PubNubUtilExtendedTest extends TestCase
     public function testJoinChannelsWithSingleChannel(): void
     {
         $channels = ['channel1'];
-        
+
         $result = PubNubUtil::joinChannels($channels);
-        
+
         $this->assertEquals('channel1', $result);
     }
 
     public function testJoinChannelsWithMultipleChannels(): void
     {
         $channels = ['channel1', 'channel2', 'channel3'];
-        
+
         $result = PubNubUtil::joinChannels($channels);
-        
+
         $this->assertEquals('channel1,channel2,channel3', $result);
     }
 
     public function testJoinChannelsWithEmptyArray(): void
     {
         $channels = [];
-        
+
         $result = PubNubUtil::joinChannels($channels);
-        
+
         $this->assertEquals(',', $result);
     }
 
     public function testJoinChannelsWithSpecialCharacters(): void
     {
         $channels = ['channel-1', 'channel.2', 'channel_3'];
-        
+
         $result = PubNubUtil::joinChannels($channels);
-        
+
         $this->assertEquals('channel-1,channel.2,channel_3', $result);
     }
 
     public function testJoinChannelsEncodesSpecialCharacters(): void
     {
         $channels = ['channel with spaces', 'channel#special'];
-        
+
         $result = PubNubUtil::joinChannels($channels);
-        
+
         $this->assertStringContainsString('channel+with+spaces', $result);
         $this->assertStringContainsString('channel%23special', $result);
     }
@@ -118,36 +118,36 @@ class PubNubUtilExtendedTest extends TestCase
     public function testJoinItemsWithSingleItem(): void
     {
         $items = ['item1'];
-        
+
         $result = PubNubUtil::joinItems($items);
-        
+
         $this->assertEquals('item1', $result);
     }
 
     public function testJoinItemsWithMultipleItems(): void
     {
         $items = ['item1', 'item2', 'item3'];
-        
+
         $result = PubNubUtil::joinItems($items);
-        
+
         $this->assertEquals('item1,item2,item3', $result);
     }
 
     public function testJoinItemsWithEmptyArray(): void
     {
         $items = [];
-        
+
         $result = PubNubUtil::joinItems($items);
-        
+
         $this->assertEquals('', $result);
     }
 
     public function testJoinItemsWithNumericItems(): void
     {
         $items = ['1', '2', '3'];
-        
+
         $result = PubNubUtil::joinItems($items);
-        
+
         $this->assertEquals('1,2,3', $result);
     }
 
@@ -159,9 +159,9 @@ class PubNubUtilExtendedTest extends TestCase
     {
         $existing = ['a', 'b'];
         $new = ['c', 'd'];
-        
+
         $result = PubNubUtil::extendArray($existing, $new);
-        
+
         $this->assertEquals(['a', 'b', 'c', 'd'], $result);
     }
 
@@ -169,9 +169,9 @@ class PubNubUtilExtendedTest extends TestCase
     {
         $existing = ['a', 'b'];
         $new = 'c,d';
-        
+
         $result = PubNubUtil::extendArray($existing, $new);
-        
+
         $this->assertEquals(['a', 'b', 'c', 'd'], $result);
     }
 
@@ -179,9 +179,9 @@ class PubNubUtilExtendedTest extends TestCase
     {
         $existing = [];
         $new = ['a', 'b'];
-        
+
         $result = PubNubUtil::extendArray($existing, $new);
-        
+
         $this->assertEquals(['a', 'b'], $result);
     }
 
@@ -189,9 +189,9 @@ class PubNubUtilExtendedTest extends TestCase
     {
         $existing = ['a', 'b'];
         $new = [];
-        
+
         $result = PubNubUtil::extendArray($existing, $new);
-        
+
         $this->assertEquals(['a', 'b'], $result);
     }
 
@@ -199,9 +199,9 @@ class PubNubUtilExtendedTest extends TestCase
     {
         $existing = ['a', 'b'];
         $new = '';
-        
+
         $result = PubNubUtil::extendArray($existing, $new);
-        
+
         $this->assertEquals(['a', 'b'], $result);
     }
 
@@ -212,45 +212,45 @@ class PubNubUtilExtendedTest extends TestCase
     public function testSplitItemsWithSingleItem(): void
     {
         $items = 'item1';
-        
+
         $result = PubNubUtil::splitItems($items);
-        
+
         $this->assertEquals(['item1'], $result);
     }
 
     public function testSplitItemsWithMultipleItems(): void
     {
         $items = 'item1,item2,item3';
-        
+
         $result = PubNubUtil::splitItems($items);
-        
+
         $this->assertEquals(['item1', 'item2', 'item3'], $result);
     }
 
     public function testSplitItemsWithEmptyString(): void
     {
         $items = '';
-        
+
         $result = PubNubUtil::splitItems($items);
-        
+
         $this->assertEquals([], $result);
     }
 
     public function testSplitItemsPreservesSpaces(): void
     {
         $items = 'item 1,item 2';
-        
+
         $result = PubNubUtil::splitItems($items);
-        
+
         $this->assertEquals(['item 1', 'item 2'], $result);
     }
 
     public function testSplitItemsWithTrailingComma(): void
     {
         $items = 'item1,item2,';
-        
+
         $result = PubNubUtil::splitItems($items);
-        
+
         $this->assertEquals(['item1', 'item2', ''], $result);
     }
 
@@ -261,14 +261,14 @@ class PubNubUtilExtendedTest extends TestCase
     public function testUuidReturnsString(): void
     {
         $uuid = PubNubUtil::uuid();
-        
+
         $this->assertIsString($uuid);
     }
 
     public function testUuidHasCorrectFormat(): void
     {
         $uuid = PubNubUtil::uuid();
-        
+
         // UUID format: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
         $this->assertMatchesRegularExpression(
             '/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i',
@@ -280,7 +280,7 @@ class PubNubUtilExtendedTest extends TestCase
     {
         $uuid1 = PubNubUtil::uuid();
         $uuid2 = PubNubUtil::uuid();
-        
+
         $this->assertNotEquals($uuid1, $uuid2);
     }
 
@@ -290,7 +290,7 @@ class PubNubUtilExtendedTest extends TestCase
         for ($i = 0; $i < 100; $i++) {
             $uuids[] = PubNubUtil::uuid();
         }
-        
+
         // All UUIDs should be unique
         $this->assertEquals(100, count(array_unique($uuids)));
     }
@@ -298,7 +298,7 @@ class PubNubUtilExtendedTest extends TestCase
     public function testUuidLength(): void
     {
         $uuid = PubNubUtil::uuid();
-        
+
         // UUID with dashes is 36 characters
         $this->assertEquals(36, strlen($uuid));
     }
@@ -319,9 +319,9 @@ class PubNubUtilExtendedTest extends TestCase
             'j' => 1,
             'ttl' => 1440
         ];
-        
+
         $result = PubNubUtil::fetchPamPermissionsFrom($input);
-        
+
         $this->assertEquals([true, true, true, true, true, true, true, 1440], $result);
     }
 
@@ -337,9 +337,9 @@ class PubNubUtilExtendedTest extends TestCase
             'j' => 0,
             'ttl' => 0
         ];
-        
+
         $result = PubNubUtil::fetchPamPermissionsFrom($input);
-        
+
         $this->assertEquals([false, false, false, false, false, false, false, 0], $result);
     }
 
@@ -351,27 +351,27 @@ class PubNubUtilExtendedTest extends TestCase
             'm' => 1,
             'ttl' => 60
         ];
-        
+
         $result = PubNubUtil::fetchPamPermissionsFrom($input);
-        
+
         $this->assertEquals([true, false, true, null, null, null, null, 60], $result);
     }
 
     public function testFetchPamPermissionsFromWithEmptyInput(): void
     {
         $input = [];
-        
+
         $result = PubNubUtil::fetchPamPermissionsFrom($input);
-        
+
         $this->assertEquals([null, null, null, null, null, null, null, null], $result);
     }
 
     public function testFetchPamPermissionsFromWithOnlyTTL(): void
     {
         $input = ['ttl' => 120];
-        
+
         $result = PubNubUtil::fetchPamPermissionsFrom($input);
-        
+
         $this->assertEquals([null, null, null, null, null, null, null, 120], $result);
     }
 
@@ -382,45 +382,45 @@ class PubNubUtilExtendedTest extends TestCase
     public function testIsAssocWithIndexedArray(): void
     {
         $array = ['a', 'b', 'c'];
-        
+
         $result = PubNubUtil::isAssoc($array);
-        
+
         $this->assertFalse($result);
     }
 
     public function testIsAssocWithAssociativeArray(): void
     {
         $array = ['key1' => 'value1', 'key2' => 'value2'];
-        
+
         $result = PubNubUtil::isAssoc($array);
-        
+
         $this->assertTrue($result);
     }
 
     public function testIsAssocWithNumericKeys(): void
     {
         $array = [0 => 'a', 1 => 'b', 2 => 'c'];
-        
+
         $result = PubNubUtil::isAssoc($array);
-        
+
         $this->assertFalse($result);
     }
 
     public function testIsAssocWithMixedKeys(): void
     {
         $array = [0 => 'a', 'key' => 'b', 2 => 'c'];
-        
+
         $result = PubNubUtil::isAssoc($array);
-        
+
         $this->assertTrue($result);
     }
 
     public function testIsAssocWithEmptyArray(): void
     {
         $array = [];
-        
+
         $result = PubNubUtil::isAssoc($array);
-        
+
         // Empty array returns true because array_keys([]) !== range(0, count([]) - 1)
         // array_keys([]) = [], range(0, -1) = []
         // But the comparison returns true (not equal)
@@ -430,16 +430,16 @@ class PubNubUtilExtendedTest extends TestCase
     public function testIsAssocWithNonArray(): void
     {
         $result = PubNubUtil::isAssoc('not an array');
-        
+
         $this->assertFalse($result);
     }
 
     public function testIsAssocWithNonSequentialKeys(): void
     {
         $array = [1 => 'a', 3 => 'b', 5 => 'c'];
-        
+
         $result = PubNubUtil::isAssoc($array);
-        
+
         $this->assertTrue($result);
     }
 
@@ -450,18 +450,18 @@ class PubNubUtilExtendedTest extends TestCase
     public function testTokenEncodeWithBasicString(): void
     {
         $token = 'mytoken123';
-        
+
         $result = PubNubUtil::tokenEncode($token);
-        
+
         $this->assertEquals('mytoken123', $result);
     }
 
     public function testTokenEncodeConvertsSpacesToPercent20(): void
     {
         $token = 'token with spaces';
-        
+
         $result = PubNubUtil::tokenEncode($token);
-        
+
         $this->assertStringContainsString('%20', $result);
         $this->assertStringNotContainsString('+', $result);
     }
@@ -469,18 +469,18 @@ class PubNubUtilExtendedTest extends TestCase
     public function testTokenEncodeWithSpecialCharacters(): void
     {
         $token = 'token!@#$%';
-        
+
         $result = PubNubUtil::tokenEncode($token);
-        
+
         $this->assertIsString($result);
     }
 
     public function testTokenEncodeWithPlusSign(): void
     {
         $token = 'token+with+plus';
-        
+
         $result = PubNubUtil::tokenEncode($token);
-        
+
         // Plus signs are first URL encoded to %2B, then the str_replace doesn't affect them
         // because str_replace looks for literal '+' which is already encoded
         $this->assertStringContainsString('%2B', $result);
@@ -493,9 +493,9 @@ class PubNubUtilExtendedTest extends TestCase
     public function testConvertIso8859ToUtf8WithAscii(): void
     {
         $input = 'Hello World';
-        
+
         $result = PubNubUtil::convertIso8859ToUtf8($input);
-        
+
         $this->assertEquals('Hello World', $result);
     }
 
@@ -503,9 +503,9 @@ class PubNubUtilExtendedTest extends TestCase
     {
         // Test with some ISO-8859-1 characters
         $input = chr(0xA9); // Copyright symbol in ISO-8859-1
-        
+
         $result = PubNubUtil::convertIso8859ToUtf8($input);
-        
+
         $this->assertNotEmpty($result);
         $this->assertIsString($result);
     }
@@ -513,27 +513,27 @@ class PubNubUtilExtendedTest extends TestCase
     public function testConvertIso8859ToUtf8WithEmptyString(): void
     {
         $input = '';
-        
+
         $result = PubNubUtil::convertIso8859ToUtf8($input);
-        
+
         $this->assertEquals('', $result);
     }
 
     public function testConvertIso8859ToUtf8PreservesAsciiCharacters(): void
     {
         $input = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        
+
         $result = PubNubUtil::convertIso8859ToUtf8($input);
-        
+
         $this->assertEquals($input, $result);
     }
 
     public function testConvertIso8859ToUtf8WithNumbers(): void
     {
         $input = '1234567890';
-        
+
         $result = PubNubUtil::convertIso8859ToUtf8($input);
-        
+
         $this->assertEquals($input, $result);
     }
 
@@ -546,12 +546,12 @@ class PubNubUtilExtendedTest extends TestCase
         // Split channels from string
         $channelString = 'channel1,channel2,channel3';
         $channels = PubNubUtil::splitItems($channelString);
-        
+
         $this->assertCount(3, $channels);
-        
+
         // Join channels back
         $joined = PubNubUtil::joinChannels($channels);
-        
+
         $this->assertEquals('channel1,channel2,channel3', $joined);
     }
 
@@ -559,9 +559,9 @@ class PubNubUtilExtendedTest extends TestCase
     {
         $existing = ['channel1', 'channel2'];
         $newString = 'channel3,channel4';
-        
+
         $extended = PubNubUtil::extendArray($existing, $newString);
-        
+
         $this->assertCount(4, $extended);
         $this->assertEquals(['channel1', 'channel2', 'channel3', 'channel4'], $extended);
     }
@@ -575,9 +575,9 @@ class PubNubUtilExtendedTest extends TestCase
             'tt' => '0',
             'pnsdk' => 'PubNub-PHP/8.0.0'
         ];
-        
+
         $url = PubNubUtil::buildUrl($basePath, $path, $params);
-        
+
         $this->assertStringStartsWith('https://ps.pndsn.com', $url);
         $this->assertStringContainsString('uuid=user-123', $url);
         $this->assertStringContainsString('&', $url);

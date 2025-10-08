@@ -1,6 +1,5 @@
 <?php
 
-
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Managers\ListenerManager;
 
@@ -44,7 +43,6 @@ class ExposedListenerManager extends ListenerManager
 
 class MySubscribeCallback extends SubscribeCallback
 {
-
     /**
      * @param \PubNub\PubNub $pubnub
      * @param \PubNub\Models\ResponseHelpers\PNStatus $status

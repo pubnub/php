@@ -4,7 +4,6 @@ use PHPUnit\Framework\TestCase;
 use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\PubNubUtil;
 
-
 class UtilsTest extends TestCase
 {
     /**

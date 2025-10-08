@@ -3,7 +3,6 @@
 use PHPUnit\Framework\TestCase;
 use PubNub\PubNub;
 
-
 class PublishTest extends TestCase
 {
     /**

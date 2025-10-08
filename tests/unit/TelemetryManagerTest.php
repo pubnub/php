@@ -4,7 +4,6 @@ use PHPUnit\Framework\TestCase;
 use PubNub\Managers\TelemetryManager;
 use PubNub\Enums\PNOperationType;
 
-
 class TelemetryManagerTest extends TestCase
 {
     public function testAverageLatency()

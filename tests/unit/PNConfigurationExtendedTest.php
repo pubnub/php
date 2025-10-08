@@ -13,7 +13,7 @@ class PNConfigurationExtendedTest extends TestCase
     public function testGetNonSubscribeRequestTimeoutReturnsDefault(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertEquals(10, $config->getNonSubscribeRequestTimeout());
     }
 
@@ -21,9 +21,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setNonSubscribeRequestTimeout(20);
-        
+
         $this->assertEquals(20, $config->getNonSubscribeRequestTimeout());
     }
 
@@ -31,9 +31,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setNonSubscribeRequestTimeout(0);
-        
+
         $this->assertEquals(0, $config->getNonSubscribeRequestTimeout());
     }
 
@@ -41,16 +41,16 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setNonSubscribeRequestTimeout(3600);
-        
+
         $this->assertEquals(3600, $config->getNonSubscribeRequestTimeout());
     }
 
     public function testGetSubscribeTimeoutReturnsDefault(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertEquals(310, $config->getSubscribeTimeout());
     }
 
@@ -58,9 +58,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setSubscribeTimeout(400);
-        
+
         $this->assertEquals(400, $config->getSubscribeTimeout());
     }
 
@@ -68,9 +68,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setSubscribeTimeout(1);
-        
+
         $this->assertEquals(1, $config->getSubscribeTimeout());
     }
 
@@ -78,16 +78,16 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setSubscribeTimeout(10000);
-        
+
         $this->assertEquals(10000, $config->getSubscribeTimeout());
     }
 
     public function testGetConnectTimeoutReturnsDefault(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertEquals(10, $config->getConnectTimeout());
     }
 
@@ -95,9 +95,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setConnectTimeout(15);
-        
+
         $this->assertEquals(15, $config->getConnectTimeout());
     }
 
@@ -105,9 +105,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setConnectTimeout(1);
-        
+
         $this->assertEquals(1, $config->getConnectTimeout());
     }
 
@@ -115,9 +115,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setConnectTimeout(300);
-        
+
         $this->assertEquals(300, $config->getConnectTimeout());
     }
 
@@ -125,11 +125,11 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setNonSubscribeRequestTimeout(25);
         $config->setSubscribeTimeout(350);
         $config->setConnectTimeout(20);
-        
+
         $this->assertEquals(25, $config->getNonSubscribeRequestTimeout());
         $this->assertEquals(350, $config->getSubscribeTimeout());
         $this->assertEquals(20, $config->getConnectTimeout());
@@ -142,7 +142,7 @@ class PNConfigurationExtendedTest extends TestCase
     public function testIsSecureReturnsDefaultTrue(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertTrue($config->isSecure());
     }
 
@@ -150,9 +150,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setSecure(false);
-        
+
         $this->assertFalse($config->isSecure());
     }
 
@@ -160,10 +160,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setSecure(false);
         $this->assertFalse($config->isSecure());
-        
+
         $config->setSecure(true);
         $this->assertTrue($config->isSecure());
     }
@@ -172,10 +172,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setSecure(false);
         $config->setSecure(); // No parameter, should default to true
-        
+
         $this->assertTrue($config->isSecure());
     }
 
@@ -183,12 +183,12 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $this->assertTrue($config->isSecure());
-        
+
         $config->setSecure(false);
         $this->assertFalse($config->isSecure());
-        
+
         $config->setSecure(true);
         $this->assertTrue($config->isSecure());
     }
@@ -200,7 +200,7 @@ class PNConfigurationExtendedTest extends TestCase
     public function testGetOriginReturnsNullByDefault(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertNull($config->getOrigin());
     }
 
@@ -208,9 +208,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setOrigin('custom.pubnub.com');
-        
+
         $this->assertEquals('custom.pubnub.com', $config->getOrigin());
     }
 
@@ -218,9 +218,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setOrigin('192.168.1.100');
-        
+
         $this->assertEquals('192.168.1.100', $config->getOrigin());
     }
 
@@ -228,9 +228,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setOrigin('localhost:8080');
-        
+
         $this->assertEquals('localhost:8080', $config->getOrigin());
     }
 
@@ -238,10 +238,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setOrigin('first-origin.com');
         $this->assertEquals('first-origin.com', $config->getOrigin());
-        
+
         $config->setOrigin('second-origin.com');
         $this->assertEquals('second-origin.com', $config->getOrigin());
     }
@@ -253,7 +253,7 @@ class PNConfigurationExtendedTest extends TestCase
     public function testGetAuthKeyReturnsNullByDefault(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertNull($config->getAuthKey());
     }
 
@@ -261,9 +261,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setAuthKey('my-auth-key');
-        
+
         $this->assertEquals('my-auth-key', $config->getAuthKey());
     }
 
@@ -271,9 +271,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setAuthKey('');
-        
+
         $this->assertEquals('', $config->getAuthKey());
     }
 
@@ -281,10 +281,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $authKey = 'auth!@#$%^&*()_+-={}[]|:;<>?,./';
         $config->setAuthKey($authKey);
-        
+
         $this->assertEquals($authKey, $config->getAuthKey());
     }
 
@@ -292,10 +292,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setAuthKey('first-key');
         $this->assertEquals('first-key', $config->getAuthKey());
-        
+
         $config->setAuthKey('second-key');
         $this->assertEquals('second-key', $config->getAuthKey());
     }
@@ -307,7 +307,7 @@ class PNConfigurationExtendedTest extends TestCase
     public function testGetFilterExpressionReturnsNullByDefault(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertNull($config->getFilterExpression());
     }
 
@@ -315,9 +315,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setFilterExpression('uuid == "user123"');
-        
+
         $this->assertEquals('uuid == "user123"', $config->getFilterExpression());
     }
 
@@ -325,10 +325,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $expression = 'uuid == "admin" && region == "us-east"';
         $config->setFilterExpression($expression);
-        
+
         $this->assertEquals($expression, $config->getFilterExpression());
     }
 
@@ -336,10 +336,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setFilterExpression('first-expression');
         $this->assertEquals('first-expression', $config->getFilterExpression());
-        
+
         $config->setFilterExpression('second-expression');
         $this->assertEquals('second-expression', $config->getFilterExpression());
     }
@@ -351,7 +351,7 @@ class PNConfigurationExtendedTest extends TestCase
     public function testIsAesEnabledReturnsFalseByDefault(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertFalse($config->isAesEnabled());
     }
 
@@ -360,7 +360,7 @@ class PNConfigurationExtendedTest extends TestCase
         $config = new PNConfiguration();
         $config->setUserId('test-user');
         $config->setCipherKey('test-key');
-        
+
         $this->assertTrue($config->isAesEnabled());
     }
 
@@ -368,17 +368,17 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $cryptoModule = CryptoModule::legacyCryptor('key', false);
         $config->setCryptoModule($cryptoModule);
-        
+
         $this->assertTrue($config->isAesEnabled());
     }
 
     public function testGetCryptoSafeReturnsNullWhenNotConfigured(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertNull($config->getCryptoSafe());
     }
 
@@ -387,19 +387,19 @@ class PNConfigurationExtendedTest extends TestCase
         $config = new PNConfiguration();
         $config->setUserId('test-user');
         $config->setCipherKey('test-key');
-        
+
         $crypto = $config->getCryptoSafe();
-        
+
         $this->assertInstanceOf(CryptoModule::class, $crypto);
     }
 
     public function testGetCryptoSafeDoesNotThrowException(): void
     {
         $config = new PNConfiguration();
-        
+
         // This should not throw an exception
         $crypto = $config->getCryptoSafe();
-        
+
         $this->assertNull($crypto);
     }
 
@@ -407,19 +407,19 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $cryptoModule = CryptoModule::aesCbcCryptor('my-key', true);
         $config->setCryptoModule($cryptoModule);
-        
+
         $crypto = $config->getCryptoSafe();
-        
+
         $this->assertSame($cryptoModule, $crypto);
     }
 
     public function testGetUseRandomIVReturnsDefaultTrue(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertTrue($config->getUseRandomIV());
     }
 
@@ -427,9 +427,9 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setUseRandomIV(false);
-        
+
         $this->assertFalse($config->getUseRandomIV());
     }
 
@@ -437,10 +437,10 @@ class PNConfigurationExtendedTest extends TestCase
     {
         $config = new PNConfiguration();
         $config->setUserId('test-user');
-        
+
         $config->setUseRandomIV(false);
         $config->setUseRandomIV(true);
-        
+
         $this->assertTrue($config->getUseRandomIV());
     }
 
@@ -451,7 +451,7 @@ class PNConfigurationExtendedTest extends TestCase
     public function testGetPublishKeyReturnsNull(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertNull($config->getPublishKey());
     }
 
@@ -460,14 +460,14 @@ class PNConfigurationExtendedTest extends TestCase
         $config = new PNConfiguration();
         $config->setUserId('test-user');
         $config->setPublishKey('pub-key-123');
-        
+
         $this->assertEquals('pub-key-123', $config->getPublishKey());
     }
 
     public function testGetSecretKeyReturnsNull(): void
     {
         $config = new PNConfiguration();
-        
+
         $this->assertNull($config->getSecretKey());
     }
 
@@ -476,7 +476,7 @@ class PNConfigurationExtendedTest extends TestCase
         $config = new PNConfiguration();
         $config->setUserId('test-user');
         $config->setSecretKey('sec-key-456');
-        
+
         $this->assertEquals('sec-key-456', $config->getSecretKey());
     }
 
@@ -485,7 +485,7 @@ class PNConfigurationExtendedTest extends TestCase
         $config = new PNConfiguration();
         $config->setUserId('test-user');
         $config->setSubscribeKey('sub-key-789');
-        
+
         $this->assertEquals('sub-key-789', $config->getSubscribeKey());
     }
 
@@ -498,9 +498,9 @@ class PNConfigurationExtendedTest extends TestCase
         $config = new PNConfiguration();
         $config->setUserId('test-user');
         $config->setSubscribeKey('demo');
-        
+
         $cloned = $config->clone();
-        
+
         $this->assertNotSame($config, $cloned);
     }
 
@@ -514,9 +514,9 @@ class PNConfigurationExtendedTest extends TestCase
         $config->setOrigin('custom-origin.com');
         $config->setAuthKey('auth-key');
         $config->setSecure(false);
-        
+
         $cloned = $config->clone();
-        
+
         $this->assertEquals('test-user', $cloned->getUserId());
         $this->assertEquals('sub-key', $cloned->getSubscribeKey());
         $this->assertEquals('pub-key', $cloned->getPublishKey());
@@ -533,9 +533,9 @@ class PNConfigurationExtendedTest extends TestCase
         $config->setNonSubscribeRequestTimeout(25);
         $config->setSubscribeTimeout(400);
         $config->setConnectTimeout(15);
-        
+
         $cloned = $config->clone();
-        
+
         $this->assertEquals(25, $cloned->getNonSubscribeRequestTimeout());
         $this->assertEquals(400, $cloned->getSubscribeTimeout());
         $this->assertEquals(15, $cloned->getConnectTimeout());
@@ -547,9 +547,9 @@ class PNConfigurationExtendedTest extends TestCase
         $config->setUserId('test-user');
         $config->setSubscribeKey('demo');
         $config->lock();
-        
+
         $cloned = $config->clone();
-        
+
         // Cloned config should not be locked, so this should not throw
         $cloned->setPublishKey('new-pub-key');
         $this->assertEquals('new-pub-key', $cloned->getPublishKey());
@@ -560,15 +560,15 @@ class PNConfigurationExtendedTest extends TestCase
         $config = new PNConfiguration();
         $config->setUserId('original-user');
         $config->setSubscribeKey('original-key');
-        
+
         $cloned = $config->clone();
         $cloned->setUserId('cloned-user');
         $cloned->setSubscribeKey('cloned-key');
-        
+
         // Original should be unchanged
         $this->assertEquals('original-user', $config->getUserId());
         $this->assertEquals('original-key', $config->getSubscribeKey());
-        
+
         // Cloned should have new values
         $this->assertEquals('cloned-user', $cloned->getUserId());
         $this->assertEquals('cloned-key', $cloned->getSubscribeKey());
@@ -594,7 +594,7 @@ class PNConfigurationExtendedTest extends TestCase
         $config->setFilterExpression('uuid != "bot"');
         $config->setUseRandomIV(true);
         $config->setCipherKey('cipher-key');
-        
+
         // Verify all values
         $this->assertEquals('test-user', $config->getUserId());
         $this->assertEquals('sub-key', $config->getSubscribeKey());

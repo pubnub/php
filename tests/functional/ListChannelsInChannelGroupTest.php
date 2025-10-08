@@ -7,7 +7,6 @@ use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
-
 class ListChannelsInChannelGroupTest extends \PubNubTestCase
 {
     public function testValidatesGroupNotEmpty()

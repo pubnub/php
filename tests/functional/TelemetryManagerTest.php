@@ -5,7 +5,6 @@ namespace Tests\Functional;
 use PubNub\Managers\TelemetryManager;
 use PubNub\Enums\PNOperationType;
 
-
 class TelemetryManagerTest extends \PubNubTestCase
 {
     public function testCleanUpTest()
