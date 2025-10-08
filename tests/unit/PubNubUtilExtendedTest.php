@@ -3,7 +3,6 @@
 namespace PubNubTests\unit;
 
 use PHPUnit\Framework\TestCase;
-
 use PubNub\PubNubUtil;
 
 class PubNubUtilExtendedTest extends TestCase

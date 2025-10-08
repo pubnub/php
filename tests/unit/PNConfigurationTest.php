@@ -3,7 +3,6 @@
 namespace PubNubTests\unit;
 
 use PHPUnit\Framework\TestCase;
-
 use PubNub\Exceptions\PubNubBuildRequestException;
 use PubNub\Exceptions\PubNubConfigurationException;
 use PubNub\PNConfiguration;

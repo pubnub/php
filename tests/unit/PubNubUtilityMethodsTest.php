@@ -3,7 +3,6 @@
 namespace PubNubTests\unit;
 
 use PHPUnit\Framework\TestCase;
-
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\CryptoModule;
