@@ -5,4 +5,3 @@ parameters:
     level: 6
     paths:
         - src
-        - tests
