@@ -68,7 +68,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageWithMetadata(): void
@@ -102,7 +102,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageWithCustomMessageType(): void
@@ -130,7 +130,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageWithTTL(): void
@@ -158,7 +158,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageWithShouldStore(): void
@@ -186,7 +186,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageWithAllOptions(): void
@@ -222,7 +222,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageWithEncryption(): void
@@ -249,7 +249,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageWithComplexMessage(): void
@@ -286,7 +286,7 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($response);
-        $this->assertNotEmpty($response->getTimetoken());
+        $this->assertNotEmpty($response->getTimestamp());
     }
 
     public function testPublishFileMessageMultipleTimes(): void
@@ -319,9 +319,9 @@ final class PublishFileMessageTest extends PubNubTestCase
             ->message("Second notification")
             ->sync();
 
-        $this->assertNotEmpty($response1->getTimetoken());
-        $this->assertNotEmpty($response2->getTimetoken());
-        $this->assertNotEquals($response1->getTimetoken(), $response2->getTimetoken());
+        $this->assertNotEmpty($response1->getTimestamp());
+        $this->assertNotEmpty($response2->getTimestamp());
+        $this->assertNotEquals($response1->getTimestamp(), $response2->getTimestamp());
     }
 
     public function testPublishFileMessageWithInvalidFileId(): void
