@@ -1,7 +1,7 @@
 <?php
 
 //phpcs:disable
-namespace PubNubTests\unit
+namespace PubNubTests\unit;
 
 use PubNubTestCase;
 use PubNub\Callbacks\SubscribeCallback;
