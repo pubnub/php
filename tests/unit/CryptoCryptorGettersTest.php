@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNubTests\unit
+namespace PubNubTests\unit;
 
 use PHPUnit\Framework\TestCase;
 
