@@ -1,5 +1,7 @@
 <?php
 
+// @phpstan-ignore-file
+// phpcs:ignoreFile
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use PubNub\PNConfiguration;
@@ -104,21 +106,25 @@ $pubnub = new PubNub($pnConfiguration);
 // snippet.end
 
 // snippet.event_listeners
-class MySubscribeCallback extends SubscribeCallback {
-    function status($pubnub, $status) {
+class MySubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
         if ($status->getCategory() === PNStatusCategory::PNUnexpectedDisconnectCategory) {
         // This event happens when radio / connectivity is lost
-        } else if ($status->getCategory() === PNStatusCategory::PNConnectedCategory){
+        } elseif ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
         // Connect event. You can do stuff like publish, and know you'll get it // Or just use the connected event to confirm you are subscribed for // UI / internal notifications, etc
-        } else if ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory){
+        } elseif ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory) {
         // Handle message decryption error. Probably client configured to // encrypt messages and on live data feed it received plain text.
         }
     }
 
-    function message($pubnub, $message){
+    function message($pubnub, $message)
+    {
     // Handle new message stored in message.message
     }
-    function presence($pubnub, $presence){
+    function presence($pubnub, $presence)
+    {
     // handle incoming presence data
     }
 }
@@ -156,4 +162,3 @@ $pnconf->setFilterExpression("userid == 'my_userid'");
 
 $pubnub = new PubNub($pnconf);
 // snippet.end
-

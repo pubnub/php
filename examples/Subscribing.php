@@ -1,6 +1,7 @@
 <?php
 
-// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
+// @phpstan-ignore-file
+// phpcs:ignoreFile
 namespace PubNub\Demo;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -118,8 +119,10 @@ $pubnub->subscribe()->channels("my_channel")->execute();
 // snippet.end
 
 // snippet.subscribe_with_state
-class MySubscribeCallbackWithState extends SubscribeCallback {
-    function status($pubnub, $status) {
+class MySubscribeCallbackWithState extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
             $result = $pubnub->setState()
                             ->channels("awesomeChannel")
@@ -133,10 +136,12 @@ class MySubscribeCallbackWithState extends SubscribeCallback {
         }
     }
 
-    function message($pubnub, $message) {
+    function message($pubnub, $message)
+    {
     }
 
-    function presence($pubnub, $presence) {
+    function presence($pubnub, $presence)
+    {
     }
 }
 
@@ -152,20 +157,25 @@ $pubnub->subscribe()
 // snippet.unsubscribe_from_channel
 use PubNub\Exceptions\PubNubUnsubscribeException;
 
-class MyUnsubscribeCallback extends SubscribeCallback {
-    function status($pubnub, $status) {
+class MyUnsubscribeCallback extends SubscribeCallback
+{
+    function status($pubnub, $status)
+    {
         if ($this->checkUnsubscribeCondition()) {
             throw (new PubNubUnsubscribeException())->setChannels("awesomeChannel");
         }
     }
 
-    function message($pubnub, $message) {
+    function message($pubnub, $message)
+    {
     }
 
-    function presence($pubnub, $presence) {
+    function presence($pubnub, $presence)
+    {
     }
 
-    function checkUnsubscribeCondition() {
+    function checkUnsubscribeCondition()
+    {
         // return true or false
         return false;
     }
