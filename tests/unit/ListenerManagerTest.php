@@ -52,19 +52,19 @@ class MySubscribeCallback extends SubscribeCallback
      * @param \PubNub\Models\ResponseHelpers\PNStatus $status
      * @return mixed
      */
-    function status($pubnub, $status): void
+    function status($pubnub, $status)
     {
         // TODO: Implement status() method.
     }
 
     /** @phpstan-ignore-next-line */
-    function message($pubnub, $message): void
+    function message($pubnub, $message)
     {
         // TODO: Implement message() method.
     }
 
     /** @phpstan-ignore-next-line */
-    function presence($pubnub, $presence): void
+    function presence($pubnub, $presence)
     {
         // TODO: Implement presence() method.
     }
