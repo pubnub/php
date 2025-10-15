@@ -1,7 +1,6 @@
 <?php
 
-// @phpstan-ignore-file
-// phpcs:ignoreFile
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 namespace PubNub\Demo;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -24,6 +23,8 @@ $pnconfig->setUserId("php-subscriber-" . uniqid()); // Unique user ID for this d
 $pubnub = new PubNub($pnconfig);
 // snippet.end
 
+// Disable for "one class per file" rule
+// phpcs:disable
 // snippet.callback
 // Create a custom callback class to handle messages and status updates
 class MySubscribeCallback extends SubscribeCallback
@@ -63,6 +64,7 @@ class MySubscribeCallback extends SubscribeCallback
     }
 }
 // snippet.end
+// phpcs:enable
 
 // snippet.subscribe
 // Add the callback to PubNub
@@ -81,6 +83,8 @@ foreach ($channels as $channel) {
 }
 // snippet.end
 
+// Disable for the "declare symbols vs side effects" rule
+// phpcs:disable
 // snippet.history
 // Get message history
 function getHistory($pubnub, $channels)
@@ -101,6 +105,7 @@ function getHistory($pubnub, $channels)
     }
 }
 // snippet.end
+// phpcs:enable
 
 // snippet.basic_subscribe_with_logging
 use Monolog\Handler\ErrorLogHandler;
@@ -118,29 +123,32 @@ $pubnub->getLogger()->pushHandler(new ErrorLogHandler());
 $pubnub->subscribe()->channels("my_channel")->execute();
 // snippet.end
 
+// Disable for the "one class per file" rule
+// phpcs:disable
 // snippet.subscribe_with_state
 class MySubscribeCallbackWithState extends SubscribeCallback
 {
-    function status($pubnub, $status)
+    public function status($pubnub, $status)
     {
         if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
-            $result = $pubnub->setState()
-                            ->channels("awesomeChannel")
-                            ->channelGroups("awesomeChannelGroup")
-                            ->state([
-                                "fieldA" => "awesome",
-                                "fieldB" => 10
-                            ])
-                            ->sync();
+            $result = $pubnub
+                ->setState()
+                ->channels("awesomeChannel")
+                ->channelGroups("awesomeChannelGroup")
+                ->state([
+                    "fieldA" => "awesome",
+                    "fieldB" => 10,
+                ])
+                ->sync();
             print_r($result);
         }
     }
 
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
     }
 }
@@ -153,28 +161,31 @@ $pubnub->subscribe()
     ->channels("my_channel")
     ->execute();
 // snippet.end
+// phpcs:enable
 
+// Disable for the "one class per file" rule
+// phpcs:disable
 // snippet.unsubscribe_from_channel
 use PubNub\Exceptions\PubNubUnsubscribeException;
 
 class MyUnsubscribeCallback extends SubscribeCallback
 {
-    function status($pubnub, $status)
+    public function status($pubnub, $status)
     {
         if ($this->checkUnsubscribeCondition()) {
             throw (new PubNubUnsubscribeException())->setChannels("awesomeChannel");
         }
     }
 
-    function message($pubnub, $message)
+    public function message($pubnub, $message)
     {
     }
 
-    function presence($pubnub, $presence)
+    public function presence($pubnub, $presence)
     {
     }
 
-    function checkUnsubscribeCondition()
+    public function checkUnsubscribeCondition()
     {
         // return true or false
         return false;
@@ -197,6 +208,7 @@ $pubnub->subscribe()
     ->channels("awesomeChannel")
     ->execute();
 // snippet.end
+// phpcs:enable
 
 echo "Starting PubNub Subscriber...\n";
 echo "Press Ctrl+C to exit\n";

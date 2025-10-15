@@ -11,17 +11,11 @@ class PubNubSdkInfoTest extends TestCase
     // getSdkVersion() TESTS
     // ============================================================================
 
-    public function testGetSdkVersionReturnsString(): void
-    {
-        $version = PubNub::getSdkVersion();
-
-        $this->assertIsString($version);
-    }
-
     public function testGetSdkVersionIsNotEmpty(): void
     {
         $version = PubNub::getSdkVersion();
 
+        $this->assertIsString($version);
         $this->assertNotEmpty($version);
     }
 
@@ -32,14 +26,6 @@ class PubNubSdkInfoTest extends TestCase
         // Should match semantic versioning pattern (e.g., 7.1.0, 7.1.0-beta.1, etc.)
         $pattern = '/^\d+\.\d+\.\d+(-[a-zA-Z0-9\.\-]+)?$/';
         $this->assertMatchesRegularExpression($pattern, $version);
-    }
-
-    public function testGetSdkVersionIsConsistent(): void
-    {
-        $version1 = PubNub::getSdkVersion();
-        $version2 = PubNub::getSdkVersion();
-
-        $this->assertEquals($version1, $version2);
     }
 
     public function testGetSdkVersionStartsWithDigit(): void

@@ -100,6 +100,7 @@ $pnConfiguration = new PNConfiguration();
 
 $pnConfiguration->setSubscribeKey("my_sub_key");
 $pnConfiguration->setPublishKey("my_pub_key");
+//NOTE: only server side should have secret key
 $pnConfiguration->setSecretKey("my_secret_key");
 $pnConfiguration->setUserId("myUniqueUserId");
 $pubnub = new PubNub($pnConfiguration);

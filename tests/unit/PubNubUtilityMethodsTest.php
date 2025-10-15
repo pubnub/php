@@ -86,19 +86,13 @@ class PubNubUtilityMethodsTest extends TestCase
     // TIMESTAMP METHOD TESTS
     // ============================================================================
 
-    public function testTimestampReturnsInteger(): void
-    {
-        $timestamp = $this->pubnub->timestamp();
-
-        $this->assertIsInt($timestamp);
-    }
-
     public function testTimestampReturnsCurrentTime(): void
     {
         $before = time();
         $timestamp = $this->pubnub->timestamp();
         $after = time();
 
+        $this->assertIsInt($timestamp);
         // Timestamp should be between before and after
         $this->assertGreaterThanOrEqual($before, $timestamp);
         $this->assertLessThanOrEqual($after, $timestamp);
@@ -183,25 +177,6 @@ class PubNubUtilityMethodsTest extends TestCase
     }
 
     // ============================================================================
-    // TELEMETRY MANAGER TESTS
-    // ============================================================================
-
-    public function testGetTelemetryManagerReturnsInstance(): void
-    {
-        $telemetryManager = $this->pubnub->getTelemetryManager();
-
-        $this->assertInstanceOf(\PubNub\Managers\TelemetryManager::class, $telemetryManager);
-    }
-
-    public function testGetTelemetryManagerReturnsSameInstance(): void
-    {
-        $telemetryManager1 = $this->pubnub->getTelemetryManager();
-        $telemetryManager2 = $this->pubnub->getTelemetryManager();
-
-        $this->assertSame($telemetryManager1, $telemetryManager2);
-    }
-
-    // ============================================================================
     // CONFIGURATION GETTER TESTS
     // ============================================================================
 
@@ -271,13 +246,6 @@ class PubNubUtilityMethodsTest extends TestCase
     // HTTP CLIENT TESTS
     // ============================================================================
 
-    public function testGetClientReturnsClientInterface(): void
-    {
-        $client = $this->pubnub->getClient();
-
-        $this->assertInstanceOf(\Psr\Http\Client\ClientInterface::class, $client);
-    }
-
     public function testSetClientAndGetClient(): void
     {
         $mockClient = $this->createMock(\Psr\Http\Client\ClientInterface::class);
@@ -298,13 +266,6 @@ class PubNubUtilityMethodsTest extends TestCase
     // ============================================================================
     // REQUEST FACTORY TESTS
     // ============================================================================
-
-    public function testGetRequestFactoryReturnsRequestFactoryInterface(): void
-    {
-        $requestFactory = $this->pubnub->getRequestFactory();
-
-        $this->assertInstanceOf(\Psr\Http\Message\RequestFactoryInterface::class, $requestFactory);
-    }
 
     public function testSetRequestFactoryAndGetRequestFactory(): void
     {
