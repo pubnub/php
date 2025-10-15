@@ -18,4 +18,3 @@ class ConfigurationTest extends TestCase
         $this->assertTrue(true); // If we reach this point, all examples passed
     }
 }
-
