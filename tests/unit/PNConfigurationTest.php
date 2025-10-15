@@ -10,21 +10,21 @@ use PubNub\PubNubUtil;
 
 class PNConfigurationTest extends TestCase
 {
-    public function testInitWithUUID(): void
+    public function testInitWithUUID()
     {
         $config = new PNConfiguration();
         $config->setUuid('foo-bar-baz');
         $this->assertEquals($config->getUuid(), 'foo-bar-baz');
     }
 
-    public function testInitWithUserId(): void
+    public function testInitWithUserId()
     {
         $config = new PNConfiguration();
         $config->setUserId('foo-bar-baz');
         $this->assertEquals($config->getUserId(), 'foo-bar-baz');
     }
 
-    public function testThrowOnUserIdAndUUID(): void
+    public function testThrowOnUserIdAndUUID()
     {
         $this->expectException(PubNubConfigurationException::class);
         $this->expectExceptionMessage("Cannot use UserId and UUID simultaneously");
@@ -33,7 +33,7 @@ class PNConfigurationTest extends TestCase
         $config->setUuid('foo-bar-baz');
     }
 
-    public function testThrowOnEmptyUserId(): void
+    public function testThrowOnEmptyUserId()
     {
         $this->expectException(PubNubConfigurationException::class);
         $this->expectExceptionMessage("UserID should not be empty");

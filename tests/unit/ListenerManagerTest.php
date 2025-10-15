@@ -9,7 +9,7 @@ use PubNub\Managers\ListenerManager;
 
 class ListenerManagerTest extends PubNubTestCase
 {
-    public function testUrlEncode(): void
+    public function testUrlEncode()
     {
         $listener = new ExposedListenerManager($this->pubnub);
 
@@ -39,7 +39,7 @@ class ListenerManagerTest extends PubNubTestCase
 
 class ExposedListenerManager extends ListenerManager
 {
-    public function count(): int
+    public function count()
     {
         return count($this->listeners);
     }
@@ -52,20 +52,17 @@ class MySubscribeCallback extends SubscribeCallback
      * @param \PubNub\Models\ResponseHelpers\PNStatus $status
      * @return mixed
      */
-    /** @phpstan-ignore-next-line */
-    function status($pubnub, $status): void
+    function status($pubnub, $status)
     {
         // TODO: Implement status() method.
     }
 
-    /** @phpstan-ignore-next-line */
-    function message($pubnub, $message): void
+    function message($pubnub, $message)
     {
         // TODO: Implement message() method.
     }
 
-    /** @phpstan-ignore-next-line */
-    function presence($pubnub, $presence): void
+    function presence($pubnub, $presence)
     {
         // TODO: Implement presence() method.
     }

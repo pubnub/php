@@ -8,7 +8,7 @@ use PubNub\Enums\PNOperationType;
 
 class TelemetryManagerTest extends TestCase
 {
-    public function testAverageLatency(): void
+    public function testAverageLatency()
     {
         $endpointLatencies = [
             ["d" => 100, "l" => 10],
@@ -23,7 +23,7 @@ class TelemetryManagerTest extends TestCase
         $this->assertEquals(30, $averageLatency);
     }
 
-    public function testValidQueries(): void
+    public function testValidQueries()
     {
         $manager = new TelemetryManager();
 

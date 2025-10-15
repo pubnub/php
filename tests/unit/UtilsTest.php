@@ -12,13 +12,13 @@ class UtilsTest extends TestCase
      * @group time
      * @group time-integrational
      */
-    public function testUrlEncode(): void
+    public function testUrlEncode()
     {
         $this->assertEquals('blah%2Bnjkl', PubNubUtil::urlEncode("blah+njkl"));
         $this->assertEquals('%7B%22value%22%3A%20%222%22%7D', PubNubUtil::urlEncode("{\"value\": \"2\"}"));
     }
 
-    public function testWriteValueAsString(): void
+    public function testWriteValueAsString()
     {
         //phpcs:disable 
         $this->expectException(PubNubBuildRequestException::class);
@@ -28,7 +28,7 @@ class UtilsTest extends TestCase
         //phpcs:enable
     }
 
-    public function testPamEncode(): void
+    public function testPamEncode()
     {
         $params = [
             'abc' => true,
@@ -40,7 +40,7 @@ class UtilsTest extends TestCase
         self::assertEquals("abc=true&def=false&poq=4", $result);
     }
 
-    public function testJoinQuery(): void
+    public function testJoinQuery()
     {
         $elements = [
             'a' => '2',
