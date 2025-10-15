@@ -11,7 +11,7 @@ class PublishTest extends TestCase
      * @group publish
      * @group publish-unit
      */
-    public function testSequenceCounterRestartsAfterMaxReached()
+    public function testSequenceCounterRestartsAfterMaxReached(): void
     {
         $pubnub = PubNub::Demo();
         $this->assertEquals(1, $pubnub->getSequenceId());
