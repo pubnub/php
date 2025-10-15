@@ -52,7 +52,6 @@ class MySubscribeCallback extends SubscribeCallback
      * @param \PubNub\Models\ResponseHelpers\PNStatus $status
      * @return mixed
      */
-    /** @phpstan-ignore-next-line */
     function status($pubnub, $status): void
     {
         // TODO: Implement status() method.
