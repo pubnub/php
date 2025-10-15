@@ -39,7 +39,7 @@ class ListenerManagerTest extends PubNubTestCase
 
 class ExposedListenerManager extends ListenerManager
 {
-    public function count(): void
+    public function count(): int
     {
         return count($this->listeners);
     }
