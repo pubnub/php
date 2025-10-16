@@ -1,5 +1,6 @@
 <?php
 
+//phpcs:disable
 namespace Tests\Functional;
 
 use PubNub\Endpoints\ChannelGroups\ListChannelsInChannelGroup;
@@ -7,7 +8,6 @@ use PubNub\Endpoints\ChannelGroups\RemoveChannelGroup;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-
 
 class RemoveChannelGroupTest extends \PubNubTestCase
 {

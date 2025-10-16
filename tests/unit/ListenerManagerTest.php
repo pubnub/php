@@ -1,12 +1,15 @@
 <?php
 
+//phpcs:disable
+namespace PubNubTests\unit;
 
+use PubNubTestCase;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Managers\ListenerManager;
 
 class ListenerManagerTest extends PubNubTestCase
 {
-    public function testUrlEncode()
+    public function testUrlEncode(): void
     {
         $listener = new ExposedListenerManager($this->pubnub);
 
@@ -36,7 +39,7 @@ class ListenerManagerTest extends PubNubTestCase
 
 class ExposedListenerManager extends ListenerManager
 {
-    public function count()
+    public function count(): int
     {
         return count($this->listeners);
     }
@@ -44,7 +47,6 @@ class ExposedListenerManager extends ListenerManager
 
 class MySubscribeCallback extends SubscribeCallback
 {
-
     /**
      * @param \PubNub\PubNub $pubnub
      * @param \PubNub\Models\ResponseHelpers\PNStatus $status
@@ -55,11 +57,13 @@ class MySubscribeCallback extends SubscribeCallback
         // TODO: Implement status() method.
     }
 
+    /** @phpstan-ignore-next-line */
     function message($pubnub, $message)
     {
         // TODO: Implement message() method.
     }
 
+    /** @phpstan-ignore-next-line */
     function presence($pubnub, $presence)
     {
         // TODO: Implement presence() method.

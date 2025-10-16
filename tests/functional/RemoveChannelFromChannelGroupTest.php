@@ -1,12 +1,12 @@
 <?php
 
+//phpcs:disable
 namespace Tests\Functional;
 
 use PubNub\Endpoints\ChannelGroups\RemoveChannelFromChannelGroup;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-
 
 class RemoveChannelFromChannelGroupTest extends \PubNubTestCase
 {

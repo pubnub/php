@@ -33,4 +33,3 @@ try {
 } catch (\PubNub\Exceptions\PubNubException $exception) {
     print_r("Message: " . $exception->getMessage());
 }
-

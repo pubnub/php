@@ -11,4 +11,3 @@ $pubnub = new \PubNub\PubNub($pnconfig);
 $result = $pubnub->time()->sync();
 
 printf("Server Time is: %s", date("Y-m-d H:i:s", $result->getTimetoken()));
-

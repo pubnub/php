@@ -1,12 +1,12 @@
 <?php
 
+//phpcs:disable
 namespace Tests\Functional;
 
 use PubNub\Endpoints\PubSub\Subscribe;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-
 
 class SubscribeTest extends \PubNubTestCase
 {

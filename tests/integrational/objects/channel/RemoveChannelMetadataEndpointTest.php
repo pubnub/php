@@ -4,7 +4,6 @@ namespace Tests\Integrational\Objects\Channel;
 
 use PubNubTestCase;
 
-
 class RemoveChannelMetadataEndpointTest extends PubNubTestCase
 {
     public function testRemoveMetadataFromChannel()

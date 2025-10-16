@@ -1,12 +1,12 @@
 <?php
 
+//phpcs:disable
 namespace Tests\Functional;
 
 use PubNub\Endpoints\ChannelGroups\AddChannelToChannelGroup;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
-
 
 class AddChannelToChannelGroupTest extends \PubNubTestCase
 {
@@ -81,7 +81,6 @@ class AddChannelToChannelGroupTest extends \PubNubTestCase
         );
     }
 }
-
 
 class AddChannelToChannelGroupExposed extends AddChannelToChannelGroup
 {
