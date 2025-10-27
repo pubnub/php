@@ -38,7 +38,8 @@
     "phpunit/phpunit": "^9.5",
     "squizlabs/php_codesniffer": "^3.7",
     "phpstan/phpstan": "^1.8",
-    "behat/behat": "^3.14"
+    "behat/behat": "^3.14",
+    "vlucas/phpdotenv": "^5.6"
   },
   "autoload": {
     "psr-4": {

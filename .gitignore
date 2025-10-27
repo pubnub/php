@@ -12,6 +12,12 @@
 .DS_Store
 coverage.clover
 
+# Environment files (for local development) #
+#############################################
+.env
+.env.local
+.env.*.local
+
 # GitHub Actions #
 ##################
 .github/.release

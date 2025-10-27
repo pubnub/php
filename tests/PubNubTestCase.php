@@ -70,12 +70,12 @@ abstract class PubNubTestCase extends TestCase
 
     public function setUp(): void
     {
-        $publishKey = getenv("PUBLISH_KEY");
-        $subscribeKey = getenv("SUBSCRIBE_KEY");
-        $publishKeyPam = getenv("PUBLISH_PAM_KEY");
-        $subscribeKeyPam = getenv("SUBSCRIBE_PAM_KEY");
-        $secretKeyPam = getenv("SECRET_PAM_KEY");
-        $uuidMock = getenv("UUID_MOCK") ? getenv("UUID_MOCK") : "UUID_MOCK";
+        $publishKey = getenv("PUBLISH_KEY") ?: "";
+        $subscribeKey = getenv("SUBSCRIBE_KEY") ?: "";
+        $publishKeyPam = getenv("PUBLISH_PAM_KEY") ?: "";
+        $subscribeKeyPam = getenv("SUBSCRIBE_PAM_KEY") ?: "";
+        $secretKeyPam = getenv("SECRET_PAM_KEY") ?: "";
+        $uuidMock = getenv("UUID_MOCK") ?: "UUID_MOCK";
 
         $logger = new Logger('PubNub');
         $logger->pushHandler(new ErrorLogHandler());

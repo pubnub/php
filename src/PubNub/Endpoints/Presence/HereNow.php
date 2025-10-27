@@ -13,6 +13,7 @@ class HereNow extends Endpoint
 {
     protected const PATH = "/v2/presence/sub-key/%s/channel/%s";
     protected const GLOBAL_PATH = "/v2/presence/sub-key/%s";
+    protected const MAX_CHANNEL_OCCUPANTS_LIMIT = 1000;
 
     /**  @var string[] */
     protected $channels = [];
@@ -25,6 +26,12 @@ class HereNow extends Endpoint
 
     /**  @var bool */
     protected $includeUuids = true;
+
+    /**  @var int */
+    protected $limit = self::MAX_CHANNEL_OCCUPANTS_LIMIT;
+
+    /**  @var int|null */
+    protected $offset = null;
 
     /**
      * @param string|string[] $channels
@@ -71,6 +78,28 @@ class HereNow extends Endpoint
     }
 
     /**
+     * @param int $limit Maximum number of occupants to return per channel (0-1000)
+     * @return $this
+     */
+    public function limit($limit)
+    {
+        $this->limit = $limit;
+
+        return $this;
+    }
+
+    /**
+     * @param int|null $offset Zero-based starting index for pagination
+     * @return $this
+     */
+    public function offset($offset)
+    {
+        $this->offset = $offset;
+
+        return $this;
+    }
+
+    /**
      * @throws PubNubValidationException
      */
     protected function validateParams()
@@ -95,6 +124,12 @@ class HereNow extends Endpoint
 
         if (!$this->includeUuids) {
             $params['disable-uuids'] = "1";
+        }
+
+        $params['limit'] = (string) $this->limit;
+
+        if ($this->offset !== null) {
+            $params['offset'] = (string) $this->offset;
         }
 
         return $params;

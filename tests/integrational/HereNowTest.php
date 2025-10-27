@@ -20,6 +20,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -57,6 +58,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -93,6 +95,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1,game2")
             ->withQuery([
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -125,6 +128,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1,game2")
             ->withQuery([
                 'disable-uuids' => '1',
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -151,6 +155,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'disable-uuids' => '1',
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -171,6 +176,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow = new HereNowExposed($this->pubnub_demo);
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -201,6 +207,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/game1")
             ->withQuery([
                 'state' => '1',
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -232,6 +239,7 @@ class HereNowTest extends \PubNubTestCase
             ->withQuery([
                 'channel-group' => 'grp1',
                 'state' => '1',
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -254,6 +262,7 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->stubFor("/v2/presence/sub-key/demo/channel/ch1,ch2")
             ->withQuery([
                 'state' => '1',
+                'limit' => '1000',
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
                 'auth' => 'myKey'
@@ -323,16 +332,139 @@ class HereNowTest extends \PubNubTestCase
         $hereNow->channels(["ch1", "ch2"])->includeState(true)->sync();
     }
 
-    public function testSuperCallTest()
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     * @group herenow-pagination
+     */
+    public function testHereNowWithLimit(): void
     {
-        $this->expectNotToPerformAssertions();
-        // Not valid
-        // ,~/
-        $characters = "-._:?#[]@!$&'()*+;=`|";
+        $hereNow = new HereNowExposed($this->pubnub_demo);
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/test-channel")
+            ->withQuery([
+                'limit' => '3',
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
+            ])
+            ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":6,\"total_channels\""
+                . ":1,\"channels\":{\"test-channel\":{\"occupancy\":6,\"uuids\":[{\"uuid\":\"user1\"},{\"uuid\":\"user2\"}"
+                . ",{\"uuid\":\"user3\"}]}}},\"service\":\"Presence\"}");
 
-        $this->pubnub_pam->hereNow()
-            ->channels($characters)
-            ->sync();
+        $response = $hereNow->channels("test-channel")->limit(3)->sync();
+
+        $this->assertEquals(1, $response->getTotalChannels());
+        $this->assertEquals(6, $response->getTotalOccupancy());
+        $this->assertEquals(1, count($response->getChannels()));
+        $this->assertEquals(6, $response->getChannels()[0]->getOccupancy());
+
+        // With limit=3, should return only 3 occupants even though 6 are present
+        $this->assertEquals(3, count($response->getChannels()[0]->getOccupants()));
+    }
+
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     * @group herenow-pagination
+     */
+    public function testHereNowWithOffset(): void
+    {
+        $hereNow = new HereNowExposed($this->pubnub_demo);
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/test-channel")
+            ->withQuery([
+                'offset' => '2',
+                'limit' => '1000',
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
+            ])
+            ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":5,\"total_channels\""
+                . ":1,\"channels\":{\"test-channel\":{\"occupancy\":5,\"uuids\":[{\"uuid\":\"user3\"},{\"uuid\":\"user4\"}"
+                . ",{\"uuid\":\"user5\"}]}}},\"service\":\"Presence\"}");
+
+        $response = $hereNow->channels("test-channel")->offset(2)->sync();
+
+        $this->assertEquals(1, $response->getTotalChannels());
+        $this->assertEquals(5, $response->getTotalOccupancy());
+
+        // With offset=2, we should get remaining occupants (5 - 2 = 3)
+        $returnedOccupants = $response->getChannels()[0]->getOccupants();
+        $this->assertEquals(3, count($returnedOccupants));
+
+        // Verify UUIDs are from the offset portion
+        $this->assertEquals("user3", $returnedOccupants[0]->getUuid());
+        $this->assertEquals("user4", $returnedOccupants[1]->getUuid());
+        $this->assertEquals("user5", $returnedOccupants[2]->getUuid());
+    }
+
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     * @group herenow-pagination
+     */
+    public function testHereNowWithLimitZero(): void
+    {
+        $hereNow = new HereNowExposed($this->pubnub_demo);
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/test-channel")
+            ->withQuery([
+                'limit' => '0',
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
+            ])
+            ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":5,\"total_channels\""
+                . ":1,\"channels\":{\"test-channel\":{\"occupancy\":5,\"uuids\":[]}}},\"service\":\"Presence\"}");
+
+        $response = $hereNow->channels("test-channel")->limit(0)->sync();
+
+        $this->assertEquals(1, $response->getTotalChannels());
+        $this->assertEquals(5, $response->getTotalOccupancy());
+        $this->assertEquals(5, $response->getChannels()[0]->getOccupancy());
+
+        // With limit=0, occupants should be empty array (no occupant details returned)
+        $this->assertIsArray($response->getChannels()[0]->getOccupants());
+        $this->assertEmpty($response->getChannels()[0]->getOccupants());
+    }
+
+    /**
+     * @group herenow
+     * @group herenow-integrational
+     * @group herenow-pagination
+     */
+    public function testHereNowMultipleChannelsWithLimitZero(): void
+    {
+        $hereNow = new HereNowExposed($this->pubnub_demo);
+        $hereNow->stubFor("/v2/presence/sub-key/demo/channel/channel1,channel2")
+            ->withQuery([
+                'limit' => '0',
+                'pnsdk' => $this->encodedSdkName,
+                'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
+            ])
+            ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":8,\"total_channels\""
+                . ":2,\"channels\":{\"channel1\":{\"occupancy\":5},\"channel2\":{\"occupancy\":3}}},\"service\":\"Presence\"}");
+
+        $response = $hereNow->channels(["channel1", "channel2"])->limit(0)->sync();
+
+        $this->assertEquals(2, $response->getTotalChannels());
+        $this->assertEquals(8, $response->getTotalOccupancy());
+
+        // Find channels in response (order may vary)
+        $channelDataMap = [];
+        foreach ($response->getChannels() as $channelData) {
+            $channelDataMap[$channelData->getChannelName()] = $channelData;
+        }
+
+        // Verify channel1 data - occupancy present, occupants null (different from single channel!)
+        $this->assertArrayHasKey("channel1", $channelDataMap);
+        $this->assertEquals(5, $channelDataMap["channel1"]->getOccupancy());
+        $this->assertNull($channelDataMap["channel1"]->getOccupants());
+
+        // Verify channel2 data - occupancy present, occupants null (different from single channel!)
+        $this->assertArrayHasKey("channel2", $channelDataMap);
+        $this->assertEquals(3, $channelDataMap["channel2"]->getOccupancy());
+        $this->assertNull($channelDataMap["channel2"]->getOccupants());
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
     }
 }
 
