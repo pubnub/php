@@ -129,12 +129,18 @@ class HereNowE2eTest extends \PubNubTestCase
 
             // Verify paginated results don't overlap with first page
             $secondPageUuids = array_map(
-                function($occupant) { return $occupant->getUuid(); },
+                function ($occupant) {
+                    return $occupant->getUuid();
+                },
                 $response->getChannels()[0]->getOccupants()
             );
 
             foreach ($secondPageUuids as $uuid) {
-                $this->assertNotContains($uuid, $firstPageUuids, "Second page should not contain UUIDs from first page");
+                $this->assertNotContains(
+                    $uuid,
+                    $firstPageUuids,
+                    "Second page should not contain UUIDs from first page"
+                );
             }
         } finally {
             $this->cleanupBackgroundClients();

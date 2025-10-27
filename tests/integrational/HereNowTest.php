@@ -346,9 +346,12 @@ class HereNowTest extends \PubNubTestCase
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
-            ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":6,\"total_channels\""
-                . ":1,\"channels\":{\"test-channel\":{\"occupancy\":6,\"uuids\":[{\"uuid\":\"user1\"},{\"uuid\":\"user2\"}"
-                . ",{\"uuid\":\"user3\"}]}}},\"service\":\"Presence\"}");
+            ->setResponseBody(
+                "{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":6,"
+                . "\"total_channels\":1,\"channels\":{\"test-channel\":{\"occupancy\":6,"
+                . "\"uuids\":[{\"uuid\":\"user1\"},{\"uuid\":\"user2\"},{\"uuid\":\"user3\"}]}}},"
+                . "\"service\":\"Presence\"}"
+            );
 
         $response = $hereNow->channels("test-channel")->limit(3)->sync();
 
@@ -376,9 +379,12 @@ class HereNowTest extends \PubNubTestCase
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
-            ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":5,\"total_channels\""
-                . ":1,\"channels\":{\"test-channel\":{\"occupancy\":5,\"uuids\":[{\"uuid\":\"user3\"},{\"uuid\":\"user4\"}"
-                . ",{\"uuid\":\"user5\"}]}}},\"service\":\"Presence\"}");
+            ->setResponseBody(
+                "{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":5,"
+                . "\"total_channels\":1,\"channels\":{\"test-channel\":{\"occupancy\":5,"
+                . "\"uuids\":[{\"uuid\":\"user3\"},{\"uuid\":\"user4\"},{\"uuid\":\"user5\"}]}}},"
+                . "\"service\":\"Presence\"}"
+            );
 
         $response = $hereNow->channels("test-channel")->offset(2)->sync();
 
@@ -437,8 +443,11 @@ class HereNowTest extends \PubNubTestCase
                 'pnsdk' => $this->encodedSdkName,
                 'uuid' => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
-            ->setResponseBody("{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":8,\"total_channels\""
-                . ":2,\"channels\":{\"channel1\":{\"occupancy\":5},\"channel2\":{\"occupancy\":3}}},\"service\":\"Presence\"}");
+            ->setResponseBody(
+                "{\"status\":200,\"message\":\"OK\",\"payload\":{\"total_occupancy\":8,"
+                . "\"total_channels\":2,\"channels\":{\"channel1\":{\"occupancy\":5},"
+                . "\"channel2\":{\"occupancy\":3}}},\"service\":\"Presence\"}"
+            );
 
         $response = $hereNow->channels(["channel1", "channel2"])->limit(0)->sync();
 
