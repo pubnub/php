@@ -13,6 +13,7 @@ class HereNow extends Endpoint
 {
     protected const PATH = "/v2/presence/sub-key/%s/channel/%s";
     protected const GLOBAL_PATH = "/v2/presence/sub-key/%s";
+    protected const MAX_CHANNEL_OCCUPANTS_LIMIT = 1000;
 
     /**  @var string[] */
     protected $channels = [];
