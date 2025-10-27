@@ -1,6 +1,6 @@
 <?php
 
-namespace PubNubTests\Helpers;
+namespace PubNubTests\helpers;
 
 /**
  * Trait to help with presence testing by spawning background subscribers

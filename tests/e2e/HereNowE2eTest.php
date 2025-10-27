@@ -1,8 +1,8 @@
 <?php
 
-namespace PubNubTests\E2e;
+namespace PubNubTests\e2e;
 
-use PubNubTests\Helpers\PresenceTestHelper;
+use PubNubTests\helpers\PresenceTestHelper;
 
 /**
  * End-to-end tests for HereNow that call the real PubNub server
