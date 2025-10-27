@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\E2e;
+namespace PubNubTests\E2e;
 
 use PubNubTests\Helpers\PresenceTestHelper;
 
