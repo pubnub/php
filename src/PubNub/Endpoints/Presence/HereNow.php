@@ -27,11 +27,9 @@ class HereNow extends Endpoint
     /**  @var bool */
     protected $includeUuids = true;
 
-    /**  @var int */
-    protected $limit = self::MAX_CHANNEL_OCCUPANTS_LIMIT;
+    protected int $limit = self::MAX_CHANNEL_OCCUPANTS_LIMIT;
 
-    /**  @var int|null */
-    protected $offset = null;
+    protected ?int $offset = null;
 
     /**
      * @param string|string[] $channels
@@ -81,7 +79,7 @@ class HereNow extends Endpoint
      * @param int $limit Maximum number of occupants to return per channel (0-1000)
      * @return $this
      */
-    public function limit($limit)
+    public function limit($limit): self
     {
         $this->limit = $limit;
 
@@ -92,7 +90,7 @@ class HereNow extends Endpoint
      * @param int|null $offset Zero-based starting index for pagination
      * @return $this
      */
-    public function offset($offset)
+    public function offset($offset): self
     {
         $this->offset = $offset;
 

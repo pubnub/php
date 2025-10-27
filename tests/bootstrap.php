@@ -5,17 +5,26 @@
 // Enable all errors
 error_reporting(E_ALL);
 
-// Load environment variables from .env file (for local development)
+// Load environment variables from .env.dev file (for local development)
 // This allows developers to set PUBLISH_KEY, SUBSCRIBE_KEY, etc. locally
-// without committing sensitive keys to the repository.
-$envFile = dirname(__DIR__) . '/.env';
+$envFile = dirname(__DIR__) . '/.env.dev';
 if (file_exists($envFile)) {
     $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-    $dotenv->safeLoad(); // safeLoad() won't throw if .env is missing
+    $dotenv->safeLoad(); // safeLoad() won't throw if .env.dev is missing
 
-    // Also populate putenv() for backward compatibility with existing tests that use getenv()
-    // This way we don't need to modify PubNubTestCase.php
-    foreach (['PUBLISH_KEY', 'SUBSCRIBE_KEY', 'SECRET_KEY', 'PUBLISH_PAM_KEY', 'SUBSCRIBE_PAM_KEY', 'SECRET_PAM_KEY', 'UUID_MOCK'] as $key) {
+    // Dotenv only populates $_ENV and $_SERVER, but tests use getenv()
+    // Manually populate putenv() so getenv() works throughout the test suite
+    $requiredEnvKeys = [
+        'PUBLISH_KEY',
+        'PUBLISH_PAM_KEY',
+        'SECRET_KEY',
+        'SECRET_PAM_KEY',
+        'SUBSCRIBE_KEY',
+        'SUBSCRIBE_PAM_KEY',
+        'UUID_MOCK',
+    ];
+
+    foreach ($requiredEnvKeys as $key) {
         if (isset($_ENV[$key])) {
             putenv("$key={$_ENV[$key]}");
         }

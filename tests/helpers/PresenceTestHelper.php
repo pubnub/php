@@ -50,7 +50,7 @@ trait PresenceTestHelper
             );
 
             // Build environment: start with current OS environment, then ensure PubNub keys are set
-            // bootstrap.php calls putenv() for .env variables, making them available to getenv()
+            // bootstrap.php calls putenv() for .env.dev variables, making them available to getenv()
             $env = getenv(); // Get all current OS environment variables
             $env['PUBLISH_KEY'] = getenv('PUBLISH_KEY') ?: '';
             $env['SUBSCRIBE_KEY'] = getenv('SUBSCRIBE_KEY') ?: '';

@@ -6,7 +6,7 @@ use PubNubTests\helpers\PresenceTestHelper;
 
 /**
  * End-to-end tests for HereNow that call the real PubNub server
- * These tests require valid PUBLISH_KEY and SUBSCRIBE_KEY in .env file
+ * These tests require valid PUBLISH_KEY and SUBSCRIBE_KEY in .env.dev file
  *
  * These are complex E2E tests that verify pagination behavior with real concurrent clients
  *

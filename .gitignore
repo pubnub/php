@@ -14,9 +14,9 @@ coverage.clover
 
 # Environment files (for local development) #
 #############################################
-.env
-.env.local
-.env.*.local
+.env.dev
+.env.test
+.env.prod
 
 # GitHub Actions #
 ##################
