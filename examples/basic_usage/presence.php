@@ -23,6 +23,8 @@ try {
         ->channels(["my_channel", "demo"])
         ->includeUuids(true)  // Include the UUIDs of connected clients
         ->includeState(false) // Don't include state information
+        ->limit(100)          // Optional: Limit occupants returned per channel (0-1000, default: 1000)
+        ->offset(0)           // Optional: Skip first N occupants for pagination (default: 0)
         ->sync();
 
     // Display total counts
