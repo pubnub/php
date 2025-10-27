@@ -41,7 +41,7 @@ class HereNowE2eTest extends \PubNubTestCase
             // Wait for presence to propagate for both channels
             $this->assertTrue(
                 $this->waitForOccupancy($this->pubnub, $channels[0], $channel1ClientsCount, 15, 1),
-                "Failed to establish presence for channel1"
+                "Failed to establish presence for channel1 :("
             );
             $this->assertTrue(
                 $this->waitForOccupancy($this->pubnub, $channels[1], $channel2ClientsCount, 15, 1),
