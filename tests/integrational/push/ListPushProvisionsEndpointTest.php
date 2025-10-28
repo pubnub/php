@@ -122,7 +122,7 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
         }
     }
 
-    public function testWarningWhenUsingDeprecatedAPNSType()
+    public function testWarningWhenUsingDeprecatedAPNSType(): void
     {
         set_error_handler(static function (int $errno, string $errstr): never {
             throw new \Exception($errstr, $errno);

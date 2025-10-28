@@ -103,7 +103,7 @@ class RemoveChannelsFromPushEndpointTest extends \PubNubTestCase
         $this->assertNotEmpty($result);
     }
 
-    public function testWarningWhenUsingDeprecatedGCMType()
+    public function testWarningWhenUsingDeprecatedGCMType(): void
     {
         set_error_handler(static function (int $errno, string $errstr): never {
             throw new \Exception($errstr, $errno);
@@ -136,7 +136,7 @@ class RemoveChannelsFromPushEndpointTest extends \PubNubTestCase
         }
     }
 
-    public function testWarningWhenUsingDeprecatedAPNSType()
+    public function testWarningWhenUsingDeprecatedAPNSType(): void
     {
         set_error_handler(static function (int $errno, string $errstr): never {
             throw new \Exception($errstr, $errno);
