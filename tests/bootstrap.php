@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 // This allows developers to set PUBLISH_KEY, SUBSCRIBE_KEY, etc. locally
 $envFile = dirname(__DIR__) . '/.env.dev';
 if (file_exists($envFile)) {
-    $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+    $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__), '.env.dev');
     $dotenv->safeLoad(); // safeLoad() won't throw if .env.dev is missing
 
     // Dotenv only populates $_ENV and $_SERVER, but tests use getenv()
