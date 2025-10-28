@@ -12,6 +12,29 @@ $publishKey = getenv('PUBLISH_PAM_KEY') ?? 'demo';
 $subscribeKey = getenv('SUBSCRIBE_PAM_KEY') ?? 'demo';
 $secretKey = getenv('SECRET_PAM_KEY') ?? 'demo';
 
+// Generate unique channel prefix for test isolation (prevents PAM propagation issues in CI/CD)
+$testId = uniqid('test-', true);
+$channelPrefix = getenv('TEST_CHANNEL_PREFIX') ?? $testId;
+
+// Define channel names with unique prefix
+$publicChannel = "{$channelPrefix}-public-channel";
+$readOnlyChannel = "{$channelPrefix}-read-only-channel";
+$privateChannel = "{$channelPrefix}-private-channel";
+$adminOnlyChannel = "{$channelPrefix}-admin-only-channel";
+
+// Define channel group with unique prefix
+$userGroup = "{$channelPrefix}-user-group";
+
+echo "🔑 Test Configuration\n";
+echo "-------------------\n";
+echo "Test ID: {$testId}\n";
+echo "Channel Prefix: {$channelPrefix}\n";
+echo "Channels:\n";
+echo "  - {$publicChannel}\n";
+echo "  - {$readOnlyChannel}\n";
+echo "  - {$privateChannel}\n";
+echo "  - {$adminOnlyChannel}\n\n";
+
 // Admin instance with full access (includes secret key)
 $adminConfig = new PNConfiguration();
 $adminConfig->setPublishKey($publishKey);
@@ -44,7 +67,7 @@ echo "----------------------------------------------\n";
 
 // snippet.prepare_metadata
 // Create channel metadata for demo channels
-$channels = ['public-channel', 'read-only-channel', 'private-channel', 'admin-only-channel'];
+$channels = [$publicChannel, $readOnlyChannel, $privateChannel, $adminOnlyChannel];
 foreach ($channels as $channel) {
     try {
         $admin->setChannelMetadata()
@@ -52,7 +75,7 @@ foreach ($channels as $channel) {
             ->setName(ucwords(str_replace('-', ' ', $channel)))
             ->setDescription("Demo channel for access manager testing - " . $channel)
             ->setCustom([
-                'type' => $channel === 'admin-only-channel' ? 'admin' : 'user',
+                'type' => $channel === $adminOnlyChannel ? 'admin' : 'user',
                 'created' => date('Y-m-d H:i:s'),
                 'demo' => true
             ])
@@ -119,12 +142,12 @@ try {
         ->ttl(60) // 60 minutes
         ->authorizedUuid('regular-user') // Restrict to specific user
         ->addChannelResources([
-            'public-channel' => ['read' => true, 'write' => true], // Full access
-            'read-only-channel' => ['read' => true], // Read only - no write
-            'private-channel' => ['read' => true, 'write' => true, 'manage' => true] // Full access including manage
+            $publicChannel => ['read' => true, 'write' => true], // Full access
+            $readOnlyChannel => ['read' => true], // Read only - no write
+            $privateChannel => ['read' => true, 'write' => true, 'manage' => true] // Full access including manage
         ])
         ->addChannelGroupResources([
-            'user-group' => ['read' => true] // Read only for channel groups
+            $userGroup => ['read' => true] // Read only for channel groups
         ])
         ->addUuidResources([
             'regular-user' => ['get' => true, 'update' => true], // Self metadata access
@@ -162,7 +185,7 @@ try {
 
     // Show channel permissions
     echo "\nChannel Permissions:\n";
-    foreach (['public-channel', 'read-only-channel', 'private-channel'] as $channel) {
+    foreach ([$publicChannel, $readOnlyChannel, $privateChannel] as $channel) {
         $permissions = $parsedToken->getChannelResource($channel);
         if ($permissions) {
             echo "- $channel: ";
@@ -203,7 +226,7 @@ echo "----------------------------------------\n";
 // snippet.access_denied_without_token
 try {
     $user->publish()
-        ->channel('public-channel')
+        ->channel($publicChannel)
         ->message(['text' => 'Hello without token!'])
         ->sync();
     printResult("User publish to public-channel WITHOUT token", false, "Should have failed but succeeded");
@@ -213,7 +236,7 @@ try {
 
 try {
     $user->history()
-        ->channel('public-channel')
+        ->channel($publicChannel)
         ->count(1)
         ->sync();
     printResult("User read from public-channel WITHOUT token", false, "Should have failed but succeeded");
@@ -236,7 +259,7 @@ echo "Token set for user.\n";
 // Test allowed operations
 try {
     $result = $user->publish()
-        ->channel('public-channel')
+        ->channel($publicChannel)
         ->message(['text' => 'Hello with token!', 'timestamp' => time()])
         ->sync();
     printResult("User publish to public-channel WITH token", true, "Message published successfully");
@@ -246,7 +269,7 @@ try {
 
 try {
     $result = $user->history()
-        ->channel('public-channel')
+        ->channel($publicChannel)
         ->count(5)
         ->sync();
     printResult("User read from public-channel WITH token", true, "History retrieved successfully");
@@ -256,7 +279,7 @@ try {
 
 try {
     $result = $user->history()
-        ->channel('private-channel')
+        ->channel($privateChannel)
         ->count(5)
         ->sync();
     printResult("User read from private-channel WITH token", true, "History retrieved successfully");
@@ -275,7 +298,7 @@ echo "--------------------------------------------------\n";
 // Test read-only channel (can read but not write)
 try {
     $user->history()
-        ->channel('read-only-channel')
+        ->channel($readOnlyChannel)
         ->count(1)
         ->sync();
     printResult("User read from read-only-channel WITH token", true, "Read access granted");
@@ -285,7 +308,7 @@ try {
 
 try {
     $user->publish()
-        ->channel('read-only-channel')
+        ->channel($readOnlyChannel)
         ->message(['text' => 'Trying to write to read-only channel'])
         ->sync();
     printResult("User publish to read-only-channel WITH token", false, "Should have failed but succeeded");
@@ -296,7 +319,7 @@ try {
 // Test channel not in token (should fail)
 try {
     $user->publish()
-        ->channel('admin-only-channel')
+        ->channel($adminOnlyChannel)
         ->message(['text' => 'Trying to access admin channel'])
         ->sync();
     printResult("User publish to admin-only-channel WITH token", false, "Should have failed but succeeded");
@@ -306,7 +329,7 @@ try {
 
 try {
     $user->history()
-        ->channel('admin-only-channel')
+        ->channel($adminOnlyChannel)
         ->count(1)
         ->sync();
     printResult("User read from admin-only-channel WITH token", false, "Should have failed but succeeded");
@@ -371,7 +394,7 @@ echo "------------------------------------------------\n";
 // snippet.admin_unrestricted_access
 try {
     $result = $admin->publish()
-        ->channel('admin-only-channel')
+        ->channel($adminOnlyChannel)
         ->message(['text' => 'Admin message', 'timestamp' => time()])
         ->sync();
     printResult("Admin publish to admin-only-channel", true, "Admin has unrestricted access");
@@ -381,7 +404,7 @@ try {
 
 try {
     $result = $admin->history()
-        ->channel('admin-only-channel')
+        ->channel($adminOnlyChannel)
         ->count(5)
         ->sync();
     printResult("Admin read from admin-only-channel", true, "Admin has unrestricted access");
@@ -418,7 +441,7 @@ try {
         // Test user access after revocation (should fail)
         try {
             $publishResult = $user->publish()
-                ->channel('public-channel')
+                ->channel($publicChannel)
                 ->message(['text' => 'Hello after revocation!'])
                 ->sync();
             // print_r($publishResult);

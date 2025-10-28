@@ -30,6 +30,7 @@ class HereNowTest extends PubNubTestCase
         );
 
         $this->assertEquals([
+            'limit' => '1000',
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid()
         ], $this->hereNow->buildParams());
@@ -46,6 +47,7 @@ class HereNowTest extends PubNubTestCase
 
         $this->assertEquals([
             'channel-group' => 'gr1',
+            'limit' => '1000',
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid()
         ], $this->hereNow->buildParams());
@@ -68,6 +70,63 @@ class HereNowTest extends PubNubTestCase
             'channel-group' => 'gr1',
             'state' => '1',
             'disable-uuids' => '1',
+            'limit' => '1000',
+            'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
+            'uuid' => $this->pubnub->getConfiguration()->getUuid()
+        ], $this->hereNow->buildParams());
+    }
+
+    public function testHereNowWithLimit(): void
+    {
+        $this->hereNow
+            ->channels("ch1")
+            ->limit(50);
+
+        $this->assertEquals(
+            sprintf(ExposedHereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "ch1"),
+            $this->hereNow->buildPath()
+        );
+
+        $this->assertEquals([
+            'limit' => '50',
+            'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
+            'uuid' => $this->pubnub->getConfiguration()->getUuid()
+        ], $this->hereNow->buildParams());
+    }
+
+    public function testHereNowWithLimitAndOffset(): void
+    {
+        $this->hereNow
+            ->channels("ch1")
+            ->limit(50)
+            ->offset(10);
+
+        $this->assertEquals(
+            sprintf(ExposedHereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "ch1"),
+            $this->hereNow->buildPath()
+        );
+
+        $this->assertEquals([
+            'limit' => '50',
+            'offset' => '10',
+            'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
+            'uuid' => $this->pubnub->getConfiguration()->getUuid()
+        ], $this->hereNow->buildParams());
+    }
+
+    public function testHereNowWithLimitZero(): void
+    {
+        $this->hereNow
+            ->channels("ch1")
+            ->limit(0);
+
+        $this->assertEquals(
+            sprintf(ExposedHereNow::PATH, $this->pubnub->getConfiguration()->getSubscribeKey(), "ch1"),
+            $this->hereNow->buildPath()
+        );
+
+        $this->assertEquals([
+            'limit' => '0',
             'pnsdk' => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             'uuid' => $this->pubnub->getConfiguration()->getUuid()
         ], $this->hereNow->buildParams());

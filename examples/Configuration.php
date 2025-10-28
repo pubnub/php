@@ -15,18 +15,18 @@ use PubNub\Callbacks\SubscribeCallback;
 $pnConfiguration = new PNConfiguration();
 
 // Set subscribe key (required)
-$pnConfiguration->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
+$pnConfiguration->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?: 'demo');
 
 // Set publish key (only required if publishing)
-$pnConfiguration->setPublishKey(getenv('PUBLISH_KEY') ?? 'demo');
+$pnConfiguration->setPublishKey(getenv('PUBLISH_KEY') ?: 'demo');
 
 // Set UUID (required to connect)
 $pnConfiguration->setUserId('php-config-demo-user');
 // snippet.end
 
 // Verify configuration was set correctly
-assert($pnConfiguration->getSubscribeKey() === (getenv('SUBSCRIBE_KEY') ?? 'demo'));
-assert($pnConfiguration->getPublishKey() === (getenv('PUBLISH_KEY') ?? 'demo'));
+assert($pnConfiguration->getSubscribeKey() === (getenv('SUBSCRIBE_KEY') ?: 'demo'));
+assert($pnConfiguration->getPublishKey() === (getenv('PUBLISH_KEY') ?: 'demo'));
 assert($pnConfiguration->getUserId() === 'php-config-demo-user');
 
 // snippet.basic_configuration
@@ -34,10 +34,10 @@ assert($pnConfiguration->getUserId() === 'php-config-demo-user');
 $pnConfiguration = new PNConfiguration();
 
 // Set subscribe key (required)
-$pnConfiguration->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
+$pnConfiguration->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?: 'demo');
 
 // Set publish key (only required if publishing)
-$pnConfiguration->setPublishKey(getenv('PUBLISH_KEY') ?? 'demo');
+$pnConfiguration->setPublishKey(getenv('PUBLISH_KEY') ?: 'demo');
 
 // Set UUID (required to connect)
 $pnConfiguration->setUserId("php-sdk-example-user");
@@ -91,8 +91,8 @@ echo "Message published to 'demo-channel'\n";
 // snippet.end
 
 // Verify configuration values
-assert($pnConfiguration->getSubscribeKey() === getenv('SUBSCRIBE_KEY') ?? 'demo');
-assert($pnConfiguration->getPublishKey() === getenv('PUBLISH_KEY') ?? 'demo');
+assert($pnConfiguration->getSubscribeKey() === (getenv('SUBSCRIBE_KEY') ?: 'demo'));
+assert($pnConfiguration->getPublishKey() === (getenv('PUBLISH_KEY') ?: 'demo'));
 assert($pnConfiguration->getUserId() === "php-sdk-example-user");
 assert($pnConfiguration->getConnectTimeout() === 10);
 assert($pnConfiguration->getSubscribeTimeout() === 310);
@@ -104,8 +104,8 @@ assert($pubnub instanceof PubNub);
 // snippet.init_basic
 $pnconf = new PNConfiguration();
 
-$pnconf->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
-$pnconf->setPublishKey(getenv('PUBLISH_KEY') ?? 'demo');
+$pnconf->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?: 'demo');
+$pnconf->setPublishKey(getenv('PUBLISH_KEY') ?: 'demo');
 $pnconf->setSecure(false);
 $pnconf->setUserId("myUniqueUserId");
 $pubnub = new PubNub($pnconf);
@@ -113,26 +113,26 @@ $pubnub = new PubNub($pnconf);
 // snippet.end
 
 // Verify configuration
-assert($pnconf->getSubscribeKey() === getenv('SUBSCRIBE_KEY') ?? 'demo');
-assert($pnconf->getPublishKey() === getenv('PUBLISH_KEY') ?? 'demo');
+assert($pnconf->getSubscribeKey() === (getenv('SUBSCRIBE_KEY') ?: 'demo'));
+assert($pnconf->getPublishKey() === (getenv('PUBLISH_KEY') ?: 'demo'));
 assert($pnconf->getUserId() === "myUniqueUserId");
 assert($pubnub instanceof PubNub);
 
 // snippet.init_access_manager
 $pnConfiguration = new PNConfiguration();
 
-$pnConfiguration->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
-$pnConfiguration->setPublishKey(getenv('PUBLISH_KEY') ?? 'demo');
+$pnConfiguration->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?: 'demo');
+$pnConfiguration->setPublishKey(getenv('PUBLISH_KEY') ?: 'demo');
 //NOTE: only server side should have secret key
-$pnConfiguration->setSecretKey(getenv('SECRET_KEY') ?? 'demo');
+$pnConfiguration->setSecretKey(getenv('SECRET_KEY') ?: 'demo');
 $pnConfiguration->setUserId("myUniqueUserId");
 $pubnub = new PubNub($pnConfiguration);
 // snippet.end
 
 // Verify configuration
-assert($pnConfiguration->getSubscribeKey() === getenv('SUBSCRIBE_KEY') ?? 'demo');
-assert($pnConfiguration->getPublishKey() === getenv('PUBLISH_KEY') ?? 'demo');
-assert($pnConfiguration->getSecretKey() === getenv('SECRET_KEY') ?? 'demo');
+assert($pnConfiguration->getSubscribeKey() === (getenv('SUBSCRIBE_KEY') ?: 'demo'));
+assert($pnConfiguration->getPublishKey() === (getenv('PUBLISH_KEY') ?: 'demo'));
+assert($pnConfiguration->getSecretKey() === (getenv('SECRET_KEY') ?: 'demo'));
 assert($pnConfiguration->getUserId() === "myUniqueUserId");
 assert($pubnub instanceof PubNub);
 
@@ -146,7 +146,7 @@ class MySubscribeCallback extends SubscribeCallback
         } elseif ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
         // Connect event. You can do stuff like publish, and know you'll get it
         } elseif ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory) {
-        // Handle message decryption error. 
+        // Handle message decryption error.
         }
     }
 
@@ -162,8 +162,8 @@ class MySubscribeCallback extends SubscribeCallback
 
 $pnconf = new PNConfiguration();
 
-$pnconf->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
-$pnconf->setPublishKey(getenv('PUBLISH_KEY') ?? 'demo');
+$pnconf->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?: 'demo');
+$pnconf->setPublishKey(getenv('PUBLISH_KEY') ?: 'demo');
 $pnconf->setUserId("event-listener-demo-user");
 
 $pubnub = new PubNub($pnconf);
@@ -195,7 +195,7 @@ $pubnub->addListener($subscribeCallback);
 // snippet.set_filter_expression
 $pnconf = new PNConfiguration();
 
-$pnconf->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?? 'demo');
+$pnconf->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?: 'demo');
 $pnconf->setUserId("filter-demo-user");
 $pnconf->setFilterExpression("userid == 'my_userid'");
 
@@ -203,13 +203,7 @@ $pubnub = new PubNub($pnconf);
 // snippet.end
 
 // Verify configuration
-assert($pnconf->getSubscribeKey() === "my_sub_key");
-assert($pnconf->getPublishKey() === "my_pub_key");
-assert($pnconf->getUserId() === "event-listener-demo-user");
-assert($pubnub instanceof PubNub);
-// Verify callback instance
-assert($subscribeCallback instanceof SubscribeCallback);
-// Verify configuration
-assert($pnconf->getSubscribeKey() === "my_sub_key");
+assert($pnconf->getSubscribeKey() === (getenv('SUBSCRIBE_KEY') ?: 'demo'));
+assert($pnconf->getUserId() === "filter-demo-user");
 assert($pnconf->getFilterExpression() === "userid == 'my_userid'");
 assert($pubnub instanceof PubNub);

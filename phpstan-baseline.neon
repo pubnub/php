@@ -5986,11 +5986,6 @@ parameters:
 			path: tests/integrational/HereNowTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\HereNowTest\\:\\:testSuperCallTest\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/HereNowTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$subscribeKey of method PubNub\\\\PNConfiguration\\:\\:setSubscribeKey\\(\\) expects string, null given\\.$#"
 			count: 1
 			path: tests/integrational/HereNowTest.php

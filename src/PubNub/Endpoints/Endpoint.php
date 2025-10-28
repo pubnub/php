@@ -140,7 +140,7 @@ abstract class Endpoint
     {
         $publishKey = $this->pubnub->getConfiguration()->getPublishKey();
 
-        if (strlen($publishKey) === 0) {
+        if ($publishKey === null || strlen($publishKey) === 0) {
             throw new PubNubValidationException("Publish Key not configured");
         }
     }
