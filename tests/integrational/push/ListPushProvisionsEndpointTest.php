@@ -75,36 +75,12 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "pnsdk" => $this->encodedSdkName,
-                "type" => "gcm",
+                "type" => "fcm",
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
 
         $result = $list->pushType(PNPushType::FCM)
-            ->deviceId("coolDevice")
-            ->sync();
-
-        $this->assertNotEmpty($result);
-    }
-
-    public function testListChannelGroupMPNS()
-    {
-        $config = new PNConfiguration();
-        $config->setSubscribeKey("demo");
-        $config->setPublishKey("demo");
-        $config->setUuid("sampleUUID");
-        $pubnub = new PubNub($config);
-        $list = new ListPushProvisionsEndpointExposed($pubnub);
-
-        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
-            ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
-                "type" => "mpns",
-                "uuid" => "sampleUUID",
-            ])
-            ->setResponseBody('[1, "Modified Channels"]');
-
-        $result = $list->pushType(PNPushType::MPNS)
             ->deviceId("coolDevice")
             ->sync();
 
@@ -117,29 +93,68 @@ class ListPushProvisionsEndpointTest extends PubNubTestCase
             throw new \Exception($errstr, $errno);
         }, E_USER_DEPRECATED);
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
+        try {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
 
-        $config = new PNConfiguration();
-        $config->setSubscribeKey("demo");
-        $config->setPublishKey("demo");
-        $config->setUuid("sampleUUID");
-        $pubnub = new PubNub($config);
-        $list = new ListPushProvisionsEndpointExposed($pubnub);
+            $config = new PNConfiguration();
+            $config->setSubscribeKey("demo");
+            $config->setPublishKey("demo");
+            $config->setUuid("sampleUUID");
+            $pubnub = new PubNub($config);
+            $list = new ListPushProvisionsEndpointExposed($pubnub);
 
-        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
-            ->withQuery([
-                "pnsdk" => $this->encodedSdkName,
-                "type" => "gcm",
-                "uuid" => "sampleUUID",
-            ])
-            ->setResponseBody('[1, "Modified Channels"]');
+            $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+                ->withQuery([
+                    "pnsdk" => $this->encodedSdkName,
+                    "type" => "gcm",
+                    "uuid" => "sampleUUID",
+                ])
+                ->setResponseBody('[1, "Modified Channels"]');
 
-        $result = $list->pushType(PNPushType::GCM)
-            ->deviceId("coolDevice")
-            ->sync();
+            $result = $list->pushType(PNPushType::GCM)
+                ->deviceId("coolDevice")
+                ->sync();
 
-        $this->assertNotEmpty($result);
+            $this->assertNotEmpty($result);
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    public function testWarningWhenUsingDeprecatedAPNSType()
+    {
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        try {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('APNS is deprecated. Please use APNS2 instead.');
+
+            $config = new PNConfiguration();
+            $config->setSubscribeKey("demo");
+            $config->setPublishKey("demo");
+            $config->setUuid("sampleUUID");
+            $pubnub = new PubNub($config);
+            $list = new ListPushProvisionsEndpointExposed($pubnub);
+
+            $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+                ->withQuery([
+                    "pnsdk" => $this->encodedSdkName,
+                    "type" => "apns",
+                    "uuid" => "sampleUUID",
+                ])
+                ->setResponseBody('[1, "Modified Channels"]');
+
+            $result = $list->pushType(PNPushType::APNS)
+                ->deviceId("coolDevice")
+                ->sync();
+
+            $this->assertNotEmpty($result);
+        } finally {
+            restore_error_handler();
+        }
     }
 }
 

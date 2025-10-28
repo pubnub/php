@@ -75,29 +75,7 @@ class ListPushProvisionsTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm"
-        ], $list->buildParams());
-    }
-
-    public function testListChannelGroupMPNS()
-    {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $list = new ListPushProvisionsExposed($this->pubnub);
-
-        $list->pushType(PNPushType::MPNS)
-            ->deviceId("coolDevice");
-
-        $this->assertEquals(sprintf(
-            ListPushProvisions::PATH,
-            $this->pubnub->getConfiguration()->getSubscribeKey(),
-            "coolDevice"
-        ), $list->buildPath());
-
-        $this->assertEquals([
-            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
-            "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "mpns"
+            "type" => "fcm"
         ], $list->buildParams());
     }
 }

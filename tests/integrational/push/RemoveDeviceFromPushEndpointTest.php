@@ -55,27 +55,6 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
         $this->assertNotEmpty($result);
     }
 
-    public function testRemovePushMPNS()
-    {
-        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
-
-        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
-
-        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
-            ->withQuery([
-                "type" => "mpns",
-                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
-                "uuid" => "sampleUUID",
-            ])
-            ->setResponseBody('[1, "Modified Channels"]');
-
-        $result = $remove->pushType(PNPushType::MPNS)
-            ->deviceId('coolDevice')
-            ->sync();
-
-        $this->assertNotEmpty($result);
-    }
-
     public function testRemovePushFCM()
     {
         $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
@@ -84,7 +63,7 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
 
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->pubnub_demo->getSdkFullName(),
                 "uuid" => "sampleUUID",
             ])
@@ -103,25 +82,60 @@ class RemoveDeviceFromPushEndpointTest extends \PubNubTestCase
             throw new \Exception($errstr, $errno);
         }, E_USER_DEPRECATED);
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
-        $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
+        try {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
+            $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
 
-        $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
+            $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
 
-        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
-            ->withQuery([
-                "type" => "gcm",
-                "pnsdk" => $this->pubnub_demo->getSdkFullName(),
-                "uuid" => "sampleUUID",
-            ])
-            ->setResponseBody('[1, "Modified Channels"]');
+            $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
+                ->withQuery([
+                    "type" => "gcm",
+                    "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                    "uuid" => "sampleUUID",
+                ])
+                ->setResponseBody('[1, "Modified Channels"]');
 
-        $result = $remove->pushType(PNPushType::GCM)
-            ->deviceId('coolDevice')
-            ->sync();
+            $result = $remove->pushType(PNPushType::GCM)
+                ->deviceId('coolDevice')
+                ->sync();
 
-        $this->assertNotEmpty($result);
+            $this->assertNotEmpty($result);
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    public function testWarningWhenUsingDeprecatedAPNSType()
+    {
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        try {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('APNS is deprecated. Please use APNS2 instead.');
+            $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
+
+            $remove = new RemoveDeviceFromPushEndpointExposed($this->pubnub_demo);
+
+            $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
+                ->withQuery([
+                    "type" => "apns",
+                    "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                    "uuid" => "sampleUUID",
+                ])
+                ->setResponseBody('[1, "Modified Channels"]');
+
+            $result = $remove->pushType(PNPushType::APNS)
+                ->deviceId('coolDevice')
+                ->sync();
+
+            $this->assertNotEmpty($result);
+        } finally {
+            restore_error_handler();
+        }
     }
 }
 

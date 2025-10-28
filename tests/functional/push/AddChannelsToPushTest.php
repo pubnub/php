@@ -43,7 +43,7 @@ class AddChannelsToPushTest extends PubNubTestCase
         $add = new AddChannelsToPushExposed($this->pubnub);
 
         $add->channels(["ch1", "ch2"])
-            ->pushType(PNPushType::MPNS)
+            ->pushType(PNPushType::FCM)
             ->deviceId("coolDevice");
 
         $this->assertEquals(sprintf(
@@ -55,7 +55,7 @@ class AddChannelsToPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "mpns",
+            "type" => "fcm",
             "add" => "ch1,ch2"
         ], $add->buildParams());
 
@@ -110,7 +110,7 @@ class AddChannelsToPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm",
+            "type" => "fcm",
             "add" => "ch1,ch2,ch3"
         ], $add->buildParams());
 

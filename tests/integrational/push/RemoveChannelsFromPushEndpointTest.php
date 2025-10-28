@@ -66,14 +66,14 @@ class RemoveChannelsFromPushEndpointTest extends \PubNubTestCase
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2",
-                "type" => "mpns",
+                "type" => "fcm",
                 "pnsdk" => $this->pubnub_demo->getSdkFullName(),
                 "uuid" => "sampleUUID",
             ])
             ->setResponseBody('[1, "Modified Channels"]');
 
         $result = $remove->channels(['ch1', 'ch2'])
-            ->pushType(PNPushType::MPNS)
+            ->pushType(PNPushType::FCM)
             ->deviceId('coolDevice')
             ->sync();
 
@@ -89,7 +89,7 @@ class RemoveChannelsFromPushEndpointTest extends \PubNubTestCase
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->pubnub_demo->getSdkFullName(),
                 "uuid" => "sampleUUID",
             ])
@@ -101,6 +101,72 @@ class RemoveChannelsFromPushEndpointTest extends \PubNubTestCase
             ->sync();
 
         $this->assertNotEmpty($result);
+    }
+
+    public function testWarningWhenUsingDeprecatedGCMType()
+    {
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        try {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('GCM is deprecated. Please use FCM instead.');
+            $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
+
+            $remove = new RemoveChannelsFromPushEndpointExposed($this->pubnub_demo);
+
+            $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+                ->withQuery([
+                    "remove" => "ch1,ch2",
+                    "type" => "gcm",
+                    "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                    "uuid" => "sampleUUID",
+                ])
+                ->setResponseBody('[1, "Modified Channels"]');
+
+            $result = $remove->channels(['ch1', 'ch2'])
+                ->pushType(PNPushType::GCM)
+                ->deviceId('coolDevice')
+                ->sync();
+
+            $this->assertNotEmpty($result);
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    public function testWarningWhenUsingDeprecatedAPNSType()
+    {
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        try {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('APNS is deprecated. Please use APNS2 instead.');
+            $this->pubnub_demo->getConfiguration()->setUuid("sampleUUID");
+
+            $remove = new RemoveChannelsFromPushEndpointExposed($this->pubnub_demo);
+
+            $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+                ->withQuery([
+                    "remove" => "ch",
+                    "type" => "apns",
+                    "pnsdk" => $this->pubnub_demo->getSdkFullName(),
+                    "uuid" => "sampleUUID",
+                ])
+                ->setResponseBody('[1, "Modified Channels"]');
+
+            $result = $remove->channels('ch')
+                ->pushType(PNPushType::APNS)
+                ->deviceId('coolDevice')
+                ->sync();
+
+            $this->assertNotEmpty($result);
+        } finally {
+            restore_error_handler();
+        }
     }
 }
 

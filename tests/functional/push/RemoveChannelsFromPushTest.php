@@ -41,7 +41,7 @@ class RemoveChannelsFromPushTest extends PubNubTestCase
         $remove = new RemoveChannelsFromPushExposed($this->pubnub);
 
         $remove->channels(['ch1', 'ch2'])
-            ->pushType(PNPushType::MPNS)
+            ->pushType(PNPushType::FCM)
             ->deviceId('coolDevice');
 
         $this->assertEquals(sprintf(
@@ -53,7 +53,7 @@ class RemoveChannelsFromPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "mpns",
+            "type" => "fcm",
             "remove" => "ch1,ch2"
         ], $remove->buildParams());
     }
@@ -77,7 +77,7 @@ class RemoveChannelsFromPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm",
+            "type" => "fcm",
             "remove" => "ch1,ch2,ch3"
         ], $remove->buildParams());
     }
