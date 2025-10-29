@@ -72,7 +72,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $response = $list->deviceId("coolDevice")
             ->pushType(PNPushType::APNS2)
-            ->topic( "coolTopic")
+            ->topic("coolTopic")
             ->sync();
 
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushListProvisionsResult::class, $response);

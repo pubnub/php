@@ -4,7 +4,6 @@ namespace PubNub\Enums;
 
 class PNPushType
 {
-
     public const APNS2 = "apns2";
     public const FCM = "fcm";
 
