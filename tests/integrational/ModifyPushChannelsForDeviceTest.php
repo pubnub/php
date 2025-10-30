@@ -51,38 +51,13 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
             ->withQuery([
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
         $response = $listRemove->pushType(PNPushType::FCM)
-            ->deviceId("coolDevice")
-            ->sync();
-
-        $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushRemoveAllChannelsResult::class, $response);
-    }
-
-    public function testMicrosoftSuccessRemoveAll()
-    {
-        $config = new PNConfiguration();
-        $config->setSubscribeKey("demo");
-        $config->setPublishKey("demo");
-        $config->setUuid("sampleUUID");
-        $pubnub = new PubNub($config);
-
-        $listRemove = new RemoveChannelsFromPushTestExposed($pubnub);
-
-        $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
-            ->withQuery([
-                "type" => "mpns",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
-            ])
-            ->setResponseBody("[1, \"Modified Channels\"]");
-
-        $response = $listRemove->pushType(PNPushType::MPNS)
             ->deviceId("coolDevice")
             ->sync();
 
@@ -100,17 +75,19 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($pubnub);
 
-        $listRemove->stubFor("/v1/push/sub-key/demo/devices/coolDevice/remove")
+        $listRemove->stubFor("/v2/push/sub-key/demo/devices-apns2/coolDevice/remove")
             ->withQuery([
-                "type" => "mpns",
+                "topic" => "coolTopic",
+                "environment" => "development",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
                 "auth" => "myKey",
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
-        $response = $listRemove->pushType(PNPushType::MPNS)
+        $response = $listRemove->pushType(PNPushType::APNS2)
             ->deviceId("coolDevice")
+            ->topic("coolTopic")
             ->sync();
 
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushRemoveAllChannelsResult::class, $response);
@@ -128,7 +105,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($pubnub);
 
-        $listRemove->pushType(PNPushType::MPNS)
+        $listRemove->pushType(PNPushType::APNS2)
             ->deviceId("coolDevice")
             ->sync();
     }
@@ -147,7 +124,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($pubnub);
 
-        $listRemove->pushType(PNPushType::MPNS)
+        $listRemove->pushType(PNPushType::FCM)
             ->deviceId("coolDevice")
             ->sync();
     }
@@ -182,7 +159,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($pubnub);
 
-        $listRemove->pushType(PNPushType::MPNS)
+        $listRemove->pushType(PNPushType::FCM)
             ->sync();
     }
 
@@ -199,7 +176,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listRemove = new RemoveChannelsFromPushTestExposed($pubnub);
 
-        $listRemove->pushType(PNPushType::MPNS)
+        $listRemove->pushType(PNPushType::FCM)
             ->deviceId("")
             ->sync();
     }
@@ -244,40 +221,13 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
         $response = $listAdd->pushType(PNPushType::FCM)
-            ->channels(["ch1", "ch2", "ch3"])
-            ->deviceId("coolDevice")
-            ->sync();
-
-        $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushAddChannelResult::class, $response);
-    }
-
-    public function testAddMicrosoftSuccessSync()
-    {
-        $config = new PNConfiguration();
-        $config->setSubscribeKey("demo");
-        $config->setPublishKey("demo");
-        $config->setUuid("sampleUUID");
-        $pubnub = new PubNub($config);
-
-        $listAdd = new AddChannelsToPushExposed($pubnub);
-
-        $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
-            ->withQuery([
-                "add" => "ch1,ch2,ch3",
-                "type" => "mpns",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
-            ])
-            ->setResponseBody("[1, \"Modified Channels\"]");
-
-        $response = $listAdd->pushType(PNPushType::MPNS)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -299,14 +249,14 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $listAdd->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "add" => "ch1,ch2,ch3",
-                "type" => "mpns",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
                 "auth" => "myKey",
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
-        $response = $listAdd->pushType(PNPushType::MPNS)
+        $response = $listAdd->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -327,7 +277,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $listAdd = new AddChannelsToPushExposed($pubnub);
 
-        $listAdd->pushType(PNPushType::MPNS)
+        $listAdd->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -345,7 +295,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
 
-        $listAdd->pushType(PNPushType::MPNS)
+        $listAdd->pushType(PNPushType::APNS2)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -380,7 +330,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
 
-        $listAdd->pushType(PNPushType::MPNS)
+        $listAdd->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->sync();
     }
@@ -397,7 +347,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
 
-        $listAdd->pushType(PNPushType::MPNS)
+        $listAdd->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("")
             ->sync();
@@ -415,7 +365,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $listAdd = new AddChannelsToPushExposed($pubnub);
 
-        $listAdd->pushType(PNPushType::MPNS)
+        $listAdd->pushType(PNPushType::FCM)
             ->deviceId("Example")
             ->sync();
     }
@@ -458,39 +408,13 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID"
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
         $response = $remove->pushType(PNPushType::FCM)
-            ->channels(["ch1", "ch2", "ch3"])
-            ->deviceId("coolDevice")
-            ->sync();
-
-        $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushRemoveChannelResult::class, $response);
-    }
-
-    public function testMicrosoftSuccessRemove()
-    {
-        $config = new PNConfiguration();
-        $config->setSubscribeKey("demo");
-        $config->setPublishKey("demo");
-        $config->setUuid("sampleUUID");
-        $pubnub = new PubNub($config);
-        $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
-
-        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
-            ->withQuery([
-                "remove" => "ch1,ch2,ch3",
-                "type" => "mpns",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => "sampleUUID"
-            ])
-            ->setResponseBody("[1, \"Modified Channels\"]");
-
-        $response = $remove->pushType(PNPushType::MPNS)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -508,19 +432,21 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
 
-        $remove->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+        $remove->stubFor("/v2/push/sub-key/demo/devices-apns2/coolDevice")
             ->withQuery([
                 "remove" => "ch1,ch2,ch3",
-                "type" => "mpns",
+                "topic" => "coolTopic",
+                "environment" => "development",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => "sampleUUID",
                 "auth" => "myKey",
             ])
             ->setResponseBody("[1, \"Modified Channels\"]");
 
-        $response = $remove->pushType(PNPushType::MPNS)
+        $response = $remove->pushType(PNPushType::APNS2)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
+            ->topic("coolTopic")
             ->sync();
 
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushRemoveChannelResult::class, $response);
@@ -538,7 +464,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
 
-        $remove->pushType(PNPushType::MPNS)
+        $remove->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -558,7 +484,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
 
 
-        $remove->pushType(PNPushType::MPNS)
+        $remove->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("coolDevice")
             ->sync();
@@ -587,7 +513,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
 
         $remove = new RemovePushNotificationsFromChannelsExposed($this->pubnub);
 
-        $remove->pushType(PNPushType::MPNS)
+        $remove->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->sync();
     }
@@ -604,7 +530,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
 
-        $remove->pushType(PNPushType::MPNS)
+        $remove->pushType(PNPushType::FCM)
             ->channels(["ch1", "ch2", "ch3"])
             ->deviceId("")
             ->sync();
@@ -622,7 +548,7 @@ class ModifyPushChannelsForDeviceTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $remove = new RemovePushNotificationsFromChannelsExposed($pubnub);
 
-        $remove->pushType(PNPushType::MPNS)
+        $remove->pushType(PNPushType::FCM)
             ->deviceId("")
             ->sync();
     }

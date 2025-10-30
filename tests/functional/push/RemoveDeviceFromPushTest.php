@@ -32,28 +32,6 @@ class RemoveDeviceFromPushTest extends PubNubTestCase
         ], $remove->buildParams());
     }
 
-    public function testRemovePushMPNS()
-    {
-        $this->pubnub->getConfiguration()->setUuid("sampleUUID");
-
-        $remove = new RemoveDeviceFromPushExposed($this->pubnub);
-
-        $remove->pushType(PNPushType::MPNS)
-            ->deviceId('coolDevice');
-
-        $this->assertEquals(sprintf(
-            RemoveDeviceFromPush::PATH,
-            $this->pubnub->getConfiguration()->getSubscribeKey(),
-            "coolDevice"
-        ), $remove->buildPath());
-
-        $this->assertEquals([
-            "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
-            "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "mpns",
-        ], $remove->buildParams());
-    }
-
     public function testRemovePushFCM()
     {
         $this->pubnub->getConfiguration()->setUuid("sampleUUID");
@@ -72,7 +50,7 @@ class RemoveDeviceFromPushTest extends PubNubTestCase
         $this->assertEquals([
             "pnsdk" => PubNubUtil::urlEncode(PubNub::getSdkFullName()),
             "uuid" => $this->pubnub->getConfiguration()->getUuid(),
-            "type" => "gcm",
+            "type" => "fcm",
         ], $remove->buildParams());
     }
 }

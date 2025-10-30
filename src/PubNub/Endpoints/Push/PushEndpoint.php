@@ -66,6 +66,10 @@ abstract class PushEndpoint extends Endpoint
             trigger_error("GCM is deprecated. Please use FCM instead.", E_USER_DEPRECATED);
         }
 
+        if ($this->pushType === PNPushType::APNS) {
+            trigger_error("APNS is deprecated. Please use APNS2 instead.", E_USER_DEPRECATED);
+        }
+
         if (!in_array($this->pushType, PNPushType::all())) {
             throw new PubNubValidationException("Invalid push type");
         }
@@ -149,6 +153,6 @@ abstract class PushEndpoint extends Endpoint
 
     protected function getPushType(): string
     {
-        return $this->pushType == PNPushType::FCM ? 'gcm' : $this->pushType;
+        return $this->pushType == PNPushType::FCM ? 'fcm' : $this->pushType;
     }
 }

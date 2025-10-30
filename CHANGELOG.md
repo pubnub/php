@@ -1,3 +1,13 @@
+## 9.0.0
+October 30 2025
+
+#### Added
+- Added limit and offset parameters for hereNow. Number of returned users per channel by default is limited to 1000. Breaking change.
+
+#### Fixed
+- Removed possibility to use deprecated MPNS(Microsoft Push Notification Service). Breaking change.
+- Added deprecation warning for old APNS PushType. .
+
 ## 8.0.2
 May 29 2025
 

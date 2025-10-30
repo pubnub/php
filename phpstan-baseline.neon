@@ -5741,11 +5741,6 @@ parameters:
 			path: tests/functional/push/ListPushProvisionsTest.php
 
 		-
-			message: "#^Method Tests\\\\Functional\\\\Push\\\\ListPushProvisionsTest\\:\\:testListChannelGroupMPNS\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/push/ListPushProvisionsTest.php
-
-		-
 			message: "#^Method Tests\\\\Functional\\\\Push\\\\RemoveChannelsFromPushExposed\\:\\:buildParams\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/functional/push/RemoveChannelsFromPushTest.php
@@ -5777,11 +5772,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Functional\\\\Push\\\\RemoveDeviceFromPushTest\\:\\:testRemovePushFCM\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/push/RemoveDeviceFromPushTest.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\Push\\\\RemoveDeviceFromPushTest\\:\\:testRemovePushMPNS\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/functional/push/RemoveDeviceFromPushTest.php
 
@@ -6131,11 +6121,6 @@ parameters:
 			path: tests/integrational/ListPushProvisionsTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsTest\\:\\:testMicrosoftSuccess\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ListPushProvisionsTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsTest\\:\\:testNullDeviceId\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/ListPushProvisionsTest.php
@@ -6167,11 +6152,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ModifyPushChannelsForDeviceTest\\:\\:testAddFCMSuccessSync\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ModifyPushChannelsForDeviceTest\\:\\:testAddMicrosoftSuccessSync\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
 
@@ -6237,16 +6217,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ModifyPushChannelsForDeviceTest\\:\\:testListChannelGroupAPNS\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ModifyPushChannelsForDeviceTest\\:\\:testMicrosoftSuccessRemove\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ModifyPushChannelsForDeviceTest\\:\\:testMicrosoftSuccessRemoveAll\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/ModifyPushChannelsForDeviceTest.php
 
@@ -7026,11 +6996,6 @@ parameters:
 			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
 
 		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointTest\\:\\:testListChannelGroupMPNS\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
-
-		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\ListPushProvisionsEndpointTest\\:\\:testWarningWhenUsingDeprecatedGCMType\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/push/ListPushProvisionsEndpointTest.php
@@ -7067,11 +7032,6 @@ parameters:
 
 		-
 			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointTest\\:\\:testRemovePushFCM\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/integrational/push/RemoveDeviceFromPushEndpointTest.php
-
-		-
-			message: "#^Method Tests\\\\Integrational\\\\Push\\\\RemoveDeviceFromPushEndpointTest\\:\\:testRemovePushMPNS\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/integrational/push/RemoveDeviceFromPushEndpointTest.php
 

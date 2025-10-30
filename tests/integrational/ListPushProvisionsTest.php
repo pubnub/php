@@ -36,7 +36,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
             ->withQuery([
-                "type" => "gcm",
+                "type" => "fcm",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
             ])
@@ -44,25 +44,6 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $response = $list->deviceId("coolDevice")
             ->pushType(PNPushType::FCM)
-            ->sync();
-
-        $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushListProvisionsResult::class, $response);
-    }
-
-    public function testMicrosoftSuccess()
-    {
-        $list = new ListPushProvisionsExposed($this->pubnub_demo);
-
-        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
-            ->withQuery([
-                "type" => "mpns",
-                "pnsdk" => $this->encodedSdkName,
-                "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
-            ])
-            ->setResponseBody("[\"ch1\", \"ch2\", \"ch3\"]");
-
-        $response = $response = $list->deviceId("coolDevice")
-            ->pushType(PNPushType::MPNS)
             ->sync();
 
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushListProvisionsResult::class, $response);
@@ -79,9 +60,10 @@ class ListPushProvisionsTest extends \PubNubTestCase
         $pubnub = new PubNub($config);
         $list = new ListPushProvisionsExposed($pubnub);
 
-        $list->stubFor("/v1/push/sub-key/demo/devices/coolDevice")
+        $list->stubFor("/v2/push/sub-key/demo/devices-apns2/coolDevice")
             ->withQuery([
-                "type" => "mpns",
+                "topic" => "coolTopic",
+                "environment" => "development",
                 "pnsdk" => $this->encodedSdkName,
                 "uuid" => $this->pubnub_demo->getConfiguration()->getUuid(),
                 "auth" => "myKey",
@@ -89,7 +71,8 @@ class ListPushProvisionsTest extends \PubNubTestCase
             ->setResponseBody("[\"ch1\", \"ch2\", \"ch3\"]");
 
         $response = $list->deviceId("coolDevice")
-            ->pushType(PNPushType::MPNS)
+            ->pushType(PNPushType::APNS2)
+            ->topic("coolTopic")
             ->sync();
 
         $this->assertInstanceOf(\PubNub\Models\Consumer\Push\PNPushListProvisionsResult::class, $response);
@@ -104,7 +87,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
         $list = new ListPushProvisionsExposed($pubnub);
 
         $list->deviceId("coolDevice")
-            ->pushType(PNPushType::MPNS)
+            ->pushType(PNPushType::FCM)
             ->sync();
     }
 
@@ -119,7 +102,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
         $list = new ListPushProvisionsExposed($pubnub);
 
         $list->deviceId("coolDevice")
-            ->pushType(PNPushType::MPNS)
+            ->pushType(PNPushType::FCM)
             ->sync();
     }
 
@@ -141,7 +124,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
 
         $list = new ListPushProvisionsExposed($this->pubnub_demo);
 
-        $list->pushType(PNPushType::MPNS)
+        $list->pushType(PNPushType::FCM)
             ->sync();
     }
 
@@ -153,7 +136,7 @@ class ListPushProvisionsTest extends \PubNubTestCase
         $list = new ListPushProvisionsExposed($this->pubnub_demo);
 
         $list->deviceId("")
-            ->pushType(PNPushType::MPNS)
+            ->pushType(PNPushType::APNS2)
             ->sync();
     }
 }
