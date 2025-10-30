@@ -1,8 +1,17 @@
 name: php
-version: 8.0.2
+version: 9.0.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2025-10-30
+    version: 9.0.0
+    changes:
+      - type: feature
+        text: "Added limit and offset parameters for hereNow. Number of returned users per channel by default is limited to 1000. Breaking change."
+      - type: bug
+        text: "Removed possibility to use deprecated MPNS(Microsoft Push Notification Service). Breaking change."
+      - type: bug
+        text: "Added deprecation warning for old APNS PushType. ."
   - date: 2025-05-29
     version: 8.0.2
     changes:
@@ -534,8 +543,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-8.0.2.zip
-            location: https://github.com/pubnub/php/releases/tag/8.0.2
+            package-name: php-9.0.0.zip
+            location: https://github.com/pubnub/php/releases/tag/9.0.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
