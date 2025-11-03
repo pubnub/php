@@ -271,6 +271,19 @@ class MobilePushDemo
                     ->deviceId($device['deviceId'])
                     ->sync();
                 // snippet.end
+
+                // snippet.remove_all_channels_response_check
+                $response = $this->pubnub->removeAllPushChannelsForDevice()
+                    ->pushType(PNPushType::APNS2)
+                    ->deviceId("yourDeviceId")
+                    ->sync();
+
+                if ($response->isSuccessful()) {
+                    echo "Successfully removed all push channels from device.";
+                } else {
+                    echo "Failed to remove push channels.";
+                }
+                // snippet.end
             }
 
             echo "   ✅ Successfully removed all push channels from device\n\n";

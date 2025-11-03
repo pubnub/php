@@ -491,3 +491,39 @@ try {
 }
 
 echo "\n=== MESSAGE ACTIONS DEMO COMPLETE ===\n";
+
+// snippet.fetch_messages_with_paging
+function getMessageActionsWithPaging($channel, $start, $callback)
+{
+    global $pubnub;
+    $pubnub->getMessageActions([
+        'channel' => $channel,
+        'page' => [
+            'limit' => 5,
+            'start' => $start
+        ]
+    ])->then(function ($result) use ($channel, $callback) {
+        if (!empty($result->actions)) {
+            getMessageActionsWithPaging(
+                $channel,
+                $result->actions[0]->actionTimetoken,
+                $callback
+            );
+        } else {
+            $callback([]);
+        }
+    }, function ($exception) {
+        // Handle error
+    });
+}
+
+getMessageActionsWithPaging('my_channel', microtime(true) * 10000, function ($actions) {
+    foreach ($actions as $action) {
+        echo $action->type . "\n";
+        echo $action->value . "\n";
+        echo $action->uuid . "\n";
+        echo $action->messageTimetoken . "\n";
+        echo $action->actionTimetoken . "\n";
+    }
+});
+// snippet.end

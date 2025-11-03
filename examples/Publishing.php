@@ -72,12 +72,10 @@ echo "Publish with custom type timetoken: {$result->getTimetoken()}\n";
 // snippet.publish_with_post
 $result = $pubnub->publish()
     ->channel("my_channel")
-    ->message(
-        [
+    ->message([
         "text" => "Message using POST",
         "description" => str_repeat("Post allows to publish longer messages", 750)
-        ]
-    )
+    ])
     ->usePost(true)
     ->sync();
 assert($result->getTimetoken() > 0);
@@ -88,12 +86,10 @@ echo "Publish with POST timetoken: {$result->getTimetoken()}\n";
 try {
     $result = $pubnub->publish()
         ->channel("my_channel")
-        ->message(
-            [
+        ->message([
             "text" => "Message using POST",
             "description" => str_repeat("Post allows to publish longer messages", 1410)
-            ]
-        )
+        ])
         ->usePost(true)
         ->sync();
     assert($result->getTimetoken() > 0);

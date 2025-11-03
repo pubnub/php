@@ -237,12 +237,13 @@ class MessagePersistenceDemo
         echo "Retrieving oldest 3 messages first...\n";
 
         try {
+            // snippet.history_reverse
             $result = $this->pubnub->history()
-                ->channel($this->demoChannel)
+                ->channel("my_channel")
                 ->count(3)
                 ->reverse(true)
-                ->includeTimetoken(true)
                 ->sync();
+            // snippet.end
 
             echo "  📊 Reverse History Results:\n";
             $messages = $result->getMessages();

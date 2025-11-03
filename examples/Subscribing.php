@@ -23,6 +23,12 @@ $pnconfig->setUserId("php-subscriber-" . uniqid()); // Unique user ID for this d
 $pubnub = new PubNub($pnconfig);
 // snippet.end
 
+// snippet.subscribe_single_channel
+$pubnub->subscribe()
+    ->channels("my_channel")
+    ->execute();
+// snippet.end
+
 // Disable for "one class per file" rule
 // phpcs:disable
 // snippet.callback
@@ -210,21 +216,112 @@ $pubnub->subscribe()
 // snippet.end
 // phpcs:enable
 
-echo "Starting PubNub Subscriber...\n";
-echo "Press Ctrl+C to exit\n";
+// snippet.subscribe_multiple_channels
+$pubnub->subscribe()
+    ->channels(["my_channel1", "my_channel2"])
+    ->execute();
+// snippet.end
 
-// Main loop
-$lastHistoryTime = 0;
+// snippet.subscribe_presence_channel
+$pubnub->subscribe()
+    ->channels("my_channel")
+    ->withPresence()
+    ->execute();
+// snippet.end
 
-while (true) {
-    $currentTime = time();
+// snippet.wildcard_subscribe
+$pubnub->subscribe()
+    ->channels("foo.*")
+    ->execute();
+// snippet.end
 
-    // Check history every 15 seconds
-    if ($currentTime - $lastHistoryTime >= 15) {
-        getHistory($pubnub, $channels);
-        $lastHistoryTime = $currentTime;
+// snippet.subscribe_channel_group
+$pubnub->subscribe()
+    ->channelGroups(["cg1", "cg2"])
+    ->execute();
+// snippet.end
+
+// snippet.subscribe_presence_channel_group
+$pubnub->subscribe()
+    ->channelGroups("awesome_channel_group")
+    ->withPresence()
+    ->execute();
+// snippet.end
+
+//Disabling code sniffer for whole snippet to not include single-line disable in docs
+// phpcs:disable
+// snippet.unsubscribe_multiple_channels
+class MyUnsubscribeMultipleCallback extends SubscribeCallback
+{
+    public function status($pubnub, $status)
+    {
+        if ($this->checkUnsubscribeCondition()) {
+            throw (new PubNubUnsubscribeException())->setChannels(["channel1", "channel2", "channel3"]);
+        }
     }
 
-    // Small sleep to prevent CPU overuse
-    usleep(100000); // 100ms
+    public function message($pubnub, $message)
+    {
+    }
+
+    public function presence($pubnub, $presence)
+    {
+    }
+
+    public function checkUnsubscribeCondition()
+    {
+        return false;
+    }
+}
+// snippet.end
+//phpcs:enable
+
+//Disabling code sniffer for whole snippet to not include single-line disable in docs
+// phpcs:disable
+// snippet.unsubscribe_channel_group
+class MyUnsubscribeChannelGroupCallback extends SubscribeCallback
+{
+    public function status($pubnub, $status)
+    {
+        if ($this->checkUnsubscribeCondition()) {
+            throw (new PubNubUnsubscribeException())->setChannelGroups(["cg1", "cg2"]);
+        }
+    }
+
+    public function message($pubnub, $message)
+    {
+    }
+
+    public function presence($pubnub, $presence)
+    {
+    }
+
+    public function checkUnsubscribeCondition()
+    {
+        return false;
+    }
+}
+// snippet.end
+// phpcs:enable
+
+// Only run the main loop if not being included by tests
+if (!defined('PHPUNIT_RUNNING')) {
+    echo "Starting PubNub Subscriber...\n";
+    echo "Press Ctrl+C to exit\n";
+
+    // Main loop
+    $lastHistoryTime = 0;
+
+    while (true) {
+        $currentTime = time();
+
+        // Check history every 15 seconds
+        if ($currentTime - $lastHistoryTime >= 15) {
+            getHistory($pubnub, $channels);
+            $lastHistoryTime = $currentTime;
+        }
+
+        // Small sleep to prevent CPU overuse
+        usleep(100000); // 100ms
+    }
 }
