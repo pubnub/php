@@ -303,25 +303,3 @@ class MyUnsubscribeChannelGroupCallback extends SubscribeCallback
 }
 // snippet.end
 // phpcs:enable
-
-// Only run the main loop if not being included by tests
-if (!defined('PHPUNIT_RUNNING')) {
-    echo "Starting PubNub Subscriber...\n";
-    echo "Press Ctrl+C to exit\n";
-
-    // Main loop
-    $lastHistoryTime = 0;
-
-    while (true) {
-        $currentTime = time();
-
-        // Check history every 15 seconds
-        if ($currentTime - $lastHistoryTime >= 15) {
-            getHistory($pubnub, $channels);
-            $lastHistoryTime = $currentTime;
-        }
-
-        // Small sleep to prevent CPU overuse
-        usleep(100000); // 100ms
-    }
-}

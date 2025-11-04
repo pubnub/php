@@ -8,11 +8,6 @@ class SubscribingTest extends TestCase
 {
     public function testExamples(): void
     {
-        // Define constant to prevent infinite loop in Subscribing.php
-        if (!defined('PHPUNIT_RUNNING')) {
-            define('PHPUNIT_RUNNING', true);
-        }
-
         ob_start();
         // Include the examples file
         require_once __DIR__ . '/../../examples/Subscribing.php';
