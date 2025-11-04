@@ -174,7 +174,6 @@ $pubnub->grantToken()
 // phpcs:disable
 // snippet.permissions_object_example
 $pubnub->parseToken("p0F2AkF0Gl2BEIJDdHRsGGRDcmVzpERjaGFuoENncnCgQ3VzcqBDc3BjoENwYXSkRGNoYW6gQ2dycKBDdXNyomZeZW1wLSoDZl5tZ3ItKhgbQ3NwY6JpXnB1YmxpYy0qA2pecHJpdmF0ZS0qGBtEbWV0YaBDc2lnWCAsvzGmd2rcgtr9rcs4r2tqC87YSppSYqs9CKfaM5IRZA")
-    ->getChannelResource('my-channel')
-    ->hasRead();
+    ->getChannelResource('my-channel');
 // snippet.end
 // phpcs:enable
