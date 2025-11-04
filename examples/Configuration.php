@@ -286,8 +286,8 @@ $pnConfiguration = new PNConfiguration();
 $pnConfiguration->setSubscribeKey('demo');
 $pnConfiguration->setPublishKey('demo');
 $pnConfiguration->setUserId('crypto-demo');
-$cryptor = new PubNubCrypto("enigma", true);
-$pnConfiguration->setCrypto($cryptor);
+$cryptoModule = CryptoModule::aesCbcCryptor("enigma", true);
+$pnConfiguration->setCryptoModule($cryptoModule);
 
 $pubnub = new PubNub($pnConfiguration);
 
@@ -297,8 +297,8 @@ $pnConfiguration2 = new PNConfiguration();
 $pnConfiguration2->setSubscribeKey('demo');
 $pnConfiguration2->setPublishKey('demo');
 $pnConfiguration2->setUserId('crypto-demo-legacy');
-$legacyCryptor = new PubNubCryptoLegacy("enigma", true);
-$pnConfiguration2->setCrypto($legacyCryptor);
+$legacyCryptoModule = CryptoModule::legacyCryptor("enigma", true);
+$pnConfiguration2->setCryptoModule($legacyCryptoModule);
 
 $pubnub2 = new PubNub($pnConfiguration2);
 // snippet.end
