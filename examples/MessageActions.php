@@ -500,21 +500,20 @@ function getMessageActionsWithPaging($pubnub, $channel, $start = null)
     
     do {
         $builder = $pubnub->getMessageActions()
-            ->channel($channel)
-            ->limit(5);
+            ->channel($channel);
         
         if ($currentStart !== null) {
-            $builder->start($currentStart);
+            $builder->setStart($currentStart);
         }
         
         $result = $builder->sync();
-        $actions = $result->getActions();
+        $actions = $result->actions;
         
         if (!empty($actions)) {
             $allActions = array_merge($allActions, $actions);
             // Get the timetoken of the last action for pagination
             $lastAction = end($actions);
-            $currentStart = $lastAction->getActionTimetoken();
+            $currentStart = $lastAction->actionTimetoken;
         } else {
             break;
         }

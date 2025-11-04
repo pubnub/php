@@ -7,8 +7,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\CryptoModule;
+use PubNub\Crypto\AesCbcCryptor;
+use PubNub\Crypto\LegacyCryptor;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Callbacks\SubscribeCallback;
+use PubNub\PubNubCrypto;
+use PubNub\PubNubCryptoLegacy;
 
 // snippet.setup
 // Create a new configuration instance
@@ -282,7 +286,8 @@ $pnConfiguration = new PNConfiguration();
 $pnConfiguration->setSubscribeKey('demo');
 $pnConfiguration->setPublishKey('demo');
 $pnConfiguration->setUserId('crypto-demo');
-$pnConfiguration->setCrypto(\PubNub\CryptoModule::aesCbcCryptor("enigma", true));
+$cryptor = new PubNubCrypto("enigma", true);
+$pnConfiguration->setCrypto($cryptor);
 
 $pubnub = new PubNub($pnConfiguration);
 
@@ -292,7 +297,8 @@ $pnConfiguration2 = new PNConfiguration();
 $pnConfiguration2->setSubscribeKey('demo');
 $pnConfiguration2->setPublishKey('demo');
 $pnConfiguration2->setUserId('crypto-demo-legacy');
-$pnConfiguration2->setCrypto(\PubNub\CryptoModule::legacyCryptor("enigma", true));
+$legacyCryptor = new PubNubCryptoLegacy("enigma", true);
+$pnConfiguration2->setCrypto($legacyCryptor);
 
 $pubnub2 = new PubNub($pnConfiguration2);
 // snippet.end
