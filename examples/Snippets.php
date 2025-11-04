@@ -9,6 +9,7 @@ use PubNub\PNConfiguration;
 $config = new PNConfiguration();
 $config->setSubscribeKey(getenv('SUBSCRIBE_KEY') ?: 'demo');
 $config->setPublishKey(getenv('PUBLISH_KEY') ?: 'demo');
+$config->setSecretKey(getenv('SECRET_KEY') ?: 'demo');
 $config->setUserId('snippets-demo');
 $pubnub = new PubNub($config);
 

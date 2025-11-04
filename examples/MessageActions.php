@@ -493,37 +493,44 @@ try {
 echo "\n=== MESSAGE ACTIONS DEMO COMPLETE ===\n";
 
 // snippet.fetch_messages_with_paging
-function getMessageActionsWithPaging($pubnub, $channel, $start, $callback)
+function getMessageActionsWithPaging($pubnub, $channel, $start = null)
 {
-    $pubnub->getMessageActions([
-        'channel' => $channel,
-        'page' => [
-            'limit' => 5,
-            'start' => $start
-        ]
-    ])->then(function ($result) use ($pubnub, $channel, $callback) {
-        if (!empty($result->actions)) {
-            getMessageActionsWithPaging(
-                $pubnub,
-                $channel,
-                $result->actions[0]->actionTimetoken,
-                $callback
-            );
-        } else {
-            $callback([]);
+    $allActions = [];
+    $currentStart = $start;
+    
+    do {
+        $builder = $pubnub->getMessageActions()
+            ->channel($channel)
+            ->limit(5);
+        
+        if ($currentStart !== null) {
+            $builder->start($currentStart);
         }
-    }, function ($exception) {
-        // Handle error
-    });
+        
+        $result = $builder->sync();
+        $actions = $result->getActions();
+        
+        if (!empty($actions)) {
+            $allActions = array_merge($allActions, $actions);
+            // Get the timetoken of the last action for pagination
+            $lastAction = end($actions);
+            $currentStart = $lastAction->getActionTimetoken();
+        } else {
+            break;
+        }
+    } while (!empty($actions) && count($allActions) < 20); // Limit to 20 for demo
+    
+    return $allActions;
 }
 
-getMessageActionsWithPaging($pubnub, 'my_channel', microtime(true) * 10000, function ($actions) {
-    foreach ($actions as $action) {
-        echo $action->type . "\n";
-        echo $action->value . "\n";
-        echo $action->uuid . "\n";
-        echo $action->messageTimetoken . "\n";
-        echo $action->actionTimetoken . "\n";
-    }
-});
+// Usage example
+$actions = getMessageActionsWithPaging($pubnub, 'my_channel');
+foreach ($actions as $action) {
+    echo "Type: " . $action->getType() . "\n";
+    echo "Value: " . $action->getValue() . "\n";
+    echo "UUID: " . $action->getUuid() . "\n";
+    echo "Message Timetoken: " . $action->getMessageTimetoken() . "\n";
+    echo "Action Timetoken: " . $action->getActionTimetoken() . "\n";
+    echo "---\n";
+}
 // snippet.end

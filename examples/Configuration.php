@@ -261,7 +261,7 @@ $pubnub->getConfiguration()
 // snippet.end
 
 // snippet.get_filter_expression
-$pubnub->getFilterConfiguration();
+$pubnub->getConfiguration()->getFilterExpression();
 // snippet.end
 
 // snippet.disable_immutable_check
