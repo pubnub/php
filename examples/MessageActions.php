@@ -493,18 +493,18 @@ try {
 echo "\n=== MESSAGE ACTIONS DEMO COMPLETE ===\n";
 
 // snippet.fetch_messages_with_paging
-function getMessageActionsWithPaging($channel, $start, $callback)
+function getMessageActionsWithPaging($pubnub, $channel, $start, $callback)
 {
-    global $pubnub;
     $pubnub->getMessageActions([
         'channel' => $channel,
         'page' => [
             'limit' => 5,
             'start' => $start
         ]
-    ])->then(function ($result) use ($channel, $callback) {
+    ])->then(function ($result) use ($pubnub, $channel, $callback) {
         if (!empty($result->actions)) {
             getMessageActionsWithPaging(
+                $pubnub,
                 $channel,
                 $result->actions[0]->actionTimetoken,
                 $callback
@@ -517,7 +517,7 @@ function getMessageActionsWithPaging($channel, $start, $callback)
     });
 }
 
-getMessageActionsWithPaging('my_channel', microtime(true) * 10000, function ($actions) {
+getMessageActionsWithPaging($pubnub, 'my_channel', microtime(true) * 10000, function ($actions) {
     foreach ($actions as $action) {
         echo $action->type . "\n";
         echo $action->value . "\n";

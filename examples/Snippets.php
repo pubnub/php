@@ -110,7 +110,7 @@ $pubnub->getState()
 
 // snippet.set_state_channel_group
 $pubnub->setState()
-    ->channelGroups(["gr1", "gr2", "gr3"])
+    ->channelGroups(["cg1", "cg2", "cg3"])
     ->state(["age" => 30])
     ->sync();
 // snippet.end

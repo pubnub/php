@@ -215,6 +215,7 @@ $pubnub = new PubNub($pnConfiguration);
 // snippet.init_read_only
 $pnConfiguration = new PNConfiguration();
 
+$pnConfiguration->setUserId("myUniqueUserId");
 $pnConfiguration->setSubscribeKey("my_sub_key");
 
 $pubnub = new PubNub($pnConfiguration);
