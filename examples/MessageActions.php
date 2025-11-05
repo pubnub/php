@@ -491,3 +491,45 @@ try {
 }
 
 echo "\n=== MESSAGE ACTIONS DEMO COMPLETE ===\n";
+
+// snippet.fetch_messages_with_paging
+function getMessageActionsWithPaging($pubnub, $channel, $start = null)
+{
+    $allActions = [];
+    $currentStart = $start;
+
+    do {
+        $builder = $pubnub->getMessageActions()
+            ->channel($channel);
+
+        if ($currentStart !== null) {
+            $builder->setStart($currentStart);
+        }
+
+        $result = $builder->sync();
+        $actions = $result->actions;
+
+        if (!empty($actions)) {
+            $allActions = array_merge($allActions, $actions);
+            // Get the timetoken of the last action for pagination
+            $lastAction = end($actions);
+            $currentStart = $lastAction->actionTimetoken;
+        } else {
+            break;
+        }
+    } while (!empty($actions) && count($allActions) < 20); // Limit to 20 for demo
+
+    return $allActions;
+}
+
+// Usage example
+$actions = getMessageActionsWithPaging($pubnub, 'my_channel');
+foreach ($actions as $action) {
+    echo "Type: " . $action->getType() . "\n";
+    echo "Value: " . $action->getValue() . "\n";
+    echo "UUID: " . $action->getUuid() . "\n";
+    echo "Message Timetoken: " . $action->getMessageTimetoken() . "\n";
+    echo "Action Timetoken: " . $action->getActionTimetoken() . "\n";
+    echo "---\n";
+}
+// snippet.end

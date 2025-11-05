@@ -7,8 +7,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\CryptoModule;
+use PubNub\Crypto\AesCbcCryptor;
+use PubNub\Crypto\LegacyCryptor;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Callbacks\SubscribeCallback;
+use PubNub\PubNubCrypto;
+use PubNub\PubNubCryptoLegacy;
 
 // snippet.setup
 // Create a new configuration instance
@@ -200,6 +204,103 @@ $pnconf->setUserId("filter-demo-user");
 $pnconf->setFilterExpression("userid == 'my_userid'");
 
 $pubnub = new PubNub($pnconf);
+// snippet.end
+
+// snippet.init_non_secure
+$pnConfiguration = new PNConfiguration();
+
+$pnConfiguration->setSubscribeKey("my_sub_key");
+$pnConfiguration->setPublishKey("my_pub_key");
+$pnConfiguration->setSecure(false);
+$pnConfiguration->setUserId("myUniqueUserId");
+$pubnub = new PubNub($pnConfiguration);
+// snippet.end
+
+// snippet.init_read_only
+$pnConfiguration = new PNConfiguration();
+
+$pnConfiguration->setUserId("myUniqueUserId");
+$pnConfiguration->setSubscribeKey("my_sub_key");
+
+$pubnub = new PubNub($pnConfiguration);
+// snippet.end
+
+// snippet.use_custom_uuid
+$pnconf = new PNConfiguration();
+
+$pnconf->setSubscribeKey("mySubscribeKey");
+$pnconf->setPublishKey("myPublishKey");
+$pnconf->setUserId("myUniqueUserId");
+
+$pubnub = new PubNub($pnconf);
+// snippet.end
+
+// snippet.remove_listeners
+$subscribeCallback = new MySubscribeCallback();
+
+$pubnub->addListener($subscribeCallback);
+
+// some time later
+$pubnub->removeListener($subscribeCallback);
+// snippet.end
+
+// snippet.set_user_id
+$pnconf = new PNConfiguration();
+$pnconf->setUserId("myUniqueUserId");
+// snippet.end
+
+// snippet.get_user_id
+$pubnub->getConfiguration()
+    ->getUserId();
+// snippet.end
+
+// snippet.set_auth_key
+$pubnub->getConfiguration()
+    ->setAuthKey("my_newauthkey");
+// snippet.end
+
+// snippet.get_auth_key
+$pubnub->getConfiguration()
+    ->getAuthKey();
+// snippet.end
+
+// snippet.get_filter_expression
+$pubnub->getConfiguration()->getFilterExpression();
+// snippet.end
+
+// snippet.disable_immutable_check
+$config = new PNConfiguration();
+$config->setPublishKey('demo');
+$config->setSubscribeKey('demo');
+$config->setUserId('demo');
+// not recommended, disables config immutability
+$config->disableImmutableCheck();
+
+$pn = new PubNub($config);
+// snippet.end
+
+// snippet.crypto_module_setup
+//  encrypts using 256-bit AES-CBC cipher (recommended)
+// decrypts data encrypted with the legacy and the 256-bit AES-CBC ciphers
+$pnConfiguration = new PNConfiguration();
+$pnConfiguration->setSubscribeKey('demo');
+$pnConfiguration->setPublishKey('demo');
+$pnConfiguration->setUserId('crypto-demo');
+$cryptoModule = CryptoModule::aesCbcCryptor("enigma", true);
+$pnConfiguration->setCryptoModule($cryptoModule);
+
+$pubnub = new PubNub($pnConfiguration);
+
+// encrypts with 128-bit cipher key entropy(legacy)
+// decrypts data encrypted with the legacy and the 256-bit AES-CBC ciphers
+$pnConfiguration2 = new PNConfiguration();
+$pnConfiguration2->setSubscribeKey('demo');
+$pnConfiguration2->setPublishKey('demo');
+$pnConfiguration2->setUserId('crypto-demo-legacy');
+$legacyCryptoModule = CryptoModule::legacyCryptor("enigma", true);
+$pnConfiguration2->setCryptoModule($legacyCryptoModule);
+
+$pubnub2 = new PubNub($pnConfiguration2);
 // snippet.end
 
 // Verify configuration

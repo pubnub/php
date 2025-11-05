@@ -198,6 +198,19 @@ $updateChannelMetadataResult = $pubnub->setChannelMetadata()
 assert($updateChannelMetadataResult->getName() === $sampleChannels[0]['name'] . ' - Updated');
 // snippet.end
 
+// snippet.write_updated_metadata_back
+// Writing the updated object back to the server
+$pubnub->setChannelMetadata()
+    ->channel($sampleChannels[0]['id'])
+    ->meta([
+        "name" => $updateChannelMetadataResult->getName(),
+        "description" => $updateChannelMetadataResult->getDescription(),
+        "custom" => $updatedChannelCustom,
+    ])
+    ->sync();
+print("Object has been updated.\n");
+// snippet.end
+
 // snippet.remove_channel_metadata
 $removeChannelMetadataResult = $pubnub->removeChannelMetadata()
     ->channel($sampleChannels[1]['id'])

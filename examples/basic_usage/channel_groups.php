@@ -7,6 +7,7 @@ use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\Exceptions\PubNubServerException;
 
+// snippet.setup
 // Create configuration
 $pnConfig = new PNConfiguration();
 $pnConfig->setSubscribeKey(getenv("SUBSCRIBE_KEY") ?? "demo");
@@ -15,6 +16,7 @@ $pnConfig->setUserId("php-channel-group-demo");
 
 // Initialize PubNub instance
 $pubnub = new PubNub($pnConfig);
+// snippet.end
 
 try {
     // Add channels to channel group
