@@ -1,4 +1,8 @@
 <?php
+// snippet.hide
+// Ignoring example because of the "no side effects" rule
+// phpcs:ignoreFile
+// snippet.show
 
 // Include Composer autoloader (adjust path if needed)
 require_once 'vendor/autoload.php';
@@ -32,21 +36,24 @@ $pubnub = new PubNub($pnConfiguration);
 // snippet.end
 
 // snippet.event_listeners
-class MySubscribeCallback extends SubscribeCallback {
-    function status($pubnub, $status) {
+class MySubscribeCallback extends SubscribeCallback
+{
+    public function status($pubnub, $status)
+    {
         if ($status->getCategory() === PNStatusCategory::PNUnexpectedDisconnectCategory) {
             // This event happens when radio / connectivity is lost
             echo "Unexpected disconnect - network may be down" . PHP_EOL;
-        } else if ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
+        } elseif ($status->getCategory() === PNStatusCategory::PNConnectedCategory) {
             // Connect event. You can do stuff like publish, and know you'll get it
             echo "Connected to PubNub!" . PHP_EOL;
-        } else if ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory) {
+        } elseif ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory) {
             // Handle message decryption error
             echo "Decryption error: " . $status->getException() . PHP_EOL;
         }
-    } 
+    }
 
-    function message($pubnub, $message) {
+    public function message($pubnub, $message)
+    {
         // Handle new message stored in message.message
         echo "Received message: " . json_encode($message->getMessage()) . PHP_EOL;
         echo "Publisher: " . $message->getPublisher() . PHP_EOL;
@@ -54,7 +61,8 @@ class MySubscribeCallback extends SubscribeCallback {
         echo "Timetoken: " . $message->getTimetoken() . PHP_EOL;
     }
 
-    function presence($pubnub, $presence) {
+    public function presence($pubnub, $presence)
+    {
         // Handle incoming presence data
         echo "Presence event: " . $presence->getEvent() . PHP_EOL;
         echo "UUID: " . $presence->getUuid() . PHP_EOL;
@@ -75,4 +83,3 @@ $pubnub->subscribe()
     ->withPresence(true)  // Optional: subscribe to presence events
     ->execute();
 // snippet.end
-
