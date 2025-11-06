@@ -8,11 +8,12 @@ use PubNub\PubNub;
 use PubNub\Exceptions\PubNubServerException;
 use PubNub\Exceptions\PubNubException;
 
+// snippet.publish_complete
 // Create configuration with demo keys
 $pnConfig = new PNConfiguration();
 $pnConfig->setSubscribeKey(getenv("SUBSCRIBE_KEY") ?? "demo");
 $pnConfig->setPublishKey(getenv("PUBLISH_KEY") ?? "demo");
-$pnConfig->setUserId("php-publish-demo-user");
+$pnConfig->setUserId("php-publisher-demo");
 
 // Initialize PubNub instance
 $pubnub = new PubNub($pnConfig);
@@ -30,7 +31,7 @@ try {
 
     // Publish a message to a channel
     $result = $pubnub->publish()
-        ->channel("my_channel")               // Channel to publish to
+        ->channel("hello_world")              // Channel to publish to
         ->message($messageData)               // Message content
         ->shouldStore(true)                   // Store in history
         ->ttl(15)                             // Time to live (hours)
@@ -68,3 +69,4 @@ try {
     // Handle general exceptions
     echo "Error: " . $exception->getMessage() . PHP_EOL;
 }
+// snippet.end
