@@ -26,7 +26,7 @@ class StateManagerTest extends TestCase
     public function testStateManagerDeduplicatesChannelListWithDuplicates(): void
     {
         // Subscribe with duplicate channels in a single operation
-        $operation = new SubscribeOperation(['ch1', 'ch1', 'ch2'], [], false, null);
+        $operation = new SubscribeOperation(['ch1', 'ch1', 'ch2'], [], false, 0);
 
         $this->stateManager->adaptSubscribeBuilder($operation);
 
@@ -46,11 +46,11 @@ class StateManagerTest extends TestCase
     public function testStateManagerDeduplicatesWhenSubscribingToSameChannelMultipleTimes(): void
     {
         // First subscription to ch1
-        $operation1 = new SubscribeOperation(['ch1'], [], false, null);
+        $operation1 = new SubscribeOperation(['ch1'], [], false, 0);
         $this->stateManager->adaptSubscribeBuilder($operation1);
 
         // Second subscription to ch1 and ch2
-        $operation2 = new SubscribeOperation(['ch1', 'ch2'], [], false, null);
+        $operation2 = new SubscribeOperation(['ch1', 'ch2'], [], false, 0);
         $this->stateManager->adaptSubscribeBuilder($operation2);
 
         // Get the prepared channel list
@@ -69,7 +69,7 @@ class StateManagerTest extends TestCase
     public function testStateManagerDeduplicatesChannelGroups(): void
     {
         // Subscribe with duplicate channel groups
-        $operation = new SubscribeOperation([], ['cg1', 'cg1', 'cg2'], false, null);
+        $operation = new SubscribeOperation([], ['cg1', 'cg1', 'cg2'], false, 0);
 
         $this->stateManager->adaptSubscribeBuilder($operation);
 
