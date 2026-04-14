@@ -77,6 +77,16 @@ class SetChannelMetadata extends Endpoint
     }
 
     /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType($type): self
+    {
+        $this->meta['type'] = $type;
+        return $this;
+    }
+
+    /**
      * @throws PubNubValidationException
      */
     protected function validateParams()
