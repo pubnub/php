@@ -224,7 +224,6 @@ class CryptoModuleTest extends TestCase
         // This will fail the instanceof check in registerCryptor
         $reflection = new \ReflectionClass($module);
         $method = $reflection->getMethod('registerCryptor');
-        $method->setAccessible(true);
 
         // Call with invalid cryptor - this should trigger the instanceof check
         $method->invoke($module, $invalidCryptor, "TEST");
@@ -503,7 +502,6 @@ class CryptoModuleTest extends TestCase
         // Use reflection to access the protected parseInput method
         $reflection = new \ReflectionClass($module);
         $method = $reflection->getMethod('parseInput');
-        $method->setAccessible(true);
 
         if ($expected === null) {
             // Expecting an exception
@@ -525,8 +523,6 @@ class CryptoModuleTest extends TestCase
         // Use reflection to access the protected parseInput method
         $reflection = new \ReflectionClass($module);
         $method = $reflection->getMethod('parseInput');
-        $method->setAccessible(true);
-
 
         $result = $method->invoke($module, 12345);
         $this->assertEquals('12345', $result);
@@ -547,7 +543,6 @@ class CryptoModuleTest extends TestCase
         // Use reflection to access the protected stringify method
         $reflection = new \ReflectionClass($module);
         $method = $reflection->getMethod('stringify');
-        $method->setAccessible(true);
 
         $result = $method->invoke($module, $input);
         $this->assertEquals($expected, $result);

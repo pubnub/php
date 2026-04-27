@@ -120,7 +120,7 @@ class CryptoModule
 
     public function decodeHeader(string $header): CryptoHeader
     {
-        if (strlen($header < 10) or substr($header, 0, 4) != static::SENTINEL) {
+        if (strlen($header) < 10 or substr($header, 0, 4) != static::SENTINEL) {
             return new CryptoHeader('', static::FALLBACK_CRYPTOR_ID, '', 0);
         }
         $sentinel = substr($header, 0, 4);

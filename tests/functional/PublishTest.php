@@ -56,7 +56,6 @@ class PublishTest extends \PubNubTestCase
     private function assertGeneratesCorrectPath($message, $channel, $usePost, $sequenceNumber)
     {
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
-        $r->setAccessible(true);
 
         $encodedMessage = PubNubUtil::urlWrite($message);
 
@@ -80,7 +79,6 @@ class PublishTest extends \PubNubTestCase
         );
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
-        $r->setAccessible(true);
 
         $this->assertEquals(
             [
@@ -126,7 +124,6 @@ class PublishTest extends \PubNubTestCase
         $message = 'hey';
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
-        $r->setAccessible(true);
 
         $encodedMessage = PubNubUtil::urlWrite($message);
         $meta = ['m1', 'm2'];
@@ -148,7 +145,6 @@ class PublishTest extends \PubNubTestCase
         );
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
-        $r->setAccessible(true);
 
         $this->assertEquals(
             [
@@ -167,7 +163,6 @@ class PublishTest extends \PubNubTestCase
         $message = 'hey';
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
-        $r->setAccessible(true);
 
         $encodedMessage = PubNubUtil::urlWrite($message);
 
@@ -188,7 +183,6 @@ class PublishTest extends \PubNubTestCase
         );
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
-        $r->setAccessible(true);
 
         $this->assertEquals(
             [
@@ -207,7 +201,6 @@ class PublishTest extends \PubNubTestCase
         $message = 'hey';
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
-        $r->setAccessible(true);
 
         $encodedMessage = PubNubUtil::urlWrite($message);
 
@@ -228,7 +221,6 @@ class PublishTest extends \PubNubTestCase
         );
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
-        $r->setAccessible(true);
 
         $this->assertEquals(
             [
@@ -248,7 +240,6 @@ class PublishTest extends \PubNubTestCase
 
         $this->pubnub->getConfiguration()->setAuthKey("my_auth");
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
-        $r->setAccessible(true);
 
         $encodedMessage = PubNubUtil::urlWrite($message);
 
@@ -268,7 +259,6 @@ class PublishTest extends \PubNubTestCase
         );
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
-        $r->setAccessible(true);
 
         $this->assertEquals(
             [
@@ -291,7 +281,6 @@ class PublishTest extends \PubNubTestCase
         $config->setCipherKey("testCipher");
         $pubnub = new PubNub($config);
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildPath');
-        $r->setAccessible(true);
 
         $publish = $pubnub->publish();
         $publish->channel($channel);
@@ -311,7 +300,6 @@ class PublishTest extends \PubNubTestCase
         );
 
         $r = new ReflectionMethod('\PubNub\Endpoints\PubSub\Publish', 'buildParams');
-        $r->setAccessible(true);
 
         $this->assertEquals(
             [
