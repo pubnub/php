@@ -147,8 +147,8 @@ class ManageMembers extends ObjectsCollectionEndpoint
         if (empty($this->channel)) {
             throw new PubNubValidationException("channel missing");
         }
-        $members = !empty($this->setMembers) or !empty($this->removeMembers);
-        $uuids = !empty($this->setUuids) or !empty($this->removeUuids);
+        $members = !empty($this->setMembers) || !empty($this->removeMembers);
+        $uuids = !empty($this->setUuids) || !empty($this->removeUuids);
 
         if ($members and $uuids) {
             throw new PubNubValidationException("Either members or uuids should be provided");
