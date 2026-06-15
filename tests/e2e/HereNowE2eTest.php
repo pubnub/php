@@ -17,6 +17,15 @@ class HereNowE2eTest extends \PubNubTestCase
 {
     use PresenceTestHelper;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->markTestSkipped(
+            'Implicit heartbeat has been disabled on the test keys, so these tests fail because the SDK has no '
+            . 'Heartbeat support and no explicit Heartbeat is executed.'
+        );
+    }
+
     /**
      * Test pagination with multiple channels - verifies limit applies per-channel
      * This test requires real background clients to properly test the server-side pagination
