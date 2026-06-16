@@ -66,17 +66,19 @@ function probe(string $label, string $url, string $version, int $iterations, int
         $start = microtime(true);
         $curlInfo = null;
         try {
-            $client->get($url, [
+            $response = $client->get($url, [
                 RequestOptions::TIMEOUT         => REQUEST_TIMEOUT,
                 RequestOptions::CONNECT_TIMEOUT => CONNECT_TIMEOUT,
                 'version'                       => $version,
-                // num_connects is unavailable in some libcurl builds, so detect
-                // reuse via local_port: same client port == same pooled socket.
+                // Detect socket reuse via local_port (num_connects is absent in
+                // some libcurl builds). NOTE: do NOT trust the stat's
+                // 'http_version' field — it echoes the REQUESTED version, not the
+                // negotiated one. The PSR-7 response below reports the real wire
+                // protocol (ps.pndsn.com is HTTP/1.1 only — no h2 over ALPN).
                 'on_stats'                      => function ($stats) use (&$curlInfo) {
                     $h = $stats->getHandlerStats();
                     $curlInfo = [
                         'port'  => $h['local_port'] ?? null,
-                        'http'  => $h['http_version'] ?? '?', // curl wire view (may differ from PSR-7)
                         'ip'    => $h['primary_ip'] ?? '?',
                     ];
                 },
@@ -91,7 +93,8 @@ function probe(string $label, string $url, string $version, int $iterations, int
                 }
                 $seenPorts[$port] = true;
             }
-            $hv = (string) ($curlInfo['http'] ?? '?');
+            // Real negotiated protocol, straight from the PSR-7 response.
+            $hv = $response->getProtocolVersion();
             $httpVersions[$hv] = ($httpVersions[$hv] ?? 0) + 1;
         } catch (\Throwable $e) {
             $elapsed = (microtime(true) - $start) * 1000;
@@ -127,7 +130,7 @@ function probe(string $label, string $url, string $version, int $iterations, int
         $httpDist[] = 'http/' . $v . ' x' . $n;
     }
     printf("  ok=%d  fail=%d  reused-socket=%d  distinct-sockets=%d\n", $ok, $fail, $reuseCount, count($seenPorts));
-    printf("  curl-wire-protocol: %s\n", implode(' ', $httpDist) ?: '(n/a)');
+    printf("  negotiated-protocol (PSR-7): %s\n", implode(' ', $httpDist) ?: '(n/a)');
     printf("  latency p50=%dms p99=%dms max=%dms\n", (int) $p50, (int) $p99, (int) $max);
     if ($failures) {
         echo "  FAILURES:\n" . implode("\n", $failures) . "\n";
