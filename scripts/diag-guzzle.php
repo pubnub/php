@@ -148,15 +148,25 @@ echo "Guzzle reuses one client across the whole run (like the SDK).\n";
 probe("time/0 baseline", $timeUrl, '2', $iterations, $delayMs);
 probe("time/0 baseline", $timeUrl, '1.1', $iterations, $delayMs);
 
-// The actual failing op: publish, both protocols.
+// The actual failing op: publish.
 if ($publishKey !== '' && $subscribeKey !== '') {
     $publishUrl = sprintf(
         "https://ps.pndsn.com/publish/%s/%s/0/diag-guzzle/0/%%22x%%22?uuid=diag-guzzle",
         $publishKey,
         $subscribeKey
     );
-    probe("publish (SDK-forced h2)", $publishUrl, '2', $iterations, $delayMs);
-    probe("publish (h1.1)", $publishUrl, '1.1', $iterations, $delayMs);
+
+    // Primary run honoring the env-provided delay.
+    probe("publish", $publishUrl, '1.1', $iterations, $delayMs);
+
+    // Spacing sweep: distinguish a per-second RATE limit from a per-request /
+    // idle issue. If failures vanish as we space publishes further apart, the
+    // cap is rate-based (quota refills over time). If they persist regardless of
+    // spacing, it is NOT a simple rate limit.
+    echo "\n######## spacing sweep (publish, 30 req each) ########\n";
+    foreach ([0, 200, 500, 1000, 2000] as $gapMs) {
+        probe("publish gap=" . $gapMs . "ms", $publishUrl, '1.1', 30, $gapMs);
+    }
 }
 
 echo "\n######## done ########\n";

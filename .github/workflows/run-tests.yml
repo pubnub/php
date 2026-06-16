@@ -123,11 +123,11 @@ jobs:
       - name: Diagnose Guzzle connection reuse (PHP)
         continue-on-error: true
         run: |
-          echo "### back-to-back (no idle gap) ###"
+          # Reuses one Guzzle client like the SDK. The keyless time/0 baseline
+          # should be 0 failures; the publish run reproduces the cURL-28 timeout.
+          # The built-in spacing sweep then tells us whether spacing publishes
+          # further apart makes the failures disappear (== server rate limit).
           DIAG_ITERATIONS=200 DIAG_DELAY_MS=0 php scripts/diag-guzzle.php
-          echo
-          echo "### with 5s idle gaps (provokes stale-socket timeout) ###"
-          DIAG_ITERATIONS=30 DIAG_DELAY_MS=5000 php scripts/diag-guzzle.php
       - name: Run unit tests
         run: composer test
       - name: Cancel workflow runs for commit on error
