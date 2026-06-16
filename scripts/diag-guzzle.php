@@ -57,10 +57,13 @@ function probe(string $label, string $url, string $version, int $iterations, int
     $client = new GuzzleHttpClient();
 
     $times       = [];
-    $failures    = [];
+    $failures      = [];
+    $failedIndices = [];
     $reuseCount  = 0;
     $seenPorts   = [];      // local TCP ports seen — a repeat == a reused socket
-    $httpVersions = [];     // curl-level wire protocol distribution
+    $httpVersions = [];     // negotiated protocol distribution (from PSR-7)
+    $ipOk        = [];      // backend IP => count of successful requests
+    $ipFail      = [];      // backend IP => count of timed-out requests
 
     for ($i = 0; $i < $iterations; $i++) {
         $start = microtime(true);
@@ -96,14 +99,20 @@ function probe(string $label, string $url, string $version, int $iterations, int
             // Real negotiated protocol, straight from the PSR-7 response.
             $hv = $response->getProtocolVersion();
             $httpVersions[$hv] = ($httpVersions[$hv] ?? 0) + 1;
+
+            $ip = $curlInfo['ip'] ?? '?';
+            $ipOk[$ip] = ($ipOk[$ip] ?? 0) + 1;
         } catch (\Throwable $e) {
             $elapsed = (microtime(true) - $start) * 1000;
-            $failures[] = sprintf(
-                "  #%d after %dms: %s",
-                $i,
-                (int) $elapsed,
-                $e->getMessage()
-            );
+            $failedIndices[] = $i;
+            // curl populates primary_ip once connected, so even a post-connect
+            // timeout tells us WHICH backend black-holed the request.
+            $ip = $curlInfo['ip'] ?? '?';
+            $ipFail[$ip] = ($ipFail[$ip] ?? 0) + 1;
+            // Keep one representative full message; the rest are summarized by index.
+            if (count($failures) < 1) {
+                $failures[] = sprintf("  e.g. #%d after %dms (ip=%s): %s", $i, (int) $elapsed, $ip, $e->getMessage());
+            }
         }
 
         if ($delayMs > 0) {
@@ -132,8 +141,20 @@ function probe(string $label, string $url, string $version, int $iterations, int
     printf("  ok=%d  fail=%d  reused-socket=%d  distinct-sockets=%d\n", $ok, $fail, $reuseCount, count($seenPorts));
     printf("  negotiated-protocol (PSR-7): %s\n", implode(' ', $httpDist) ?: '(n/a)');
     printf("  latency p50=%dms p99=%dms max=%dms\n", (int) $p50, (int) $p99, (int) $max);
-    if ($failures) {
-        echo "  FAILURES:\n" . implode("\n", $failures) . "\n";
+    // Per-backend breakdown: if the failures concentrate on one (or few) IPs
+    // while other IPs only ever succeed, the cause is a wedged backend node
+    // behind the LB — not a rate limit (which would return fast 429s, not 10s
+    // 0-byte hangs).
+    $allIps = array_unique(array_merge(array_keys($ipOk), array_keys($ipFail)));
+    sort($allIps);
+    echo "  per-backend (ok/fail):";
+    foreach ($allIps as $ip) {
+        printf(" %s=%d/%d", $ip, $ipOk[$ip] ?? 0, $ipFail[$ip] ?? 0);
+    }
+    echo "\n";
+    if (!empty($failedIndices)) {
+        echo "  failed-indices: " . implode(',', $failedIndices) . "\n";
+        echo implode("\n", $failures) . "\n";
     } else {
         echo "  (no failures)\n";
     }
@@ -156,15 +177,18 @@ if ($publishKey !== '' && $subscribeKey !== '') {
         $subscribeKey
     );
 
-    // Primary run honoring the env-provided delay.
+    // The failures are 10s 0-byte HANGS, not 429s, so this is NOT a rate limit.
+    // The leading hypothesis is a wedged backend behind the publish LB: every
+    // ~10th request is routed to a node that accepts the connection but never
+    // responds. The per-backend (ok/fail) line in each run is the key evidence —
+    // watch whether fails concentrate on one IP.
     probe("publish", $publishUrl, '1.1', $iterations, $delayMs);
 
-    // Spacing sweep: distinguish a per-second RATE limit from a per-request /
-    // idle issue. If failures vanish as we space publishes further apart, the
-    // cap is rate-based (quota refills over time). If they persist regardless of
-    // spacing, it is NOT a simple rate limit.
-    echo "\n######## spacing sweep (publish, 30 req each) ########\n";
-    foreach ([0, 200, 500, 1000, 2000] as $gapMs) {
+    // Spacing check: if it were a time/rate effect, gaps would change the rate
+    // of failure. For a per-request routing fault, the ~1-in-10 cadence persists
+    // regardless of spacing.
+    echo "\n######## spacing check (publish, 30 req each) ########\n";
+    foreach ([0, 1000] as $gapMs) {
         probe("publish gap=" . $gapMs . "ms", $publishUrl, '1.1', 30, $gapMs);
     }
 }
