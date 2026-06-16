@@ -113,6 +113,21 @@ jobs:
           grep -E 'http_code=(000|4|5)|total=[1-9]' "$pub_log" || echo "(none — all fast 200s)"
           echo "--- slowest 5 ---"
           sort -t= -k3 -rn "$pub_log" | head -5 || true
+      # TEMPORARY: PHP-level probe that REUSES one Guzzle client across many
+      # requests, exactly like the SDK does for a whole PHPUnit run. The curl
+      # probes above open a fresh connection each time and so cannot reproduce a
+      # stale/half-closed keep-alive socket — the prime suspect for
+      # "connected fine, then 0 bytes received after 10s" (cURL error 28).
+      # DIAG_DELAY_MS inserts an idle gap to provoke LB idle-timeout of pooled
+      # sockets. Remove once the timeout cause is confirmed/fixed.
+      - name: Diagnose Guzzle connection reuse (PHP)
+        continue-on-error: true
+        run: |
+          echo "### back-to-back (no idle gap) ###"
+          DIAG_ITERATIONS=200 DIAG_DELAY_MS=0 php scripts/diag-guzzle.php
+          echo
+          echo "### with 5s idle gaps (provokes stale-socket timeout) ###"
+          DIAG_ITERATIONS=30 DIAG_DELAY_MS=5000 php scripts/diag-guzzle.php
       - name: Run unit tests
         run: composer test
       - name: Cancel workflow runs for commit on error
