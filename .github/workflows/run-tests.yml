@@ -60,6 +60,28 @@ jobs:
         run: |
           composer self-update && composer --version
           composer install --prefer-dist
+      # TEMPORARY: diagnose intermittent `cURL error 28` timeouts to ps.pndsn.com
+      # from the self-hosted runner. Remove once the runner egress issue is resolved.
+      - name: Diagnose ps.pndsn.com connectivity
+        continue-on-error: true
+        run: |
+          echo "=== Runner public egress IP ==="
+          curl -s --max-time 15 https://api.ipify.org || echo "(could not determine egress IP)"
+          echo
+          echo "=== DNS resolution for ps.pndsn.com ==="
+          getent hosts ps.pndsn.com || nslookup ps.pndsn.com || true
+          echo
+          echo "=== Proxy-related environment ==="
+          env | grep -iE 'proxy' || echo "(no proxy env vars set)"
+          echo
+          echo "=== 10x probe of https://ps.pndsn.com/time/0 (catch intermittent hang) ==="
+          for i in $(seq 1 10); do
+            echo "--- attempt $i ---"
+            curl -sS -o /dev/null --max-time 15 \
+              -w 'http_code=%{http_code} dns=%{time_namelookup}s connect=%{time_connect}s tls=%{time_appconnect}s total=%{time_total}s\n' \
+              "https://ps.pndsn.com/time/0" \
+              || echo "attempt $i FAILED (curl exit $?)"
+          done
       - name: Run unit tests
         run: composer test
       - name: Cancel workflow runs for commit on error
