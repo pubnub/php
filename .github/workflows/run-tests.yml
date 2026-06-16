@@ -83,10 +83,9 @@ jobs:
               || echo "attempt $i FAILED (curl exit $?)"
           done
           echo
-          echo "=== Burst probe: 200 requests, 20 concurrent (trip rate-limit/throttle under load) ==="
-          # If the idle probe above is fast but requests here stall ~10s / fail with
-          # exit 28, that points to server-side throttling under volume rather than a
-          # broken network path. http_code 429 would confirm explicit rate-limiting.
+          echo "=== Burst probe A: 200x time/0, 20 concurrent (keyless baseline) ==="
+          # Cheap, unauthenticated endpoint. Establishes that the network path is fine
+          # under concurrent load. time/0 is NOT subject to per-key publish throttling.
           burst_log="$(mktemp)"
           seq 1 200 | xargs -P 20 -I {} \
             curl -sS -o /dev/null --max-time 15 \
@@ -95,10 +94,25 @@ jobs:
             >> "$burst_log" 2>&1 || true
           echo "--- HTTP status code distribution ---"
           grep -oE 'http_code=[0-9]+' "$burst_log" | sort | uniq -c || true
-          echo "--- failures / non-200 / slow (>1s) responses ---"
-          grep -vE 'http_code=200 total=0' "$burst_log" | grep -E 'http_code=(000|4|5)|total=[1-9]' || echo "(none — all fast 200s)"
-          echo "--- slowest 5 responses ---"
+          echo "--- slowest 5 ---"
           sort -t= -k3 -rn "$burst_log" | head -5 || true
+          echo
+          echo "=== Burst probe B: 200x PUBLISH, 20 concurrent (the actual failing op) ==="
+          # Publishes to the real keyset — the same operation that times out in CI.
+          # If THIS bursts shows 429 / 000 / ~10s stalls while probe A stayed fast,
+          # the cause is per-key publish throttling, not the network or the runner.
+          pub_log="$(mktemp)"
+          seq 1 200 | xargs -P 20 -I {} \
+            curl -sS -o /dev/null --max-time 15 \
+              -w 'http_code=%{http_code} total=%{time_total}s\n' \
+              "https://ps.pndsn.com/publish/$PUBLISH_KEY/$SUBSCRIBE_KEY/0/diag-burst/0/%22x%22?uuid=diag-burst" \
+            >> "$pub_log" 2>&1 || true
+          echo "--- HTTP status code distribution ---"
+          grep -oE 'http_code=[0-9]+' "$pub_log" | sort | uniq -c || true
+          echo "--- non-200 / slow (>1s) responses ---"
+          grep -E 'http_code=(000|4|5)|total=[1-9]' "$pub_log" || echo "(none — all fast 200s)"
+          echo "--- slowest 5 ---"
+          sort -t= -k3 -rn "$pub_log" | head -5 || true
       - name: Run unit tests
         run: composer test
       - name: Cancel workflow runs for commit on error
