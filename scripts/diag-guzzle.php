@@ -17,6 +17,13 @@
  *   - version=2   : what the SDK forces today (Endpoint::requestOptions)
  *   - version=1.1 : what ps.pndsn.com actually speaks
  *
+ * It also runs a handler swap (publish, version=1.1) through Guzzle's curl
+ * handler vs its StreamHandler (PHP stream wrapper, no libcurl). The raw curl
+ * CLI control uses a different libcurl+TLS stack than PHP, so it can't exonerate
+ * PHP's curl handler; this swap stays inside PHP and changes only the handler.
+ * If the hang vanishes on the stream handler, the fault is PHP's curl handler /
+ * its libcurl build; if it persists on both, the cause is above libcurl.
+ *
  * Usage (from project root, keys exported as in the CI workflow):
  *   php scripts/diag-guzzle.php
  *
@@ -31,6 +38,9 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\Handler\StreamHandler;
 use GuzzleHttp\RequestOptions;
 
 $publishKey   = getenv('PUBLISH_KEY') ?: '';
@@ -50,11 +60,29 @@ const CONNECT_TIMEOUT = 10;
  * Fire $iterations requests at $url through ONE reused client and report.
  *
  * @param string $version '2' or '1.1' — passed to Guzzle's 'version' option.
+ * @param string $handler  'curl' (default, the SDK transport) or 'stream'
+ *                         (PHP stream wrapper — no libcurl). Swapping the
+ *                         handler isolates whether the hang lives in PHP's
+ *                         curl handler / its libcurl+OpenSSL build: if the
+ *                         stream handler runs clean where curl hangs, the
+ *                         fault is in the curl path, not the server.
  */
-function probe(string $label, string $url, string $version, int $iterations, int $delayMs): void
-{
-    // One client for the whole loop == SDK behavior == cURL keep-alive pool reuse.
-    $client = new GuzzleHttpClient();
+function probe(
+    string $label,
+    string $url,
+    string $version,
+    int $iterations,
+    int $delayMs,
+    string $handler = 'curl'
+): void {
+    // One client for the whole loop == SDK behavior == keep-alive pool reuse.
+    if ($handler === 'stream') {
+        // StreamHandler uses PHP's HTTP stream wrapper (no libcurl at all).
+        $client = new GuzzleHttpClient(['handler' => HandlerStack::create(new StreamHandler())]);
+    } else {
+        // Explicit CurlHandler == what Guzzle picks by default == the SDK path.
+        $client = new GuzzleHttpClient(['handler' => HandlerStack::create(new CurlHandler())]);
+    }
 
     $times       = [];
     $failures      = [];
@@ -128,12 +156,18 @@ function probe(string $label, string $url, string $version, int $iterations, int
     $max   = $times ? max($times) : 0;
 
     printf(
-        "\n=== %s (version=%s, %d iterations, delay=%dms) ===\n",
+        "\n=== %s (handler=%s, version=%s, %d iterations, delay=%dms) ===\n",
         $label,
+        $handler,
         $version,
         $iterations,
         $delayMs
     );
+    if ($handler === 'stream') {
+        // StreamHandler exposes no libcurl stats, so socket-reuse and per-backend
+        // IP columns below will read 0 / '?' — that's expected, not a finding.
+        echo "  (note: stream handler reports no socket/IP stats — ignore those columns)\n";
+    }
     $httpDist = [];
     foreach ($httpVersions as $v => $n) {
         $httpDist[] = 'http/' . $v . ' x' . $n;
@@ -185,6 +219,17 @@ if ($publishKey !== '' && $subscribeKey !== '') {
     // Watch: does version=1.1 go clean while version=2 hangs?
     probe("publish version=2", $publishUrl, '2', $iterations, $delayMs);
     probe("publish version=1.1", $publishUrl, '1.1', $iterations, $delayMs);
+
+    // Handler swap: run the SAME publish loop through the curl handler and then
+    // through the StreamHandler (PHP stream wrapper, no libcurl). The curl CLI
+    // control runs clean but uses a DIFFERENT libcurl+TLS stack than PHP, so it
+    // doesn't exonerate PHP's curl handler. This swap stays inside PHP and
+    // changes only the handler: if the every-10th hang VANISHES on the stream
+    // handler, it pins the fault to PHP's curl handler / its libcurl+OpenSSL
+    // build; if it persists on both, the cause is above libcurl (server/network).
+    echo "\n######## handler swap (publish, version=1.1) ########\n";
+    probe("publish handler=curl", $publishUrl, '1.1', $iterations, $delayMs, 'curl');
+    probe("publish handler=stream", $publishUrl, '1.1', $iterations, $delayMs, 'stream');
 
     // Spacing check: if it were a time/rate effect, gaps would change the rate
     // of failure. For a per-request routing fault, the ~1-in-10 cadence persists
