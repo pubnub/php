@@ -44,7 +44,7 @@ final class PublishFileMessageTest extends PubNubTestCase
 
     public function testPublishFileMessageWithBasicMessage(): void
     {
-        // First upload a file to get file ID
+        // First upload a File to get file ID
         $file = fopen($this->testFilePath, "r");
         $fileName = basename($this->testFilePath);
 
