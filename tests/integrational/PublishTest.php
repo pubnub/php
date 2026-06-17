@@ -12,6 +12,8 @@ use PubNub\PubNub;
 
 class PublishTest extends \PubNubTestCase
 {
+    private const PUBLISH_DELAY_MILLISECONDS = 50;
+
     /**
      * @param Publish $publish
      */
@@ -29,10 +31,19 @@ class PublishTest extends \PubNubTestCase
 
         $this->assertEquals($result->getTimetoken(), $envelope->getResult()->getTimetoken());
 
+        $this->delayBetweenPublishes();
+
         $publish->clear();
 
         $result2 = $publish->sync();
         $this->assertNotEquals($result->getTimetoken(), $result2->getTimetoken());
+
+        $this->delayBetweenPublishes();
+    }
+
+    private function delayBetweenPublishes(): void
+    {
+        usleep(self::PUBLISH_DELAY_MILLISECONDS * 1000);
     }
 
     /**
