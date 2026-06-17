@@ -356,12 +356,12 @@ abstract class Endpoint
             } else {
                 $response = $client->sendRequest($request);
             }
-            $this->pubnub->getLogger()->debug(sprintf(
-                "%s response from %s negotiated HTTP/%s",
-                $this->getName(),
-                $request->getUri()->getHost(),
-                $response->getProtocolVersion()
-            ));
+//            $this->pubnub->getLogger()->debug(sprintf(
+//                "%s response from %s negotiated HTTP/%s",
+//                $this->getName(),
+//                $request->getUri()->getHost(),
+//                $response->getProtocolVersion()
+//            ));
             $envelope = $this->parseResponse($response);
         } catch (NetworkExceptionInterface $exception) {
             return new PNEnvelope(null, $this->createStatus(
@@ -374,10 +374,10 @@ abstract class Endpoint
             $statusCode = $exception->getCode();
             $response = substr($exception->getMessage(), strpos($exception->getMessage(), "\n") + 1);
             $pnServerException = new PubNubServerException();
-            if (is_callable([$exception, 'getResponse']) && $exception->getResponse() !== null) {
+            if (is_callable([$exception, 'getResponse'])) {
                 $response = $exception->getResponse()->getBody()->getContents();
             } else {
-                $response = $exception->getMessage();
+                $response = substr($exception->getMessage(), strpos($exception->getMessage(), "\n") + 1);
             }
             $pnServerException->setRawBody($response);
             $pnServerException->setStatusCode($exception->getCode());
