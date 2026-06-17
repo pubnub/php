@@ -78,7 +78,11 @@ abstract class PubNubTestCase extends TestCase
         $uuidMock = getenv("UUID_MOCK") ?: "UUID_MOCK";
 
         $logger = new Logger('PubNub');
-        $logger->pushHandler(new ErrorLogHandler());
+        // Default handler level is DEBUG, which floods test output with the
+        // SDK's per-request debug lines. Override via PUBNUB_LOG_LEVEL
+        // (e.g. DEBUG, INFO, WARNING, ERROR); defaults to WARNING for tests.
+        $logLevel = Logger::toMonologLevel(getenv('PUBNUB_LOG_LEVEL') ?: 'WARNING');
+        $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, $logLevel));
 
         parent::setUp();
 
