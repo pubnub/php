@@ -178,11 +178,13 @@ if ($publishKey !== '' && $subscribeKey !== '') {
     );
 
     // The failures are 10s 0-byte HANGS, not 429s, so this is NOT a rate limit.
-    // The leading hypothesis is a wedged backend behind the publish LB: every
-    // ~10th request is routed to a node that accepts the connection but never
-    // responds. The per-backend (ok/fail) line in each run is the key evidence —
-    // watch whether fails concentrate on one IP.
-    probe("publish", $publishUrl, '1.1', $iterations, $delayMs);
+    // A raw `curl --http1.1` CLI reusing one connection runs 200/200 clean, so
+    // the hang is specific to the PHP/Guzzle path. The SDK forces 'version'=>'2'
+    // (Endpoint::requestOptions line ~501) while curl ran 1.1 — so probe BOTH
+    // here to isolate whether the forced HTTP/2 option is the trigger.
+    // Watch: does version=1.1 go clean while version=2 hangs?
+    probe("publish version=2", $publishUrl, '2', $iterations, $delayMs);
+    probe("publish version=1.1", $publishUrl, '1.1', $iterations, $delayMs);
 
     // Spacing check: if it were a time/rate effect, gaps would change the rate
     // of failure. For a per-request routing fault, the ~1-in-10 cadence persists
