@@ -51,6 +51,7 @@ class AddChannelChannelGroupEndpointTest extends PubNubTestCase
         $addChannelChannelGroup->channels(["c|h1", "ch2s"])->sync();
     }
 
+    // my comment
     public function testGroupIsEmpty()
     {
         $this->expectException(PubNubValidationException::class);
