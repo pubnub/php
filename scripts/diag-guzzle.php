@@ -27,12 +27,28 @@
  * Usage (from project root, keys exported as in the CI workflow):
  *   php scripts/diag-guzzle.php
  *
+ * Finally it runs a VERBOSE capture (publish, curl handler, ~12 reused requests)
+ * that dumps libcurl's wire-level trace per request — the `< Connection:`,
+ * `< Keep-Alive:`, and `* Connection #N ... left intact / will close` lines —
+ * so we can see EXACTLY what the load balancer sends on the connection it later
+ * black-holes. The suite ran clean for months until the LB moved nginx ->
+ * Pingora; the prime suspect is now a server-side keep-alive change (e.g. a low
+ * `keepalive_requests` cap, or retiring the connection without a clean
+ * `Connection: close`) that PHP's curl reuse trips over on the ~10th request.
+ * Watch request #8/#9 (the retirement boundary) for the header the SDK ignores.
+ *
+ * Usage (from project root, keys exported as in the CI workflow):
+ *   php scripts/diag-guzzle.php
+ *
  * Env:
  *   PUBLISH_KEY, SUBSCRIBE_KEY   (required for the publish probe)
  *   DIAG_ITERATIONS              (optional, default 200)
  *   DIAG_DELAY_MS                (optional, idle gap between requests in ms,
  *                                 default 0; try 5000 to provoke idle-timeout
  *                                 of pooled sockets)
+ *   DIAG_VERBOSE_ITERS           (optional, default 12 — how many requests the
+ *                                 verbose capture fires to span the ~10th
+ *                                 retirement boundary)
  */
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -47,6 +63,7 @@ $publishKey   = getenv('PUBLISH_KEY') ?: '';
 $subscribeKey = getenv('SUBSCRIBE_KEY') ?: '';
 $iterations   = (int) (getenv('DIAG_ITERATIONS') ?: 200);
 $delayMs      = (int) (getenv('DIAG_DELAY_MS') ?: 0);
+$verboseIters = (int) (getenv('DIAG_VERBOSE_ITERS') ?: 12);
 
 if ($publishKey === '' || $subscribeKey === '') {
     fwrite(STDERR, "WARNING: PUBLISH_KEY/SUBSCRIBE_KEY not set — publish probe will be skipped.\n");
@@ -194,6 +211,87 @@ function probe(
     }
 }
 
+/**
+ * Fire $iterations publishes over ONE reused curl connection with libcurl
+ * VERBOSE tracing on, and print, per request, only the lines that reveal how the
+ * load balancer manages the keep-alive connection:
+ *   - `< Connection:` / `< Keep-Alive:` response headers (does Pingora announce a
+ *     request cap or signal close?)
+ *   - `* Connection #N ... left intact` vs `* Closing connection` (when libcurl
+ *     decides to drop / retire the pooled socket)
+ *   - `* Re-using existing connection` (proof the request rode a pooled socket)
+ *   - any `* ... timed out` / error line on the hung request
+ *
+ * This is the smoking-gun capture for the nginx->Pingora hypothesis: watch the
+ * boundary request (~#8/#9) for a server header the SDK's pooled handle ignores,
+ * or a silent close that leaves the next reused request writing into a dead
+ * socket (-> 0 bytes -> 10s timeout).
+ *
+ * Uses Guzzle's raw 'curl' option passthrough (CurlHandler only) to set
+ * CURLOPT_VERBOSE + CURLOPT_STDERR at a temp stream we then read back.
+ */
+function captureVerbose(string $url, string $version, int $iterations): void
+{
+    printf("\n######## verbose wire capture (publish, curl, version=%s, %d reused requests) ########\n", $version, $iterations);
+    echo "Watch the ~#8/#9 boundary: what does the LB send right before the hang?\n";
+
+    // One client == one keep-alive pool, so requests reuse the same socket.
+    $client = new GuzzleHttpClient(['handler' => HandlerStack::create(new CurlHandler())]);
+
+    // Only the lines worth reading from libcurl's (very chatty) verbose trace.
+    $keep = ['Connection', 'Keep-Alive', 'Re-using', 'Closing connection', 'left intact',
+             'Connected to', 'timed out', 'Operation timed out', 'Empty reply', 'Connection died'];
+
+    for ($i = 0; $i < $iterations; $i++) {
+        $trace = fopen('php://temp', 'w+');
+        $start = microtime(true);
+        $status = '?';
+        $err = null;
+        try {
+            $resp = $client->get($url, [
+                RequestOptions::TIMEOUT         => REQUEST_TIMEOUT,
+                RequestOptions::CONNECT_TIMEOUT => CONNECT_TIMEOUT,
+                'version'                       => $version,
+                // CurlHandler passes these straight to the easy handle.
+                'curl'                          => [
+                    CURLOPT_VERBOSE => true,
+                    CURLOPT_STDERR  => $trace,
+                ],
+            ]);
+            $status = (string) $resp->getStatusCode();
+        } catch (\Throwable $e) {
+            $err = $e->getMessage();
+        }
+        $elapsed = (int) ((microtime(true) - $start) * 1000);
+
+        // Pull the interesting verbose lines out of the trace stream.
+        rewind($trace);
+        $raw = stream_get_contents($trace) ?: '';
+        fclose($trace);
+        $lines = [];
+        foreach (explode("\n", $raw) as $line) {
+            $line = rtrim($line);
+            if ($line === '') {
+                continue;
+            }
+            // The TLS handshake line matches "Connection" but is per-request
+            // noise, not keep-alive signal — drop it.
+            if (stripos($line, 'SSL connection using') !== false) {
+                continue;
+            }
+            foreach ($keep as $needle) {
+                if (stripos($line, $needle) !== false) {
+                    $lines[] = '    ' . $line;
+                    break;
+                }
+            }
+        }
+
+        printf("  #%d  status=%s  %dms%s\n", $i, $status, $elapsed, $err !== null ? "  ERROR: $err" : '');
+        echo $lines ? implode("\n", $lines) . "\n" : "    (no keep-alive/connection lines in trace)\n";
+    }
+}
+
 $timeUrl = "https://ps.pndsn.com/time/0";
 
 echo "######## PHP Guzzle reuse diagnostic ########\n";
@@ -230,6 +328,11 @@ if ($publishKey !== '' && $subscribeKey !== '') {
     echo "\n######## handler swap (publish, version=1.1) ########\n";
     probe("publish handler=curl", $publishUrl, '1.1', $iterations, $delayMs, 'curl');
     probe("publish handler=stream", $publishUrl, '1.1', $iterations, $delayMs, 'stream');
+
+    // Verbose wire capture across the every-10th retirement boundary. This is the
+    // hand-to-ops evidence for the nginx->Pingora keep-alive hypothesis: it shows
+    // exactly what the LB sends on the connection right before it's black-holed.
+    captureVerbose($publishUrl, '1.1', $verboseIters);
 
     // Spacing check: if it were a time/rate effect, gaps would change the rate
     // of failure. For a per-request routing fault, the ~1-in-10 cadence persists
