@@ -12,7 +12,7 @@ use PubNub\PubNub;
 
 class PublishTest extends \PubNubTestCase
 {
-    private const PUBLISH_DELAY_MILLISECONDS = 50;
+    private const PUBLISH_DELAY_MILLISECONDS = 1000;
 
     /**
      * @param Publish $publish
