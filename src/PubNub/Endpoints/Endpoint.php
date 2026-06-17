@@ -356,12 +356,12 @@ abstract class Endpoint
             } else {
                 $response = $client->sendRequest($request);
             }
-            $this->pubnub->getLogger()->debug(sprintf(
-                "%s response from %s negotiated HTTP/%s",
-                $this->getName(),
-                $request->getUri()->getHost(),
-                $response->getProtocolVersion()
-            ));
+//            $this->pubnub->getLogger()->debug(sprintf(
+//                "%s response from %s negotiated HTTP/%s",
+//                $this->getName(),
+//                $request->getUri()->getHost(),
+//                $response->getProtocolVersion()
+//            ));
             $envelope = $this->parseResponse($response);
         } catch (NetworkExceptionInterface $exception) {
             return new PNEnvelope(null, $this->createStatus(
