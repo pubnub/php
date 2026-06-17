@@ -324,6 +324,15 @@ final class FilesTest extends PubNubTestCase
 
     public function testFileUploadWithLargeFile(): void
     {
+        // A 5MB upload (plus its download/verify) can exceed the default 10s
+        // non-subscribe request timeout. Use a dedicated PubNub with a longer
+        // timeout for this large-file transfer; SendFile now honors it. The
+        // shared config is locked after first use, so clone it (clone() returns
+        // an unlocked copy) rather than mutating it.
+        $config = $this->config->clone();
+        $config->setNonSubscribeRequestTimeout(60);
+        $pubnub = new PubNub($config);
+
         // Create a large file (5MB)
         $largeFilePath = __DIR__ . '/assets/large.txt';
         $largeContent = str_repeat('x', 5 * 1024 * 1024); // 5MB of data
@@ -332,7 +341,7 @@ final class FilesTest extends PubNubTestCase
         try {
             $file = fopen($largeFilePath, "r");
 
-            $response = $this->pubnub->sendFile()
+            $response = $pubnub->sendFile()
                 ->channel($this->channel)
                 ->fileHandle($file)
                 ->fileName('large.txt')

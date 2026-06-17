@@ -253,7 +253,15 @@ class SendFile extends Endpoint
                 $this->fileUploadEnvelope->getFormFields(),
                 $this->fileName,
                 $this->encryptPayload()
-            )
+            ),
+            // File uploads can carry large bodies that exceed the standard
+            // non-subscribe request timeout. Pass the configured timeouts
+            // explicitly so they are tunable via PNConfiguration rather than
+            // falling back to the Requests library default (10s).
+            [
+                'timeout' => $this->getRequestTimeout(),
+                'connect_timeout' => $this->getConnectTimeout(),
+            ]
         );
         return $response;
     }
