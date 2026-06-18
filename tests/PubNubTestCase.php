@@ -78,7 +78,10 @@ abstract class PubNubTestCase extends TestCase
         $uuidMock = getenv("UUID_MOCK") ?: "UUID_MOCK";
 
         $logger = new Logger('PubNub');
-        $logger->pushHandler(new ErrorLogHandler());
+        // Log at DEBUG so the SDK's per-request debug lines (endpoint, redacted
+        // URL, negotiated HTTP version — see Endpoint::sendRequest) surface in
+        // the test output. Logger::DEBUG is valid in both Monolog 2 and 3.
+        $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::DEBUG));
 
         parent::setUp();
 
