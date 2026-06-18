@@ -230,10 +230,24 @@ function probe(
  * Uses Guzzle's raw 'curl' option passthrough (CurlHandler only) to set
  * CURLOPT_VERBOSE + CURLOPT_STDERR at a temp stream we then read back.
  */
-function captureVerbose(string $url, string $version, int $iterations): void
+function captureVerbose(string $url, string $version, int $iterations, int $gapMs = 0): void
 {
-    printf("\n######## verbose wire capture (publish, curl, version=%s, %d reused requests) ########\n", $version, $iterations);
-    echo "Watch the ~#8/#9 boundary: what does the LB send right before the hang?\n";
+    printf(
+        "\n######## verbose wire capture (publish, curl, version=%s, %d requests, gap=%dms) ########\n",
+        $version,
+        $iterations,
+        $gapMs
+    );
+    if ($gapMs > 0) {
+        // The point of the gap run: at gap=0 the every-10th request hangs; at
+        // gap=1000ms the loop is clean. The open question this answers is WHY —
+        // does the boundary request (~#9/#10) RE-USE the same socket (so the gap
+        // just keeps it healthy), or does the client CONNECT a NEW socket (so the
+        // gap lets a silent drop become visible and the client reconnects cleanly)?
+        echo "Question: at this gap, does the ~#9/#10 boundary REUSE the socket or open a NEW connection?\n";
+    } else {
+        echo "Watch the ~#8/#9 boundary: what does the LB send right before the hang?\n";
+    }
 
     // One client == one keep-alive pool, so requests reuse the same socket.
     $client = new GuzzleHttpClient(['handler' => HandlerStack::create(new CurlHandler())]);
@@ -241,6 +255,9 @@ function captureVerbose(string $url, string $version, int $iterations): void
     // Only the lines worth reading from libcurl's (very chatty) verbose trace.
     $keep = ['Connection', 'Keep-Alive', 'Re-using', 'Closing connection', 'left intact',
              'Connected to', 'timed out', 'Operation timed out', 'Empty reply', 'Connection died'];
+
+    $reused = 0;        // requests that rode a pooled socket ("Re-using existing")
+    $newConns = 0;      // requests that opened a fresh socket ("Connected to")
 
     for ($i = 0; $i < $iterations; $i++) {
         $trace = fopen('php://temp', 'w+');
@@ -268,6 +285,21 @@ function captureVerbose(string $url, string $version, int $iterations): void
         rewind($trace);
         $raw = stream_get_contents($trace) ?: '';
         fclose($trace);
+
+        // Classify reuse-vs-reconnect from the raw trace (independent of $keep
+        // filtering): "Re-using existing" == pooled socket; "Connected to" == a
+        // fresh TCP connect this request. This is the direct evidence for the gap
+        // question above.
+        $isReuse = stripos($raw, 'Re-using existing') !== false;
+        $isNew   = stripos($raw, 'Connected to') !== false;
+        if ($isReuse) {
+            $reused++;
+        }
+        if ($isNew) {
+            $newConns++;
+        }
+        $conn = $isReuse ? 'REUSE' : ($isNew ? 'NEW-CONN' : '?');
+
         $lines = [];
         foreach (explode("\n", $raw) as $line) {
             $line = rtrim($line);
@@ -287,9 +319,15 @@ function captureVerbose(string $url, string $version, int $iterations): void
             }
         }
 
-        printf("  #%d  status=%s  %dms%s\n", $i, $status, $elapsed, $err !== null ? "  ERROR: $err" : '');
+        printf("  #%d  [%s]  status=%s  %dms%s\n", $i, $conn, $status, $elapsed, $err !== null ? "  ERROR: $err" : '');
         echo $lines ? implode("\n", $lines) . "\n" : "    (no keep-alive/connection lines in trace)\n";
+
+        if ($gapMs > 0) {
+            usleep($gapMs * 1000);
+        }
     }
+
+    printf("  -- summary: reused=%d new-connections=%d (of %d) --\n", $reused, $newConns, $iterations);
 }
 
 $timeUrl = "https://ps.pndsn.com/time/0";
@@ -332,7 +370,15 @@ if ($publishKey !== '' && $subscribeKey !== '') {
     // Verbose wire capture across the every-10th retirement boundary. This is the
     // hand-to-ops evidence for the nginx->Pingora keep-alive hypothesis: it shows
     // exactly what the LB sends on the connection right before it's black-holed.
-    captureVerbose($publishUrl, '1.1', $verboseIters);
+    captureVerbose($publishUrl, '1.1', $verboseIters, 0);
+
+    // Same capture WITH a 1000ms gap (the spacing that makes the loop clean). The
+    // per-request REUSE/NEW-CONN tag + summary answers: does the gap keep ONE
+    // socket alive across the boundary (all REUSE), or does it let a silent drop
+    // surface so the client reconnects (a NEW-CONN at ~#9/#10)? We currently have
+    // NO direct evidence either way — distinct-sockets=1 can't tell reuse from a
+    // same-port reconnect. This settles it.
+    captureVerbose($publishUrl, '1.1', $verboseIters, 1000);
 
     // Spacing check: if it were a time/rate effect, gaps would change the rate
     // of failure. For a per-request routing fault, the ~1-in-10 cadence persists
