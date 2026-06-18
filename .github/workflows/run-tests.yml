@@ -113,6 +113,18 @@ jobs:
           grep -E 'http_code=(000|4|5)|total=[1-9]' "$pub_log" || echo "(none — all fast 200s)"
           echo "--- slowest 5 ---"
           sort -t= -k3 -rn "$pub_log" | head -5 || true
+      # TEMPORARY: raw `curl` CLI control that reuses ONE keep-alive connection
+      # across many publishes (one curl process, N urls via -K). This is the
+      # PHP-free reproducer for the server team: if it hangs every ~10th here on
+      # the dense CI runner, the every-10th black-hole is reproducible with no
+      # PHP/Guzzle/SDK involvement at all. Locally (high RTT) it ran 200/200
+      # clean — this step tests it on the same runner/pool that fails for Guzzle.
+      # Remove once the timeout cause is confirmed/fixed.
+      - name: Diagnose connection reuse (raw curl CLI)
+        continue-on-error: true
+        run: |
+          curl --version | head -1
+          DIAG_ITERATIONS=200 ./scripts/diag-curl.sh
       # TEMPORARY: PHP-level probe that REUSES one Guzzle client across many
       # requests, exactly like the SDK does for a whole PHPUnit run. The curl
       # probes above open a fresh connection each time and so cannot reproduce a
