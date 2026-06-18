@@ -69,8 +69,13 @@ if ($publishKey === '' || $subscribeKey === '') {
     fwrite(STDERR, "WARNING: PUBLISH_KEY/SUBSCRIBE_KEY not set — publish probe will be skipped.\n");
 }
 
-// Mirror the SDK's timeout defaults (PNConfiguration: 10s request, 10s connect).
-const REQUEST_TIMEOUT = 10;
+// Request timeout RAISED to 15s (was 10s, the SDK default). The Balancer holds a
+// rate-limited publish ~10s before returning a 429; at the old 10s timeout the SDK
+// aborted (cURL 28 / 0 bytes) ~8ms before the 429 arrived. 15s lets the response
+// land — so this run now CONFIRMS the mechanism: the every-10th request should show
+// up as an HTTP 429 (or a slow ~10s success) instead of a timeout. Mirrors raw
+// curl's --max-time 12 and the tests' setNonSubscribeRequestTimeout(15).
+const REQUEST_TIMEOUT = 15;
 const CONNECT_TIMEOUT = 10;
 
 /**
@@ -109,6 +114,7 @@ function probe(
     $httpVersions = [];     // negotiated protocol distribution (from PSR-7)
     $ipOk        = [];      // backend IP => count of successful requests
     $ipFail      = [];      // backend IP => count of timed-out requests
+    $statusCodes = [];      // HTTP status => count (429s now visible, not thrown)
 
     for ($i = 0; $i < $iterations; $i++) {
         $start = microtime(true);
@@ -118,6 +124,11 @@ function probe(
                 RequestOptions::TIMEOUT         => REQUEST_TIMEOUT,
                 RequestOptions::CONNECT_TIMEOUT => CONNECT_TIMEOUT,
                 'version'                       => $version,
+                // Do NOT throw on 4xx/5xx — we WANT to observe the Balancer's 429
+                // as a normal response. With http_errors on (Guzzle default) a 429
+                // throws ClientException and gets lumped into the opaque failure
+                // bucket; off, we can tally it by status code below.
+                RequestOptions::HTTP_ERRORS     => false,
                 // Detect socket reuse via local_port (num_connects is absent in
                 // some libcurl builds). NOTE: do NOT trust the stat's
                 // 'http_version' field — it echoes the REQUESTED version, not the
@@ -144,6 +155,13 @@ function probe(
             // Real negotiated protocol, straight from the PSR-7 response.
             $hv = $response->getProtocolVersion();
             $httpVersions[$hv] = ($httpVersions[$hv] ?? 0) + 1;
+
+            // Tally status code — every 10th should now be 429 (~10s), the rest 200.
+            $code = $response->getStatusCode();
+            $statusCodes[$code] = ($statusCodes[$code] ?? 0) + 1;
+            if ($code === 429) {
+                $failedIndices[] = $i;   // record the cadence even though it didn't throw
+            }
 
             $ip = $curlInfo['ip'] ?? '?';
             $ipOk[$ip] = ($ipOk[$ip] ?? 0) + 1;
@@ -190,6 +208,15 @@ function probe(
         $httpDist[] = 'http/' . $v . ' x' . $n;
     }
     printf("  ok=%d  fail=%d  reused-socket=%d  distinct-sockets=%d\n", $ok, $fail, $reuseCount, count($seenPorts));
+    // Status-code distribution: with http_errors off and a 15s timeout, the
+    // every-10th rate-limited publish now shows as `429 x20` here instead of a
+    // timeout — the confirmation that the "hang" was a delayed 429 all along.
+    ksort($statusCodes);
+    $codeDist = [];
+    foreach ($statusCodes as $c => $n) {
+        $codeDist[] = $c . ' x' . $n;
+    }
+    printf("  status-codes: %s\n", implode(' ', $codeDist) ?: '(none — all threw)');
     printf("  negotiated-protocol (PSR-7): %s\n", implode(' ', $httpDist) ?: '(n/a)');
     printf("  latency p50=%dms p99=%dms max=%dms\n", (int) $p50, (int) $p99, (int) $max);
     // Per-backend breakdown: if the failures concentrate on one (or few) IPs
@@ -203,11 +230,15 @@ function probe(
         printf(" %s=%d/%d", $ip, $ipOk[$ip] ?? 0, $ipFail[$ip] ?? 0);
     }
     echo "\n";
+    // $failedIndices now holds both thrown failures (timeouts) AND 429s observed as
+    // normal responses. Label it as the every-10th cadence rather than "failures".
     if (!empty($failedIndices)) {
-        echo "  failed-indices: " . implode(',', $failedIndices) . "\n";
-        echo implode("\n", $failures) . "\n";
+        echo "  rate-limited/failed indices: " . implode(',', $failedIndices) . "\n";
+        if (!empty($failures)) {
+            echo implode("\n", $failures) . "\n";
+        }
     } else {
-        echo "  (no failures)\n";
+        echo "  (no 429s, no failures)\n";
     }
 }
 
