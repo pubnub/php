@@ -57,18 +57,21 @@ run_probe() {
   # -s -o /dev/null  : discard bodies
   # -w ...\n         : one machine-readable line per request
   #
-  # CRITICAL: prefix the -w line with a unique sentinel ("@@STAT@@") and parse ONLY
+  # CRITICAL: prefix the -w line with a unique sentinel ("STAT::") and parse ONLY
   # sentinel lines. With -K and many URLs, response bodies can still reach stdout and
   # merge with the metadata line (an earlier version miscounted every-10th HTTP 429s
   # as ok=200, e.g. `code={"status":429...`). Parsing on the sentinel makes the field
   # positions reliable regardless of body content.
+  # NOTE: the sentinel must NOT start with '@' — curl reads a -w value beginning with
+  # '@' as a FILENAME (`-w @file`), which fails with "error encountered when reading a
+  # file". So use "STAT::", not "@@STAT@@".
   # Fields: http_code | time_total | local_port | remote_ip | num_connects
   curl "$@" -K "$CFG" \
     --max-time 12 \
     -s -o /dev/null \
-    -w '@@STAT@@ %{http_code} %{time_total} %{local_port} %{remote_ip} %{num_connects}\n' \
+    -w 'STAT:: %{http_code} %{time_total} %{local_port} %{remote_ip} %{num_connects}\n' \
   | awk '
-      $1 != "@@STAT@@" { next }     # ignore any body text that leaked onto stdout
+      $1 != "STAT::" { next }       # ignore any body text that leaked onto stdout
       {
         idx = total                 # 0-based request index among sentinel lines
         code = $2; t = $3; port = $4; ip = $5; nconn = $6
