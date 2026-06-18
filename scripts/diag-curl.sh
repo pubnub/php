@@ -65,16 +65,28 @@ run_probe() {
   # NOTE: the sentinel must NOT start with '@' — curl reads a -w value beginning with
   # '@' as a FILENAME (`-w @file`), which fails with "error encountered when reading a
   # file". So use "STAT::", not "@@STAT@@".
-  # Fields: http_code | time_total | local_port | remote_ip | num_connects
+  #
+  # ROBUST PARSING: -o /dev/null does NOT reliably suppress bodies on this -K
+  # multi-URL path (the response body still reaches stdout), AND the body often has
+  # no trailing newline — so the NEXT request's "STAT::" line gets glued onto the end
+  # of the body line. A naive `$1=="STAT::"` then matches only the very first line
+  # (total=1 bug). Fix: lead the format with \n (so each STAT starts fresh where
+  # possible) and use awk match() to find "STAT::" ANYWHERE on the line, parsing the
+  # whitespace-separated fields that follow it. Body text before the sentinel is
+  # discarded.
+  # Fields after STAT:: -> http_code | time_total | local_port | remote_ip | num_connects
   curl "$@" -K "$CFG" \
     --max-time 12 \
     -s -o /dev/null \
-    -w 'STAT:: %{http_code} %{time_total} %{local_port} %{remote_ip} %{num_connects}\n' \
+    -w '\nSTAT:: %{http_code} %{time_total} %{local_port} %{remote_ip} %{num_connects}\n' \
   | awk '
-      $1 != "STAT::" { next }       # ignore any body text that leaked onto stdout
       {
+        p = index($0, "STAT:: ")
+        if (p == 0) next            # body text with no sentinel — ignore
+        n = split(substr($0, p + 7), f, /[ \t]+/)
+        if (n < 5) next             # malformed / truncated sentinel — skip
+        code = f[1]; t = f[2]; port = f[3]; ip = f[4]; nconn = f[5]
         idx = total                 # 0-based request index among sentinel lines
-        code = $2; t = $3; port = $4; ip = $5; nconn = $6
         printf "  #%-3d code=%s time=%ss port=%s ip=%s conns=%s\n", idx, code, t, port, ip, nconn
         total++
         last_nconn = nconn + 0      # cumulative; final value = total TCP connections opened
