@@ -20,7 +20,6 @@ use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 
 abstract class Endpoint
 {
@@ -358,9 +357,8 @@ abstract class Endpoint
                 $response = $client->sendRequest($request);
             }
             $this->pubnub->getLogger()->debug(sprintf(
-                "%s %s response from %s negotiated HTTP/%s",
+                "%s response from %s negotiated HTTP/%s",
                 $this->getName(),
-                $this->redactUri($request->getUri()),
                 $request->getUri()->getHost(),
                 $response->getProtocolVersion()
             ));
@@ -376,10 +374,10 @@ abstract class Endpoint
             $statusCode = $exception->getCode();
             $response = substr($exception->getMessage(), strpos($exception->getMessage(), "\n") + 1);
             $pnServerException = new PubNubServerException();
-            if (is_callable([$exception, 'getResponse'])) {
+            if (is_callable([$exception, 'getResponse']) && $exception->getResponse() !== null) {
                 $response = $exception->getResponse()->getBody()->getContents();
             } else {
-                $response = substr($exception->getMessage(), strpos($exception->getMessage(), "\n") + 1);
+                $response = $exception->getMessage();
             }
             $pnServerException->setRawBody($response);
             $pnServerException->setStatusCode($exception->getCode());
@@ -409,30 +407,6 @@ abstract class Endpoint
             return new PNEnvelope(null, $this->createStatus($statusCategory, null, $responseInfo, $pnServerException));
         }
         return $envelope;
-    }
-
-    /**
-     * Build a log-safe URI string with sensitive query params masked.
-     *
-     * Masks the PAM `auth` token and request `signature` so they don't leak
-     * into debug logs. All other params (and the pub/sub keys in the path)
-     * are kept to preserve diagnostic value.
-     */
-    protected function redactUri(UriInterface $uri): string
-    {
-        $query = $uri->getQuery();
-        if ($query === '') {
-            return (string) $uri;
-        }
-
-        parse_str($query, $params);
-        foreach (['auth', 'signature'] as $sensitive) {
-            if (isset($params[$sensitive]) && $params[$sensitive] !== '') {
-                $params[$sensitive] = 'REDACTED';
-            }
-        }
-
-        return (string) $uri->withQuery(http_build_query($params));
     }
 
     /**
