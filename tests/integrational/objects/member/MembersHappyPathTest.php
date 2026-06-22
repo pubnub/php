@@ -79,6 +79,7 @@ class MembersHappyPathTest extends PubNubTestCase
             ->include($includes)
             ->sync();
         $this->checkResponse($addMembers);
+        sleep(1);
 
         $getMembers = $this->pubnub->getMembers()
             ->channel($this->channel)
