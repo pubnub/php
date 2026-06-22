@@ -69,7 +69,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "9.0.0";
+    protected const SDK_VERSION = "9.0.1";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
