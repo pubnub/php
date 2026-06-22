@@ -27,7 +27,7 @@ $pubnub->history()
 $pubnub->history()
     ->channel("my_channel")
     ->count(100)
-    ->start(-1)
+    ->start(1)
     ->end(13847168819178600)
     ->reverse(true)
     ->sync();
