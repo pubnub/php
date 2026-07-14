@@ -5,6 +5,7 @@ use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 use Monolog\Logger;
+use Monolog\Level;
 use Monolog\Handler\ErrorLogHandler;
 
 // phpcs:ignore PSR1.Classes.ClassDeclaration
@@ -78,7 +79,7 @@ abstract class PubNubTestCase extends TestCase
         $uuidMock = getenv("UUID_MOCK") ?: "UUID_MOCK";
 
         $logger = new Logger('PubNub');
-        $logger->pushHandler(new ErrorLogHandler());
+        $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Level::Warning));
 
         parent::setUp();
 

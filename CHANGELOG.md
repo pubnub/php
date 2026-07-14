@@ -1,3 +1,12 @@
+## 9.0.1
+June 22 2026
+
+#### Added
+- Added logging of REST response containing host and negotiated HTTP protocol version. .
+
+#### Fixed
+- Fixed PubNubServerException handling to guard against a null response and fall back to the full exception message.
+
 ## 9.0.0
 October 30 2025
 

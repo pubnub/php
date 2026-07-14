@@ -329,10 +329,18 @@ final class FilesTest extends PubNubTestCase
         $largeContent = str_repeat('x', 5 * 1024 * 1024); // 5MB of data
         file_put_contents($largeFilePath, $largeContent);
 
+        $config = new PNConfiguration();
+        $config->setSubscribeKey(getenv("SUBSCRIBE_KEY") ?: "");
+        $config->setPublishKey(getenv("PUBLISH_KEY") ?: "");
+        $config->setUuid(getenv("UUID_MOCK") ?: "UUID_MOCK");
+        // Use a longer timeout: uploading 5MB can exceed the default 10s
+        $config->setNonSubscribeRequestTimeout(30);
+        $pubnub = new PubNub($config);
+
         try {
             $file = fopen($largeFilePath, "r");
 
-            $response = $this->pubnub->sendFile()
+            $response = $pubnub->sendFile()
                 ->channel($this->channel)
                 ->fileHandle($file)
                 ->fileName('large.txt')
@@ -343,7 +351,7 @@ final class FilesTest extends PubNubTestCase
             $this->assertNotEmpty($response->getFileId());
 
             // Verify file can be downloaded
-            $downloadResponse = $this->pubnub->downloadFile()
+            $downloadResponse = $pubnub->downloadFile()
                 ->channel($this->channel)
                 ->fileId($response->getFileId())
                 ->fileName('large.txt')
