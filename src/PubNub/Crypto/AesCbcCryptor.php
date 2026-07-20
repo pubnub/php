@@ -4,6 +4,7 @@ namespace PubNub\Crypto;
 
 use PubNub\Crypto\Payload as CryptoPayload;
 use PubNub\Crypto\PaddingTrait;
+use PubNub\Exceptions\PubNubResponseParsingException;
 
 class AesCbcCryptor extends Cryptor
 {
@@ -51,6 +52,14 @@ class AesCbcCryptor extends Cryptor
         $secret = $this->getSecret($this->getCipherKey($cipherKey));
         $iv = $payload->getCryptorData();
         $decrypted = openssl_decrypt($text, static::CIPHER_ALGO, $secret, OPENSSL_RAW_DATA, $iv);
+
+        if ($decrypted === false) {
+            // Use a single generic error for every crypto failure mode. The underlying
+            // openssl_error_string() distinguishes bad padding from wrong block length,
+            // which would hand a padding-oracle bit to a caller submitting crafted ciphertexts.
+            throw new PubNubResponseParsingException("Decryption error: message decryption failed");
+        }
+
         $result = json_decode($decrypted, false);
 
         if ($result === null) {

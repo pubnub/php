@@ -713,6 +713,85 @@ class CryptoModuleTest extends TestCase
         }
     }
 
+    /**
+     * Regression test for the padding-oracle hardening.
+     *
+     * Every crypto failure mode must surface the same generic error so a caller
+     * submitting crafted ciphertexts cannot distinguish bad padding from a wrong
+     * block length (or any other OpenSSL failure) via the exception message.
+     */
+    public function testDecryptFailureModesProduceGenericError(): void
+    {
+        $expected = 'Decryption error: message decryption failed';
+
+        $aesSecret = hash("sha256", $this->cipherKey, true);
+        $legacySecret = substr(hash("sha256", $this->cipherKey), 0, 32);
+        $legacyStaticIv = '0123456789012345';
+        $zeroIv = str_repeat("\x00", 16);
+
+        // A wrong (non block-aligned) length always fails deterministically.
+        $wrongLength = random_bytes(10);
+
+        $aes = new AesCbcCryptor($this->cipherKey);
+        $legacyStatic = new LegacyCryptor($this->cipherKey, false);
+        $legacyRandom = new LegacyCryptor($this->cipherKey, true);
+
+        // Block-aligned inputs guaranteed to fail PKCS#7 unpadding ("bad decrypt").
+        $aesBadPadding = $this->undecryptableBlock($aesSecret, $zeroIv, 16);
+        $legacyStaticBadPadding = $this->undecryptableBlock($legacySecret, $legacyStaticIv, 16);
+        // Random-IV legacy strips the first 16 bytes as the IV before decrypting.
+        $legacyRandomIv = random_bytes(16);
+        $legacyRandomBadPadding =
+            $legacyRandomIv . $this->undecryptableBlock($legacySecret, $legacyRandomIv, 16);
+
+        $cases = [
+            'aes-bad-padding' => [$aes, new CryptoPayload($aesBadPadding, $zeroIv, AesCbcCryptor::CRYPTOR_ID)],
+            'aes-wrong-length' => [$aes, new CryptoPayload($wrongLength, $zeroIv, AesCbcCryptor::CRYPTOR_ID)],
+            'legacy-static-bad-padding' =>
+                [$legacyStatic, new CryptoPayload($legacyStaticBadPadding, '', LegacyCryptor::CRYPTOR_ID)],
+            'legacy-static-wrong-length' =>
+                [$legacyStatic, new CryptoPayload($wrongLength, '', LegacyCryptor::CRYPTOR_ID)],
+            'legacy-random-bad-padding' =>
+                [$legacyRandom, new CryptoPayload($legacyRandomBadPadding, '', LegacyCryptor::CRYPTOR_ID)],
+            'legacy-random-wrong-length' =>
+                [$legacyRandom, new CryptoPayload($legacyRandomIv . $wrongLength, '', LegacyCryptor::CRYPTOR_ID)],
+        ];
+
+        $messages = [];
+        foreach ($cases as $name => [$cryptor, $payload]) {
+            try {
+                $cryptor->decrypt($payload);
+                $this->fail("Expected decryption to fail for case: $name");
+            } catch (PubNubResponseParsingException $e) {
+                $messages[$name] = $e->getMessage();
+            }
+        }
+
+        foreach ($messages as $name => $message) {
+            $this->assertSame($expected, $message, "Non-generic error for case: $name");
+            $this->assertStringNotContainsString('bad decrypt', $message, "Leaked OpenSSL detail for: $name");
+            $this->assertStringNotContainsString('block length', $message, "Leaked OpenSSL detail for: $name");
+            $this->assertStringNotContainsString('padding', strtolower($message), "Leaked padding detail for: $name");
+        }
+
+        // Bad padding and wrong length must be indistinguishable for every cryptor.
+        $this->assertSame($messages['aes-bad-padding'], $messages['aes-wrong-length']);
+        $this->assertSame($messages['legacy-static-bad-padding'], $messages['legacy-static-wrong-length']);
+        $this->assertSame($messages['legacy-random-bad-padding'], $messages['legacy-random-wrong-length']);
+    }
+
+    /**
+     * Build a block-aligned ciphertext that is guaranteed to fail PKCS#7 unpadding
+     * for the given secret/IV, so the "bad padding" branch is exercised deterministically.
+     */
+    private function undecryptableBlock(string $secret, string $iv, int $bytes): string
+    {
+        do {
+            $data = random_bytes($bytes);
+        } while (openssl_decrypt($data, 'aes-256-cbc', $secret, OPENSSL_RAW_DATA, $iv) !== false);
+        return $data;
+    }
+
     // ============================================================================
     // DATA PROVIDERS
     // ============================================================================

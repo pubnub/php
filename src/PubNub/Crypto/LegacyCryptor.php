@@ -85,7 +85,10 @@ class LegacyCryptor extends Cryptor
         $decrypted = openssl_decrypt($data, 'aes-256-cbc', $shaCipherKey, OPENSSL_RAW_DATA, $iv);
 
         if ($decrypted === false) {
-            throw new PubNubResponseParsingException("Decryption error: " . openssl_error_string());
+            // Use a single generic error for every crypto failure mode. The underlying
+            // openssl_error_string() distinguishes bad padding from wrong block length,
+            // which would hand a padding-oracle bit to a caller submitting crafted ciphertexts.
+            throw new PubNubResponseParsingException("Decryption error: message decryption failed");
         }
 
         $unPadded = $this->depad($decrypted, self::BLOCK_SIZE);

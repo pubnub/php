@@ -74,8 +74,11 @@ class PubNubCrypto extends PubNubCryptoCore {
             $initializationVector);
 
         if ($decrypted === false) {
+            // Preserve the specific OpenSSL cause in the internal log only. The thrown message
+            // stays generic so a caller cannot distinguish bad padding from wrong block length
+            // (padding-oracle hardening).
             $logError("Decryption error: " . openssl_error_string());
-            throw new PubNubResponseParsingException("Decryption error: " . openssl_error_string());
+            throw new PubNubResponseParsingException("Decryption error: message decryption failed");
         }
 
         $unPadded = $this->unPadPKCS7($decrypted, 16);
