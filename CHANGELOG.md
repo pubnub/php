@@ -1,3 +1,9 @@
+## 9.0.2
+July 20 2026
+
+#### Added
+- Obscure exceptions thrown by cryptors to be available in logs only.
+
 ## 9.0.1
 June 22 2026
 
