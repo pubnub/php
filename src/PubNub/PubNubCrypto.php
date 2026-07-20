@@ -2,20 +2,26 @@
 
 namespace PubNub;
 
-
 use Monolog\Logger;
 use PubNub\Exceptions\PubNubResponseParsingException;
 
-class PubNubCrypto extends PubNubCryptoCore {
-    public function encrypt($plainText) {
+class PubNubCrypto extends PubNubCryptoCore
+{
+    public function encrypt($plainText)
+    {
         $shaCipherKey = hash("sha256", $this->cipherKey);
         $paddedCipherKey = substr($shaCipherKey, 0, 32);
 
-        $encrypted = openssl_encrypt($plainText, 'aes-256-cbc', $paddedCipherKey, OPENSSL_RAW_DATA,
-            $this->initializationVector);
+        $encrypted = openssl_encrypt(
+            $plainText,
+            'aes-256-cbc',
+            $paddedCipherKey,
+            OPENSSL_RAW_DATA,
+            $this->initializationVector
+        );
 
         $encode = '';
-        
+
         if ($this->useRandomIV) {
             $encode = base64_encode($this->initializationVector . $encrypted);
         } else {
@@ -25,7 +31,8 @@ class PubNubCrypto extends PubNubCryptoCore {
         return $encode;
     }
 
-    public function decrypt($cipherText, $logger = null) {
+    public function decrypt($cipherText, $logger = null)
+    {
         $logError = function ($message) use ($logger) {
             if ($logger !== null && $logger instanceof Logger) {
                 $logger->error($message);
@@ -44,12 +51,12 @@ class PubNubCrypto extends PubNubCryptoCore {
                     throw new PubNubResponseParsingException("Decryption error: pn_other object key missing");
                 }
             }
-        } else if (!is_string($cipherText)) {
+        } elseif (!is_string($cipherText)) {
             $logError("Decryption error: message is not a string: " . $cipherText);
             throw new PubNubResponseParsingException("Decryption error: message is not a string or object");
         }
 
-        if (strlen($cipherText) === 0){
+        if (strlen($cipherText) === 0) {
             $logError("Decryption error: message is empty");
             throw new PubNubResponseParsingException("Decryption error: message is empty");
         }
@@ -70,8 +77,13 @@ class PubNubCrypto extends PubNubCryptoCore {
             $data = $decoded;
         }
 
-        $decrypted = openssl_decrypt($data, 'aes-256-cbc', $paddedCipherKey, OPENSSL_RAW_DATA,
-            $initializationVector);
+        $decrypted = openssl_decrypt(
+            $data,
+            'aes-256-cbc',
+            $paddedCipherKey,
+            OPENSSL_RAW_DATA,
+            $initializationVector
+        );
 
         if ($decrypted === false) {
             // Preserve the specific OpenSSL cause in the internal log only. The thrown message
