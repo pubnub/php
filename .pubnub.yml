@@ -1,8 +1,13 @@
 name: php
-version: 9.0.1
+version: 9.0.2
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2026-07-20
+    version: 9.0.2
+    changes:
+      - type: feature
+        text: "Obscure exceptions thrown by cryptors to be available in logs only."
   - date: 2026-06-22
     version: 9.0.1
     changes:
@@ -550,8 +555,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-9.0.1.zip
-            location: https://github.com/pubnub/php/releases/tag/9.0.1
+            package-name: php-9.0.2.zip
+            location: https://github.com/pubnub/php/releases/tag/9.0.2
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
