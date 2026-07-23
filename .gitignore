@@ -6,6 +6,9 @@
 # composer vendor dir
 /vendor
 
+# composer lock file (not committed for libraries; consumers resolve their own)
+/composer.lock
+
 # IDEA files
 /.idea
 
