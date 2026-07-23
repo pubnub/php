@@ -156,11 +156,6 @@ parameters:
 			path: src/PubNub/Crypto/AesCbcCryptor.php
 
 		-
-			message: "#^Parameter \\#1 \\$character of function ord expects string, bool given\\.$#"
-			count: 1
-			path: src/PubNub/Crypto/AesCbcCryptor.php
-
-		-
 			message: "#^Method PubNub\\\\Crypto\\\\Cryptor\\:\\:decrypt\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/PubNub/Crypto/Cryptor.php
@@ -191,11 +186,6 @@ parameters:
 			path: src/PubNub/Crypto/LegacyCryptor.php
 
 		-
-			message: "#^Parameter \\#1 \\$character of function ord expects string, bool given\\.$#"
-			count: 1
-			path: src/PubNub/Crypto/LegacyCryptor.php
-
-		-
 			message: "#^Call to function is_array\\(\\) with object\\|string will always evaluate to false\\.$#"
 			count: 1
 			path: src/PubNub/CryptoModule.php
@@ -222,11 +212,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\CryptoModule\\:\\:stringify\\(\\) has parameter \\$data with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/CryptoModule.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function strlen expects string, bool given\\.$#"
 			count: 1
 			path: src/PubNub/CryptoModule.php
 
@@ -4562,11 +4547,6 @@ parameters:
 
 		-
 			message: "#^Method PubNub\\\\PubNubCryptoCore\\:\\:unPadPKCS7\\(\\) has parameter \\$data with no type specified\\.$#"
-			count: 1
-			path: src/PubNub/PubNubCryptoCore.php
-
-		-
-			message: "#^Parameter \\#1 \\$character of function ord expects string, bool given\\.$#"
 			count: 1
 			path: src/PubNub/PubNubCryptoCore.php
 
