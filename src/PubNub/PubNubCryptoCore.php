@@ -96,7 +96,7 @@ abstract class PubNubCryptoCore{
 
             if (ord($first) <= $blockSize) {
                 for ($i = $length - 2; $i > 0; $i--)
-                    if (ord($data [$i] != $first))
+                    if ($data[$i] != $first)
                         break;
 
                 return substr($data, 0, $i + 1);
