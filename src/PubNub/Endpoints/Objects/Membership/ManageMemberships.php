@@ -25,25 +25,25 @@ class ManageMemberships extends ObjectsCollectionEndpoint
     protected ?string $userId;
 
     /** @var string[] */
-    protected array $setChannels;
+    protected array $setChannels = [];
 
     /** @var string[] */
-    protected array $removeChannels;
+    protected array $removeChannels = [];
 
     /** @var string[] */
-    protected array $custom;
+    protected array $custom = [];
 
     /** @var string[] */
     protected array $include = [];
 
     /** @var PNMembershipIncludes */
-    protected ?PNMembershipIncludes $includes;
+    protected ?PNMembershipIncludes $includes = null;
 
     /** @var ?PNChannelMembership[] */
-    protected ?array $setMemberships;
+    protected ?array $setMemberships = null;
 
     /** @var ?PNChannelMembership[] */
-    protected ?array $removeMemberships;
+    protected ?array $removeMemberships = null;
 
     /**
      * @param PubNub $pubnubInstance
@@ -172,8 +172,8 @@ class ManageMemberships extends ObjectsCollectionEndpoint
             throw new PubNubValidationException("uuid missing");
         }
 
-        $memberships = !empty($this->setMemberships) or !empty($this->removeMemberships);
-        $channels = !empty($this->setChannels) or !empty($this->removeChannels);
+        $memberships = !empty($this->setMemberships) || !empty($this->removeMemberships);
+        $channels = !empty($this->setChannels) || !empty($this->removeChannels);
 
         if ($memberships and $channels) {
             throw new PubNubValidationException("Either memberships or channels should be provided");

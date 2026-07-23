@@ -38,6 +38,15 @@ class ManageMembersValidationTest extends TestCase
         $method->invoke($endpoint);
     }
 
+    /**
+     * @return array{set: array<mixed>, delete: array<mixed>}
+     */
+    private function invokeBuildData(ManageMembers $endpoint): array
+    {
+        $method = new \ReflectionMethod($endpoint, 'buildData');
+        return json_decode($method->invoke($endpoint), true);
+    }
+
     public function testSetMembersOnlyPassesValidation(): void
     {
         $endpoint = $this->pubnub->manageMembers()
@@ -115,6 +124,65 @@ class ManageMembersValidationTest extends TestCase
         $this->expectException(PubNubValidationException::class);
         $this->expectExceptionMessage('Members or a list of uuids missing');
         $this->invokeValidateParams($endpoint);
+    }
+
+    /**
+     * Requests that pass validation must also build a request body. The set*
+     * and remove* properties are typed without defaults, so any single-operation
+     * call (e.g. remove-only, which validation now correctly allows) must not
+     * blow up in buildData with "Typed property ... must not be accessed before
+     * initialization".
+     */
+    public function testRemoveMembersOnlyBuildsData(): void
+    {
+        $endpoint = $this->pubnub->manageMembers()
+            ->channel('ch')
+            ->removeMembers([new PNChannelMember('u1')]);
+
+        $this->invokeValidateParams($endpoint);
+        $data = $this->invokeBuildData($endpoint);
+
+        $this->assertSame([], $data['set']);
+        $this->assertSame([['uuid' => ['id' => 'u1']]], $data['delete']);
+    }
+
+    public function testRemoveUuidsOnlyBuildsData(): void
+    {
+        $endpoint = $this->pubnub->manageMembers()
+            ->channel('ch')
+            ->removeUuids(['u1']);
+
+        $this->invokeValidateParams($endpoint);
+        $data = $this->invokeBuildData($endpoint);
+
+        $this->assertSame([], $data['set']);
+        $this->assertSame([['uuid' => ['id' => 'u1']]], $data['delete']);
+    }
+
+    public function testSetMembersOnlyBuildsData(): void
+    {
+        $endpoint = $this->pubnub->manageMembers()
+            ->channel('ch')
+            ->setMembers([new PNChannelMember('u1')]);
+
+        $this->invokeValidateParams($endpoint);
+        $data = $this->invokeBuildData($endpoint);
+
+        $this->assertSame([['uuid' => ['id' => 'u1']]], $data['set']);
+        $this->assertSame([], $data['delete']);
+    }
+
+    public function testSetUuidsOnlyBuildsData(): void
+    {
+        $endpoint = $this->pubnub->manageMembers()
+            ->channel('ch')
+            ->setUuids(['u1']);
+
+        $this->invokeValidateParams($endpoint);
+        $data = $this->invokeBuildData($endpoint);
+
+        $this->assertSame([['uuid' => ['id' => 'u1']]], $data['set']);
+        $this->assertSame([], $data['delete']);
     }
 
     public function testMissingChannelThrows(): void
