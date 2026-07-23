@@ -2,12 +2,11 @@
 
 namespace PubNub;
 
-
 use Monolog\Logger;
 
-
-abstract class PubNubCryptoCore{
-    const IV_LENGTH = 16;
+abstract class PubNubCryptoCore
+{
+    public const IV_LENGTH = 16;
 
     /** @var  string */
     protected $cipherKey;
@@ -30,18 +29,19 @@ abstract class PubNubCryptoCore{
      * @param Logger | null $logger
      * @return mixed
      */
-    abstract function decrypt($cipherText, $logger = null);
+    abstract public function decrypt($cipherText, $logger = null);
 
     /**
      * @param mixed $plainText
      * @return mixed
      */
-    abstract function encrypt($plainText);
+    abstract public function encrypt($plainText);
 
     /**
      * @return mixed
      */
-    public function randomIV() {
+    public function randomIV()
+    {
         if (function_exists("random_bytes")) {
             return random_bytes(static::IV_LENGTH);
         } else {
@@ -84,20 +84,24 @@ abstract class PubNubCryptoCore{
         $this->useRandomIV = $useRandomIV;
     }
 
-    public function pkcs5Pad($text, $blockSize) {
+    public function pkcs5Pad($text, $blockSize)
+    {
         $pad = $blockSize - (strlen($text) % $blockSize);
         return $text . str_repeat(chr($pad), $pad);
     }
 
-    public function unPadPKCS7($data, $blockSize) {
+    public function unPadPKCS7($data, $blockSize)
+    {
         $length = strlen($data);
         if ($length > 0) {
             $first = substr($data, -1);
 
             if (ord($first) <= $blockSize) {
-                for ($i = $length - 2; $i > 0; $i--)
-                    if ($data[$i] != $first)
+                for ($i = $length - 2; $i > 0; $i--) {
+                    if ($data[$i] != $first) {
                         break;
+                    }
+                }
 
                 return substr($data, 0, $i + 1);
             }
@@ -105,14 +109,17 @@ abstract class PubNubCryptoCore{
         return $data;
     }
 
-    public function isBlank($word) {
-        if (($word == null) || ($word == false))
+    public function isBlank($word)
+    {
+        if (($word == null) || ($word == false)) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
-    protected function tryToJsonDecode($value) {
+    protected function tryToJsonDecode($value)
+    {
         $result = json_decode($value);
 
         if ($result === null) {
