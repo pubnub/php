@@ -25,10 +25,10 @@ class ManageMembers extends ObjectsCollectionEndpoint
     protected ?string $channel;
 
     /** @var string[] */
-    protected array $setUuids;
+    protected array $setUuids = [];
 
     /** @var string[] */
-    protected array $removeUuids;
+    protected array $removeUuids = [];
 
     /** @var string[] */
     protected array $include = [];
@@ -37,10 +37,10 @@ class ManageMembers extends ObjectsCollectionEndpoint
     protected PNMemberIncludes $includes;
 
     /** @var PNChannelMember[] */
-    protected array $setMembers;
+    protected array $setMembers = [];
 
     /** @var PNChannelMember[] */
-    protected array $removeMembers;
+    protected array $removeMembers = [];
 
     /**
      * @param PubNub $pubnubInstance
