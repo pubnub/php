@@ -1,3 +1,14 @@
+## 9.0.3
+July 27 2026
+
+#### Added
+- Added setType to SetChannelMetadata because ->meta(['type' => 'some type']) is deprecated.
+- Added SDK support for PHP 8.5.
+
+#### Fixed
+- Fixed incorrect check logic for Member and UUID in members management.
+- Fixed minor issues in PaddingTrait::depad(), PubNubCryptoCore::unPadPKCS7(), and CryptoModule::decodeHeader(). Fixed the following issues reported by [@denismosolov](https://github.com/denismosolov), [@maksimovic](https://github.com/maksimovic) and [@denismosolov](https://github.com/denismosolov): [#129](https://github.com/pubnub/php/issues/129), [#130](https://github.com/pubnub/php/issues/130) and [#131](https://github.com/pubnub/php/issues/131).
+
 ## 9.0.2
 July 20 2026
 
