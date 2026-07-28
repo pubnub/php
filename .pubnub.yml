@@ -1,8 +1,19 @@
 name: php
-version: 9.0.2
+version: 9.0.3
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2026-07-27
+    version: 9.0.3
+    changes:
+      - type: feature
+        text: "Added setType to SetChannelMetadata because ->meta(['type' => 'some type']) is deprecated."
+      - type: feature
+        text: "Added SDK support for PHP 8.5."
+      - type: bug
+        text: "Fixed incorrect check logic for Member and UUID in members management."
+      - type: bug
+        text: "Fixed minor issues in PaddingTrait::depad(), PubNubCryptoCore::unPadPKCS7(), and CryptoModule::decodeHeader()."
   - date: 2026-07-20
     version: 9.0.2
     changes:
@@ -555,8 +566,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-9.0.2.zip
-            location: https://github.com/pubnub/php/releases/tag/9.0.2
+            package-name: php-9.0.3.zip
+            location: https://github.com/pubnub/php/releases/tag/9.0.3
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0

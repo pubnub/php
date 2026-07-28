@@ -35,7 +35,7 @@ trait PaddingTrait
 
         if (ord($padLength) <= $blockSize) {
             for ($i = $length - 2; $i > 0; $i--) {
-                if (ord($data [$i] != $padLength)) {
+                if ($data[$i] != $padLength) {
                     break;
                 }
             }

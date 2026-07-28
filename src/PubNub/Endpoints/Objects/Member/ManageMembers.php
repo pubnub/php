@@ -25,10 +25,10 @@ class ManageMembers extends ObjectsCollectionEndpoint
     protected ?string $channel;
 
     /** @var string[] */
-    protected array $setUuids;
+    protected array $setUuids = [];
 
     /** @var string[] */
-    protected array $removeUuids;
+    protected array $removeUuids = [];
 
     /** @var string[] */
     protected array $include = [];
@@ -37,10 +37,10 @@ class ManageMembers extends ObjectsCollectionEndpoint
     protected PNMemberIncludes $includes;
 
     /** @var PNChannelMember[] */
-    protected array $setMembers;
+    protected array $setMembers = [];
 
     /** @var PNChannelMember[] */
-    protected array $removeMembers;
+    protected array $removeMembers = [];
 
     /**
      * @param PubNub $pubnubInstance
@@ -147,8 +147,8 @@ class ManageMembers extends ObjectsCollectionEndpoint
         if (empty($this->channel)) {
             throw new PubNubValidationException("channel missing");
         }
-        $members = !empty($this->setMembers) or !empty($this->removeMembers);
-        $uuids = !empty($this->setUuids) or !empty($this->removeUuids);
+        $members = !empty($this->setMembers) || !empty($this->removeMembers);
+        $uuids = !empty($this->setUuids) || !empty($this->removeUuids);
 
         if ($members and $uuids) {
             throw new PubNubValidationException("Either members or uuids should be provided");
