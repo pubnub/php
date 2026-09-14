@@ -462,6 +462,16 @@ class PubNub implements LoggerAwareInterface
     }
 
     /**
+     * Entry point for the DataSync operations.
+     *
+     * @return DataSync
+     */
+    public function dataSync(): DataSync
+    {
+        return new DataSync($this);
+    }
+
+    /**
      * @return int
      */
     public function timestamp(): int

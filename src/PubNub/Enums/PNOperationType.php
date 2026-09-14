@@ -77,4 +77,41 @@ class PNOperationType
 
     const PNManageMembersOperation = 56;
     const PNManageMembershipsOperation = 56;
+
+    // DataSync
+    //   entity
+    const PNDataSyncCreateEntityOperation = 57;
+    const PNDataSyncGetEntityOperation = 58;
+    const PNDataSyncGetEntitiesOperation = 59;
+    const PNDataSyncSetEntityOperation = 60;
+    const PNDataSyncUpdateEntityOperation = 61;
+    const PNDataSyncDeleteEntityOperation = 62;
+    //   relationship
+    const PNDataSyncCreateRelationshipOperation = 63;
+    const PNDataSyncGetRelationshipOperation = 64;
+    const PNDataSyncGetRelationshipsOperation = 65;
+    const PNDataSyncSetRelationshipOperation = 66;
+    const PNDataSyncUpdateRelationshipOperation = 67;
+    const PNDataSyncDeleteRelationshipOperation = 68;
+    //   user
+    const PNDataSyncCreateUserOperation = 69;
+    const PNDataSyncGetUserOperation = 70;
+    const PNDataSyncGetUsersOperation = 71;
+    const PNDataSyncSetUserOperation = 72;
+    const PNDataSyncUpdateUserOperation = 73;
+    const PNDataSyncDeleteUserOperation = 74;
+    //   channel
+    const PNDataSyncCreateChannelOperation = 75;
+    const PNDataSyncGetChannelOperation = 76;
+    const PNDataSyncGetChannelsOperation = 77;
+    const PNDataSyncSetChannelOperation = 78;
+    const PNDataSyncUpdateChannelOperation = 79;
+    const PNDataSyncDeleteChannelOperation = 80;
+    //   membership
+    const PNDataSyncCreateMembershipOperation = 81;
+    const PNDataSyncGetMembershipOperation = 82;
+    const PNDataSyncGetMembershipsOperation = 83;
+    const PNDataSyncSetMembershipOperation = 84;
+    const PNDataSyncUpdateMembershipOperation = 85;
+    const PNDataSyncDeleteMembershipOperation = 86;
 }

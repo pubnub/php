@@ -32,6 +32,9 @@ class GrantToken extends Endpoint
     /** @var bool */
     protected $sortParams = true;
 
+    /** @var array<string, array<string, array<string, string>>> */
+    protected $dataSyncProjections = [];
+
     private $channels = [];
 
     private $groups = [];
@@ -180,6 +183,128 @@ class GrantToken extends Endpoint
     }
 
     /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncEntityResources($res)
+    {
+        $this->addResources('datasync:entities', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncRelationshipResources($res)
+    {
+        $this->addResources('datasync:relationships', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncMembershipResources($res)
+    {
+        $this->addResources('datasync:memberships', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncEntityPatterns($res)
+    {
+        $this->addPatterns('datasync:entities', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncRelationshipPatterns($res)
+    {
+        $this->addPatterns('datasync:relationships', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncMembershipPatterns($res)
+    {
+        $this->addPatterns('datasync:memberships', $res);
+        return $this;
+    }
+
+    /**
+     * Restricts which fields of a DataSync record the token holder can see.
+     *
+     * Expects up to two scopes, "resources" for exact identifiers and "patterns" for regular
+     * expressions, each holding any of "entities", "relationships" and "memberships" mapped from
+     * identifier to projection name. Use "__default__" for the base projection:
+     *
+     *     ->dataSyncProjections([
+     *         'resources' => ['entities' => ['vehicle-1' => '__default__']],
+     *         'patterns'  => ['entities' => ['^vehicle-.*$' => 'public']],
+     *     ])
+     *
+     * @param array<string, array<string, array<string, string>>> $projections
+     * @return $this
+     */
+    public function dataSyncProjections($projections)
+    {
+        $this->dataSyncProjections = $projections;
+        return $this;
+    }
+
+    /**
+     * Flattens the projection scopes into the composite keys the server expects.
+     *
+     * @return array<string, array<string, string>>
+     */
+    private function buildProjectionsMeta()
+    {
+        $scopeKeys = ['resources' => 'res', 'patterns' => 'pat'];
+        $result = [];
+
+        foreach ($scopeKeys as $scopeName => $shortName) {
+            if (!array_key_exists($scopeName, $this->dataSyncProjections)) {
+                continue;
+            }
+
+            $flat = [];
+
+            foreach (['entities', 'relationships', 'memberships'] as $type) {
+                $map = $this->dataSyncProjections[$scopeName][$type] ?? null;
+
+                if (!is_array($map)) {
+                    continue;
+                }
+
+                foreach ($map as $name => $projection) {
+                    if ($name === '') {
+                        continue;
+                    }
+
+                    $flat["datasync:$type:$name"] = $projection;
+                }
+            }
+
+            if (count($flat) > 0) {
+                $result[$shortName] = $flat;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @throws PubNubValidationException
      */
     public function validateParams()
@@ -222,6 +347,19 @@ class GrantToken extends Endpoint
         }
         if ($this->meta) {
             $params['permissions']['meta'] = $this->meta;
+        }
+
+        $projections = $this->buildProjectionsMeta();
+
+        if (count($projections) > 0) {
+            $meta = $params['permissions']['meta'] ?? [];
+
+            if (!is_array($meta)) {
+                $meta = (array) $meta;
+            }
+
+            $meta['pn-projections'] = $projections;
+            $params['permissions']['meta'] = $meta;
         }
 
         return json_encode($params);

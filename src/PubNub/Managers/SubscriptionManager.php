@@ -3,6 +3,7 @@
 namespace PubNub\Managers;
 
 use PubNub\Exceptions\PubNubResponseParsingException;
+use PubNub\Models\Consumer\DataSync\PNDataSyncEventResult;
 use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Builders\DTO\SubscribeOperation;
 use PubNub\Builders\DTO\UnsubscribeOperation;
@@ -261,6 +262,22 @@ class SubscriptionManager
 
             if ($extractedMessage === null) {
                 $this->pubnub->getLogger()->debug("unable to parse payload on #processIncomingMessages");
+            }
+
+            if (MessageType::DATA_SYNC == $message->getMessageType()) {
+                $dataSyncEvent = PNDataSyncEventResult::fromPayload(
+                    $extractedMessage,
+                    $channel,
+                    $subscriptionMatch,
+                    $publishMetadata->getPublishTimetoken()
+                );
+
+                // Anything else carrying this message type is left to fall through to the regular
+                // message path rather than being swallowed here.
+                if ($dataSyncEvent !== null) {
+                    $this->listenerManager->announceDataSyncEvent($dataSyncEvent);
+                    return;
+                }
             }
 
             if (MessageType::SIGNAL == $message->getMessageType()) {

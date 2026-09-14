@@ -239,7 +239,11 @@ abstract class Endpoint
                 . PubNubUtil::preparePamParams($params)
                 . "\n";
 
-            if (PNHttpMethod::POST == $httpMethod || PNHttpMethod::PATCH == $httpMethod) {
+            if (
+                PNHttpMethod::POST == $httpMethod
+                || PNHttpMethod::PATCH == $httpMethod
+                || PNHttpMethod::PUT == $httpMethod
+            ) {
                 $signedInput .= $this->buildData();
             }
 
@@ -444,22 +448,27 @@ abstract class Endpoint
             $response
         );
 
-        if ($statusCode === 200) {
+        if ($statusCode >= 200 && $statusCode < 300) {
             $contents = $response->getBody()->getContents();
             if (static::RESPONSE_IS_JSON) {
-                $parsedJSON = json_decode($contents, true);
+                // A successful DELETE answers 200 with no body at all, which json_decode() reports as a syntax error.
+                if (trim($contents) === '') {
+                    $result = $this->createResponse([]);
+                } else {
+                    $parsedJSON = json_decode($contents, true);
 
-                if (json_last_error()) {
-                    return new PNEnvelope(null, $this->createStatus(
-                        $statusCategory,
-                        $response->getBody()->getContents(),
-                        $responseInfo,
-                        (new PubNubResponseParsingException())
-                            ->setResponseString($request->getBody())
-                            ->setDescription(json_last_error_msg())
-                    ));
+                    if (json_last_error()) {
+                        return new PNEnvelope(null, $this->createStatus(
+                            $statusCategory,
+                            $contents,
+                            $responseInfo,
+                            (new PubNubResponseParsingException())
+                                ->setResponseString($request->getBody())
+                                ->setDescription(json_last_error_msg())
+                        ));
+                    }
+                    $result = $this->createResponse($parsedJSON);
                 }
-                $result = $this->createResponse($parsedJSON);
             } else {
                 $result = $this->createResponse($contents);
             }

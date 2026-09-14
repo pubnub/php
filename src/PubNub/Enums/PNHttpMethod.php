@@ -2,11 +2,11 @@
 
 namespace PubNub\Enums;
 
-
 class PNHttpMethod
 {
-    const GET = "GET";
-    const POST = "POST";
-    const DELETE = "DELETE";
-    const PATCH = "PATCH";
+    public const GET = "GET";
+    public const POST = "POST";
+    public const DELETE = "DELETE";
+    public const PATCH = "PATCH";
+    public const PUT = "PUT";
 }
