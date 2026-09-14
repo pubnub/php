@@ -7,7 +7,8 @@ namespace PubNub\Models\Consumer\DataSync;
  *
  * The server publishes one of these whenever a record the client is subscribed to is created,
  * updated or deleted. The channel carrying the event is the record's identifier, or
- * __{projection}__{id} when a non-default projection is in play.
+ * __{projection}__{id} when a non-default projection is in play. Relationship and membership
+ * events are published on the channels of the two records they link rather than on their own id.
  */
 class PNDataSyncEventResult
 {
@@ -18,7 +19,16 @@ class PNDataSyncEventResult
     public const EVENT_DELETE = "delete";
 
     public const TYPE_ENTITY = "entity";
+    public const TYPE_USER = "user";
+    public const TYPE_CHANNEL = "channel";
     public const TYPE_RELATIONSHIP = "relationship";
+    public const TYPE_MEMBERSHIP = "membership";
+
+    /** The predefined classes are shaped like a generic entity. */
+    private const ENTITY_TYPES = [self::TYPE_ENTITY, self::TYPE_USER, self::TYPE_CHANNEL];
+
+    /** A membership is a relationship between a Channel and a User. */
+    private const RELATIONSHIP_TYPES = [self::TYPE_RELATIONSHIP, self::TYPE_MEMBERSHIP];
 
     protected ?string $version;
 
@@ -32,9 +42,13 @@ class PNDataSyncEventResult
 
     protected ?int $classVersion;
 
+    protected ?string $classLevel;
+
     protected ?PNDataSyncEntity $entity;
 
     protected ?PNDataSyncRelationship $relationship;
+
+    protected ?PNDataSyncMembership $membership;
 
     protected ?string $id;
 
@@ -53,8 +67,10 @@ class PNDataSyncEventResult
         ?string $type = null,
         ?string $className = null,
         ?int $classVersion = null,
+        ?string $classLevel = null,
         ?PNDataSyncEntity $entity = null,
         ?PNDataSyncRelationship $relationship = null,
+        ?PNDataSyncMembership $membership = null,
         ?string $id = null,
         ?string $deletedAt = null,
         ?string $channel = null,
@@ -67,8 +83,10 @@ class PNDataSyncEventResult
         $this->type = $type;
         $this->className = $className;
         $this->classVersion = $classVersion;
+        $this->classLevel = $classLevel;
         $this->entity = $entity;
         $this->relationship = $relationship;
+        $this->membership = $membership;
         $this->id = $id;
         $this->deletedAt = $deletedAt;
         $this->channel = $channel;
@@ -101,7 +119,7 @@ class PNDataSyncEventResult
     }
 
     /**
-     * Either "entity" or "relationship".
+     * One of "entity", "user", "channel", "relationship" or "membership".
      */
     public function getType(): ?string
     {
@@ -119,7 +137,17 @@ class PNDataSyncEventResult
     }
 
     /**
-     * The changed entity, or null for a delete event or a relationship event.
+     * Either "Global" or "SubKey", telling a built-in class apart from a developer-defined one
+     * that happens to carry the same name.
+     */
+    public function getClassLevel(): ?string
+    {
+        return $this->classLevel;
+    }
+
+    /**
+     * The changed record of an entity, user or channel event. Null on a delete and on the
+     * relationship-shaped types.
      */
     public function getEntity(): ?PNDataSyncEntity
     {
@@ -127,11 +155,24 @@ class PNDataSyncEventResult
     }
 
     /**
-     * The changed relationship, or null for a delete event or an entity event.
+     * The changed record of a relationship or membership event. Null on a delete and on the
+     * entity-shaped types.
+     *
+     * A membership is reported here too, with the channel as entity A and the user as entity B;
+     * getMembership() returns the same record under its own names.
      */
     public function getRelationship(): ?PNDataSyncRelationship
     {
         return $this->relationship;
+    }
+
+    /**
+     * The changed record of a membership event under the channelId / userId names the Membership
+     * endpoints use. Null for every other type and on a delete.
+     */
+    public function getMembership(): ?PNDataSyncMembership
+    {
+        return $this->membership;
     }
 
     public function getId(): ?string
@@ -200,13 +241,18 @@ class PNDataSyncEventResult
         $version = PNDataSyncValue::stringOrNull($payload, 'version');
         $event = PNDataSyncValue::stringOrNull($metadata, 'event');
         $type = PNDataSyncValue::stringOrNull($metadata, 'type');
-        $className = self::leafClassName(PNDataSyncValue::stringOrNull($metadata, 'className'));
+        $className = PNDataSyncValue::stringOrNull($metadata, 'className');
         $classVersion = PNDataSyncValue::intOrNull($metadata, 'classVersion');
+        $classLevel = PNDataSyncValue::stringOrNull($metadata, 'classLevel');
 
         $data = PNDataSyncValue::arrayOrNull($payload, 'data') ?? [];
         $id = PNDataSyncValue::stringOrNull($data, 'id');
 
-        if ($event === self::EVENT_DELETE) {
+        // The server is free to vary the casing of both fields, so neither is compared verbatim.
+        $eventName = $event === null ? null : strtolower($event);
+        $typeName = $type === null ? null : strtolower($type);
+
+        if ($eventName === self::EVENT_DELETE) {
             return new self(
                 $version,
                 $event,
@@ -214,6 +260,8 @@ class PNDataSyncEventResult
                 $type,
                 $className,
                 $classVersion,
+                $classLevel,
+                null,
                 null,
                 null,
                 $id,
@@ -226,18 +274,29 @@ class PNDataSyncEventResult
 
         $entity = null;
         $relationship = null;
+        $membership = null;
 
         // The class name and version live in the metadata rather than in the record itself.
-        if ($type === self::TYPE_ENTITY) {
+        if (in_array($typeName, self::ENTITY_TYPES, true)) {
             $entity = PNDataSyncEntity::fromPayload(array_merge($data, [
                 'entityClass' => $className,
                 'entityClassVersion' => $classVersion,
             ]));
-        } elseif ($type === self::TYPE_RELATIONSHIP) {
-            $relationship = PNDataSyncRelationship::fromPayload(array_merge($data, [
+        } elseif (in_array($typeName, self::RELATIONSHIP_TYPES, true)) {
+            $record = array_merge($data, [
                 'relationshipClass' => $className,
                 'relationshipClassVersion' => $classVersion,
-            ]));
+            ]);
+
+            if ($typeName === self::TYPE_MEMBERSHIP) {
+                $membership = PNDataSyncMembership::fromPayload($record);
+
+                // A membership names its two sides channelId and userId on the wire.
+                $record['entityAId'] = $membership->getChannelId();
+                $record['entityBId'] = $membership->getUserId();
+            }
+
+            $relationship = PNDataSyncRelationship::fromPayload($record);
         }
 
         return new self(
@@ -247,28 +306,15 @@ class PNDataSyncEventResult
             $type,
             $className,
             $classVersion,
+            $classLevel,
             $entity,
             $relationship,
+            $membership,
             $id,
             null,
             $channel,
             $subscription,
             $timetoken
         );
-    }
-
-    /**
-     * Class names arrive colon-delimited with their inherited classes ("Base:vehicle"); only the
-     * most derived one identifies the record.
-     */
-    private static function leafClassName(?string $className): ?string
-    {
-        if ($className === null || $className === '') {
-            return $className;
-        }
-
-        $segments = explode(':', $className);
-
-        return end($segments);
     }
 }
