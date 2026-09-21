@@ -263,6 +263,44 @@ class DataSyncEventTest extends TestCase
     }
 
     /**
+     * Channel is the other predefined entity class, and nothing but the type distinguishes its
+     * events from a user's.
+     */
+    public function testPredefinedChannelEvents(): void
+    {
+        $channelId = 'php-sdk-event-channel-' . uniqid();
+
+        $events = $this->captureEvents($channelId, 2, function () use ($channelId) {
+            $this->pubnub->dataSync()->createChannel()
+                ->channelId($channelId)
+                ->entityClassVersion(1)
+                ->status('active')
+                ->payload(['name' => 'Support'])
+                ->sync();
+
+            $this->pubnub->dataSync()->deleteChannel()->channelId($channelId)->sync();
+        });
+
+        $created = $this->eventNamed($events, 'create');
+
+        $this->assertSame('channel', strtolower((string) $created->getType()));
+        $this->assertSame($channelId, $created->getChannel());
+        $this->assertNotEmpty($created->getClassName());
+        $this->assertNotEmpty($created->getClassLevel());
+        $this->assertNull($created->getRelationship());
+
+        $channel = $created->getEntity();
+        $this->assertNotNull($channel);
+        $this->assertSame($channelId, $channel->getId());
+        $this->assertSame('active', $channel->getStatus());
+        $this->assertSame(['name' => 'Support'], $channel->getPayload());
+
+        $deleted = $this->eventNamed($events, 'delete');
+        $this->assertSame($channelId, $deleted->getId());
+        $this->assertNotEmpty($deleted->getDeletedAt());
+    }
+
+    /**
      * Membership is a predefined relationship class between a Channel and a User, and its events
      * travel on the channels of both records it links.
      */

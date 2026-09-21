@@ -268,12 +268,14 @@ if ($secretKey) {
 
     $admin = new PubNub($adminConfig);
 
+    // DataSync reads are gated on "get" and writes on "update". The read and write bits that App
+    // Context grants are not what it looks at, so a token granted those permits nothing here.
     // A projection names the subset of fields the holder may see. "__default__" is the full record.
     $token = $admin->grantToken()
         ->ttl(60)
         ->authorizedUuid($userId)
-        ->addDataSyncEntityResources([$vehicleId => ['read' => true, 'update' => true]])
-        ->addDataSyncMembershipPatterns(['^' . $userId . ':.*$' => ['read' => true]])
+        ->addDataSyncEntityResources([$vehicleId => ['get' => true, 'update' => true]])
+        ->addDataSyncMembershipPatterns(['^' . $userId . ':.*$' => ['get' => true]])
         ->dataSyncProjections([
             'resources' => ['entities' => [$vehicleId => '__default__']],
             'patterns' => ['memberships' => ['^' . $userId . ':.*$' => 'summary']],
@@ -285,9 +287,9 @@ if ($secretKey) {
 
     $vehiclePermissions = $parsed->getDataSyncEntityResource($vehicleId);
     printf(
-        "%s: read=%s update=%s delete=%s\n",
+        "%s: get=%s update=%s delete=%s\n",
         $vehicleId,
-        var_export($vehiclePermissions->hasRead(), true),
+        var_export($vehiclePermissions->hasGet(), true),
         var_export($vehiclePermissions->hasUpdate(), true),
         var_export($vehiclePermissions->hasDelete(), true)
     );

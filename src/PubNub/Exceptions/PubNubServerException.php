@@ -85,6 +85,10 @@ class PubNubServerException extends PubNubException
             return $this->body->error->message;
         } elseif (isset($this->body->message)) {
             return $this->body->message;
+        } elseif (isset($this->body->errors[0]->message)) {
+            // DataSync reports a list of errors rather than a single one. The rest of the list,
+            // and the DS-xxxx code on each entry, stay reachable through getBody().
+            return $this->body->errors[0]->message;
         } else {
             return null;
         }

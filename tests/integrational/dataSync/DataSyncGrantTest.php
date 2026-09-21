@@ -186,6 +186,27 @@ class DataSyncGrantTest extends TestCase
         );
     }
 
+    /**
+     * DataSync gates reads on "get" and writes on "update", not on the read and write bits App
+     * Context is granted with. The two are easy to mix up because the same builder takes both, and
+     * getting it wrong produces a token that looks generous and permits nothing.
+     */
+    public function testAppContextStylePermissionsGrantNoDataSyncAccess(): void
+    {
+        $entityId = $this->createEntity();
+
+        $token = $this->grant(function (GrantToken $grant) use ($entityId): void {
+            $grant->addDataSyncEntityResources([$entityId => ['read' => true, 'write' => true]]);
+        });
+
+        $client = $this->clientWithToken($token);
+
+        $this->assertDenied(
+            fn() => $client->dataSync()->getEntity()->entityId($entityId)->sync(),
+            'read must not stand in for get'
+        );
+    }
+
     public function testEntityPatternGrantAllowsOnlyMatchingIds(): void
     {
         $prefix = 'phppam' . substr(uniqid(), -8);

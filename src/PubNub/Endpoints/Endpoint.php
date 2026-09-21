@@ -35,6 +35,12 @@ abstract class Endpoint
 
     protected const RESPONSE_IS_JSON = true;
 
+    /**
+     * Whether a successful response is allowed to carry no body at all. Off by default, so an
+     * endpoint that has always answered with JSON still reports an empty body as a parse error.
+     */
+    protected const RESPONSE_MAY_BE_EMPTY = false;
+
     /** @var  PubNub */
     protected $pubnub;
 
@@ -451,8 +457,9 @@ abstract class Endpoint
         if ($statusCode >= 200 && $statusCode < 300) {
             $contents = $response->getBody()->getContents();
             if (static::RESPONSE_IS_JSON) {
-                // A successful DELETE answers 200 with no body at all, which json_decode() reports as a syntax error.
-                if (trim($contents) === '') {
+                // A successful DataSync delete answers 200 with no body at all, which json_decode()
+                // reports as a syntax error.
+                if (static::RESPONSE_MAY_BE_EMPTY && trim($contents) === '') {
                     $result = $this->createResponse([]);
                 } else {
                     $parsedJSON = json_decode($contents, true);

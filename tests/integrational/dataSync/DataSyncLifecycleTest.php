@@ -132,6 +132,213 @@ class DataSyncLifecycleTest extends TestCase
     }
 
     /**
+     * Every operation the patch builder can emit, against the live server. The lifecycle tests only
+     * ever replace and add, so remove, move, copy and test are otherwise proven no further than the
+     * wire format.
+     */
+    public function testPatchSupportsEveryOperation(): void
+    {
+        $entityId = $this->createEntity();
+
+        try {
+            $seeded = $this->pubnub->dataSync()->setEntity()
+                ->entityId($entityId)
+                ->entityClassVersion(1)
+                ->status('active')
+                ->payload(['make' => 'Toyota', 'model' => 'Camry', 'scratch' => 'temporary'])
+                ->sync();
+
+            $patched = $this->pubnub->dataSync()->updateEntity()
+                ->entityId($entityId)
+                ->ifMatchesETag((string) $seeded->getETag())
+                ->patch(
+                    (new PNDataSyncPatch())
+                        ->test('/payload/make', 'Toyota')
+                        ->copy('/payload/model', '/payload/previousModel')
+                        ->move('/payload/scratch', '/payload/note')
+                        ->remove('/payload/model')
+                        ->replace('/status', 'patched')
+                )
+                ->sync();
+
+            $this->assertSame('patched', $patched->getData()->getStatus());
+            $this->assertEquals(
+                ['make' => 'Toyota', 'previousModel' => 'Camry', 'note' => 'temporary'],
+                $patched->getData()->getPayload()
+            );
+
+            // A test operation that does not hold has to take the whole document down with it.
+            $wasRejected = false;
+
+            try {
+                $this->pubnub->dataSync()->updateEntity()
+                    ->entityId($entityId)
+                    ->patch(
+                        (new PNDataSyncPatch())
+                            ->test('/payload/make', 'Honda')
+                            ->replace('/status', 'never-applied')
+                    )
+                    ->sync();
+            } catch (PubNubServerException $exception) {
+                $wasRejected = true;
+            }
+
+            $this->assertTrue($wasRejected, 'a test operation that does not hold must reject the patch');
+
+            $verified = $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync();
+            $this->assertSame('patched', $verified->getData()->getStatus(), 'the rejected patch changed nothing');
+        } finally {
+            $this->pubnub->dataSync()->deleteEntity()->entityId($entityId)->sync();
+        }
+    }
+
+    /**
+     * A delete takes an ETag like the other writes do, which is the only way to be sure the record
+     * being removed is the one that was read.
+     */
+    public function testDeleteHonoursIfMatch(): void
+    {
+        $entityId = $this->createEntity();
+        $stale = $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync();
+
+        try {
+            $current = $this->pubnub->dataSync()->setEntity()
+                ->entityId($entityId)
+                ->entityClassVersion(1)
+                ->status('moved-on')
+                ->payload(['make' => 'Honda'])
+                ->sync();
+
+            $staleWasRejected = false;
+
+            try {
+                $this->pubnub->dataSync()->deleteEntity()
+                    ->entityId($entityId)
+                    ->ifMatchesETag((string) $stale->getETag())
+                    ->sync();
+            } catch (PubNubServerException $exception) {
+                $staleWasRejected = true;
+                $this->assertSame(412, $exception->getStatusCode());
+            }
+
+            $this->assertTrue($staleWasRejected, 'a delete carrying a stale ETag must fail with 412');
+
+            $deleted = $this->pubnub->dataSync()->deleteEntity()
+                ->entityId($entityId)
+                ->ifMatchesETag((string) $current->getETag())
+                ->sync();
+
+            $this->assertTrue($deleted->isSuccess());
+        } finally {
+            try {
+                $this->pubnub->dataSync()->deleteEntity()->entityId($entityId)->sync();
+            } catch (PubNubServerException $exception) {
+                // Already gone, which is the expected outcome.
+            }
+        }
+    }
+
+    public function testMissingRecordsAreReportedAsNotFound(): void
+    {
+        $missingId = 'php-sdk-missing-' . uniqid();
+
+        try {
+            $this->pubnub->dataSync()->getEntity()->entityId($missingId)->sync();
+            $this->fail('reading a record that does not exist must fail');
+        } catch (PubNubServerException $exception) {
+            $this->assertSame(404, $exception->getStatusCode());
+        }
+
+        try {
+            $this->pubnub->dataSync()->deleteEntity()->entityId($missingId)->sync();
+            $this->fail('deleting a record that does not exist must fail');
+        } catch (PubNubServerException $exception) {
+            $this->assertSame(404, $exception->getStatusCode());
+        }
+    }
+
+    public function testCreateWithoutAnIdGetsOneFromTheServer(): void
+    {
+        $created = $this->pubnub->dataSync()->createEntity()
+            ->entityClass($this->entityClass)
+            ->entityClassVersion(1)
+            ->status('active')
+            ->payload(['make' => 'Toyota'])
+            ->sync();
+
+        $entityId = (string) $created->getId();
+
+        try {
+            $this->assertNotSame('', $entityId, 'the server assigns an id when none is supplied');
+
+            $fetched = $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync();
+            $this->assertSame($entityId, $fetched->getId());
+        } finally {
+            $this->pubnub->dataSync()->deleteEntity()->entityId($entityId)->sync();
+        }
+    }
+
+    /**
+     * Listing with a filter, a sort and a page size, which is the combination the signed request
+     * path is most exposed to: every one of those values needs characters escaped, and the PAM
+     * signature is computed over that same escaping.
+     */
+    public function testEntityListingFiltersSortsAndPages(): void
+    {
+        // A status nothing else on the shared keyset uses, so the filter selects exactly these.
+        $status = 'php-sdk-filter-' . uniqid();
+        $created = [];
+
+        for ($index = 0; $index < 3; $index++) {
+            $created[] = $this->createEntity($status);
+        }
+
+        try {
+            $first = $this->pubnub->dataSync()->getEntities()
+                ->entityClass($this->entityClass)
+                ->filterFast("status == '$status'")
+                ->sort(['createdAt' => 'desc'])
+                ->limit(2)
+                ->sync();
+
+            $this->assertCount(2, $first->getData());
+            $this->assertNotNull($first->getPage());
+            $this->assertTrue($first->getPage()->hasNext(), 'three records over a page of two must have a next page');
+            $this->assertNotEmpty($first->getPage()->getNextCursor());
+
+            $second = $this->pubnub->dataSync()->getEntities()
+                ->entityClass($this->entityClass)
+                ->filterFast("status == '$status'")
+                ->sort(['createdAt' => 'desc'])
+                ->limit(2)
+                ->cursor((string) $first->getPage()->getNextCursor())
+                ->sync();
+
+            $this->assertCount(1, $second->getData());
+
+            $listed = array_merge($this->idsOf($first->getData()), $this->idsOf($second->getData()));
+
+            sort($created);
+            sort($listed);
+
+            $this->assertSame($created, $listed, 'the two pages together are exactly the filtered set');
+        } finally {
+            foreach ($created as $entityId) {
+                $this->pubnub->dataSync()->deleteEntity()->entityId($entityId)->sync();
+            }
+        }
+    }
+
+    /**
+     * @param object[] $records
+     * @return string[]
+     */
+    private function idsOf(array $records): array
+    {
+        return array_map(static fn($record) => (string) $record->getId(), $records);
+    }
+
+    /**
      * Same round trip for a relationship, which additionally proves that the two linked entities
      * and the relationship class survive a full replacement while status and payload do not.
      */
@@ -236,9 +443,9 @@ class DataSyncLifecycleTest extends TestCase
     }
 
     /**
-     * Creates a throwaway entity to hang a relationship off and returns its id.
+     * Creates a throwaway entity to hang a relationship off, or to list, and returns its id.
      */
-    private function createEntity(): string
+    private function createEntity(string $status = 'active'): string
     {
         $entityId = 'php-sdk-lifecycle-' . uniqid();
 
@@ -246,7 +453,7 @@ class DataSyncLifecycleTest extends TestCase
             ->entityId($entityId)
             ->entityClass($this->entityClass)
             ->entityClassVersion(1)
-            ->status('active')
+            ->status($status)
             ->payload(['name' => 'entity-' . $entityId])
             ->sync();
 
