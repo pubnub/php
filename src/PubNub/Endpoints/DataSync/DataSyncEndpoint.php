@@ -74,6 +74,33 @@ abstract class DataSyncEndpoint extends Endpoint
     }
 
     /**
+     * URL-encodes the DataSync query parameters, after the PAM signature has been taken.
+     *
+     * The signature is computed over an encoding of the parameters the endpoint hands over, so a
+     * value that arrives here already encoded would be signed doubly encoded while the wire only
+     * ever carries it encoded once, and the request would be rejected. Subclasses therefore leave
+     * their values raw, and this puts them into their final form at the same point the shared
+     * endpoint does it for uuid, auth and channel.
+     *
+     * @return array<string, string>
+     */
+    protected function buildParams()
+    {
+        $params = parent::buildParams();
+
+        // Whatever the endpoint added on top of the parameters every request carries.
+        $ownKeys = array_diff(array_keys($this->customParams()), array_keys($this->defaultParams()));
+
+        foreach ($ownKeys as $key) {
+            if (isset($params[$key])) {
+                $params[$key] = PubNubUtil::urlEncode($params[$key]);
+            }
+        }
+
+        return $params;
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function defaultHeaders()

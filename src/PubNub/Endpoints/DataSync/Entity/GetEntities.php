@@ -7,7 +7,6 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\DataSync\PNDataSyncEntitiesResult;
-use PubNub\PubNubUtil;
 
 /**
  * Lists the DataSync entities of one class, one page at a time.
@@ -77,14 +76,14 @@ class GetEntities extends DataSyncCollectionEndpoint
     {
         $params = array_merge($this->defaultParams(), $this->collectionParams());
 
-        $params['entity_class'] = PubNubUtil::urlEncode((string) $this->entityClass);
+        $params['entity_class'] = (string) $this->entityClass;
 
         if ($this->entityClassVersion !== null) {
             $params['entity_class_version'] = (string) $this->entityClassVersion;
         }
 
         if (!empty($this->entityClassLevel)) {
-            $params['entity_class_level'] = PubNubUtil::urlEncode($this->entityClassLevel);
+            $params['entity_class_level'] = $this->entityClassLevel;
         }
 
         return $params;

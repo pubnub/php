@@ -15,6 +15,13 @@ class GrantToken extends Endpoint
 {
     protected const PATH = '/v3/pam/%s/grant';
 
+    /**
+     * Record families a projection can be assigned to. Wider than the three families that take
+     * DataSync permissions, because users and channels draw their permissions from the uuid and
+     * channel scopes while still needing a projection of their own.
+     */
+    private const PROJECTION_TYPES = ['entities', 'users', 'channels', 'relationships', 'memberships'];
+
     /** @var  int */
     protected $ttl;
 
@@ -246,8 +253,11 @@ class GrantToken extends Endpoint
      * Restricts which fields of a DataSync record the token holder can see.
      *
      * Expects up to two scopes, "resources" for exact identifiers and "patterns" for regular
-     * expressions, each holding any of "entities", "relationships" and "memberships" mapped from
-     * identifier to projection name. Use "__default__" for the base projection:
+     * expressions, each holding any of "entities", "users", "channels", "relationships" and
+     * "memberships" mapped from identifier to projection name. These buckets only assign
+     * projections: the permissions that go with them come from the DataSync entity scope for
+     * entities, and from the shared uuid and channel scopes for users and channels.
+     * Use "__default__" for the base projection:
      *
      *     ->dataSyncProjections([
      *         'resources' => ['entities' => ['vehicle-1' => '__default__']],
@@ -280,7 +290,7 @@ class GrantToken extends Endpoint
 
             $flat = [];
 
-            foreach (['entities', 'relationships', 'memberships'] as $type) {
+            foreach (self::PROJECTION_TYPES as $type) {
                 $map = $this->dataSyncProjections[$scopeName][$type] ?? null;
 
                 if (!is_array($map)) {

@@ -6,7 +6,6 @@ use PubNub\Endpoints\DataSync\DataSyncCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Models\Consumer\DataSync\PNDataSyncChannelsResult;
-use PubNub\PubNubUtil;
 
 /**
  * Lists DataSync channels, one page at a time.
@@ -75,7 +74,7 @@ class GetChannels extends DataSyncCollectionEndpoint
         $params = array_merge($this->defaultParams(), $this->collectionParams());
 
         if (!empty($this->entityClass)) {
-            $params['entity_class'] = PubNubUtil::urlEncode($this->entityClass);
+            $params['entity_class'] = $this->entityClass;
         }
 
         if ($this->entityClassVersion !== null) {
@@ -83,7 +82,7 @@ class GetChannels extends DataSyncCollectionEndpoint
         }
 
         if (!empty($this->entityClassLevel)) {
-            $params['entity_class_level'] = PubNubUtil::urlEncode($this->entityClassLevel);
+            $params['entity_class_level'] = $this->entityClassLevel;
         }
 
         return $params;

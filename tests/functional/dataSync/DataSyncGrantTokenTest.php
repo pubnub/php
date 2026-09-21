@@ -87,6 +87,35 @@ class DataSyncGrantTokenTest extends TestCase
         $this->assertSame('public', $projections['pat']['datasync:entities:^vehicle-.*$']);
     }
 
+    /**
+     * User and Channel records take their permissions from the shared uuid and channel scopes,
+     * but a projection still has to be assigned to them under their own family.
+     */
+    public function testProjectionsCoverThePredefinedFamiliesToo(): void
+    {
+        $body = $this->body(
+            $this->pubnub->grantToken()
+                ->ttl(60)
+                ->addUuidResources(['user-1' => ['get' => true]])
+                ->addChannelResources(['channel-1' => ['read' => true]])
+                ->dataSyncProjections([
+                    'resources' => [
+                        'users' => ['user-1' => 'public'],
+                        'channels' => ['channel-1' => '__default__'],
+                        'relationships' => ['rel-1' => 'brief'],
+                    ],
+                ])
+        );
+
+        $projections = $body['permissions']['meta']['pn-projections'];
+
+        $this->assertSame('public', $projections['res']['datasync:users:user-1']);
+        $this->assertSame('__default__', $projections['res']['datasync:channels:channel-1']);
+        $this->assertSame('brief', $projections['res']['datasync:relationships:rel-1']);
+        $this->assertSame(32, $body['permissions']['resources']['uuids']['user-1']);
+        $this->assertSame(1, $body['permissions']['resources']['channels']['channel-1']);
+    }
+
     public function testProjectionsDoNotClobberUserSuppliedMeta(): void
     {
         $body = $this->body(

@@ -2,8 +2,6 @@
 
 namespace PubNub\Endpoints\DataSync;
 
-use PubNub\PubNubUtil;
-
 /**
  * Base for the paginated DataSync list endpoints.
  *
@@ -89,7 +87,8 @@ abstract class DataSyncCollectionEndpoint extends DataSyncEndpoint
     }
 
     /**
-     * Query parameters shared by every list endpoint, already URL-encoded.
+     * Query parameters shared by every list endpoint, raw - DataSyncEndpoint::buildParams()
+     * encodes them once the signature has been taken.
      *
      * @return array<string, string>
      */
@@ -98,7 +97,7 @@ abstract class DataSyncCollectionEndpoint extends DataSyncEndpoint
         $params = [];
 
         if (!empty($this->cursor)) {
-            $params['cursor'] = PubNubUtil::urlEncode($this->cursor);
+            $params['cursor'] = $this->cursor;
         }
 
         if ($this->limit !== null) {
@@ -106,17 +105,17 @@ abstract class DataSyncCollectionEndpoint extends DataSyncEndpoint
         }
 
         if (!empty($this->filterFast)) {
-            $params['filter_fast'] = PubNubUtil::urlEncode($this->filterFast);
+            $params['filter_fast'] = $this->filterFast;
         }
 
         if (!empty($this->filter)) {
-            $params['filter'] = PubNubUtil::urlEncode($this->filter);
+            $params['filter'] = $this->filter;
         }
 
         $sort = $this->buildSortValue();
 
         if ($sort !== null) {
-            $params['sort'] = PubNubUtil::urlEncode($sort);
+            $params['sort'] = $sort;
         }
 
         return $params;

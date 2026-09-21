@@ -6,7 +6,6 @@ use PubNub\Endpoints\DataSync\DataSyncCollectionEndpoint;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Models\Consumer\DataSync\PNDataSyncMembershipsResult;
-use PubNub\PubNubUtil;
 
 /**
  * Lists DataSync memberships, one page at a time.
@@ -70,11 +69,11 @@ class GetMemberships extends DataSyncCollectionEndpoint
         $params = array_merge($this->defaultParams(), $this->collectionParams());
 
         if (!empty($this->channelId)) {
-            $params['channel_id'] = PubNubUtil::urlEncode($this->channelId);
+            $params['channel_id'] = $this->channelId;
         }
 
         if (!empty($this->userId)) {
-            $params['user_id'] = PubNubUtil::urlEncode($this->userId);
+            $params['user_id'] = $this->userId;
         }
 
         if ($this->relationshipClassVersion !== null) {

@@ -26,6 +26,7 @@ if (file_exists($envFile)) {
         'DATASYNC_PUBLISH_KEY',
         'DATASYNC_SECRET_KEY',
         'DATASYNC_ENTITY_CLASS',
+        'DATASYNC_ENTITY_CLASS_PROJECTIONS',
         'DATASYNC_ENTITY_RELATIONSHIP',
         'DATASYNC_ORIGIN',
     ];

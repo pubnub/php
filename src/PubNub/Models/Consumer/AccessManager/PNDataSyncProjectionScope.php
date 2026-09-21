@@ -7,7 +7,7 @@ namespace PubNub\Models\Consumer\AccessManager;
  * scope ("res") or the pattern scope ("pat").
  *
  * On the wire the scope is a flat map of composite keys - "datasync:entities:vehicle-1" mapped to
- * a projection name - which this splits back into one map per resource family.
+ * a projection name - which this splits back into one map per record family.
  */
 class PNDataSyncProjectionScope
 {
@@ -17,6 +17,12 @@ class PNDataSyncProjectionScope
     private array $entities;
 
     /** @var array<string, string> */
+    private array $users;
+
+    /** @var array<string, string> */
+    private array $channels;
+
+    /** @var array<string, string> */
     private array $relationships;
 
     /** @var array<string, string> */
@@ -24,12 +30,21 @@ class PNDataSyncProjectionScope
 
     /**
      * @param array<string, string> $entities
+     * @param array<string, string> $users
+     * @param array<string, string> $channels
      * @param array<string, string> $relationships
      * @param array<string, string> $memberships
      */
-    public function __construct(array $entities = [], array $relationships = [], array $memberships = [])
-    {
+    public function __construct(
+        array $entities = [],
+        array $users = [],
+        array $channels = [],
+        array $relationships = [],
+        array $memberships = []
+    ) {
         $this->entities = $entities;
+        $this->users = $users;
+        $this->channels = $channels;
         $this->relationships = $relationships;
         $this->memberships = $memberships;
     }
@@ -42,6 +57,26 @@ class PNDataSyncProjectionScope
     public function getEntities(): array
     {
         return $this->entities;
+    }
+
+    /**
+     * Identifier to projection name, for users.
+     *
+     * @return array<string, string>
+     */
+    public function getUsers(): array
+    {
+        return $this->users;
+    }
+
+    /**
+     * Identifier to projection name, for channels.
+     *
+     * @return array<string, string>
+     */
+    public function getChannels(): array
+    {
+        return $this->channels;
     }
 
     /**
@@ -72,6 +107,16 @@ class PNDataSyncProjectionScope
         return $this->entities[$id] ?? null;
     }
 
+    public function getUserProjection(string $id): ?string
+    {
+        return $this->users[$id] ?? null;
+    }
+
+    public function getChannelProjection(string $id): ?string
+    {
+        return $this->channels[$id] ?? null;
+    }
+
     public function getRelationshipProjection(string $id): ?string
     {
         return $this->relationships[$id] ?? null;
@@ -85,6 +130,8 @@ class PNDataSyncProjectionScope
     public function isEmpty(): bool
     {
         return count($this->entities) === 0
+            && count($this->users) === 0
+            && count($this->channels) === 0
             && count($this->relationships) === 0
             && count($this->memberships) === 0;
     }
@@ -96,6 +143,8 @@ class PNDataSyncProjectionScope
     {
         return [
             'entities' => $this->entities,
+            'users' => $this->users,
+            'channels' => $this->channels,
             'relationships' => $this->relationships,
             'memberships' => $this->memberships,
         ];
@@ -109,9 +158,13 @@ class PNDataSyncProjectionScope
      */
     public static function fromArray($scope): self
     {
-        $entities = [];
-        $relationships = [];
-        $memberships = [];
+        $families = [
+            'entities' => [],
+            'users' => [],
+            'channels' => [],
+            'relationships' => [],
+            'memberships' => [],
+        ];
 
         if (!is_array($scope)) {
             return new self();
@@ -126,20 +179,18 @@ class PNDataSyncProjectionScope
 
             [$type, $id] = $parsed;
 
-            switch ($type) {
-                case 'entities':
-                    $entities[$id] = (string) $projectionName;
-                    break;
-                case 'relationships':
-                    $relationships[$id] = (string) $projectionName;
-                    break;
-                case 'memberships':
-                    $memberships[$id] = (string) $projectionName;
-                    break;
+            if (array_key_exists($type, $families)) {
+                $families[$type][$id] = (string) $projectionName;
             }
         }
 
-        return new self($entities, $relationships, $memberships);
+        return new self(
+            $families['entities'],
+            $families['users'],
+            $families['channels'],
+            $families['relationships'],
+            $families['memberships']
+        );
     }
 
     /**

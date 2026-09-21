@@ -7,7 +7,6 @@ use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\DataSync\PNDataSyncRelationshipsResult;
-use PubNub\PubNubUtil;
 
 /**
  * Lists the DataSync relationships of one class, one page at a time.
@@ -88,18 +87,18 @@ class GetRelationships extends DataSyncCollectionEndpoint
     {
         $params = array_merge($this->defaultParams(), $this->collectionParams());
 
-        $params['relationship_class'] = PubNubUtil::urlEncode((string) $this->relationshipClass);
+        $params['relationship_class'] = (string) $this->relationshipClass;
 
         if ($this->relationshipClassVersion !== null) {
             $params['relationship_class_version'] = (string) $this->relationshipClassVersion;
         }
 
         if (!empty($this->entityAId)) {
-            $params['entity_a_id'] = PubNubUtil::urlEncode($this->entityAId);
+            $params['entity_a_id'] = $this->entityAId;
         }
 
         if (!empty($this->entityBId)) {
-            $params['entity_b_id'] = PubNubUtil::urlEncode($this->entityBId);
+            $params['entity_b_id'] = $this->entityBId;
         }
 
         return $params;

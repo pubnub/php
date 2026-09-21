@@ -134,6 +134,26 @@ class DataSyncTokenParseTest extends TestCase
         $this->assertSame([], $patterns->getMemberships());
     }
 
+    public function testPredefinedProjectionFamiliesAreSplitOutToo(): void
+    {
+        $resources = $this->projections($this->token([
+            'meta' => [
+                'pn-projections' => [
+                    'res' => [
+                        'datasync:users:user-1' => 'public',
+                        'datasync:channels:channel-1' => '__default__',
+                    ],
+                ],
+            ],
+        ]))->getResources();
+
+        $this->assertSame(['user-1' => 'public'], $resources->getUsers());
+        $this->assertSame(['channel-1' => '__default__'], $resources->getChannels());
+        $this->assertSame('public', $resources->getUserProjection('user-1'));
+        $this->assertSame('__default__', $resources->getChannelProjection('channel-1'));
+        $this->assertSame([], $resources->getEntities());
+    }
+
     public function testProjectionIdentifiersMayContainColons(): void
     {
         $scope = PNDataSyncProjectionScope::fromArray([

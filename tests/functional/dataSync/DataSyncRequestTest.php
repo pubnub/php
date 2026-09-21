@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PubNub\Models\Consumer\DataSync\PNDataSyncPatch;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
+use PubNub\PubNubUtil;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -147,6 +148,43 @@ class DataSyncRequestTest extends TestCase
         $this->assertSame("status == 'active'", $query['filter_fast']);
         $this->assertSame("payload.make == 'Toyota'", $query['filter']);
         $this->assertSame('createdAt:desc,status', $query['sort']);
+    }
+
+    /**
+     * A signed request has to carry its query values encoded exactly once, because the signature
+     * is computed over that same single encoding. An endpoint that encodes its own values before
+     * handing them over would have them signed doubly encoded, and the server would answer 403.
+     */
+    public function testASignedListRequestEncodesItsQueryOnlyOnce(): void
+    {
+        $config = new PNConfiguration();
+        $config->setSubscribeKey('sub-key');
+        $config->setPublishKey('pub-key');
+        $config->setSecretKey('secret-key');
+        $config->setUuid('datasync-request-uuid');
+
+        $request = (new PubNub($config))->dataSync()->getEntities()
+            ->entityClass('vehicle')
+            ->filter("payload.make == 'Toyota'")
+            ->sort(['createdAt' => 'desc'])
+            ->getRequest();
+
+        $raw = $request->getUri()->getQuery();
+
+        $this->assertStringContainsString('sort=createdAt%3Adesc', $raw);
+        $this->assertStringNotContainsString('%25', $raw, 'a %25 in the query means a value was encoded twice');
+
+        // Recomputed the way the server does it, from what actually went on the wire.
+        $params = $this->query($request);
+        unset($params['signature']);
+
+        $expected = preg_replace('/=+$/', '', 'v2.' . PubNubUtil::signSha256(
+            'secret-key',
+            "GET\npub-key\n" . $request->getUri()->getPath() . "\n"
+                . PubNubUtil::preparePamParams($params) . "\n"
+        ));
+
+        $this->assertSame($expected, $this->query($request)['signature']);
     }
 
     public function testSetEntityRequest(): void
