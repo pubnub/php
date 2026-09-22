@@ -8,6 +8,7 @@ use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\DataSync\PNDataSyncPatch;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
+use PubNubTests\helpers\RetriesDataSyncReads;
 
 /**
  * What a DataSync projection actually hides, proven against the live data plane.
@@ -22,6 +23,8 @@ use PubNub\PubNub;
  */
 class DataSyncProjectionTest extends TestCase
 {
+    use RetriesDataSyncReads;
+
     private const CLIENT_UUID = 'php-sdk-projection-client';
 
     private const ADMIN_PROJECTION = 'admin';
@@ -91,6 +94,8 @@ class DataSyncProjectionTest extends TestCase
         $config->setSubscribeKey($this->subscribeKey);
         $config->setPublishKey($this->publishKey);
         $config->setUuid($uuid);
+        // Ten seconds is the default and a loaded CI runner occasionally needs more than that.
+        $config->setNonSubscribeRequestTimeout(30);
 
         if ($origin = getenv('DATASYNC_ORIGIN')) {
             $config->setOrigin($origin);
@@ -116,6 +121,12 @@ class DataSyncProjectionTest extends TestCase
             ->sync();
 
         $this->createdEntityIds[] = $entityId;
+
+        // A projection-scoped token is granted over this entity next.
+        $this->readableNow(
+            fn() => $this->admin->dataSync()->getEntity()->entityId($entityId)->sync(),
+            'the vehicle fixture'
+        );
 
         return $entityId;
     }

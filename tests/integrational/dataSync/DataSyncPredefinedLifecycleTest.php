@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PubNub\Models\Consumer\DataSync\PNDataSyncPatch;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
+use PubNubTests\helpers\RetriesDataSyncReads;
 
 /**
  * Full create-read-update-delete round trip for the three predefined families, against a real
@@ -21,6 +22,8 @@ use PubNub\PubNub;
  */
 class DataSyncPredefinedLifecycleTest extends TestCase
 {
+    use RetriesDataSyncReads;
+
     private PubNub $pubnub;
 
     public function setUp(): void
@@ -41,6 +44,8 @@ class DataSyncPredefinedLifecycleTest extends TestCase
         $config->setSubscribeKey($subscribeKey);
         $config->setPublishKey($publishKey);
         $config->setUuid('datasync-predefined-lifecycle-test');
+        // Ten seconds is the default and a loaded CI runner occasionally needs more than that.
+        $config->setNonSubscribeRequestTimeout(30);
 
         $secretKey = getenv('DATASYNC_SECRET_KEY') ?: '';
 
@@ -70,7 +75,11 @@ class DataSyncPredefinedLifecycleTest extends TestCase
         $this->assertNotEmpty($created->getETag());
 
         try {
-            $fetched = $this->pubnub->dataSync()->getUser()->userId($userId)->sync();
+            $fetched = $this->readEventually(
+                fn() => $this->pubnub->dataSync()->getUser()->userId($userId)->sync(),
+                null,
+                'the new user'
+            );
 
             $this->assertSame($userId, $fetched->getId());
             $this->assertSame('active', $fetched->getData()->getStatus());
@@ -108,7 +117,7 @@ class DataSyncPredefinedLifecycleTest extends TestCase
             $this->assertSame('archived', $replaced->getData()->getStatus());
             $this->assertSame(['name' => 'Alice Cooper'], $replaced->getData()->getPayload());
 
-            $this->assertContains($userId, $this->listedUserIds());
+            $this->assertUserIsListed($userId);
         } finally {
             $deleted = $this->pubnub->dataSync()->deleteUser()->userId($userId)->sync();
             $this->assertTrue($deleted->isSuccess());
@@ -130,7 +139,11 @@ class DataSyncPredefinedLifecycleTest extends TestCase
         $this->assertNotEmpty($created->getETag());
 
         try {
-            $fetched = $this->pubnub->dataSync()->getChannel()->channelId($channelId)->sync();
+            $fetched = $this->readEventually(
+                fn() => $this->pubnub->dataSync()->getChannel()->channelId($channelId)->sync(),
+                null,
+                'the new channel'
+            );
 
             $this->assertSame($channelId, $fetched->getId());
             $this->assertSame('active', $fetched->getData()->getStatus());
@@ -164,7 +177,7 @@ class DataSyncPredefinedLifecycleTest extends TestCase
             $this->assertSame('archived', $replaced->getData()->getStatus());
             $this->assertSame(['name' => 'Support (retired)'], $replaced->getData()->getPayload());
 
-            $this->assertContains($channelId, $this->listedChannelIds());
+            $this->assertChannelIsListed($channelId);
         } finally {
             $deleted = $this->pubnub->dataSync()->deleteChannel()->channelId($channelId)->sync();
             $this->assertTrue($deleted->isSuccess());
@@ -196,9 +209,13 @@ class DataSyncPredefinedLifecycleTest extends TestCase
             $this->assertNotEmpty($created->getETag());
 
             try {
-                $fetched = $this->pubnub->dataSync()->getMembership()
-                    ->membershipId($membershipId)
-                    ->sync();
+                $fetched = $this->readEventually(
+                    fn() => $this->pubnub->dataSync()->getMembership()
+                        ->membershipId($membershipId)
+                        ->sync(),
+                    null,
+                    'the new membership'
+                );
 
                 $this->assertSame($membershipId, $fetched->getId());
                 $this->assertSame($channelId, $fetched->getData()->getChannelId());
@@ -236,14 +253,14 @@ class DataSyncPredefinedLifecycleTest extends TestCase
                 $this->assertSame('patched', $patched->getData()->getStatus());
                 $this->assertEquals(['role' => 'admin', 'note' => 'promoted'], $patched->getData()->getPayload());
 
-                $this->assertContains(
+                $this->assertMembershipIsListed(
                     $membershipId,
-                    $this->listedMembershipIds(['userId' => $userId]),
+                    ['userId' => $userId],
                     'the membership should be listed among the channels the user belongs to'
                 );
-                $this->assertContains(
+                $this->assertMembershipIsListed(
                     $membershipId,
-                    $this->listedMembershipIds(['channelId' => $channelId]),
+                    ['channelId' => $channelId],
                     'and among the members of the channel'
                 );
             } finally {
@@ -260,54 +277,72 @@ class DataSyncPredefinedLifecycleTest extends TestCase
 
     /**
      * Newest first, so the record written moments ago is on the first page however many the keyset
-     * has accumulated.
-     *
-     * @return string[]
+     * has accumulated. Retried as well, because the listing index picks a record up a moment after
+     * a direct read of it already works.
      */
-    private function listedUserIds(): array
+    private function assertUserIsListed(string $userId): void
     {
-        $listed = $this->pubnub->dataSync()->getUsers()
-            ->limit(100)
-            ->sort(['createdAt' => 'desc'])
-            ->sync();
+        $listed = $this->readEventually(
+            fn() => $this->pubnub->dataSync()->getUsers()
+                ->limit(100)
+                ->sort(['createdAt' => 'desc'])
+                ->sync(),
+            fn($result) => in_array($userId, $this->idsOf($result->getData()), true),
+            'the user listing'
+        );
 
         $this->assertNotNull($listed->getPage());
-
-        return array_map(static fn($user) => $user->getId(), $listed->getData());
+        $this->assertContains($userId, $this->idsOf($listed->getData()));
     }
 
-    /**
-     * @return string[]
-     */
-    private function listedChannelIds(): array
+    private function assertChannelIsListed(string $channelId): void
     {
-        $listed = $this->pubnub->dataSync()->getChannels()
-            ->limit(100)
-            ->sort(['createdAt' => 'desc'])
-            ->sync();
+        $listed = $this->readEventually(
+            fn() => $this->pubnub->dataSync()->getChannels()
+                ->limit(100)
+                ->sort(['createdAt' => 'desc'])
+                ->sync(),
+            fn($result) => in_array($channelId, $this->idsOf($result->getData()), true),
+            'the channel listing'
+        );
 
         $this->assertNotNull($listed->getPage());
-
-        return array_map(static fn($channel) => $channel->getId(), $listed->getData());
+        $this->assertContains($channelId, $this->idsOf($listed->getData()));
     }
 
     /**
      * @param array{userId?: string, channelId?: string} $side
+     */
+    private function assertMembershipIsListed(string $membershipId, array $side, string $message): void
+    {
+        $listed = $this->readEventually(
+            function () use ($side) {
+                $endpoint = $this->pubnub->dataSync()->getMemberships()->limit(100);
+
+                if (isset($side['userId'])) {
+                    $endpoint->userId($side['userId']);
+                }
+
+                if (isset($side['channelId'])) {
+                    $endpoint->channelId($side['channelId']);
+                }
+
+                return $endpoint->sync();
+            },
+            fn($result) => in_array($membershipId, $this->idsOf($result->getData()), true),
+            'the membership listing'
+        );
+
+        $this->assertContains($membershipId, $this->idsOf($listed->getData()), $message);
+    }
+
+    /**
+     * @param object[] $records
      * @return string[]
      */
-    private function listedMembershipIds(array $side): array
+    private function idsOf(array $records): array
     {
-        $endpoint = $this->pubnub->dataSync()->getMemberships()->limit(100);
-
-        if (isset($side['userId'])) {
-            $endpoint->userId($side['userId']);
-        }
-
-        if (isset($side['channelId'])) {
-            $endpoint->channelId($side['channelId']);
-        }
-
-        return array_map(static fn($membership) => $membership->getId(), $endpoint->sync()->getData());
+        return array_map(static fn($record) => (string) $record->getId(), $records);
     }
 
     private function createUser(): string
@@ -320,6 +355,12 @@ class DataSyncPredefinedLifecycleTest extends TestCase
             ->status('active')
             ->payload(['name' => 'user-' . $userId])
             ->sync();
+
+        // The membership written next links to this user, so it has to be there first.
+        $this->readableNow(
+            fn() => $this->pubnub->dataSync()->getUser()->userId($userId)->sync(),
+            'the user fixture'
+        );
 
         return $userId;
     }
@@ -334,6 +375,11 @@ class DataSyncPredefinedLifecycleTest extends TestCase
             ->status('active')
             ->payload(['name' => 'channel-' . $channelId])
             ->sync();
+
+        $this->readableNow(
+            fn() => $this->pubnub->dataSync()->getChannel()->channelId($channelId)->sync(),
+            'the channel fixture'
+        );
 
         return $channelId;
     }

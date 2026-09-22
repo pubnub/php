@@ -7,6 +7,7 @@ use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Consumer\DataSync\PNDataSyncPatch;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
+use PubNubTests\helpers\RetriesDataSyncReads;
 
 /**
  * Full create-read-update-delete round trip against a real keyset.
@@ -21,6 +22,8 @@ use PubNub\PubNub;
  */
 class DataSyncLifecycleTest extends TestCase
 {
+    use RetriesDataSyncReads;
+
     private PubNub $pubnub;
 
     private string $entityClass;
@@ -47,6 +50,8 @@ class DataSyncLifecycleTest extends TestCase
         $config->setSubscribeKey($subscribeKey);
         $config->setPublishKey($publishKey);
         $config->setUuid('datasync-lifecycle-test');
+        // Ten seconds is the default and a loaded CI runner occasionally needs more than that.
+        $config->setNonSubscribeRequestTimeout(30);
 
         $secretKey = getenv('DATASYNC_SECRET_KEY') ?: '';
 
@@ -77,7 +82,11 @@ class DataSyncLifecycleTest extends TestCase
         $this->assertNotEmpty($created->getETag());
 
         try {
-            $fetched = $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync();
+            $fetched = $this->readEventually(
+                fn() => $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync(),
+                null,
+                'the new entity'
+            );
 
             $this->assertSame($entityId, $fetched->getId());
             $this->assertSame('active', $fetched->getData()->getStatus());
@@ -271,7 +280,11 @@ class DataSyncLifecycleTest extends TestCase
         try {
             $this->assertNotSame('', $entityId, 'the server assigns an id when none is supplied');
 
-            $fetched = $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync();
+            $fetched = $this->readEventually(
+                fn() => $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync(),
+                null,
+                'the server-named entity'
+            );
             $this->assertSame($entityId, $fetched->getId());
         } finally {
             $this->pubnub->dataSync()->deleteEntity()->entityId($entityId)->sync();
@@ -294,12 +307,20 @@ class DataSyncLifecycleTest extends TestCase
         }
 
         try {
-            $first = $this->pubnub->dataSync()->getEntities()
-                ->entityClass($this->entityClass)
-                ->filterFast("status == '$status'")
-                ->sort(['createdAt' => 'desc'])
-                ->limit(2)
-                ->sync();
+            // The listing index sees a new record a moment after a direct read of it works, so the
+            // page is fetched until all three are in it rather than once and hopefully.
+            $first = $this->readEventually(
+                fn() => $this->pubnub->dataSync()->getEntities()
+                    ->entityClass($this->entityClass)
+                    ->filterFast("status == '$status'")
+                    ->sort(['createdAt' => 'desc'])
+                    ->limit(2)
+                    ->sync(),
+                fn($result) => count($result->getData()) === 2
+                    && $result->getPage() !== null
+                    && $result->getPage()->hasNext(),
+                'the filtered listing'
+            );
 
             $this->assertCount(2, $first->getData());
             $this->assertNotNull($first->getPage());
@@ -370,9 +391,13 @@ class DataSyncLifecycleTest extends TestCase
             $this->assertNotEmpty($created->getETag());
 
             try {
-                $fetched = $this->pubnub->dataSync()->getRelationship()
-                    ->relationshipId($relationshipId)
-                    ->sync();
+                $fetched = $this->readEventually(
+                    fn() => $this->pubnub->dataSync()->getRelationship()
+                        ->relationshipId($relationshipId)
+                        ->sync(),
+                    null,
+                    'the new relationship'
+                );
 
                 $this->assertSame($relationshipId, $fetched->getId());
                 $this->assertSame('new', $fetched->getData()->getStatus());
@@ -456,6 +481,12 @@ class DataSyncLifecycleTest extends TestCase
             ->status($status)
             ->payload(['name' => 'entity-' . $entityId])
             ->sync();
+
+        // Relationships written next link to this entity, so it has to be there first.
+        $this->readableNow(
+            fn() => $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync(),
+            'the entity fixture'
+        );
 
         return $entityId;
     }

@@ -8,6 +8,7 @@ use PubNub\Models\Consumer\DataSync\PNDataSyncPatch;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNubTests\helpers\DataSyncEventCollector;
+use PubNubTests\helpers\RetriesDataSyncReads;
 
 /**
  * DataSync change notifications delivered over a live subscribe connection.
@@ -23,6 +24,8 @@ use PubNubTests\helpers\DataSyncEventCollector;
  */
 class DataSyncEventTest extends TestCase
 {
+    use RetriesDataSyncReads;
+
     private PubNub $pubnub;
 
     private string $entityClass;
@@ -49,6 +52,8 @@ class DataSyncEventTest extends TestCase
         $config->setSubscribeKey($subscribeKey);
         $config->setPublishKey($publishKey);
         $config->setUuid('datasync-event-test-' . uniqid());
+        // Ten seconds is the default and a loaded CI runner occasionally needs more than that.
+        $config->setNonSubscribeRequestTimeout(30);
 
         $secretKey = getenv('DATASYNC_SECRET_KEY') ?: '';
 
@@ -371,6 +376,13 @@ class DataSyncEventTest extends TestCase
             ->payload(['name' => 'entity-' . $entityId])
             ->sync();
 
+        // A relationship is written over this entity from inside a subscribe callback, where a
+        // failure would surface as a missing event rather than as an error.
+        $this->readableNow(
+            fn() => $this->pubnub->dataSync()->getEntity()->entityId($entityId)->sync(),
+            'the entity fixture'
+        );
+
         return $entityId;
     }
 
@@ -385,6 +397,11 @@ class DataSyncEventTest extends TestCase
             ->payload(['name' => 'user-' . $userId])
             ->sync();
 
+        $this->readableNow(
+            fn() => $this->pubnub->dataSync()->getUser()->userId($userId)->sync(),
+            'the user fixture'
+        );
+
         return $userId;
     }
 
@@ -398,6 +415,11 @@ class DataSyncEventTest extends TestCase
             ->status('active')
             ->payload(['name' => 'channel-' . $channelId])
             ->sync();
+
+        $this->readableNow(
+            fn() => $this->pubnub->dataSync()->getChannel()->channelId($channelId)->sync(),
+            'the channel fixture'
+        );
 
         return $channelId;
     }

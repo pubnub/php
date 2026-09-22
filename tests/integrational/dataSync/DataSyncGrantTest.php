@@ -8,6 +8,7 @@ use PubNub\Exceptions\PubNubServerException;
 use PubNub\Models\Access\Permissions;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
+use PubNubTests\helpers\RetriesDataSyncReads;
 
 /**
  * DataSync grants issued by a real Access Manager and spent against the real data plane.
@@ -23,6 +24,8 @@ use PubNub\PubNub;
  */
 class DataSyncGrantTest extends TestCase
 {
+    use RetriesDataSyncReads;
+
     /** The uuid every token here is issued to, and the only one allowed to spend it. */
     private const CLIENT_UUID = 'php-sdk-pam-client';
 
@@ -85,6 +88,8 @@ class DataSyncGrantTest extends TestCase
         $config->setSubscribeKey($this->subscribeKey);
         $config->setPublishKey($this->publishKey);
         $config->setUuid($uuid);
+        // Ten seconds is the default and a loaded CI runner occasionally needs more than that.
+        $config->setNonSubscribeRequestTimeout(30);
 
         if ($origin = getenv('DATASYNC_ORIGIN')) {
             $config->setOrigin($origin);
@@ -136,6 +141,12 @@ class DataSyncGrantTest extends TestCase
             ->sync();
 
         $this->createdEntityIds[] = $entityId;
+
+        // A token is granted over this entity next, and the read it authorises has to find it.
+        $this->readableNow(
+            fn() => $this->admin->dataSync()->getEntity()->entityId($entityId)->sync(),
+            'the entity fixture'
+        );
 
         return $entityId;
     }
