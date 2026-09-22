@@ -1,9 +1,10 @@
 {
   "name": "pubnub/pubnub",
   "type": "library",
-  "description": "This is the official PubNub PHP SDK repository.",
-  "keywords": ["api", "real-time", "realtime", "real time", "ajax", "push"],
-  "homepage": "http://www.pubnub.com/",
+  "description": "PubNub SDK for PHP. Publish/subscribe messaging over HTTP long-poll with server-assigned message ordering, channel occupancy via Here Now, and message history through Message Persistence.",
+  "keywords": ["pubnub", "realtime", "real-time", "publish-subscribe", "pubsub", "messaging", "occupancy",
+"presence", "message-ordering", "message-history", "chat", "long-poll"],
+  "homepage": "https://www.pubnub.com",
   "license": "proprietary",
   "version": "9.0.3",
   "authors": [
