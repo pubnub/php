@@ -21,7 +21,7 @@ class PNAccessManagerTokenResult
     /** @var object */
     private $patterns;
 
-    /** @var object */
+    /** @var array<string, mixed>|object|null */
     private $metadata;
 
     /** @var string */
@@ -29,6 +29,12 @@ class PNAccessManagerTokenResult
 
     /** @var string */
     private $uuid;
+
+    /** @var PNDataSyncProjections|null */
+    private $dataSyncProjections;
+
+    /** @var bool */
+    private $dataSyncProjectionsParsed = false;
 
     final public function __construct(
         $version,
@@ -90,6 +96,30 @@ class PNAccessManagerTokenResult
         return $this->getResource('uuid', $name);
     }
 
+    /**
+     * @return Permissions|false false when the token grants nothing for that entity.
+     */
+    public function getDataSyncEntityResource(string $name)
+    {
+        return $this->getResource('datasync:entities', $name);
+    }
+
+    /**
+     * @return Permissions|false false when the token grants nothing for that relationship.
+     */
+    public function getDataSyncRelationshipResource(string $name)
+    {
+        return $this->getResource('datasync:relationships', $name);
+    }
+
+    /**
+     * @return Permissions|false false when the token grants nothing for that membership.
+     */
+    public function getDataSyncMembershipResource(string $name)
+    {
+        return $this->getResource('datasync:memberships', $name);
+    }
+
     private function getResource($type, $name)
     {
         if (isset($this->resources[$type][$name])) {
@@ -114,6 +144,30 @@ class PNAccessManagerTokenResult
         return $this->getPattern('uuid', $name);
     }
 
+    /**
+     * @return Permissions|false false when the token holds no entity pattern with that name.
+     */
+    public function getDataSyncEntityPattern(string $name)
+    {
+        return $this->getPattern('datasync:entities', $name);
+    }
+
+    /**
+     * @return Permissions|false false when the token holds no relationship pattern with that name.
+     */
+    public function getDataSyncRelationshipPattern(string $name)
+    {
+        return $this->getPattern('datasync:relationships', $name);
+    }
+
+    /**
+     * @return Permissions|false false when the token holds no membership pattern with that name.
+     */
+    public function getDataSyncMembershipPattern(string $name)
+    {
+        return $this->getPattern('datasync:memberships', $name);
+    }
+
     private function getPattern($type, $name)
     {
         if (isset($this->patterns[$type][$name])) {
@@ -126,6 +180,27 @@ class PNAccessManagerTokenResult
     public function getMetadata()
     {
         return $this->metadata;
+    }
+
+    /**
+     * DataSync field projections granted by this token, or null when it carries none.
+     */
+    public function getDataSyncProjections(): ?PNDataSyncProjections
+    {
+        if (!$this->dataSyncProjectionsParsed) {
+            $this->dataSyncProjectionsParsed = true;
+            $meta = $this->metadata;
+
+            if (is_object($meta)) {
+                $meta = (array) $meta;
+            }
+
+            if (is_array($meta) && isset($meta['pn-projections'])) {
+                $this->dataSyncProjections = PNDataSyncProjections::fromArray($meta['pn-projections']);
+            }
+        }
+
+        return $this->dataSyncProjections;
     }
 
     public function getSignature()
@@ -174,7 +249,7 @@ class PNAccessManagerTokenResult
             }
         }
 
-        return [
+        $result = [
             'version' => $this->version,
             'timestamp' => $this->timestamp,
             'ttl' => $this->ttl,
@@ -183,5 +258,13 @@ class PNAccessManagerTokenResult
             'signature' => $this->getSignature(),
             'uuid' => $this->uuid,
         ];
+
+        $projections = $this->getDataSyncProjections();
+
+        if ($projections !== null) {
+            $result['projections'] = $projections->toArray();
+        }
+
+        return $result;
     }
 }

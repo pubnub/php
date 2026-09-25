@@ -22,6 +22,13 @@ if (file_exists($envFile)) {
         'SUBSCRIBE_KEY',
         'SUBSCRIBE_PAM_KEY',
         'UUID_MOCK',
+        'DATASYNC_SUBSCRIBE_KEY',
+        'DATASYNC_PUBLISH_KEY',
+        'DATASYNC_SECRET_KEY',
+        'DATASYNC_ENTITY_CLASS',
+        'DATASYNC_ENTITY_CLASS_PROJECTIONS',
+        'DATASYNC_ENTITY_RELATIONSHIP',
+        'DATASYNC_ORIGIN',
     ];
 
     foreach ($requiredEnvKeys as $key) {

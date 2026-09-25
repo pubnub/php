@@ -9,4 +9,5 @@ abstract class MessageType
     public const OBJECT = 2;
     public const MESSAGE_ACTION = 3;
     public const FILE_MESSAGE = 4;
+    public const DATA_SYNC = 5;
 }

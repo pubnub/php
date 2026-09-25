@@ -3,6 +3,7 @@
 namespace PubNub\Managers;
 
 use PubNub\Exceptions\PubNubResponseParsingException;
+use PubNub\Models\Consumer\DataSync\PNDataSyncEventResult;
 use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Builders\DTO\SubscribeOperation;
 use PubNub\Builders\DTO\UnsubscribeOperation;
@@ -263,6 +264,22 @@ class SubscriptionManager
                 $this->pubnub->getLogger()->debug("unable to parse payload on #processIncomingMessages");
             }
 
+            if (MessageType::DATA_SYNC == $message->getMessageType()) {
+                $dataSyncEvent = PNDataSyncEventResult::fromPayload(
+                    $extractedMessage,
+                    $channel,
+                    $subscriptionMatch,
+                    $publishMetadata->getPublishTimetoken()
+                );
+
+                // Anything else carrying this message type is left to fall through to the regular
+                // message path rather than being swallowed here.
+                if ($dataSyncEvent !== null) {
+                    $this->listenerManager->announceDataSyncEvent($dataSyncEvent);
+                    return;
+                }
+            }
+
             if (MessageType::SIGNAL == $message->getMessageType()) {
                 $pnSignalResult = new PNSignalMessageResult(
                     $extractedMessage,
@@ -295,10 +312,24 @@ class SubscriptionManager
      */
     protected function processMessage($message)
     {
-        if ($this->pubnub->getConfiguration()->getCryptoSafe() === null) {
+        $crypto = $this->pubnub->getConfiguration()->getCryptoSafe();
+
+        if ($crypto === null) {
             return $message;
-        } else {
-            return $this->pubnub->getConfiguration()->getCryptoSafe()->decrypt($message);
         }
+
+        // Ciphertext arrives either as a string or wrapped in pn_other, and the decryptor only
+        // accepts those two shapes. Anything else was never encrypted - a DataSync event is a
+        // plain object, for one - and has to be passed through rather than handed over, which
+        // would raise a TypeError the subscribe loop does not catch.
+        if (is_string($message) || is_object($message)) {
+            return $crypto->decrypt($message);
+        }
+
+        if (is_array($message) && is_string($message['pn_other'] ?? null)) {
+            $message['pn_other'] = $crypto->decrypt($message['pn_other']);
+        }
+
+        return $message;
     }
 }
