@@ -5,7 +5,7 @@ namespace PubNub\Models\Consumer\DataSync;
 /**
  * A DataSync relationship record linking two entities.
  */
-class PNDataSyncRelationship
+class PNDataSyncRelationship implements PNDataSyncRecord
 {
     protected ?string $id;
 

@@ -281,6 +281,7 @@ class PNDataSyncEventResult
             $entity = PNDataSyncEntity::fromPayload(array_merge($data, [
                 'entityClass' => $className,
                 'entityClassVersion' => $classVersion,
+                'entityClassLevel' => $classLevel,
             ]));
         } elseif (in_array($typeName, self::RELATIONSHIP_TYPES, true)) {
             $record = array_merge($data, [

@@ -11,7 +11,7 @@ namespace PubNub\Models\Consumer\DataSync;
  * Timestamps stay as the raw strings returned by the server rather than being parsed into
  * DateTime objects, matching the other PubNub SDKs.
  */
-class PNDataSyncEntity
+class PNDataSyncEntity implements PNDataSyncRecord
 {
     protected ?string $id;
 

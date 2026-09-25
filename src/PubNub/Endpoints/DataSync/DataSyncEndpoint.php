@@ -27,9 +27,6 @@ abstract class DataSyncEndpoint extends Endpoint
 
     protected const PATCH_MEDIA_TYPE = "application/json-patch+json";
 
-    /** A delete answers 200 with no body. */
-    protected const RESPONSE_MAY_BE_EMPTY = true;
-
     protected bool $endpointAuthRequired = true;
 
     /** Identifier of the addressed resource; null for create and list operations. */

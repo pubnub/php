@@ -19,6 +19,9 @@ class DeleteMembership extends DataSyncEndpoint
     protected const RESOURCE = "memberships";
     protected const MEDIA_TYPE = "application/vnd.pubnub.objects.membership+json;version=1";
 
+    /** A successful delete answers 200 with no body; every other operation returns one. */
+    protected const RESPONSE_MAY_BE_EMPTY = true;
+
     protected string $endpointHttpMethod = PNHttpMethod::DELETE;
     protected int $endpointOperationType = PNOperationType::PNDataSyncDeleteMembershipOperation;
     protected string $endpointName = "DeleteMembership";

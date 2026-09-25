@@ -96,6 +96,20 @@ class DataSyncEndpointTest extends PubNubTestCase
         $this->assertTrue($result->isSuccess());
     }
 
+    /**
+     * Only a delete is allowed to answer with nothing. Everything else owes a body, so an empty one
+     * is a broken response and has to be reported rather than turned into an empty record.
+     */
+    public function testAnEmptyBodyOnAReadIsAnError(): void
+    {
+        $this->stub('/v1/datasync/subkeys/demo/entities/vehicle-1')->setResponseBody('');
+
+        $envelope = $this->pubnub_demo->dataSync()->getEntity()->entityId('vehicle-1')->envelope();
+
+        $this->assertTrue($envelope->isError());
+        $this->assertNull($envelope->getResult());
+    }
+
     public function testGetEntity(): void
     {
         $this->stub('/v1/datasync/subkeys/demo/entities/vehicle-1')

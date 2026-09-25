@@ -8,7 +8,7 @@ namespace PubNub\Models\Consumer\DataSync;
  * Memberships are a predefined relationship class between a Channel and a User. The API exposes them
  * through channelId and userId rather than the generic entityAId and entityBId of a relationship.
  */
-class PNDataSyncMembership
+class PNDataSyncMembership implements PNDataSyncRecord
 {
     protected ?string $id;
 

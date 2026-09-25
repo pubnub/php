@@ -3,6 +3,7 @@
 namespace PubNubTests\functional\dataSync;
 
 use PHPUnit\Framework\TestCase;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\DataSync\PNDataSyncPatch;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
@@ -185,6 +186,28 @@ class DataSyncRequestTest extends TestCase
         ));
 
         $this->assertSame($expected, $this->query($request)['signature']);
+    }
+
+    /**
+     * A direction written in capitals used to fall through to the branch that emits the field on
+     * its own, which the server reads as ascending - the opposite of what was asked for.
+     */
+    public function testSortDirectionIsAcceptedInAnyCase(): void
+    {
+        $request = $this->pubnub->dataSync()->getEntities()
+            ->entityClass('vehicle')
+            ->sort(['createdAt' => 'DESC', 'status' => 'Asc', 'model'])
+            ->getRequest();
+
+        $this->assertSame('createdAt:desc,status:asc,model', $this->query($request)['sort']);
+    }
+
+    public function testAnUnknownSortDirectionIsRejected(): void
+    {
+        $this->expectException(PubNubValidationException::class);
+        $this->expectExceptionMessage('sort direction for "createdAt" must be asc or desc');
+
+        $this->pubnub->dataSync()->getEntities()->sort(['createdAt' => 'descending']);
     }
 
     public function testSetEntityRequest(): void

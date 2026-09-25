@@ -81,6 +81,22 @@ class DataSyncEventResultTest extends TestCase
         $this->assertSame('SubKey', $event->getClassLevel());
     }
 
+    /**
+     * The class, its version and its level all travel in the metadata rather than in the record,
+     * so all three have to be put back onto the record the event carries - otherwise an entity
+     * taken out of an event looks like it has no class level at all.
+     */
+    public function testTheRecordCarriesTheClassLevelTheMetadataNamed(): void
+    {
+        $event = PNDataSyncEventResult::fromPayload($this->payload());
+
+        $this->assertNotNull($event);
+        $this->assertNotNull($event->getEntity());
+        $this->assertSame('SubKey', $event->getEntity()->getEntityClassLevel());
+        $this->assertSame('vehicle', $event->getEntity()->getEntityClass());
+        $this->assertSame(1, $event->getEntity()->getEntityClassVersion());
+    }
+
     public function testMatchesEventAndTypeRegardlessOfCasing(): void
     {
         $event = PNDataSyncEventResult::fromPayload($this->payload([

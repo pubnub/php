@@ -19,6 +19,9 @@ class DeleteChannel extends DataSyncEndpoint
     protected const RESOURCE = "channels";
     protected const MEDIA_TYPE = "application/vnd.pubnub.objects.channel+json;version=1";
 
+    /** A successful delete answers 200 with no body; every other operation returns one. */
+    protected const RESPONSE_MAY_BE_EMPTY = true;
+
     protected string $endpointHttpMethod = PNHttpMethod::DELETE;
     protected int $endpointOperationType = PNOperationType::PNDataSyncDeleteChannelOperation;
     protected string $endpointName = "DeleteChannel";

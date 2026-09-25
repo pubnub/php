@@ -2,6 +2,8 @@
 
 namespace PubNub\Endpoints\DataSync;
 
+use PubNub\Exceptions\PubNubValidationException;
+
 /**
  * Base for the paginated DataSync list endpoints.
  *
@@ -72,16 +74,33 @@ abstract class DataSyncCollectionEndpoint extends DataSyncEndpoint
 
     /**
      * Accepts either a ready-made string ("name:desc,type") or an array
-     * (['name' => 'desc', 'type']) that gets joined into one.
+     * (['name' => 'desc', 'type']) that gets joined into one. A direction may be written in any
+     * case; an entry given without one sorts ascending.
      *
      * Only properties declared with a `filtering` mode other than `none` in the class registry
      * can be sorted on.
      *
      * @param array<int|string, string>|string $sort
      * @return $this
+     * @throws PubNubValidationException when a direction is neither asc nor desc, which would
+     *     otherwise be quietly dropped and leave the results sorted the other way.
      */
     public function sort($sort): static
     {
+        if (is_array($sort)) {
+            foreach ($sort as $field => $direction) {
+                if (is_int($field)) {
+                    continue;
+                }
+
+                if (!in_array(strtolower($direction), ['asc', 'desc'], true)) {
+                    throw new PubNubValidationException(
+                        "sort direction for \"$field\" must be asc or desc, got \"$direction\""
+                    );
+                }
+            }
+        }
+
         $this->sort = $sort;
         return $this;
     }
@@ -136,11 +155,11 @@ abstract class DataSyncCollectionEndpoint extends DataSyncEndpoint
         foreach ($this->sort as $key => $value) {
             if (is_int($key)) {
                 $entries[] = $value;
-            } elseif ($value === 'asc' || $value === 'desc') {
-                $entries[] = "$key:$value";
-            } else {
-                $entries[] = $key;
+                continue;
             }
+
+            // Whatever case the direction was written in, the server wants it lower.
+            $entries[] = $key . ':' . strtolower($value);
         }
 
         return join(",", $entries);

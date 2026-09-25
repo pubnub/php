@@ -3,6 +3,7 @@
 namespace PubNubTests\integrational\dataSync;
 
 use PubNub\Callbacks\SubscribeCallback;
+use PubNub\CryptoModule;
 use PubNub\Models\Consumer\DataSync\PNDataSyncEventResult;
 use PubNubTestCase;
 use PubNubTests\helpers\PsrStub;
@@ -138,6 +139,35 @@ class DataSyncSubscribeTest extends PubNubTestCase
         $this->assertNotNull($membership);
         $this->assertSame('channel-1', $membership->getChannelId());
         $this->assertSame('user-1', $membership->getUserId());
+    }
+
+    /**
+     * A configured crypto module must not be handed a DataSync event. The decryptor only takes a
+     * string or an object, and an event payload is neither, so passing it through raised a
+     * TypeError that the subscribe loop did not catch and that took the whole listener down.
+     */
+    public function testDataSyncEventSurvivesAConfiguredCryptoModule(): void
+    {
+        $this->pubnub_demo->getConfiguration()->setCryptoModule(CryptoModule::aesCbcCryptor('cipher-key', true));
+
+        $this->stubSubscribe($this->envelope([
+            'metadata' => [
+                'event' => 'create',
+                'source' => 'data-sync',
+                'type' => 'entity',
+                'className' => 'vehicle',
+                'classVersion' => '1',
+            ],
+            'data' => ['id' => 'vehicle-1', 'payload' => ['make' => 'Toyota']],
+        ]));
+
+        $callback = new DataSyncSubscribeCallback();
+        $this->pubnub_demo->addListener($callback);
+        $this->pubnub_demo->subscribe()->channel('test')->execute();
+
+        $this->assertCount(1, $callback->dataSyncEvents);
+        $this->assertNotNull($callback->dataSyncEvents[0]->getEntity());
+        $this->assertSame(['make' => 'Toyota'], $callback->dataSyncEvents[0]->getEntity()->getPayload());
     }
 
     public function testUnrelatedMessageTypeFiveFallsThroughToMessage(): void
