@@ -22,6 +22,9 @@ class GrantToken extends Endpoint
      */
     private const PROJECTION_TYPES = ['entities', 'users', 'channels', 'relationships', 'memberships'];
 
+    /** The two scopes projections may be keyed by, mapped to what they are called on the wire. */
+    private const PROJECTION_SCOPES = ['resources' => 'res', 'patterns' => 'pat'];
+
     /** @var  int */
     protected $ttl;
 
@@ -39,7 +42,7 @@ class GrantToken extends Endpoint
     /** @var bool */
     protected $sortParams = true;
 
-    /** @var array<string, array<string, array<string, string>>> */
+    /** @var array<string, array<string, array<array-key, string>>> */
     protected $dataSyncProjections = [];
 
     private $channels = [];
@@ -264,13 +267,75 @@ class GrantToken extends Endpoint
      *         'patterns'  => ['entities' => ['^vehicle-.*$' => 'public']],
      *     ])
      *
-     * @param array<string, array<string, array<string, string>>> $projections
+     * The identifiers are array keys, so a numeric one reaches this as an int; hence array-key
+     * rather than string.
+     *
+     * @param array<string, array<string, array<array-key, string>>> $projections
      * @return $this
+     * @throws PubNubValidationException on a key this does not recognise. A projection narrows
+     *     what the holder may see, so a misspelled key cannot simply be skipped: the token would
+     *     be granted carrying the default view instead of the intended one, and nothing would say
+     *     so.
      */
     public function dataSyncProjections($projections)
     {
+        $this->validateProjections($projections);
         $this->dataSyncProjections = $projections;
+
         return $this;
+    }
+
+    /**
+     * @param array<mixed, mixed> $projections
+     * @throws PubNubValidationException
+     */
+    private function validateProjections(array $projections): void
+    {
+        foreach ($projections as $scope => $families) {
+            if (!array_key_exists($scope, self::PROJECTION_SCOPES)) {
+                throw new PubNubValidationException(sprintf(
+                    'unknown projection scope "%s", expected one of: %s',
+                    $scope,
+                    join(', ', array_keys(self::PROJECTION_SCOPES))
+                ));
+            }
+
+            if (!is_array($families)) {
+                throw new PubNubValidationException("projection scope \"$scope\" must be an array");
+            }
+
+            foreach ($families as $family => $assignments) {
+                if (!in_array($family, self::PROJECTION_TYPES, true)) {
+                    throw new PubNubValidationException(sprintf(
+                        'unknown projection family "%s" under "%s", expected one of: %s',
+                        $family,
+                        $scope,
+                        join(', ', self::PROJECTION_TYPES)
+                    ));
+                }
+
+                if (!is_array($assignments)) {
+                    throw new PubNubValidationException(
+                        "\"$scope.$family\" must map an identifier to a projection name"
+                    );
+                }
+
+                foreach ($assignments as $identifier => $projection) {
+                    // A numeric-looking identifier arrives as an int key, so only emptiness is
+                    // worth rejecting here.
+                    if (trim((string) $identifier) === '') {
+                        throw new PubNubValidationException("\"$scope.$family\" has an empty identifier");
+                    }
+
+                    if (!is_string($projection) || trim($projection) === '') {
+                        throw new PubNubValidationException(
+                            "the projection named for \"$identifier\" under \"$scope.$family\" must be a "
+                                . "non-empty string"
+                        );
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -280,10 +345,10 @@ class GrantToken extends Endpoint
      */
     private function buildProjectionsMeta()
     {
-        $scopeKeys = ['resources' => 'res', 'patterns' => 'pat'];
         $result = [];
 
-        foreach ($scopeKeys as $scopeName => $shortName) {
+        // The shape is settled by the time it gets here, so this only has to flatten it.
+        foreach (self::PROJECTION_SCOPES as $scopeName => $shortName) {
             if (!array_key_exists($scopeName, $this->dataSyncProjections)) {
                 continue;
             }
@@ -291,17 +356,7 @@ class GrantToken extends Endpoint
             $flat = [];
 
             foreach (self::PROJECTION_TYPES as $type) {
-                $map = $this->dataSyncProjections[$scopeName][$type] ?? null;
-
-                if (!is_array($map)) {
-                    continue;
-                }
-
-                foreach ($map as $name => $projection) {
-                    if ($name === '') {
-                        continue;
-                    }
-
+                foreach ($this->dataSyncProjections[$scopeName][$type] ?? [] as $name => $projection) {
                     $flat["datasync:$type:$name"] = $projection;
                 }
             }

@@ -4,6 +4,7 @@ namespace PubNubTests\functional\dataSync;
 
 use PHPUnit\Framework\TestCase;
 use PubNub\Endpoints\Access\GrantToken;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 
@@ -131,6 +132,74 @@ class DataSyncGrantTokenTest extends TestCase
 
         $this->assertSame('acme', $meta['tenant']);
         $this->assertArrayHasKey('pn-projections', $meta);
+    }
+
+    /**
+     * A projection restricts what the holder sees, so a key the builder does not recognise has to
+     * be reported. Skipping it quietly would grant the token with the default view instead of the
+     * intended one, which can be the wider of the two.
+     *
+     * @dataProvider malformedProjectionProvider
+     * @param array<mixed, mixed> $projections
+     */
+    public function testMalformedProjectionsAreRejected(array $projections, string $expectedMessage): void
+    {
+        $this->expectException(PubNubValidationException::class);
+        $this->expectExceptionMessage($expectedMessage);
+
+        $this->pubnub->grantToken()->dataSyncProjections($projections);
+    }
+
+    /**
+     * @return array<string, array{0: array<mixed, mixed>, 1: string}>
+     */
+    public function malformedProjectionProvider(): array
+    {
+        return [
+            'singular scope' => [
+                ['resource' => ['entities' => ['vehicle-1' => 'public']]],
+                'unknown projection scope "resource"',
+            ],
+            'singular pattern scope' => [
+                ['pattern' => ['entities' => ['^vehicle-.*$' => 'public']]],
+                'unknown projection scope "pattern"',
+            ],
+            'singular family' => [
+                ['resources' => ['entity' => ['vehicle-1' => 'public']]],
+                'unknown projection family "entity" under "resources"',
+            ],
+            'scope is not a map' => [
+                ['resources' => 'entities'],
+                'projection scope "resources" must be an array',
+            ],
+            'family is not a map' => [
+                ['resources' => ['entities' => 'public']],
+                '"resources.entities" must map an identifier to a projection name',
+            ],
+            'empty identifier' => [
+                ['resources' => ['entities' => ['' => 'public']]],
+                '"resources.entities" has an empty identifier',
+            ],
+            'empty projection name' => [
+                ['resources' => ['entities' => ['vehicle-1' => '']]],
+                'must be a non-empty string',
+            ],
+        ];
+    }
+
+    /**
+     * An identifier that looks like a number arrives as an int array key, which must not be
+     * mistaken for a malformed entry.
+     */
+    public function testANumericIdentifierIsAccepted(): void
+    {
+        $body = $this->body(
+            $this->pubnub->grantToken()
+                ->ttl(60)
+                ->dataSyncProjections(['resources' => ['entities' => ['1234' => 'public']]])
+        );
+
+        $this->assertSame('public', $body['permissions']['meta']['pn-projections']['res']['datasync:entities:1234']);
     }
 
     public function testNoProjectionsMeansNoMetaKey(): void
