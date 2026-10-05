@@ -35,6 +35,12 @@ abstract class Endpoint
 
     protected const RESPONSE_IS_JSON = true;
 
+    /**
+     * Whether a successful response is allowed to carry no body at all. Off by default, so an
+     * endpoint that has always answered with JSON still reports an empty body as a parse error.
+     */
+    protected const RESPONSE_MAY_BE_EMPTY = false;
+
     /** @var  PubNub */
     protected $pubnub;
 
@@ -239,7 +245,11 @@ abstract class Endpoint
                 . PubNubUtil::preparePamParams($params)
                 . "\n";
 
-            if (PNHttpMethod::POST == $httpMethod || PNHttpMethod::PATCH == $httpMethod) {
+            if (
+                PNHttpMethod::POST == $httpMethod
+                || PNHttpMethod::PATCH == $httpMethod
+                || PNHttpMethod::PUT == $httpMethod
+            ) {
                 $signedInput .= $this->buildData();
             }
 
@@ -318,6 +328,19 @@ abstract class Endpoint
      */
     public function envelope()
     {
+        try {
+            $this->validateParams();
+        } catch (PubNubValidationException $exception) {
+            // Errors come back wrapped here rather than thrown, so a local validation failure has
+            // to be reported that way too. Letting it through unchecked would send the request as
+            // built, and a request missing the parts validation looks for is not the request the
+            // caller asked for: a fetch with no identifier, for one, addresses the collection.
+            return new PNEnvelope(
+                null,
+                $this->createStatus(PNStatusCategory::PNBadRequestCategory, null, null, $exception)
+            );
+        }
+
         return $this->invokeRequestAndCacheIt();
     }
 
@@ -444,22 +467,28 @@ abstract class Endpoint
             $response
         );
 
-        if ($statusCode === 200) {
+        if ($statusCode >= 200 && $statusCode < 300) {
             $contents = $response->getBody()->getContents();
             if (static::RESPONSE_IS_JSON) {
-                $parsedJSON = json_decode($contents, true);
+                // A successful DataSync delete answers 200 with no body at all, which json_decode()
+                // reports as a syntax error.
+                if (static::RESPONSE_MAY_BE_EMPTY && trim($contents) === '') {
+                    $result = $this->createResponse([]);
+                } else {
+                    $parsedJSON = json_decode($contents, true);
 
-                if (json_last_error()) {
-                    return new PNEnvelope(null, $this->createStatus(
-                        $statusCategory,
-                        $response->getBody()->getContents(),
-                        $responseInfo,
-                        (new PubNubResponseParsingException())
-                            ->setResponseString($request->getBody())
-                            ->setDescription(json_last_error_msg())
-                    ));
+                    if (json_last_error()) {
+                        return new PNEnvelope(null, $this->createStatus(
+                            $statusCategory,
+                            $contents,
+                            $responseInfo,
+                            (new PubNubResponseParsingException())
+                                ->setResponseString($request->getBody())
+                                ->setDescription(json_last_error_msg())
+                        ));
+                    }
+                    $result = $this->createResponse($parsedJSON);
                 }
-                $result = $this->createResponse($parsedJSON);
             } else {
                 $result = $this->createResponse($contents);
             }

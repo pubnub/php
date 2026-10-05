@@ -162,6 +162,39 @@ class FetchMessagesTest extends PubNubTestCase
             $response->getChannels()[self::ENCRYPTED_CHANNEL_NAME][0]->getMessage()
         );
     }
+
+    /**
+     * A message published as a plain JSON object was never encrypted, and decrypt() only takes a
+     * string or an object, so handing the decoded array over raised a TypeError and failed the
+     * whole fetch for a client that merely has encryption configured.
+     */
+    public function testFetchEncryptedPassesAnUnencryptedObjectThrough(): void
+    {
+        $subKey = $this->pubnub_enc->getConfiguration()->getSubscribeKey();
+        $fetchMessages = new FetchMessagesExposed($this->pubnub_enc);
+
+        $fetchMessages
+            ->stubFor("/v3/history/sub-key/{$subKey}/channel/TheMessageHistoryChannelHD-ENCRYPTED")
+            ->withQuery([
+                "include_meta" => "false",
+                "include_uuid" => "false",
+                "include_message_type" => "true",
+                "include_custom_message_type" => "false",
+                "pnsdk" => $this->encodedSdkName,
+                "uuid" => $this->pubnub_enc->getConfiguration()->getUserId(),
+            ])
+            ->setResponseBody('{"status": 200, "error": false, "error_message": "", "channels": {
+                "TheMessageHistoryChannelHD-ENCRYPTED":[
+                    {"message":{"make":"Toyota"},"timetoken":"17165627054255980"}
+                ]}}');
+
+        $response = $fetchMessages->channels(self::ENCRYPTED_CHANNEL_NAME)->sync();
+
+        $this->assertEquals(
+            ['make' => 'Toyota'],
+            $response->getChannels()[self::ENCRYPTED_CHANNEL_NAME][0]->getMessage()
+        );
+    }
 }
 
 // phpcs:ignore PSR1.Classes.ClassDeclaration

@@ -1,8 +1,13 @@
 name: php
-version: 9.0.3
+version: 10.0.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2026-10-05
+    version: 10.0.0
+    changes:
+      - type: feature
+        text: "Added Data Sync feature support."
   - date: 2026-07-27
     version: 9.0.3
     changes:
@@ -314,6 +319,41 @@ features:
     - ACCESS-REVOKE-TOKEN
     - ACCESS-PARSE-TOKEN
     - ACCESS-SET-TOKEN
+  data-sync:
+    - DATASYNC-USER-CREATE
+    - DATASYNC-USER-GET
+    - DATASYNC-USER-GET-ALL
+    - DATASYNC-USER-UPDATE
+    - DATASYNC-USER-PATCH
+    - DATASYNC-USER-DELETE
+    - DATASYNC-CHANNEL-CREATE
+    - DATASYNC-CHANNEL-GET
+    - DATASYNC-CHANNEL-GET-ALL
+    - DATASYNC-CHANNEL-UPDATE
+    - DATASYNC-CHANNEL-PATCH
+    - DATASYNC-CHANNEL-DELETE
+    - DATASYNC-MEMBERSHIP-CREATE
+    - DATASYNC-MEMBERSHIP-GET
+    - DATASYNC-MEMBERSHIP-GET-ALL
+    - DATASYNC-MEMBERSHIP-UPDATE
+    - DATASYNC-MEMBERSHIP-PATCH
+    - DATASYNC-MEMBERSHIP-DELETE
+    - DATASYNC-ENTITY-CREATE
+    - DATASYNC-ENTITY-GET
+    - DATASYNC-ENTITY-GET-ALL
+    - DATASYNC-ENTITY-UPDATE
+    - DATASYNC-ENTITY-PATCH
+    - DATASYNC-ENTITY-DELETE
+    - DATASYNC-RELATIONSHIP-CREATE
+    - DATASYNC-RELATIONSHIP-GET
+    - DATASYNC-RELATIONSHIP-GET-ALL
+    - DATASYNC-RELATIONSHIP-UPDATE
+    - DATASYNC-RELATIONSHIP-PATCH
+    - DATASYNC-RELATIONSHIP-DELETE
+    - DATASYNC-FILTERING
+    - DATASYNC-SORTING
+    - DATASYNC-EVENTS-LISTENER
+    - DATASYNC-ACCESS-MANAGER
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
@@ -566,8 +606,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-9.0.3.zip
-            location: https://github.com/pubnub/php/releases/tag/9.0.3
+            package-name: php-10.0.0.zip
+            location: https://github.com/pubnub/php/releases/tag/10.0.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0

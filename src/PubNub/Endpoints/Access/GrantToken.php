@@ -15,6 +15,16 @@ class GrantToken extends Endpoint
 {
     protected const PATH = '/v3/pam/%s/grant';
 
+    /**
+     * Record families a projection can be assigned to. Wider than the three families that take
+     * DataSync permissions, because users and channels draw their permissions from the uuid and
+     * channel scopes while still needing a projection of their own.
+     */
+    private const PROJECTION_TYPES = ['entities', 'users', 'channels', 'relationships', 'memberships'];
+
+    /** The two scopes projections may be keyed by, mapped to what they are called on the wire. */
+    private const PROJECTION_SCOPES = ['resources' => 'res', 'patterns' => 'pat'];
+
     /** @var  int */
     protected $ttl;
 
@@ -31,6 +41,9 @@ class GrantToken extends Endpoint
 
     /** @var bool */
     protected $sortParams = true;
+
+    /** @var array<string, array<string, array<array-key, string>>> */
+    protected $dataSyncProjections = [];
 
     private $channels = [];
 
@@ -161,6 +174,22 @@ class GrantToken extends Endpoint
         return $this;
     }
 
+    /**
+     * Grants on the "users" scope, which is not the same thing as the "uuids" scope above.
+     *
+     * A DataSync User record is authorised through this one - there is no datasync:users
+     * permission scope - while App Context uuid metadata goes through uuids. A token granting only
+     * uuids is refused for a DataSync user, with the denied resource reported under "users".
+     *
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addUserResources($res)
+    {
+        $this->addResources('users', $res);
+        return $this;
+    }
+
     public function addChannelPatterns($res)
     {
         $this->addPatterns('channels', $res);
@@ -177,6 +206,195 @@ class GrantToken extends Endpoint
     {
         $this->addPatterns('uuids', $res);
         return $this;
+    }
+
+    /**
+     * Patterns on the "users" scope. See addUserResources() for how it differs from uuids.
+     *
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addUserPatterns($res)
+    {
+        $this->addPatterns('users', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncEntityResources($res)
+    {
+        $this->addResources('datasync:entities', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncRelationshipResources($res)
+    {
+        $this->addResources('datasync:relationships', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncMembershipResources($res)
+    {
+        $this->addResources('datasync:memberships', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncEntityPatterns($res)
+    {
+        $this->addPatterns('datasync:entities', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncRelationshipPatterns($res)
+    {
+        $this->addPatterns('datasync:relationships', $res);
+        return $this;
+    }
+
+    /**
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addDataSyncMembershipPatterns($res)
+    {
+        $this->addPatterns('datasync:memberships', $res);
+        return $this;
+    }
+
+    /**
+     * Restricts which fields of a DataSync record the token holder can see.
+     *
+     * Expects up to two scopes, "resources" for exact identifiers and "patterns" for regular
+     * expressions, each holding any of "entities", "users", "channels", "relationships" and
+     * "memberships" mapped from identifier to projection name. These buckets only assign
+     * projections: the permissions that go with them come from the DataSync entity scope for
+     * entities, and from the shared uuid and channel scopes for users and channels.
+     * Use "__default__" for the base projection:
+     *
+     *     ->dataSyncProjections([
+     *         'resources' => ['entities' => ['vehicle-1' => '__default__']],
+     *         'patterns'  => ['entities' => ['^vehicle-.*$' => 'public']],
+     *     ])
+     *
+     * The identifiers are array keys, so a numeric one reaches this as an int; hence array-key
+     * rather than string.
+     *
+     * @param array<string, array<string, array<array-key, string>>> $projections
+     * @return $this
+     * @throws PubNubValidationException on a key this does not recognise. A projection narrows
+     *     what the holder may see, so a misspelled key cannot simply be skipped: the token would
+     *     be granted carrying the default view instead of the intended one, and nothing would say
+     *     so.
+     */
+    public function dataSyncProjections($projections)
+    {
+        $this->validateProjections($projections);
+        $this->dataSyncProjections = $projections;
+
+        return $this;
+    }
+
+    /**
+     * @param array<mixed, mixed> $projections
+     * @throws PubNubValidationException
+     */
+    private function validateProjections(array $projections): void
+    {
+        foreach ($projections as $scope => $families) {
+            if (!array_key_exists($scope, self::PROJECTION_SCOPES)) {
+                throw new PubNubValidationException(sprintf(
+                    'unknown projection scope "%s", expected one of: %s',
+                    $scope,
+                    join(', ', array_keys(self::PROJECTION_SCOPES))
+                ));
+            }
+
+            if (!is_array($families)) {
+                throw new PubNubValidationException("projection scope \"$scope\" must be an array");
+            }
+
+            foreach ($families as $family => $assignments) {
+                if (!in_array($family, self::PROJECTION_TYPES, true)) {
+                    throw new PubNubValidationException(sprintf(
+                        'unknown projection family "%s" under "%s", expected one of: %s',
+                        $family,
+                        $scope,
+                        join(', ', self::PROJECTION_TYPES)
+                    ));
+                }
+
+                if (!is_array($assignments)) {
+                    throw new PubNubValidationException(
+                        "\"$scope.$family\" must map an identifier to a projection name"
+                    );
+                }
+
+                foreach ($assignments as $identifier => $projection) {
+                    // A numeric-looking identifier arrives as an int key, so only emptiness is
+                    // worth rejecting here.
+                    if (trim((string) $identifier) === '') {
+                        throw new PubNubValidationException("\"$scope.$family\" has an empty identifier");
+                    }
+
+                    if (!is_string($projection) || trim($projection) === '') {
+                        throw new PubNubValidationException(
+                            "the projection named for \"$identifier\" under \"$scope.$family\" must be a "
+                                . "non-empty string"
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Flattens the projection scopes into the composite keys the server expects.
+     *
+     * @return array<string, array<string, string>>
+     */
+    private function buildProjectionsMeta()
+    {
+        $result = [];
+
+        // The shape is settled by the time it gets here, so this only has to flatten it.
+        foreach (self::PROJECTION_SCOPES as $scopeName => $shortName) {
+            if (!array_key_exists($scopeName, $this->dataSyncProjections)) {
+                continue;
+            }
+
+            $flat = [];
+
+            foreach (self::PROJECTION_TYPES as $type) {
+                foreach ($this->dataSyncProjections[$scopeName][$type] ?? [] as $name => $projection) {
+                    $flat["datasync:$type:$name"] = $projection;
+                }
+            }
+
+            if (count($flat) > 0) {
+                $result[$shortName] = $flat;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -222,6 +440,19 @@ class GrantToken extends Endpoint
         }
         if ($this->meta) {
             $params['permissions']['meta'] = $this->meta;
+        }
+
+        $projections = $this->buildProjectionsMeta();
+
+        if (count($projections) > 0) {
+            $meta = $params['permissions']['meta'] ?? [];
+
+            if (!is_array($meta)) {
+                $meta = (array) $meta;
+            }
+
+            $meta['pn-projections'] = $projections;
+            $params['permissions']['meta'] = $meta;
         }
 
         return json_encode($params);

@@ -2,9 +2,9 @@
 
 namespace PubNub\Managers;
 
-
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Exceptions\PubNubUnsubscribeException;
+use PubNub\Models\Consumer\DataSync\PNDataSyncEventResult;
 use PubNub\Models\Consumer\PubSub\PNMessageResult;
 use PubNub\Models\Consumer\PubSub\PNPresenceEventResult;
 use PubNub\Models\Consumer\PubSub\PNSignalMessageResult;
@@ -88,6 +88,18 @@ class ListenerManager
     {
         foreach ($this->listeners as $listener) {
             $listener->signal($this->pubnub, $signal);
+        }
+    }
+
+    /**
+     * @param PNDataSyncEventResult $event
+     * @throws PubNubUnsubscribeException
+     * @return void
+     */
+    public function announceDataSyncEvent(PNDataSyncEventResult $event)
+    {
+        foreach ($this->listeners as $listener) {
+            $listener->dataSyncEvent($this->pubnub, $event);
         }
     }
 }

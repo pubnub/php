@@ -28,6 +28,15 @@ jobs:
       SUBSCRIBE_PAM_KEY: ${{ secrets.SDK_PAM_SUB_KEY }}
       SECRET_PAM_KEY: ${{ secrets.SDK_PAM_SEC_KEY }}
       UUID_MOCK: "test-user"
+      # DataSync runs against its own keyset. Without these the DataSync tests skip themselves
+      # rather than fail, which is what happens on pull requests from forks.
+      DATASYNC_PUBLISH_KEY: ${{ secrets.SDK_DS_PUB_KEY }}
+      DATASYNC_SUBSCRIBE_KEY: ${{ secrets.SDK_DS_SUB_KEY }}
+      DATASYNC_SECRET_KEY: ${{ secrets.SDK_DS_SEC_KEY }}
+      # Classes registered on that keyset, shared with the other SDKs' test suites. Not secret.
+      DATASYNC_ENTITY_CLASS: "integration-test-vehicle"
+      DATASYNC_ENTITY_CLASS_PROJECTIONS: "integration-test-vehicle-v2"
+      DATASYNC_ENTITY_RELATIONSHIP: "integration-test-ownership-v3"
     steps:
       - name: Checkout project
         uses: actions/checkout@v4

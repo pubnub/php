@@ -69,7 +69,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 class PubNub implements LoggerAwareInterface
 {
-    protected const SDK_VERSION = "9.0.3";
+    protected const SDK_VERSION = "10.0.0";
     protected const SDK_NAME = "PubNub-PHP";
 
     public static $MAX_SEQUENCE = 65535;
@@ -459,6 +459,16 @@ class PubNub implements LoggerAwareInterface
     public function manageMemberships(): ManageMemberships
     {
         return new ManageMemberships($this);
+    }
+
+    /**
+     * Entry point for the DataSync operations.
+     *
+     * @return DataSync
+     */
+    public function dataSync(): DataSync
+    {
+        return new DataSync($this);
     }
 
     /**

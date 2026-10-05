@@ -87,8 +87,16 @@ class PNFetchMessagesItemResult
     public static function fromJson($json, $crypto): static
     {
         $message = $json['message'];
+
         if ($crypto) {
-            $message = $crypto->decrypt($message);
+            // Ciphertext is either a string or wrapped in pn_other, and decrypt() only takes a
+            // string or an object. A message that is neither - anything published as a plain JSON
+            // object - was never encrypted, and handing it over raises a TypeError.
+            if (is_string($message) || is_object($message)) {
+                $message = $crypto->decrypt($message);
+            } elseif (is_array($message) && is_string($message['pn_other'] ?? null)) {
+                $message['pn_other'] = $crypto->decrypt($message['pn_other']);
+            }
         }
         $item = new static(
             $message,
