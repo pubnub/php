@@ -1,6 +1,6 @@
 <?php
 
-// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols,PSR1.Classes.ClassDeclaration
 namespace PubNub\Examples;
 
 // Include Composer autoloader (adjust path if needed)
