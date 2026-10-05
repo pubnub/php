@@ -328,6 +328,19 @@ abstract class Endpoint
      */
     public function envelope()
     {
+        try {
+            $this->validateParams();
+        } catch (PubNubValidationException $exception) {
+            // Errors come back wrapped here rather than thrown, so a local validation failure has
+            // to be reported that way too. Letting it through unchecked would send the request as
+            // built, and a request missing the parts validation looks for is not the request the
+            // caller asked for: a fetch with no identifier, for one, addresses the collection.
+            return new PNEnvelope(
+                null,
+                $this->createStatus(PNStatusCategory::PNBadRequestCategory, null, null, $exception)
+            );
+        }
+
         return $this->invokeRequestAndCacheIt();
     }
 

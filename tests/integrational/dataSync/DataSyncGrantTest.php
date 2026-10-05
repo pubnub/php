@@ -43,6 +43,12 @@ class DataSyncGrantTest extends TestCase
     /** @var string[] */
     private array $createdEntityIds = [];
 
+    /** @var string[] */
+    private array $createdUserIds = [];
+
+    /** @var string[] */
+    private array $createdChannelIds = [];
+
     public function setUp(): void
     {
         parent::setUp();
@@ -67,6 +73,8 @@ class DataSyncGrantTest extends TestCase
 
         $this->admin = new PubNub($config);
         $this->createdEntityIds = [];
+        $this->createdUserIds = [];
+        $this->createdChannelIds = [];
     }
 
     public function tearDown(): void
@@ -74,6 +82,22 @@ class DataSyncGrantTest extends TestCase
         foreach ($this->createdEntityIds as $entityId) {
             try {
                 $this->admin->dataSync()->deleteEntity()->entityId($entityId)->sync();
+            } catch (PubNubServerException $exception) {
+                // best-effort cleanup
+            }
+        }
+
+        foreach ($this->createdUserIds as $userId) {
+            try {
+                $this->admin->dataSync()->deleteUser()->userId($userId)->sync();
+            } catch (PubNubServerException $exception) {
+                // best-effort cleanup
+            }
+        }
+
+        foreach ($this->createdChannelIds as $channelId) {
+            try {
+                $this->admin->dataSync()->deleteChannel()->channelId($channelId)->sync();
             } catch (PubNubServerException $exception) {
                 // best-effort cleanup
             }
@@ -151,6 +175,48 @@ class DataSyncGrantTest extends TestCase
         return $entityId;
     }
 
+    private function createUser(): string
+    {
+        $userId = 'php-sdk-pam-user-' . uniqid();
+
+        $this->admin->dataSync()->createUser()
+            ->userId($userId)
+            ->entityClassVersion(1)
+            ->status('active')
+            ->payload(['name' => 'Alice'])
+            ->sync();
+
+        $this->createdUserIds[] = $userId;
+
+        $this->readableNow(
+            fn() => $this->admin->dataSync()->getUser()->userId($userId)->sync(),
+            'the user fixture'
+        );
+
+        return $userId;
+    }
+
+    private function createChannel(): string
+    {
+        $channelId = 'php-sdk-pam-channel-' . uniqid();
+
+        $this->admin->dataSync()->createChannel()
+            ->channelId($channelId)
+            ->entityClassVersion(1)
+            ->status('active')
+            ->payload(['name' => 'Support'])
+            ->sync();
+
+        $this->createdChannelIds[] = $channelId;
+
+        $this->readableNow(
+            fn() => $this->admin->dataSync()->getChannel()->channelId($channelId)->sync(),
+            'the channel fixture'
+        );
+
+        return $channelId;
+    }
+
     /**
      * @param callable $call
      */
@@ -194,6 +260,78 @@ class DataSyncGrantTest extends TestCase
         $this->assertDenied(
             fn() => $client->dataSync()->getEntity()->entityId($otherId)->sync(),
             'an entity outside the grant must not be readable'
+        );
+    }
+
+    /**
+     * There is no datasync:users permission scope, so a User record is gated by the "users" scope
+     * instead - which is a different scope from "uuids", despite the two being described as
+     * alternative spellings elsewhere.
+     */
+    public function testUserRecordsAreGatedByTheUserScope(): void
+    {
+        $grantedId = $this->createUser();
+        $otherId = $this->createUser();
+
+        $token = $this->grant(function (GrantToken $grant) use ($grantedId): void {
+            $grant->addUserResources([$grantedId => ['get' => true]]);
+        });
+
+        $client = $this->clientWithToken($token);
+
+        $allowed = $client->dataSync()->getUser()->userId($grantedId)->sync();
+        $this->assertSame($grantedId, $allowed->getId());
+
+        $this->assertDenied(
+            fn() => $client->dataSync()->getUser()->userId($otherId)->sync(),
+            'a user outside the grant must not be readable'
+        );
+
+        // Confirms the abbreviation the scope is stored under, which no offline fixture can settle.
+        $this->assertTrue(
+            $this->granted($this->admin->parseToken($token)->getUserResource($grantedId), 'user resource')
+                ->hasGet()
+        );
+    }
+
+    /**
+     * And the distinction is not academic: granting the uuid scope instead leaves the user
+     * unreachable, which is what made this worth a dedicated builder method.
+     */
+    public function testTheUuidScopeDoesNotStandInForTheUserScope(): void
+    {
+        $userId = $this->createUser();
+
+        $token = $this->grant(function (GrantToken $grant) use ($userId): void {
+            $grant->addUuidResources([$userId => ['get' => true]]);
+        });
+
+        $this->assertDenied(
+            fn() => $this->clientWithToken($token)->dataSync()->getUser()->userId($userId)->sync(),
+            'uuids must not authorise a DataSync user'
+        );
+    }
+
+    /**
+     * And the Channel family shares the channel scope for the same reason.
+     */
+    public function testChannelRecordsAreGatedByTheChannelScope(): void
+    {
+        $grantedId = $this->createChannel();
+        $otherId = $this->createChannel();
+
+        $token = $this->grant(function (GrantToken $grant) use ($grantedId): void {
+            $grant->addChannelResources([$grantedId => ['get' => true]]);
+        });
+
+        $client = $this->clientWithToken($token);
+
+        $allowed = $client->dataSync()->getChannel()->channelId($grantedId)->sync();
+        $this->assertSame($grantedId, $allowed->getId());
+
+        $this->assertDenied(
+            fn() => $client->dataSync()->getChannel()->channelId($otherId)->sync(),
+            'a channel outside the channel grant must not be readable'
         );
     }
 

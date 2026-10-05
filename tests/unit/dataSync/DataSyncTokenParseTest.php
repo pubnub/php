@@ -29,7 +29,7 @@ class DataSyncTokenParseTest extends TestCase
             'res' => [
                 'chan' => [],
                 'grp' => [],
-                'usr' => [],
+                'usr' => ['alice' => 32],
                 'spc' => [],
                 'uuid' => [],
                 'datasync:entities' => ['vehicle-1' => 65],
@@ -132,6 +132,18 @@ class DataSyncTokenParseTest extends TestCase
         $patterns = $projections->getPatterns();
         $this->assertSame('public', $patterns->getEntityProjection('^vehicle-.*$'));
         $this->assertSame([], $patterns->getMemberships());
+    }
+
+    /**
+     * A token abbreviates the "users" scope to "usr", and it is not the same scope as "uuid" - the
+     * distinction matters because a DataSync User record is authorised through the former.
+     */
+    public function testTheUserScopeIsReadBackSeparatelyFromUuid(): void
+    {
+        $token = $this->token();
+
+        $this->assertTrue($this->granted($token->getUserResource('alice'))->hasGet());
+        $this->assertFalse($token->getUuidResource('alice'));
     }
 
     public function testPredefinedProjectionFamiliesAreSplitOutToo(): void

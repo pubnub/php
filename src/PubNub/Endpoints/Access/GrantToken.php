@@ -174,6 +174,22 @@ class GrantToken extends Endpoint
         return $this;
     }
 
+    /**
+     * Grants on the "users" scope, which is not the same thing as the "uuids" scope above.
+     *
+     * A DataSync User record is authorised through this one - there is no datasync:users
+     * permission scope - while App Context uuid metadata goes through uuids. A token granting only
+     * uuids is refused for a DataSync user, with the denied resource reported under "users".
+     *
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addUserResources($res)
+    {
+        $this->addResources('users', $res);
+        return $this;
+    }
+
     public function addChannelPatterns($res)
     {
         $this->addPatterns('channels', $res);
@@ -189,6 +205,18 @@ class GrantToken extends Endpoint
     public function addUuidPatterns($res)
     {
         $this->addPatterns('uuids', $res);
+        return $this;
+    }
+
+    /**
+     * Patterns on the "users" scope. See addUserResources() for how it differs from uuids.
+     *
+     * @param array<string, array<string, bool>> $res
+     * @return $this
+     */
+    public function addUserPatterns($res)
+    {
+        $this->addPatterns('users', $res);
         return $this;
     }
 

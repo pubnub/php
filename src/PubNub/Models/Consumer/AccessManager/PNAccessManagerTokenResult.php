@@ -97,6 +97,17 @@ class PNAccessManagerTokenResult
     }
 
     /**
+     * Grants on the "users" scope, which a token abbreviates to "usr" and which is distinct from
+     * the "uuid" scope above. DataSync User records are authorised through this one.
+     *
+     * @return Permissions|false false when the token grants nothing for that user.
+     */
+    public function getUserResource(string $name)
+    {
+        return $this->getResource('usr', $name);
+    }
+
+    /**
      * @return Permissions|false false when the token grants nothing for that entity.
      */
     public function getDataSyncEntityResource(string $name)
@@ -142,6 +153,16 @@ class PNAccessManagerTokenResult
     public function getUuidPattern($name)
     {
         return $this->getPattern('uuid', $name);
+    }
+
+    /**
+     * Patterns on the "users" scope. See getUserResource() for how it differs from uuid.
+     *
+     * @return Permissions|false false when the token holds no user pattern with that name.
+     */
+    public function getUserPattern(string $name)
+    {
+        return $this->getPattern('usr', $name);
     }
 
     /**

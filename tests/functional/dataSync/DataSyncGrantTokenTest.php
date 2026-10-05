@@ -54,6 +54,26 @@ class DataSyncGrantTokenTest extends TestCase
         $this->assertSame(9, $resources['datasync:memberships']['mem-1']);
     }
 
+    /**
+     * General Access Manager surface rather than a DataSync scope, but it is here because DataSync
+     * is what needs it: a User record is authorised through "users", and the SDK previously had no
+     * way to write that key, only "uuids". The two are separate scopes on the wire.
+     */
+    public function testUserScopeIsSeparateFromTheUuidScope(): void
+    {
+        $body = $this->body(
+            $this->pubnub->grantToken()
+                ->ttl(60)
+                ->addUserResources(['alice' => ['get' => true]])
+                ->addUuidResources(['alice' => ['read' => true]])
+                ->addUserPatterns(['^alice-.*$' => ['get' => true]])
+        );
+
+        $this->assertSame(32, $body['permissions']['resources']['users']['alice']);
+        $this->assertSame(1, $body['permissions']['resources']['uuids']['alice']);
+        $this->assertSame(32, $body['permissions']['patterns']['users']['^alice-.*$']);
+    }
+
     public function testDataSyncPatternsUseTheirOwnScopeKeys(): void
     {
         $body = $this->body(

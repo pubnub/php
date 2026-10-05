@@ -3,6 +3,7 @@
 namespace PubNubTests\integrational\dataSync;
 
 use PubNubTestCase;
+use PubNub\Exceptions\PubNubValidationException;
 use PubNub\Models\Consumer\DataSync\PNDataSyncDeleteResult;
 use PubNub\Models\Consumer\DataSync\PNDataSyncEntitiesResult;
 use PubNub\Models\Consumer\DataSync\PNDataSyncEntityResult;
@@ -94,6 +95,22 @@ class DataSyncEndpointTest extends PubNubTestCase
 
         $this->assertInstanceOf(PNDataSyncDeleteResult::class, $result);
         $this->assertTrue($result->isSuccess());
+    }
+
+    /**
+     * envelope() reports errors instead of throwing them, and that has to include the checks made
+     * before anything is sent. A fetch with no identifier addresses the collection rather than a
+     * record, so letting it through would have answered a different question than the one asked.
+     */
+    public function testEnvelopeReportsAValidationFailureWithoutSendingTheRequest(): void
+    {
+        // No stub is registered, so reaching the transport at all would fail the test.
+        $envelope = $this->pubnub_demo->dataSync()->getEntity()->envelope();
+
+        $this->assertTrue($envelope->isError());
+        $this->assertNull($envelope->getResult());
+        $this->assertInstanceOf(PubNubValidationException::class, $envelope->getStatus()->getException());
+        $this->assertSame('entityId missing', $envelope->getStatus()->getException()->getMessage());
     }
 
     /**
