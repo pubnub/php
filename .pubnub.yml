@@ -1,8 +1,13 @@
 name: php
-version: 9.0.3
+version: 10.0.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2026-10-05
+    version: 10.0.0
+    changes:
+      - type: feature
+        text: "Added Data Sync feature support."
   - date: 2026-07-27
     version: 9.0.3
     changes:
@@ -601,8 +606,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-9.0.3.zip
-            location: https://github.com/pubnub/php/releases/tag/9.0.3
+            package-name: php-10.0.0.zip
+            location: https://github.com/pubnub/php/releases/tag/10.0.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0

@@ -1,3 +1,9 @@
+## 10.0.0
+October 05 2026
+
+#### Added
+- Added Data Sync feature support.
+
 ## 9.0.3
 July 27 2026
 
