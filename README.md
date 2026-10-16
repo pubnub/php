@@ -1,3 +1,5 @@
+<img width="1920" height="600" alt="php-header" src="https://github.com/user-attachments/assets/0b1910d9-9955-49d5-b73a-9eca4142bb6d" />
+
 # PubNub PHP SDK
 
 [![Packagist](https://img.shields.io/packagist/v/pubnub/pubnub.svg)](https://packagist.org/packages/pubnub/pubnub) [![Build Status](https://travis-ci.com/pubnub/php.svg?branch=master)](https://travis-ci.com/pubnub/php) [![codecov](https://codecov.io/gh/pubnub/php/branch/master/graph/badge.svg)](https://codecov.io/gh/pubnub/php)
