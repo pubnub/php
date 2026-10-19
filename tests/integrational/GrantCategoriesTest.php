@@ -23,7 +23,7 @@ use PubNub\PubNub;
 class GrantCategoriesTest extends TestCase
 {
     /** Grants and revokes take effect asynchronously, so list calls are retried for up to this long. */
-    private const PROPAGATION_TIMEOUT_SECONDS = 10;
+    private const PROPAGATION_TIMEOUT_SECONDS = 30;
 
     private const POLL_INTERVAL_MICROSECONDS = 500000;
 
