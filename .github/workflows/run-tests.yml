@@ -37,6 +37,11 @@ jobs:
       DATASYNC_ENTITY_CLASS: "integration-test-vehicle"
       DATASYNC_ENTITY_CLASS_PROJECTIONS: "integration-test-vehicle-v2"
       DATASYNC_ENTITY_RELATIONSHIP: "integration-test-ownership-v3"
+      # Category grants need their own keyset with Get All enforcement enabled. Without these the
+      # category grant tests skip themselves rather than fail.
+      CATEGORY_PUBLISH_KEY: ${{ secrets.SDK_CAT_PUB_KEY }}
+      CATEGORY_SUBSCRIBE_KEY: ${{ secrets.SDK_CAT_SUB_KEY }}
+      CATEGORY_SECRET_KEY: ${{ secrets.SDK_CAT_SEC_KEY }}
     steps:
       - name: Checkout project
         uses: actions/checkout@v4

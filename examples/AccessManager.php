@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use PubNub\PubNub;
 use PubNub\PNConfiguration;
+use PubNub\Enums\PNGrantCategory;
 use PubNub\Exceptions\PubNubServerException;
 
 // Get keys from environment variables with defaults
@@ -542,6 +543,35 @@ try {
     }
 } catch (Exception $e) {
     printResult("Grant pattern-based token", false, $e->getMessage());
+}
+// snippet.end
+
+echo "\n";
+
+// Step 10: Category permissions
+echo "Step 10: Category permissions for listing App Context metadata\n";
+echo "--------------------------------------------------------------\n";
+
+// snippet.grant_token_categories
+try {
+    $categoryToken = $admin->grantToken()
+        ->ttl(15)
+        ->authorizedUuid('regular-user')
+        ->categories([
+            PNGrantCategory::CHANNELS => ['get' => true], // List all channel metadata
+            PNGrantCategory::UUIDS => ['get' => true] // List all uuid metadata
+        ])
+        ->sync();
+
+    $parsedCategoryToken = $admin->parseToken($categoryToken);
+    $channelsCategory = $parsedCategoryToken->getChannelsCategory();
+    $uuidsCategory = $parsedCategoryToken->getUuidsCategory();
+    printResult(
+        "Grant token with categories",
+        $channelsCategory && $channelsCategory->hasGet() && $uuidsCategory && $uuidsCategory->hasGet()
+    );
+} catch (Exception $e) {
+    printResult("Grant token with categories", false, $e->getMessage());
 }
 // snippet.end
 

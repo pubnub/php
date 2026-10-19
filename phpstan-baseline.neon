@@ -2736,21 +2736,6 @@ parameters:
 			path: src/PubNub/Models/Consumer/AccessManager/PNAccessManagerTokenResult.php
 
 		-
-			message: "#^Constructor of class PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNPAMEntityData has an unused parameter \\$getEnabled\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/AccessManager/PNPAMEntityData.php
-
-		-
-			message: "#^Constructor of class PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNPAMEntityData has an unused parameter \\$joinEnabled\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/AccessManager/PNPAMEntityData.php
-
-		-
-			message: "#^Constructor of class PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNPAMEntityData has an unused parameter \\$updateEnabled\\.$#"
-			count: 1
-			path: src/PubNub/Models/Consumer/AccessManager/PNPAMEntityData.php
-
-		-
 			message: "#^Method PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNPAMEntityData\\:\\:__construct\\(\\) has parameter \\$authKeys with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/PubNub/Models/Consumer/AccessManager/PNPAMEntityData.php
@@ -4974,36 +4959,6 @@ parameters:
 			message: "#^Method Tests\\\\Functional\\\\GrantTest\\:\\:testValidatesFlags\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/functional/GrantTest.php
-
-		-
-			message: "#^Call to method getChannelResource\\(\\) on an unknown class PubNub\\\\PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNAccessManagerTokenResult\\.$#"
-			count: 8
-			path: tests/functional/GrantToken.php
-
-		-
-			message: "#^Call to method getTtl\\(\\) on an unknown class PubNub\\\\PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNAccessManagerTokenResult\\.$#"
-			count: 1
-			path: tests/functional/GrantToken.php
-
-		-
-			message: "#^Call to method getUuid\\(\\) on an unknown class PubNub\\\\PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNAccessManagerTokenResult\\.$#"
-			count: 1
-			path: tests/functional/GrantToken.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\GrantTokenTest\\:\\:testParseToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/GrantToken.php
-
-		-
-			message: "#^Method Tests\\\\Functional\\\\GrantTokenTest\\:\\:testRequestToken\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/functional/GrantToken.php
-
-		-
-			message: "#^PHPDoc tag @var contains unknown class PubNub\\\\PubNub\\\\Models\\\\Consumer\\\\AccessManager\\\\PNAccessManagerTokenResult\\.$#"
-			count: 1
-			path: tests/functional/GrantToken.php
 
 		-
 			message: "#^Method Tests\\\\Functional\\\\ExposedHereNow\\:\\:buildParams\\(\\) return type has no value type specified in iterable type array\\.$#"

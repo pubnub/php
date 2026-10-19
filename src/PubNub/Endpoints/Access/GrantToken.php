@@ -5,6 +5,7 @@ namespace PubNub\Endpoints\Access;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNubUtil;
+use PubNub\Enums\PNGrantCategory;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Exceptions\PubNubTokenParseException;
@@ -44,6 +45,9 @@ class GrantToken extends Endpoint
 
     /** @var array<string, array<string, array<array-key, string>>> */
     protected $dataSyncProjections = [];
+
+    /** @var array<string, int> */
+    protected $categories = [];
 
     private $channels = [];
 
@@ -281,6 +285,65 @@ class GrantToken extends Endpoint
     }
 
     /**
+     * Category-level App Context permissions, keyed by category (see PNGrantCategory). Only "get" is
+     * accepted, and resource-level or pattern grants do not imply it:
+     *
+     *     ->categories([
+     *         PNGrantCategory::CHANNELS => ['get' => true],
+     *         PNGrantCategory::UUIDS => ['get' => true],
+     *     ])
+     *
+     * @param array<string, array<string, bool>> $categories
+     * @return $this
+     * @throws PubNubValidationException on an unknown category or any permission other than get. The
+     *     server rejects the whole grant for either, so it is reported before the request is sent.
+     */
+    public function categories(array $categories)
+    {
+        $this->validateCategories($categories);
+        $this->categories = [];
+
+        foreach ($categories as $category => $permissions) {
+            $bitmask = $this->parsePermissions($permissions);
+
+            if ($bitmask > 0) {
+                $this->categories[$category] = $bitmask;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array<mixed, mixed> $categories
+     * @throws PubNubValidationException
+     */
+    private function validateCategories(array $categories): void
+    {
+        foreach ($categories as $category => $permissions) {
+            if (!in_array($category, PNGrantCategory::all(), true)) {
+                throw new PubNubValidationException(sprintf(
+                    'unknown category "%s", expected one of: %s',
+                    $category,
+                    join(', ', PNGrantCategory::all())
+                ));
+            }
+
+            if (!is_array($permissions)) {
+                throw new PubNubValidationException("category \"$category\" must map a permission name to a flag");
+            }
+
+            foreach ($permissions as $permission => $granted) {
+                if ($permission !== 'get' && $granted) {
+                    throw new PubNubValidationException(
+                        "category \"$category\" accepts only the get permission, \"$permission\" given"
+                    );
+                }
+            }
+        }
+    }
+
+    /**
      * Restricts which fields of a DataSync record the token holder can see.
      *
      * Expects up to two scopes, "resources" for exact identifiers and "patterns" for regular
@@ -435,6 +498,9 @@ class GrantToken extends Endpoint
         if ($this->patterns) {
             $params['permissions']['patterns'] = $this->patterns;
         }
+        if ($this->categories) {
+            $params['permissions']['categories'] = $this->categories;
+        }
         if ($this->authorizedUuid) {
             $params['permissions']['uuid'] = $this->authorizedUuid;
         }
@@ -485,7 +551,7 @@ class GrantToken extends Endpoint
 
     public function parseToken($token)
     {
-        $tokenSanitized = str_replace(['-', '_'], ['/', '+'], $token);
+        $tokenSanitized = strtr($token, '-_', '+/');
         $cborBytes = base64_decode($tokenSanitized);
 
         if (!$cborBytes) {

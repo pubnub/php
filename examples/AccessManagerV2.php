@@ -4,6 +4,7 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 
 use PubNub\PubNub;
 use PubNub\PNConfiguration;
+use PubNub\Enums\PNGrantCategory;
 
 // snippet.setup
 $config = new PNConfiguration();
@@ -117,4 +118,29 @@ $result = $pubnub->grant()
     ->write(true)
     ->ttl(5)
     ->sync();
+// snippet.end
+
+// snippet.grant_categories
+try {
+    $pubnub->grant()
+        ->categories([PNGrantCategory::CHANNELS, PNGrantCategory::UUIDS]) // list all channel and uuid metadata
+        ->authKeys("my_authkey") // required for categories
+        ->get(true) // the only permission allowed for categories
+        ->ttl(15)
+        ->sync();
+    print("Category grant successful\n");
+
+    // Revoke by granting the same categories again with get(false)
+    $pubnub->grant()
+        ->categories([PNGrantCategory::CHANNELS, PNGrantCategory::UUIDS])
+        ->authKeys("my_authkey")
+        ->get(false)
+        ->sync();
+    print("Category revoke successful\n");
+} catch (\PubNub\Exceptions\PubNubServerException $exception) {
+    print_r("Message: " . $exception->getMessage() . "\n");
+    print_r("Status: " . $exception->getStatusCode() . "\n");
+} catch (\PubNub\Exceptions\PubNubException $exception) {
+    print_r("Message: " . $exception->getMessage());
+}
 // snippet.end

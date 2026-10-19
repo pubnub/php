@@ -5,6 +5,7 @@ namespace PubNub\Endpoints\Access;
 use PubNub\Endpoints\Endpoint;
 use PubNub\Exceptions\PubNubValidationException;
 use PubNub\PubNubUtil;
+use PubNub\Enums\PNGrantCategory;
 use PubNub\Enums\PNHttpMethod;
 use PubNub\Enums\PNOperationType;
 use PubNub\Models\Consumer\AccessManager\PNAccessManagerAbstractResult;
@@ -24,6 +25,9 @@ class Grant extends Endpoint
 
     /** @var string[] */
     protected $groups = [];
+
+    /** @var string[] */
+    protected $categories = [];
 
     /** @var  bool */
     protected $read;
@@ -86,6 +90,20 @@ class Grant extends Endpoint
     public function channelGroups($channelsGroups)
     {
         $this->groups = PubNubUtil::extendArray($this->groups, $channelsGroups);
+
+        return $this;
+    }
+
+    /**
+     * App Context categories whose metadata the auth keys may list in full, see PNGrantCategory.
+     * Requires authKeys() and accepts only the get permission: get(true) grants, get(false) revokes.
+     *
+     * @param string|string[] $categories
+     * @return $this
+     */
+    public function categories($categories)
+    {
+        $this->categories = PubNubUtil::extendArray($this->categories, $categories);
 
         return $this;
     }
@@ -200,6 +218,41 @@ class Grant extends Endpoint
         ) {
             throw new PubNubValidationException("At least one flag should be specified");
         }
+
+        $this->validateCategories();
+    }
+
+    /**
+     * @throws PubNubValidationException
+     */
+    private function validateCategories(): void
+    {
+        if (count($this->categories) === 0) {
+            return;
+        }
+
+        $unsupported = array_diff($this->categories, PNGrantCategory::all());
+        if (count($unsupported) > 0) {
+            throw new PubNubValidationException(sprintf(
+                'Unsupported category "%s", expected one of: %s',
+                join(', ', $unsupported),
+                join(', ', PNGrantCategory::all())
+            ));
+        }
+
+        $authKeys = array_filter($this->authKeys, fn($authKey) => trim((string) $authKey) !== '');
+        if (count($authKeys) === 0) {
+            throw new PubNubValidationException("Category grants require at least one auth key");
+        }
+
+        $otherFlags = [$this->read, $this->write, $this->manage, $this->delete, $this->update, $this->join];
+        if (count(array_filter($otherFlags)) > 0) {
+            throw new PubNubValidationException("Only the get permission is allowed for categories");
+        }
+
+        if ($this->get === null) {
+            throw new PubNubValidationException("Category grants need get(true) to grant or get(false) to revoke");
+        }
     }
 
     /**
@@ -251,6 +304,10 @@ class Grant extends Endpoint
 
         if (count($this->groups) > 0) {
             $params["channel-group"] = PubNubUtil::joinItems($this->groups);
+        }
+
+        if (count($this->categories) > 0) {
+            $params["category"] = PubNubUtil::joinItems(array_values(array_unique($this->categories)));
         }
 
         if ($this->ttl !== null && $this->ttl >= -1) {

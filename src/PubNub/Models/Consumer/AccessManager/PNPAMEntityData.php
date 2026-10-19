@@ -2,7 +2,6 @@
 
 namespace PubNub\Models\Consumer\AccessManager;
 
-
 use PubNub\PubNubUtil;
 
 abstract class PNPAMEntityData
@@ -50,17 +49,27 @@ abstract class PNPAMEntityData
      * @param bool $joinEnabled
      * @param int $ttl
      */
-    public function __construct($name, array $authKeys, $readEnabled, $writeEnabled, $manageEnabled, $deleteEnabled, $getEnabled, $updateEnabled, $joinEnabled, $ttl)
-    {
+    public function __construct(
+        $name,
+        array $authKeys,
+        $readEnabled,
+        $writeEnabled,
+        $manageEnabled,
+        $deleteEnabled,
+        $getEnabled,
+        $updateEnabled,
+        $joinEnabled,
+        $ttl
+    ) {
         $this->name = $name;
         $this->authKeys = $authKeys;
         $this->readEnabled = $readEnabled;
         $this->writeEnabled = $writeEnabled;
         $this->manageEnabled = $manageEnabled;
         $this->deleteEnabled = $deleteEnabled;
-        $this->getEnabled = $manageEnabled;
-        $this->updateEnabled = $manageEnabled;
-        $this->joinEnabled = $manageEnabled;
+        $this->getEnabled = $getEnabled;
+        $this->updateEnabled = $updateEnabled;
+        $this->joinEnabled = $joinEnabled;
         $this->ttl = $ttl;
     }
 
