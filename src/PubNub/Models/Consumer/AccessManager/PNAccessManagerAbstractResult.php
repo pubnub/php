@@ -4,6 +4,9 @@ namespace PubNub\Models\Consumer\AccessManager;
 
 use PubNub\PubNubUtil;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class PNAccessManagerAbstractResult
 {
     /** @var  string */
@@ -25,7 +28,7 @@ class PNAccessManagerAbstractResult
     protected $users;
 
     /** @var array<string, PNAccessManagerCategoryData> */
-    protected $categories;
+    protected $categories = [];
 
     /** @var  bool */
     protected $readEnabled;
@@ -99,7 +102,7 @@ class PNAccessManagerAbstractResult
 
     /**
      * @param array $jsonInput
-     * @return mixed
+     * @return static
      */
     public static function fromJson($jsonInput)
     {
@@ -211,7 +214,7 @@ class PNAccessManagerAbstractResult
             }
         }
 
-        return new PNAccessManagerAbstractResult(
+        return new static(
             $jsonInput['level'],
             $jsonInput['subscribe_key'],
             $constructedChannels,

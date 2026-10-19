@@ -4,6 +4,7 @@ namespace Tests\Functional;
 
 use PubNub\Endpoints\Access\Audit;
 use PubNub\Enums\PNHttpMethod;
+use PubNub\Models\Consumer\AccessManager\PNAccessManagerAuditResult;
 use PubNub\PubNub;
 use PubNub\PubNubUtil;
 
@@ -79,6 +80,24 @@ class AuditTest extends \PubNubTestCase
             )
         ], $this->audit->buildParams());
     }
+
+    public function testResponseIsParsedIntoAnAuditResult(): void
+    {
+        $result = $this->audit->createResponse([
+            'payload' => [
+                'level' => 'channel',
+                'subscribe_key' => 'sub-key',
+                'channels' => [
+                    'ch' => ['auths' => ['auth_key' => ['r' => 1, 'w' => 0, 'm' => 0, 'ttl' => 1440]]],
+                ],
+            ],
+        ]);
+
+        $this->assertInstanceOf(PNAccessManagerAuditResult::class, $result);
+        $this->assertSame('channel', $result->getLevel());
+        $this->assertTrue($result->getChannels()['ch']->getAuthKeys()['auth_key']->isReadEnabled());
+        $this->assertFalse($result->getChannels()['ch']->getAuthKeys()['auth_key']->isWriteEnabled());
+    }
 }
 
 // phpcs:ignore PSR1.Classes.ClassDeclaration
@@ -102,5 +121,13 @@ class AuditExposed extends Audit
     public function buildPath()
     {
         return parent::buildPath();
+    }
+
+    /**
+     * @param array<string, mixed> $result
+     */
+    public function createResponse($result): PNAccessManagerAuditResult
+    {
+        return parent::createResponse($result);
     }
 }

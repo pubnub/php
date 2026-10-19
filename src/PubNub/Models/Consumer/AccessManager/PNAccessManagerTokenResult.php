@@ -32,7 +32,7 @@ class PNAccessManagerTokenResult
     private $uuid;
 
     /** @var array<string, int> */
-    private $categories;
+    private $categories = [];
 
     /** @var PNDataSyncProjections|null */
     private $dataSyncProjections;
