@@ -297,6 +297,10 @@ abstract class Endpoint
             $params['channel-group'] = PubNubUtil::urlEncode($params['channel-group']);
         }
 
+        if (array_key_exists('category', $params)) {
+            $params['category'] = PubNubUtil::urlEncode($params['category']);
+        }
+
         return $params;
     }
 

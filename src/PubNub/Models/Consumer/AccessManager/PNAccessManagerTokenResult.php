@@ -2,6 +2,7 @@
 
 namespace PubNub\Models\Consumer\AccessManager;
 
+use PubNub\Enums\PNGrantCategory;
 use PubNub\Models\Access\Permissions;
 
 class PNAccessManagerTokenResult
@@ -30,12 +31,18 @@ class PNAccessManagerTokenResult
     /** @var string */
     private $uuid;
 
+    /** @var array<string, int> */
+    private $categories = [];
+
     /** @var PNDataSyncProjections|null */
     private $dataSyncProjections;
 
     /** @var bool */
     private $dataSyncProjectionsParsed = false;
 
+    /**
+     * @param array<string, int> $categories
+     */
     final public function __construct(
         $version,
         $timestamp,
@@ -44,7 +51,8 @@ class PNAccessManagerTokenResult
         $patterns,
         $metadata,
         $uuid,
-        $sig
+        $sig,
+        array $categories = []
     ) {
         $this->version = $version;
         $this->timestamp = $timestamp;
@@ -54,6 +62,7 @@ class PNAccessManagerTokenResult
         $this->metadata = $metadata;
         $this->uuid = $uuid;
         $this->sig = $sig;
+        $this->categories = $categories;
     }
 
     public function getVersion()
@@ -198,6 +207,48 @@ class PNAccessManagerTokenResult
         }
     }
 
+    /**
+     * Category-level permissions as the token stores them, keyed "chan" and "uuid".
+     *
+     * @return array<string, int>
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * The channels category, whose get permission allows listing all channel metadata.
+     *
+     * @return Permissions|false false when the token carries no channels category.
+     */
+    public function getChannelsCategory()
+    {
+        return $this->getCategory('chan', PNGrantCategory::CHANNELS);
+    }
+
+    /**
+     * The uuids category, whose get permission allows listing all uuid metadata.
+     *
+     * @return Permissions|false false when the token carries no uuids category.
+     */
+    public function getUuidsCategory()
+    {
+        return $this->getCategory('uuid', PNGrantCategory::UUIDS);
+    }
+
+    /**
+     * @return Permissions|false
+     */
+    private function getCategory(string $type, string $name)
+    {
+        if (isset($this->categories[$type])) {
+            return new Permissions($name, $this->categories[$type]);
+        } else {
+            return false;
+        }
+    }
+
     public function getMetadata()
     {
         return $this->metadata;
@@ -226,7 +277,7 @@ class PNAccessManagerTokenResult
 
     public function getSignature()
     {
-        return str_replace(['/', '+'], ['-', '_'], base64_encode($this->sig));
+        return strtr(base64_encode($this->sig), '+/', '-_');
     }
 
     public function getUuid()
@@ -244,7 +295,8 @@ class PNAccessManagerTokenResult
             $token['pat'],
             $token['meta'],
             (isset($token['uuid']) ? $token['uuid'] : null),
-            $token['sig']
+            $token['sig'],
+            $token['cat'] ?? []
         );
     }
 
@@ -279,6 +331,14 @@ class PNAccessManagerTokenResult
             'signature' => $this->getSignature(),
             'uuid' => $this->uuid,
         ];
+
+        if (!empty($this->categories)) {
+            $categories = [];
+            foreach ($this->categories as $type => $value) {
+                $categories = array_merge($categories, (new Permissions($type, $value))->toArray());
+            }
+            $result['categories'] = $categories;
+        }
 
         $projections = $this->getDataSyncProjections();
 

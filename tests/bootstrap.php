@@ -29,6 +29,9 @@ if (file_exists($envFile)) {
         'DATASYNC_ENTITY_CLASS_PROJECTIONS',
         'DATASYNC_ENTITY_RELATIONSHIP',
         'DATASYNC_ORIGIN',
+        'CATEGORY_SUBSCRIBE_KEY',
+        'CATEGORY_PUBLISH_KEY',
+        'CATEGORY_SECRET_KEY',
     ];
 
     foreach ($requiredEnvKeys as $key) {

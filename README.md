@@ -1,114 +1,184 @@
-# PubNub PHP SDK (V4)
+<img width="1920" height="600" alt="php-header" src="https://github.com/user-attachments/assets/0b1910d9-9955-49d5-b73a-9eca4142bb6d" />
 
-[![Build Status](https://travis-ci.com/pubnub/php.svg?branch=master)](https://travis-ci.com/pubnub/php)
-[![codecov](https://codecov.io/gh/pubnub/php/branch/master/graph/badge.svg)](https://codecov.io/gh/pubnub/php)
-[![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://www.pubnub.com/docs/php/pubnub-php-sdk)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/pubnub/php)
+# PubNub PHP SDK
 
-This is the official PubNub PHP SDK repository.
+[![Packagist](https://img.shields.io/packagist/v/pubnub/pubnub.svg)](https://packagist.org/packages/pubnub/pubnub) [![Build Status](https://travis-ci.com/pubnub/php.svg?branch=master)](https://travis-ci.com/pubnub/php) [![codecov](https://codecov.io/gh/pubnub/php/branch/master/graph/badge.svg)](https://codecov.io/gh/pubnub/php)
 
-PubNub takes care of the infrastructure and APIs needed for the realtime communication layer of your application. Work on your app's logic and let PubNub handle sending and receiving data across the world in less than 100ms.
+PubNub provides global infrastructure for real-time, interactive applications.
 
-The SDK supports PHP 7.4 and 8.x.
+Publish and receive messages in PHP. Use this SDK for PHP server and command-line applications.
 
-## Get keys
+[Documentation](https://www.pubnub.com/docs/sdks/php) · [API reference](https://www.pubnub.com/docs/sdks/php/api-reference/publish-and-subscribe) · [Changelog](https://www.pubnub.com/docs/sdks/php/changelog) · [Support](https://support.pubnub.com/)
 
-You will need the publish and subscribe keys to authenticate your app. Get your keys from the [Admin Portal](https://dashboard.pubnub.com/login).
+## Requirements
 
-## Configure PubNub
+| Requirement | Supported version or setup |
+| --- | --- |
+| PHP | [PHP 8.1 or later](https://packagist.org/packages/pubnub/pubnub) |
+| Dependency manager | [PHP environments supported by the current `pubnub/pubnub` package](https://packagist.org/packages/pubnub/pubnub) |
+| Composer | Composer must be installed and available to the project. |
 
-1. Integrate the PHP SDK into your project:
+## Installation
 
-   * Without composer
+From the Composer project directory:
 
-     1. Clone the following repository: `git clone https://github.com/pubnub/php.git ./pubnub-php`
-     2. Copy the `src` folder to your project.
-     3. Include `autoloader.php` file in your project:
-
-         ```php
-         require_once('src/autoloader.php');
-         ```
-
-     4. Download dependency `monolog` from [https://github.com/Seldaek/monolog](https://github.com/Seldaek/monolog) and copy the `monolog` folder from the `src` folder to the `src` folder of your project.
-     5. Download dependency `psr/Log` from [https://github.com/php-fig/log/tree/master](https://github.com/php-fig/log/tree/master) and copy the `psr` folder to the `src` folder of your project.
-     6. Download dependency `rmccue` from [https://github.com/WordPress/Requests](https://github.com/WordPress/Requests) and copy the `Requests` folder and the file `Requests.php` from the `library` folder to the `src` folder of your project.
-
-   * With composer
-
-     1. Add the PubNub package to your `composer.json` file:
-
-         ```json
-         {
-             "require": {
-                 <!-- include the latest version from the badge at the top -->
-                 "pubnub/pubnub": "10.0.0"
-             }
-         }
-         ```
-
-     2. Run `composer install --no-dev‌` from the command line. This installs the PubNub PHP SDK and all its dependencies in the `vendor` folder of the project.
-
-     3. Include `autoload.php` file in your project:
-
-         ```php
-         require_once('vendor/autoload.php');‌
-         ```
-
-
-2. Configure your keys:
-
-    ```php
-    $pnconf = new PNConfiguration();
-    $pubnub = new PubNub($pnconf);
-
-    $pnconf->setSubscribeKey("mySubscribeKey");
-    $pnconf->setPublishKey("myPublishKey");
-    $pnconf->setUserId("ReplaceWithYourClientIdentifier");
-    ```
-
-## Add event listeners
-
-```php
-class MySubscribeCallback extends SubscribeCallback {
-    function status($pubnub, $status) {
-        if ($status->getCategory() === PNStatusCategory::PNUnexpectedDisconnectCategory) {
-        // This event happens when radio / connectivity is lost
-        } else if ($status->getCategory() === PNStatusCategory::PNConnectedCategory){
-        // Connect event. You can do stuff like publish, and know you'll get it // Or just use the connected event to confirm you are subscribed for // UI / internal notifications, etc
-        } else if ($status->getCategory() === PNStatusCategory::PNDecryptionErrorCategory){
-        // Handle message decryption error. Probably client configured to // encrypt messages and on live data feed it received plain text.
-        }
-    }
-    function message($pubnub, $message){
-    // Handle new message stored in message.message
-    }
-    function presence($pubnub, $presence){
-    // handle incoming presence data
-    }
-}
-
-$subscribeCallback = new MySubscribeCallback();
-$pubnub->addListener($subscribeCallback);
+```sh
+composer require pubnub/pubnub
 ```
 
-## Publish/subscribe
+For other installation methods, see [environment setup](https://www.pubnub.com/docs/sdks/php).
+
+## Quickstart
+
+This example runs in PHP 8.1+ CLI. It subscribes to `hello_world`, publishes one message, and prints the received text.
+
+### Get your keys
+
+1. Open the [PubNub Admin Portal](https://admin.pubnub.com/).
+2. Create an app and a keyset for development, or select an existing development keyset.
+3. Copy its publish key and subscribe key.
+
+If Access Manager is enabled, obtain a token from your trusted backend and call `$pubnub->setToken($token)`. Keep the secret key on the backend.
+
+### Send and receive a message
+
+Create `subscriber.php` and `publisher.php` in the Composer project root. Start `subscriber.php` first.
+
+Replace the key placeholders. Use a User ID that identifies the user or device in your app.
+
+`subscriber.php`:
 
 ```php
+<?php
+// subscriber.php
+require __DIR__ . '/vendor/autoload.php';
+
+use PubNub\Callbacks\SubscribeCallback;
+use PubNub\Exceptions\PubNubUnsubscribeException;
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$config = new PNConfiguration();
+$config->setSubscribeKey('YOUR_SUBSCRIBE_KEY');
+$config->setPublishKey('YOUR_PUBLISH_KEY');
+$config->setUserId('hello-world-subscriber');
+
+$pubnub = new PubNub($config);
+
+$listener = new class extends SubscribeCallback {
+    public function status($pubnub, $status)
+    {
+    }
+
+    public function message($pubnub, $message)
+    {
+        echo $message->getMessage() . PHP_EOL;
+        throw (new PubNubUnsubscribeException())
+            ->setChannels(['hello_world']);
+    }
+
+    public function presence($pubnub, $presence)
+    {
+    }
+};
+
+$pubnub->addListener($listener);
 $pubnub->subscribe()
-    ->channels("hello_world")
+    ->channels(['hello_world'])
     ->execute();
+```
+
+Then create `publisher.php`:
+
+```php
+<?php
+// publisher.php
+require __DIR__ . '/vendor/autoload.php';
+
+use PubNub\PNConfiguration;
+use PubNub\PubNub;
+
+$config = new PNConfiguration();
+$config->setSubscribeKey('YOUR_SUBSCRIBE_KEY');
+$config->setPublishKey('YOUR_PUBLISH_KEY');
+$config->setUserId('hello-world-publisher');
+
+$pubnub = new PubNub($config);
 
 $pubnub->publish()
-    ->channel("hello_world")
-    ->message("Hello PubNub!")
+    ->channel('hello_world')
+    ->message('Hello world')
     ->sync();
 ```
 
-## Documentation
+### Run the example
 
-* [API reference for PHP ](https://www.pubnub.com/docs/sdks/php)
+```sh
+# Terminal 1
+php subscriber.php
 
+# Terminal 2, after the subscriber is running
+php publisher.php
+```
 
-## Support
+The subscriber terminal should show:
 
-If you **need help** or have a **general question**, contact support@pubnub.com.
+```text
+Hello world
+```
+
+PHP Subscribe is blocking. The example throws `PubNubUnsubscribeException` after receiving the expected message so the subscribe loop exits.
+
+For a complete application, see the [getting started guide](https://www.pubnub.com/docs/sdks/php).
+
+## Next steps
+
+| Task | Documentation |
+| --- | --- |
+| Configure the client | [Configuration](https://www.pubnub.com/docs/sdks/php/api-reference/configuration) |
+| Work with subscriptions and messages | [Publish & Subscribe](https://www.pubnub.com/docs/sdks/php/api-reference/publish-and-subscribe) |
+| Check channel occupancy | [Presence](https://www.pubnub.com/docs/sdks/php/api-reference/presence) |
+| Read message history | [Message Persistence](https://www.pubnub.com/docs/sdks/php/api-reference/storage-and-playback) |
+
+## Build with an AI coding assistant
+
+The [PubNub MCP server](https://www.pubnub.com/docs/ai/pubnub-mcp-server) gives an AI coding assistant access to PubNub SDK documentation and PubNub APIs. Connect the assistant to the hosted server at [`https://mcp.pubnub.com`](https://mcp.pubnub.com), or run `npx @pubnub/mcp@latest` locally.
+
+The [server repository](https://github.com/pubnub/pubnub-mcp-server) has setup steps for VS Code, Cursor, Claude Code, Claude Desktop, Codex, Gemini CLI, and OpenCode.
+
+## Before production
+
+Use [Access Manager](https://www.pubnub.com/docs/sdks/php/api-reference/access-manager) to grant each client the permissions it needs. Keep the secret key on your backend. Never include it in a distributed client.
+
+PHP Subscribe is blocking. Explicitly end an active subscription when its owner is finished; `PubNubUnsubscribeException` can be thrown from a subscribe callback to exit the loop.
+
+Live delivery through PubNub SDKs is at-most-once. A subscriber can miss messages while disconnected or if its buffer overflows. For longer-gap recovery, see [Message Persistence](https://www.pubnub.com/docs/sdks/php/api-reference/storage-and-playback).
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| PHP cannot load PubNub classes | Run `composer require pubnub/pubnub`, load `vendor/autoload.php`, and use PHP 8.1+. See the [PHP SDK](https://www.pubnub.com/docs/sdks/php) and [Packagist](https://packagist.org/packages/pubnub/pubnub). |
+| A publish succeeds but no message appears | Check the message handler, subscription readiness, keyset, and channel name. |
+| The PHP CLI process appears to hang after subscribing | Subscribe is intentionally blocking. Exit the active subscribe loop when the owning workflow is finished; the Quickstart uses `PubNubUnsubscribeException`. See [Publish & Subscribe](https://www.pubnub.com/docs/sdks/php/api-reference/publish-and-subscribe). |
+| Extra clients or duplicate messages during development | For long-running PHP workers, reuse the PubNub client rather than creating another subscriber for every job. Do not leave subscribe loops active after their owning worker/workflow ends. |
+
+For setup help, see [troubleshooting](https://www.pubnub.com/docs/sdks/php). Check [network status](https://status.pubnub.com/) for service incidents.
+
+## Releases
+
+Read the [changelog](https://www.pubnub.com/docs/sdks/php/changelog) before upgrading.
+
+For a major version change, review the migration guidance linked from the [PHP SDK documentation](https://www.pubnub.com/docs/sdks/php) and the [PHP SDK changelog](https://www.pubnub.com/docs/sdks/php/changelog).
+
+## Support and contributions
+
+For setup or account help, contact [PubNub Support](https://support.pubnub.com/).
+
+For a reproducible SDK bug, use [GitHub Issues](https://github.com/pubnub/php/issues). Include the SDK version, runtime, and a small reproduction with credentials removed.
+
+Install Composer development dependencies, run the repository test suite, and include tests for behavioral changes before opening a pull request.
+
+## License
+
+See the [PubNub Software Development Kit License](https://github.com/pubnub/php/blob/master/LICENSE).

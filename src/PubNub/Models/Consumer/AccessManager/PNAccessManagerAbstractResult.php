@@ -1,10 +1,12 @@
 <?php
 
-namespace  PubNub\Models\Consumer\AccessManager;
-
+namespace PubNub\Models\Consumer\AccessManager;
 
 use PubNub\PubNubUtil;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class PNAccessManagerAbstractResult
 {
     /** @var  string */
@@ -24,6 +26,9 @@ class PNAccessManagerAbstractResult
 
     /** @var  array */
     protected $users;
+
+    /** @var array<string, PNAccessManagerCategoryData> */
+    protected $categories = [];
 
     /** @var  bool */
     protected $readEnabled;
@@ -61,14 +66,30 @@ class PNAccessManagerAbstractResult
      * @param bool $g
      * @param bool $u
      * @param bool $j
+     * @param array<string, PNAccessManagerCategoryData> $categories
      */
-    public function __construct($level, $subscribeKey, array $channels, array $channelGroups, array $users, $ttl, $r, $w, $m, $d, $g, $u, $j)
-    {
+    public function __construct(
+        $level,
+        $subscribeKey,
+        array $channels,
+        array $channelGroups,
+        array $users,
+        $ttl,
+        $r,
+        $w,
+        $m,
+        $d,
+        $g,
+        $u,
+        $j,
+        array $categories = []
+    ) {
         $this->level = $level;
         $this->subscribeKey = $subscribeKey;
         $this->channels = $channels;
         $this->channelGroups = $channelGroups;
         $this->users = $users;
+        $this->categories = $categories;
         $this->ttl = $ttl;
         $this->readEnabled = $r;
         $this->writeEnabled = $w;
@@ -81,13 +102,14 @@ class PNAccessManagerAbstractResult
 
     /**
      * @param array $jsonInput
-     * @return mixed
+     * @return static
      */
     public static function fromJson($jsonInput)
     {
         $constructedChannels = [];
         $constructedGroups = [];
         $constructedUsers = [];
+        $constructedCategories = [];
         list($r, $w, $m, $d, $g, $u, $j, $ttl) = PubNubUtil::fetchPamPermissionsFrom($jsonInput);
 
         if (array_key_exists('channel', $jsonInput)) {
@@ -99,7 +121,17 @@ class PNAccessManagerAbstractResult
             }
 
             $constructedChannels[$channelName] = new PNAccessManagerChannelData(
-                $channelName, $constructedAuthKeys, null, null, null, null, null, null, null, $ttl);
+                $channelName,
+                $constructedAuthKeys,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                $ttl
+            );
         }
 
         if (array_key_exists('channel-group', $jsonInput)) {
@@ -174,7 +206,15 @@ class PNAccessManagerAbstractResult
             }
         }
 
-        return new PNAccessManagerAbstractResult(
+        if (array_key_exists('categories', $jsonInput) && is_array($jsonInput['categories'])) {
+            foreach ($jsonInput['categories'] as $name => $value) {
+                if (is_array($value)) {
+                    $constructedCategories[$name] = PNAccessManagerCategoryData::fromJson($name, $value);
+                }
+            }
+        }
+
+        return new static(
             $jsonInput['level'],
             $jsonInput['subscribe_key'],
             $constructedChannels,
@@ -187,7 +227,8 @@ class PNAccessManagerAbstractResult
             $d,
             $g,
             $u,
-            $j
+            $j,
+            $constructedCategories
         );
     }
 
@@ -237,6 +278,16 @@ class PNAccessManagerAbstractResult
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Category-level permissions keyed by category, see PNGrantCategory.
+     *
+     * @return array<string, PNAccessManagerCategoryData>
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 
     /**
