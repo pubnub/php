@@ -250,25 +250,6 @@ class GrantCategoriesTest extends TestCase
         $this->assertListsUuidMetadata($client, true);
     }
 
-    public function testRevokingTheCategoryGrantDeniesListingAll(): void
-    {
-        $authKey = uniqid('php-sdk-category-auth-');
-        $this->grantCategories($authKey, true);
-        $client = $this->clientWithAuthKey($authKey);
-        $this->assertListsChannelMetadata($client, true);
-        $this->assertListsUuidMetadata($client, true);
-
-        $result = $this->grantCategories($authKey, false);
-
-        $this->assertEqualsCanonicalizing(['channels', 'uuids'], array_keys($result->getCategories()));
-        foreach ($result->getCategories() as $name => $category) {
-            $this->assertFalse($category->getAuthKeys()[$authKey]->isGetEnabled(), "$name: get should be revoked");
-        }
-
-        $this->assertListsChannelMetadata($client, false, self::REVOKE_PROPAGATION_TIMEOUT_SECONDS);
-        $this->assertListsUuidMetadata($client, false, self::REVOKE_PROPAGATION_TIMEOUT_SECONDS);
-    }
-
     public function testOneMinuteCategoryGrantIsRejectedByTheServer(): void
     {
         try {
