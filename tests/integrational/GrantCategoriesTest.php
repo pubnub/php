@@ -25,9 +25,6 @@ class GrantCategoriesTest extends TestCase
     /** Grants take effect asynchronously, so list calls are retried for up to this long. */
     private const PROPAGATION_TIMEOUT_SECONDS = 30;
 
-    /** Revokes currently take over a minute to propagate, in both PAMv2 and PAMv3. */
-    private const REVOKE_PROPAGATION_TIMEOUT_SECONDS = 90;
-
     private const POLL_INTERVAL_MICROSECONDS = 500000;
 
     private PubNub $admin;
