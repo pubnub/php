@@ -1,3 +1,14 @@
+## 10.1.0
+October 20 2026
+
+#### Added
+- `grantToken()->categories()` and `grant()->categories()` grant the get permission on `PNGrantCategory::CHANNELS`, `PNGrantCategory::UUIDS`, or both. Keysets that restrict App Context listing only allow `getAllChannelMetadata()` and `getAllUUIDMetadata()` for clients holding these grants. `parseToken()` exposes the granted categories through `getChannelsCategory()` and `getUuidsCategory()`, and Grant results expose them through `getCategories()`. PAMv2 category grants require an auth key and accept only `get(true)` to grant or `get(false)` to revoke.
+
+#### Fixed
+- Every `-` or `_` in a token flipped one bit of the decoded data. Authorization was not affected, because the server validates the raw token, but values read from parsed tokens could be wrong, for example full-access permissions read as 251 instead of 255, or timestamps off by up to about 18 hours. If you stored or compared `getSignature()` values, recompute them after upgrading.
+- Fixed `isGetEnabled()`, `isUpdateEnabled()` and `isJoinEnabled()` on channel, channel group and uuid entries of Grant and Audit results returning the manage permission.
+- Fixed `audit()` throwing a `TypeError` on every successful response instead of returning a `PNAccessManagerAuditResult`.
+
 ## 10.0.0
 October 05 2026
 

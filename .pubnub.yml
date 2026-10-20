@@ -1,8 +1,19 @@
 name: php
-version: 10.0.0
+version: 10.1.0
 schema: 1
 scm: github.com/pubnub/php
 changelog:
+  - date: 2026-10-20
+    version: 10.1.0
+    changes:
+      - type: feature
+        text: "`grantToken()->categories()` and `grant()->categories()` grant the get permission on `PNGrantCategory::CHANNELS`, `PNGrantCategory::UUIDS`, or both. Keysets that restrict App Context listing only allow `getAllChannelMetadata()` and `getAllUUIDMetadata()` for clients holding these grants. `parseToken()` exposes the granted categories through `getChannelsCategory()` and `getUuidsCategory()`, and Grant results expose them through `getCategories()`. PAMv2 category grants require an auth key and accept only `get(true)` to grant or `get(false)` to revoke."
+      - type: bug
+        text: "Every `-` or `_` in a token flipped one bit of the decoded data. Authorization was not affected, because the server validates the raw token, but values read from parsed tokens could be wrong, for example full-access permissions read as 251 instead of 255, or timestamps off by up to about 18 hours. If you stored or compared `getSignature()` values, recompute them after upgrading."
+      - type: bug
+        text: "Fixed `isGetEnabled()`, `isUpdateEnabled()` and `isJoinEnabled()` on channel, channel group and uuid entries of Grant and Audit results returning the manage permission."
+      - type: bug
+        text: "Fixed `audit()` throwing a `TypeError` on every successful response instead of returning a `PNAccessManagerAuditResult`."
   - date: 2026-10-05
     version: 10.0.0
     changes:
@@ -606,8 +617,8 @@ sdks:
                     - x86-64
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: php-10.0.0.zip
-            location: https://github.com/pubnub/php/releases/tag/10.0.0
+            package-name: php-10.1.0.zip
+            location: https://github.com/pubnub/php/releases/tag/10.1.0
             requires:
               - name: rmccue/requests
                 min-version: 1.0.0
