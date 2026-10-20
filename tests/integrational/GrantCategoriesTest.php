@@ -22,8 +22,11 @@ use PubNub\PubNub;
  */
 class GrantCategoriesTest extends TestCase
 {
-    /** Grants and revokes take effect asynchronously, so list calls are retried for up to this long. */
+    /** Grants take effect asynchronously, so list calls are retried for up to this long. */
     private const PROPAGATION_TIMEOUT_SECONDS = 30;
+
+    /** Revokes currently take over a minute to propagate, in both PAMv2 and PAMv3. */
+    private const REVOKE_PROPAGATION_TIMEOUT_SECONDS = 90;
 
     private const POLL_INTERVAL_MICROSECONDS = 500000;
 
@@ -105,30 +108,42 @@ class GrantCategoriesTest extends TestCase
             ->sync();
     }
 
-    private function assertListsChannelMetadata(PubNub $client, bool $expectAllowed): void
-    {
+    private function assertListsChannelMetadata(
+        PubNub $client,
+        bool $expectAllowed,
+        int $timeoutSeconds = self::PROPAGATION_TIMEOUT_SECONDS
+    ): void {
         $this->assertListEventually(
             fn() => $client->getAllChannelMetadata()->limit('1')->sync(),
             $expectAllowed,
-            'getAllChannelMetadata'
+            'getAllChannelMetadata',
+            $timeoutSeconds
         );
     }
 
-    private function assertListsUuidMetadata(PubNub $client, bool $expectAllowed): void
-    {
+    private function assertListsUuidMetadata(
+        PubNub $client,
+        bool $expectAllowed,
+        int $timeoutSeconds = self::PROPAGATION_TIMEOUT_SECONDS
+    ): void {
         $this->assertListEventually(
             fn() => $client->getAllUUIDMetadata()->limit('1')->sync(),
             $expectAllowed,
-            'getAllUUIDMetadata'
+            'getAllUUIDMetadata',
+            $timeoutSeconds
         );
     }
 
     /**
      * @param callable(): mixed $list
      */
-    private function assertListEventually(callable $list, bool $expectAllowed, string $operation): void
-    {
-        $deadline = microtime(true) + self::PROPAGATION_TIMEOUT_SECONDS;
+    private function assertListEventually(
+        callable $list,
+        bool $expectAllowed,
+        string $operation,
+        int $timeoutSeconds
+    ): void {
+        $deadline = microtime(true) + $timeoutSeconds;
 
         while (true) {
             try {
@@ -151,7 +166,7 @@ class GrantCategoriesTest extends TestCase
                     '%s should have been %s within %d seconds',
                     $operation,
                     $expectAllowed ? 'allowed' : 'denied with 403',
-                    self::PROPAGATION_TIMEOUT_SECONDS
+                    $timeoutSeconds
                 ));
             }
 
@@ -250,8 +265,8 @@ class GrantCategoriesTest extends TestCase
             $this->assertFalse($category->getAuthKeys()[$authKey]->isGetEnabled(), "$name: get should be revoked");
         }
 
-        $this->assertListsChannelMetadata($client, false);
-        $this->assertListsUuidMetadata($client, false);
+        $this->assertListsChannelMetadata($client, false, self::REVOKE_PROPAGATION_TIMEOUT_SECONDS);
+        $this->assertListsUuidMetadata($client, false, self::REVOKE_PROPAGATION_TIMEOUT_SECONDS);
     }
 
     public function testOneMinuteCategoryGrantIsRejectedByTheServer(): void
