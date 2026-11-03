@@ -1,0 +1,18 @@
+---
+description: Documentation snippets in examples/ and the tests that execute them
+globs: examples/**/*.php, tests/Examples/**/*.php
+alwaysApply: false
+---
+
+# Examples
+
+- **Snippets feed the public docs.** Code between `// snippet.<name>` and `// snippet.end` is extracted, and `// snippet.hide` / `// snippet.show` hide setup lines. Don't rename existing markers, files or folders, including the misspelled `examples/Membersips/` and `MessagePersistance.php`; external tooling may reference them.
+- **Examples must run as written:**
+  - `require_once __DIR__ . '/../vendor/autoload.php';`
+  - `demo` keys or `getenv()`, never real keys
+  - a user ID set on the configuration
+  - `->sync()` calls
+- **Verification:** use `assert()` plus `echo`. `assert()` does nothing unless `zend.assertions=1`.
+- **Env fallbacks:** `getenv()` returns `false`, so `getenv('X') ?? 'demo'` never falls back to `'demo'`. Use `getenv('X') ?: 'demo'`.
+- **Tests:** `tests/Examples/<Name>Test.php` `require`s the example inside `ob_start()`/`ob_end_clean()`. Add one when a new example file should run in CI. These tests hit the live demo keyset.
+- **Lint:** examples are outside PHPStan's paths but still linted with PSR-12 when changed. Existing files use `// phpcs:ignoreFile` or `// phpcs:disable` for the side-effects rule.

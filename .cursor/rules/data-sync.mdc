@@ -1,0 +1,31 @@
+---
+description: Data Sync endpoints, results, events and how they differ from App Context
+globs: src/PubNub/DataSync.php, src/PubNub/Endpoints/DataSync/**/*.php, src/PubNub/Models/Consumer/DataSync/**/*.php, tests/**/dataSync/**/*.php
+alwaysApply: false
+---
+
+# Data Sync
+
+- **What it is:** typed records (entities, users, channels, memberships, relationships) whose classes and versions are defined in the PubNub portal. It is separate from App Context (`/v2/objects`); don't mix the two.
+- **Entry point:** `$pubnub->dataSync()` (`DataSync.php`) has create, get, list, set, update and delete factories for each resource.
+- **Paths:** `/v1/datasync/subkeys/{subscribeKey}/{resource}[/{urlencoded id}]`. Subclasses of `DataSyncEndpoint` declare only `RESOURCE` and `MEDIA_TYPE`, plus their setters.
+- **HTTP methods:**
+
+  | Operation | Method | Notes |
+  | --- | --- | --- |
+  | Create | POST | |
+  | Get, list | GET | |
+  | Set | PUT | Full replace |
+  | Update | PATCH | RFC 6902 JSON Patch via `HasJsonPatch` |
+  | Delete | DELETE | `RESPONSE_MAY_BE_EMPTY = true` |
+
+- **Request format:** write bodies are wrapped as `{"data": ...}`. The content type is the resource's vendor media type, or `application/json-patch+json` for PATCH. No `Accept` header is sent, because deletes would get a 406.
+- **Concurrency:** use `ifMatchesETag()` (`HasIfMatch`); the server returns 412 on a mismatch.
+- **Lists** (`DataSyncCollectionEndpoint`): `cursor()`, `limit()`, `filter()`, `filterFast()`, `sort()`.
+- **Signing order:** `DataSyncEndpoint::buildParams()` URL-encodes query parameters after signing. Keep that order.
+- **Errors** arrive as an `errors[]` list with DS-xxxx codes; `PubNubServerException::getServerErrorMessage()` reads them.
+- **Realtime changes** arrive through subscribe as message type 5 with `metadata.source == "data-sync"` and go to `SubscribeCallback::dataSyncEvent()`.
+- **Access Manager grants** live in `GrantToken`: `addDataSync*()`, `addUser*()`, `dataSyncProjections()`.
+- **Tests:**
+  - Offline: `tests/unit/dataSync`, `tests/functional/dataSync`, and the stubbed `tests/integrational/dataSync/DataSyncEndpointTest.php`.
+  - Live: need the `DATASYNC_*` environment variables and skip without them.

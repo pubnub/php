@@ -1,0 +1,38 @@
+---
+description: PHP coding conventions for the PubNub PHP SDK (PSR-12, PHPStan level 6, backward compatibility)
+globs: src/**/*.php, tests/**/*.php, examples/**/*.php
+alwaysApply: false
+---
+
+# PHP conventions
+
+- **Language level:** PHP 8.1 syntax is the ceiling; CI runs 8.1 to 8.5. Don't use features newer than 8.1.
+- **Style:** PSR-12, lines of 120 characters or fewer, LF line endings. Check with `php vendor/bin/phpcs --standard=PSR12 <files>`.
+- **PHPStan level 6** covers `src/` and `tests/`. New and changed code must pass without new baseline entries. Give arrays value types in docblocks, e.g. `@param array<string, mixed> $json`.
+- **No `declare(strict_types=1)`**; the SDK doesn't use it.
+- **PSR-4:** `PubNub\` maps to `src/PubNub/`, `PubNubTests\` to `tests/`.
+
+## New code style
+
+Match this even where older code next to it doesn't:
+
+```php
+protected ?string $channel = null;                  // typed property
+
+public function channel(string $channel): static    // typed, fluent
+{
+    $this->channel = $channel;
+    return $this;
+}
+```
+
+- Use `static` (or `self` in final classes) as the fluent return type.
+- Use `PubNubUtil::writeValueAsString()` for JSON bodies and `PubNubUtil::urlEncode()` for user input in paths.
+- Adding a native parameter type to an override of an untyped parent method is a fatal LSP error. Use a docblock (`@param`) instead. Adding a return type is fine.
+- Comment only constraints the code can't show.
+
+## Public API is a contract
+
+- Don't rename or remove public or protected classes, methods or constants, or change their signatures incompatibly. Customers may extend non-final classes.
+- Keep historical misspellings such as `MessagePersistance`. Introduce correct names only when asked, and mark the old ones `@deprecated` while they keep working.
+- Throw subclasses of `PubNub\Exceptions\PubNubException`. `PubNubUnsubscribeException` is a control-flow signal for the subscribe loop, not an error.

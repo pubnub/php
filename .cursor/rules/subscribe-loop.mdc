@@ -1,0 +1,27 @@
+---
+description: Blocking subscribe loop, listeners and incoming message dispatch in the PubNub PHP SDK
+globs: src/PubNub/Managers/**/*.php, src/PubNub/Builders/**/*.php, src/PubNub/Callbacks/**/*.php, src/PubNub/Endpoints/PubSub/Subscribe.php, src/PubNub/Models/Server/**/*.php
+alwaysApply: false
+---
+
+# Subscribe
+
+- **Blocking loop:** `$pubnub->subscribe()->channels([...])->withPresence()->execute()` blocks inside `SubscriptionManager::start()`, a `while (true)` long-poll with a 310-second subscribe timeout.
+- **How the loop ends:**
+  - a listener throws `PubNubUnsubscribeException`. Use `setChannels()`/`setChannelGroups()` on it for a partial unsubscribe; either way it sends a Leave and exits the loop.
+  - the channel list becomes empty.
+  - a non-timeout error is announced through `status()`.
+- **Network errors and timeouts** are both reported as `PNTimeoutCategory` and retried immediately, with no backoff.
+- **Listeners** extend `Callbacks\SubscribeCallback`: abstract `status()`, `message()` and `presence()`, plus optional `signal()` and `dataSyncEvent()`. Any new callback must be a non-abstract method with an empty body, so existing customer subclasses keep working.
+- **Dispatch** (`processIncomingPayload()`):
+
+  | Incoming payload | Callback |
+  | --- | --- |
+  | `-pnpres` channels | `presence()` |
+  | Message type DATA_SYNC from the data-sync source | `dataSyncEvent()` |
+  | SIGNAL | `signal()` |
+  | Everything else: messages, files, message actions, App Context events | `message()` |
+
+- **Decryption** uses the configuration's crypto (`getCryptoSafe()`). A `PubNubResponseParsingException` keeps the raw payload and attaches the error to the result. Any other exception escapes and ends `execute()`, so decrypt failures must stay `PubNubResponseParsingException`.
+- **By design** there is no heartbeat, reconnection policy or event engine; see `DEVELOPER.md`. Don't add threads or async libraries.
+- **Tests:** stub the HTTP client and end the loop by throwing `PubNubUnsubscribeException` from the listener; see `tests/integrational/SubscribeSignalTest.php`.

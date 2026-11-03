@@ -14,6 +14,7 @@
 
 .DS_Store
 coverage.clover
+.phpunit.result.cache
 
 # Environment files (for local development) #
 #############################################
@@ -24,3 +25,8 @@ coverage.clover
 # GitHub Actions #
 ##################
 .github/.release
+
+# AI agent personal settings #
+##############################
+.claude/settings.local.json
+CLAUDE.local.md
