@@ -5,58 +5,26 @@ description: Runs the PubNub PHP SDK verification steps (offline PHPUnit tests, 
 
 # Run checks
 
-Run everything from the repository root with `php vendor/bin/...`, which works in bash and PowerShell. `composer test` and `composer lint` are bash-only. If `vendor/` is missing, run `composer install` first.
-
-## 1. Offline tests (always)
+Run one script from the repository root. It prints a one-line summary per step and only the first lines of any failure, which keeps the output small.
 
 ```bash
-php vendor/bin/phpunit --do-not-cache-result tests/unit
-php vendor/bin/phpunit --do-not-cache-result <each test file you added or changed>
+scripts/run-checks.sh [--full] [extra phpunit test paths...]
 ```
 
-- `tests/unit` is not part of the `phpunit.xml` suites, so it must be passed as a path.
-- Skips for missing extensions (mcrypt, pthreads) are expected. Everything else must pass.
+- Always runs `tests/unit`, then PHPStan and PHPCS (PSR-12) on PHP files changed against `origin/master` plus untracked ones.
+- Pass the test files you added or changed as extra arguments, and targeted `tests/functional` or `tests/integrational` files for the area you touched.
+- `--full` also runs PHPStan on the whole project, as CI does. Use it before a PR.
+- If `vendor/` is missing, run `composer install` first.
 
-## 2. Targeted tests for the area you touched
+## Reading the result
 
-`tests/functional` and `tests/integrational` mix offline and live tests. Run the specific files for your feature, for example:
-
-```bash
-php vendor/bin/phpunit --do-not-cache-result tests/integrational/HereNowTest.php
-```
-
-Run the whole configured suites (`php vendor/bin/phpunit`) or `composer test` only when the user asks and keys are configured (environment variables, or `.env.dev` based on `.env.dist`). They publish to real keysets.
-
-## 3. Static analysis
-
-```bash
-php vendor/bin/phpstan analyze --memory-limit 512M --no-progress <changed src and tests files>
-php vendor/bin/phpstan analyze --memory-limit 512M --no-progress
-```
-
-The second command analyses the whole project, as CI does. Fix new errors in the code; never add them to `phpstan-baseline.neon`.
-
-## 4. Code style
-
-```bash
-php vendor/bin/phpcs --standard=PSR12 <changed .php files>
-```
-
-- CI lints the files changed against `origin/master`: `git diff --name-only --diff-filter=d origin/master HEAD`. Include new, uncommitted files yourself.
-- `php vendor/bin/phpcbf --standard=PSR12 <files>` fixes issues automatically, but it rewrites the files.
-
-## Line-ending false positives
-
-`.gitattributes` forces LF line endings. A Windows checkout made before that rule existed can still contain CRLF files, while CI checks out LF and sees none of the following:
-
-- phpcs reports `End of line character is invalid` on every file. Re-run with `--exclude=Generic.Files.LineEndings`.
-- Full-project PHPStan reports baseline mismatches in files you didn't touch (for example `SetState.php` and `PresenceEnvelope.php`).
-
-Report these as environment noise, not as failures, and tell the user the checkout needs refreshing. Don't run destructive git commands to fix it yourself.
+- Exit code 0 means every step passed. Skips for missing extensions (mcrypt, pthreads) are expected.
+- Fix new PHPStan errors in the code; never add them to `phpstan-baseline.neon`.
+- For more output, re-run with `MAX_LINES=200`, or run the failing tool alone (see "Commands" in `AGENTS.md`).
+- `php vendor/bin/phpcbf --standard=PSR12 <files>` fixes style issues, but it rewrites the files.
+- The script reports CRLF checkouts itself. Treat those findings as environment noise, tell the user the checkout needs refreshing, and don't run destructive git commands to fix it.
+- Don't run the full suites (`php vendor/bin/phpunit`, `composer test`) unless the user asks and keys are configured. They publish to real keysets.
 
 ## Report
 
-Summarize:
-- which tests ran, with counts
-- the static analysis and style results
-- anything you didn't run (such as live suites), and why
+Summarize which tests ran (with counts), the static analysis and style results, and anything not run (such as live suites), and why.
