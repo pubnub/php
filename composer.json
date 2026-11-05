@@ -6,7 +6,7 @@
 "presence", "message-ordering", "message-history", "chat", "long-poll"],
   "homepage": "https://www.pubnub.com",
   "license": "proprietary",
-  "version": "10.1.0",
+  "version": "10.2.0",
   "authors": [
     {
       "name": "PubNub",
@@ -24,7 +24,7 @@
       "vendor/bin/behat"
     ],
     "lint": [
-      "vendor/bin/phpstan analyze --memory-limit 256M",
+      "vendor/bin/phpstan analyze --memory-limit 512M",
       "git diff --name-only --diff-filter=d origin/master HEAD | grep -E '\\.php$' | xargs --no-run-if-empty vendor/bin/phpcs --standard=PSR12"
     ]
   },

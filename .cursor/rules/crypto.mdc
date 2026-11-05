@@ -1,0 +1,24 @@
+---
+description: Encryption invariants (CryptoModule, cryptors, header format) shared with all PubNub SDKs
+globs: src/PubNub/CryptoModule.php, src/PubNub/Crypto/**/*.php, src/PubNub/PubNubCrypto*.php, tests/unit/CryptoModule/**/*.php, tests/unit/Crypto*.php
+alwaysApply: false
+---
+
+# Crypto
+
+- **Registry:** `CryptoModule` maps 4-character cryptor IDs to `Crypto\Cryptor` instances and has one default (encrypting) cryptor. `decrypt()` reads the header and dispatches by ID; data without a header is legacy (`0000`).
+- **Header**, shared by every PubNub SDK and never to be changed: `"PNED"`, then version `0x01`, then the 4-byte cryptor ID, then the cryptor-data length (1 byte, or `0xFF` followed by 2 bytes), then the cryptor data.
+- **Cryptors:**
+
+  | ID | Class | Details |
+  | --- | --- | --- |
+  | `0000` | `LegacyCryptor` | AES-256-CBC. Key is the first 32 hex characters of SHA-256(cipherKey). Static IV `0123456789012345`, or a random IV prepended to the data. No header. |
+  | `ACRH` | `AesCbcCryptor` | AES-256-CBC. Key is raw SHA-256(cipherKey). Random 16-byte IV as cryptor data. |
+  | `ACGM` | `AesGcmCryptor` | AES-256-GCM, decrypt-only. 12-byte nonce as cryptor data; 16-byte tag appended to the ciphertext. It must not become a default cryptor until encryption ships across SDKs. |
+
+- **Factories:** `CryptoModule::legacyCryptor()` and `aesCbcCryptor()` register all three cryptors and differ only in the default. `PNConfiguration::setCipherKey()` uses `legacyCryptor()`.
+- **Failures:** every decrypt failure throws `PubNubResponseParsingException("Decryption error: message decryption failed")`. Keep it a single generic message with no OpenSSL details (padding-oracle hardening). The subscribe loop relies on this exception type.
+- **Return value:** cryptors return `json_decode($plaintext)` when the plaintext is JSON, otherwise the raw string.
+- **Defaults:** changing what gets encrypted by default breaks other SDKs, because older clients can't read new formats. Ship new formats as decryptors first.
+- **Tests:** use known-answer vectors from other SDKs (see `tests/unit/CryptoModule/AesGcmCryptorVectorTest.php`) in addition to round trips.
+- **Legacy classes:** `PubNubCrypto`, `PubNubCryptoCore` and `PubNubCryptoLegacy` (mcrypt, dead) are kept for backward compatibility. Don't build on them.

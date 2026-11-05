@@ -1,0 +1,33 @@
+---
+description: Structure of REST endpoints, result models and operation types in the PubNub PHP SDK
+globs: src/PubNub/Endpoints/**/*.php, src/PubNub/Models/Consumer/**/*.php, src/PubNub/Enums/PNOperationType.php, src/PubNub/PubNub.php, src/PubNub/DataSync.php
+alwaysApply: false
+---
+
+# Endpoints
+
+Every API call is a subclass of `PubNub\Endpoints\Endpoint`, returned by a factory method on `PubNub` (or on `DataSync`). To add one, follow the `add-endpoint` skill (`.claude/skills/add-endpoint/SKILL.md`).
+
+**Lifecycle (`Endpoint::sync()`):**
+1. `validateParams()`.
+2. `buildPath()`, plus `buildParams()` (`customParams()` merged with the defaults `pnsdk`, `uuid` and `auth`, then signed if a secret key is set), plus `buildData()`.
+3. The request is sent through the PSR-18 client.
+4. `parseResponse()`, then `createResponse($decodedJson)`.
+
+## Required pieces
+
+- **Abstract methods:** `validateParams()`, `buildPath()`, `customParams()`, `buildData()`, `createResponse()`.
+- **Endpoint settings:** declare `$endpointHttpMethod`, `$endpointAuthRequired`, `$endpointOperationType` and `$endpointName` as typed property defaults. Set both timeouts in the constructor: the request timeout from `getNonSubscribeRequestTimeout()`, the connect timeout from `getConnectTimeout()`. These properties have no defaults, so leaving one unset is a fatal "must not be accessed before initialization" error.
+- **Return type:** narrow it with `public function sync(): PNFooResult { return parent::sync(); }`.
+- **Response flags**, when needed: `RESPONSE_IS_JSON = false` (raw body), `RESPONSE_MAY_BE_EMPTY = true` (a 2xx with no body), `$followRedirects = false`.
+
+## Rules
+
+- **Paths:** `protected const PATH = "/v2/.../%s"` filled in with `sprintf()`. URL-encode every user-supplied segment with `PubNubUtil::urlEncode()`. Several old endpoints don't; don't copy them.
+- **Query parameters:** return only endpoint-specific ones from `customParams()`.
+  - Defaults overwrite custom keys with the same name.
+  - Only a few keys are encoded centrally (see `Endpoint::buildParams()`). Pre-encoded values get signed double-encoded; see how `DataSyncEndpoint::buildParams()` encodes after signing.
+- **Validation:** validate in `validateParams()`, not in setters. Throw `PubNubValidationException` and call `validateSubscribeKey()`, `validatePublishKey()` or `validateSecretKey()` as the API requires.
+- **Operation types:** each new endpoint gets a `PNOperationType` constant with the next unused integer. Value 56 is already duplicated; don't add more duplicates.
+- **Result models:** `Models/Consumer/<Feature>/PN<Name>Result.php` with a static `fromJson()` or `fromPayload()`, typed properties and getters.
+- **Error handling:** `envelope()` returns the result plus a `PNStatus` instead of throwing. The envelope is cached per endpoint object until `clear()`.

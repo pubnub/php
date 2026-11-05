@@ -252,11 +252,16 @@ class SubscriptionManager
             $this->listenerManager->announcePresence($pnPresenceResult);
         } else {
             $messageError = null;
-            try {
-                $extractedMessage = $this->processMessage($message->getPayload());
-            } catch (PubNubResponseParsingException $exception) {
+            // Signals are plaintext in every PubNub SDK, so they are never handed to the decryptor.
+            if (MessageType::SIGNAL == $message->getMessageType()) {
                 $extractedMessage = $message->getPayload();
-                $messageError = $exception;
+            } else {
+                try {
+                    $extractedMessage = $this->processMessage($message->getPayload());
+                } catch (PubNubResponseParsingException $exception) {
+                    $extractedMessage = $message->getPayload();
+                    $messageError = $exception;
+                }
             }
             $publisher = $message->getIssuingClientId();
 

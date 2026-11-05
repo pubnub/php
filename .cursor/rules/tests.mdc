@@ -1,0 +1,29 @@
+---
+description: How PubNub PHP SDK tests are organised, stubbed and run
+globs: tests/**/*.php, phpunit.xml, phpunit.xml.dist, behat.yml
+alwaysApply: false
+---
+
+# Tests
+
+| Directory | Network | Use for |
+| --- | --- | --- |
+| `tests/unit` | Offline. Not in the phpunit.xml suites, so run by path. | Logic, crypto, models, validation |
+| `tests/functional` | Mostly offline | Request building through `*Exposed` subclasses that make `buildPath()`/`buildParams()`/`buildData()` public; validation errors |
+| `tests/integrational` | Stubbed HTTP or live keys | Full request and response through `PsrStubClient`; live happy paths |
+| `tests/Examples` | Live demo keyset | Runs `examples/*.php` |
+| `tests/Acceptance` | Behat against PubNub's mock server (CI only) | Cross-SDK contract scenarios |
+
+- **Prefer offline tests.** The default check is `php vendor/bin/phpunit --do-not-cache-result tests/unit` plus the specific test files you touched.
+- **Stubbed HTTP pattern** (see `tests/integrational/HereNowTest.php`):
+  - An in-file `HereNowExposed extends HereNow`, marked `// phpcs:ignore PSR1.Classes.ClassDeclaration`, installs a `PsrStubClient`.
+  - It exposes `stubFor($path)->withQuery([...])->setResponseBody($json)`.
+  - Unmatched requests throw `No stub matched`.
+- **`PubNubTestCase`** is in the global namespace and loaded by `tests/bootstrap.php`. It provides `$this->pubnub`, `$this->pubnub_demo`, `$this->pubnub_pam`, `$this->pubnub_enc` and `$this->encodedSdkName`. Its clients use keys from the environment, so tests that reach the network fail without keys.
+- **Live tests that need special keysets** must skip themselves when their environment variables are missing; see `GrantCategoriesTest` and the Data Sync tests.
+- **Warnings and notices become exceptions** in PHPUnit, so an undefined array key in SDK code fails the test.
+- **New test classes:**
+  - Use the namespace `PubNubTests\<dir>\...` matching the path.
+  - Extend `PHPUnit\Framework\TestCase` unless you need the `PubNubTestCase` clients.
+  - Data providers are `public static` and typed for PHPStan.
+- **Never put real keys in tests.** Use `demo`, `getenv()` or stubs.

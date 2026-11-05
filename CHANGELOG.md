@@ -1,3 +1,9 @@
+## 10.2.0
+November 05 2026
+
+#### Added
+- Added an implementation of the AES-GCM cryptor - decryption only for now, encryption to be added at a later date.
+
 ## 10.1.0
 October 20 2026
 

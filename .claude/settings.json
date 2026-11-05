@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(php vendor/bin/phpunit:*)",
+      "Bash(php vendor/bin/phpstan:*)",
+      "Bash(php vendor/bin/phpcs:*)",
+      "Bash(vendor/bin/phpunit:*)",
+      "Bash(vendor/bin/phpstan:*)",
+      "Bash(vendor/bin/phpcs:*)",
+      "Bash(php --version)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)"
+    ],
+    "deny": [
+      "Read(./.env.dev)",
+      "Read(./.env.test)",
+      "Read(./.env.prod)",
+      "Edit(./vendor/**)"
+    ]
+  }
+}

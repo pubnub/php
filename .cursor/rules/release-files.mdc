@@ -1,0 +1,17 @@
+---
+description: Version, changelog and CI files that are maintained by the PubNub release tooling
+globs: composer.json, .pubnub.yml, CHANGELOG.md, .github/workflows/**
+alwaysApply: false
+---
+
+# Release files
+
+- **How a release happens:** the PubNub release bot runs on the PR (`commands-handler.yml`), and the package is published to Packagist when the PR is merged to `master` (`release.yml`).
+- **What the bot changes:**
+  - It bumps the version in `composer.json` (`"version"`), `src/PubNub/PubNub.php` (`SDK_VERSION`) and `.pubnub.yml`, following `.github/workflows/release/versions.json`.
+  - It writes the changelog entry in `.pubnub.yml` and in `CHANGELOG.md`.
+- **Don't edit versions or changelog entries by hand** unless the user explicitly asks. Propose the changelog text for the PR description instead.
+- **`.pubnub.yml` is validated in CI** (`run-validations.yml`). If you must edit it, keep its existing structure.
+- **Changelog style:** one user-facing sentence per change. In `.pubnub.yml` each change has a type of `feature`, `bug` or `improvement`; `CHANGELOG.md` renders these as Added, Fixed and Modified.
+- **Dependencies:** changes to `composer.json` `require` affect every customer. Keep PHP `>=8.1` and the existing version ranges unless asked.
+- **CI workflows** call private PubNub actions (`pubnub/client-engineering-deployment-tools`) and need repository secrets. Don't restructure them unless asked.

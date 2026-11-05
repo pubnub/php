@@ -53,7 +53,7 @@ jobs:
           composer self-update && composer --version
           composer install --prefer-dist --dev
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyze --memory-limit 256M
+        run: vendor/bin/phpstan analyze --memory-limit 512M
       - name: Run phpcs on changed files
         run: git diff --name-only --diff-filter=d origin/master HEAD | { grep -E '\.php$' || true; } | xargs --no-run-if-empty vendor/bin/phpcs --standard=PSR12
       - name: Cancel workflow runs for commit on error

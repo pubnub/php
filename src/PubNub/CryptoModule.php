@@ -3,6 +3,7 @@
 namespace PubNub;
 
 use PubNub\Crypto\AesCbcCryptor;
+use PubNub\Crypto\AesGcmCryptor;
 use PubNub\Crypto\Cryptor;
 use PubNub\Crypto\Header as CryptoHeader;
 use PubNub\Crypto\LegacyCryptor;
@@ -22,6 +23,15 @@ class CryptoModule
 
     public function __construct($cryptorMap, string $defaultCryptorId)
     {
+        if (
+            $defaultCryptorId === AesGcmCryptor::CRYPTOR_ID
+            || ($cryptorMap[$defaultCryptorId] ?? null) instanceof AesGcmCryptor
+        ) {
+            throw new PubNubCryptoException(
+                'AesGcmCryptor is decrypt-only and cannot be used as the default cryptor. '
+                . 'Register it as an additional cryptor instead.'
+            );
+        }
         $this->cryptorMap = $cryptorMap;
         $this->defaultCryptorId = $defaultCryptorId;
     }
@@ -83,7 +93,7 @@ class CryptoModule
         $data = base64_decode($input);
         $header = $this->decodeHeader($data);
 
-        if (!$this->cryptorMap[$header->getCryptorId()]) {
+        if (!isset($this->cryptorMap[$header->getCryptorId()])) {
             throw new PubNubCryptoException('unknown cryptor error');
         }
         $payload = new CryptoPayload(
@@ -147,6 +157,7 @@ class CryptoModule
             [
                 LegacyCryptor::CRYPTOR_ID => new LegacyCryptor($cipherKey, $useRandomIV),
                 AesCbcCryptor::CRYPTOR_ID => new AesCbcCryptor($cipherKey),
+                AesGcmCryptor::CRYPTOR_ID => new AesGcmCryptor($cipherKey),
             ],
             LegacyCryptor::CRYPTOR_ID
         );
@@ -158,6 +169,7 @@ class CryptoModule
             [
                 LegacyCryptor::CRYPTOR_ID => new LegacyCryptor($cipherKey, $useRandomIV),
                 AesCbcCryptor::CRYPTOR_ID => new AesCbcCryptor($cipherKey),
+                AesGcmCryptor::CRYPTOR_ID => new AesGcmCryptor($cipherKey),
             ],
             AesCbcCryptor::CRYPTOR_ID
         );
